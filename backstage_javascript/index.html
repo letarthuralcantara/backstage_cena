@@ -21,7 +21,7 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            background-image: url('imagens/background.png');
+            background-image: url('../imagens/background.png');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -422,15 +422,14 @@
     </style>
 </head>
 <body>
-    <!-- NAVBAR NOVA COM ESTILO DO SEGUNDO CÓDIGO -->
     <nav>
         <div class="logo-container">
-            <img src="imagens/logo.png" alt="Backstage Logo" class="logo-img" id="logo-img">
+            <img src="../imagens/logo.png" alt="Backstage Logo" class="logo-img" id="logo-img">
         </div>
         <ul class="nav-menu">
             <li><a href="#">Blog</a></li>
-            <li><a href="perfil.html">Login</a></li>
-            <li><a href="perfil_usuario.html">Registrar-se</a></li>
+            <li><a href="login.html">Login</a></li>
+            <li><a href="registro.html">Registrar-se</a></li>
         </ul>
     </nav>
     
@@ -445,7 +444,7 @@
                 </div>
                 
                 <div class="hero-right">
-                    <img src="imagens/urso.png" alt="Imagem de urso" class="bear-image" id="bear-img">
+                    <img src="../imagens/urso.png" alt="Imagem de urso" class="bear-image" id="bear-img">
                 </div>
             </div>
         </div>
@@ -455,7 +454,7 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-logo">
-                    <img src="imagens/logo.png" alt="Backstage Logo" class="footer-logo-img" id="footer-logo-img">
+                    <img src="../imagens/logo.png" alt="Backstage Logo" class="footer-logo-img" id="footer-logo-img">
                 </div>
                 <p>A cena musical independente começa aqui. &copy; 2025</p>
             </div>
@@ -463,7 +462,6 @@
     </footer>
     
     <script>
-        // Verificar se as imagens carregaram
         window.addEventListener('load', function() {
             const body = document.querySelector('body');
             const logoImg = document.getElementById('logo-img');
@@ -472,10 +470,10 @@
             
             // Verificar imagem de fundo (imagens/background.png)
             const bgImg = new Image();
-            bgImg.src = 'imagens/background.png';
+            bgImg.src = '../imagens/background.png';
             
             bgImg.onload = function() {
-                console.log('Imagem de fundo "imagens/background.png" carregada com sucesso');
+                console.log('Imagem de fundo "../imagens/background.png" carregada com sucesso');
             };
             
             bgImg.onerror = function() {
