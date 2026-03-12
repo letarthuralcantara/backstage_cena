@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backstage | Conecte-se com Músicos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #ffffff;
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: url('imagens/background.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: -1;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        nav {
+            display: flex;
+            align-items: center;   
+            justify-content: space-between;
+            padding: 20px 30px;
+            background-color: black;
+            box-shadow: 0px 20px 20px black;
+            
+        }
+        
+        .logo-img {
+            width: 250px;
+            padding-bottom: 20px;
+            margin-top: 20px;
+        }
+        
+        
+        /* Menu de navegação */
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-menu a {
+            text-decoration: none;
+            color: #e5e7eb;
+            font-weight: 500;
+            font-size: 15px;
+            transition: all 0.2s;
+            padding: 8px 16px;
+            border-radius: 6px;
+            position: relative;
+        }
+        
+        .nav-menu a:hover {
+            color: #8b5cf6;
+            background-color: rgba(139, 92, 246, 0.1);
+        }
+        
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #8b5cf6, #7c3aed);
+            transition: width 0.3s;
+        }
+        
+        .nav-menu a:hover::after {
+            width: 70%;
+        }
+        
+        /* Conteúdo principal - Layout de duas colunas */
+        .main-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            padding: 40px 0;
+        }
+        
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            gap: 40px;
+        }
+        
+        .hero-left {
+            flex: 1;
+            max-width: 550px;
+        }
+        
+        .main-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 44px;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            color: #ffffff;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .main-subtitle {
+            font-size: 18px;
+            color: #d1d5db;
+            margin-bottom: 30px;
+            font-weight: 400;
+        }
+        
+        /* Botão principal */
+        .signup-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 50%, #6d28d9 100%);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 16px 40px;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: all 0.3s;
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+            border: none;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+        }
+        
+        .signup-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.6);
+        }
+        
+        /* Lado direito com imagem do urso */
+        .hero-right {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .bear-image {
+            width: 360px;
+            height: auto;
+            filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.5));
+            transition: transform 0.3s ease;
+        }
+        
+        .bear-image:hover {
+            transform: scale(1.02);
+        }
+        
+        /* Rodapé COM LOGO */
+        footer {
+            padding: 20px 0;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 13px;
+            margin-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+        
+        .footer-logo-img {
+            height: 30px;
+            width: auto;
+            opacity: 0.8;
+        }
+        
+        .footer-logo-text {
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        /* Responsividade */
+        @media (max-width: 992px) {
+            .main-title {
+                font-size: 38px;
+            }
+            
+            .main-subtitle {
+                font-size: 16px;
+            }
+            
+            .bear-image {
+                width: 300px;
+            }
+            
+            .container {
+                padding: 0 20px;
+            }
+            
+            nav {
+                padding: 15px 20px;
+            }
+            
+            .logo-img {
+                width: 200px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero {
+                flex-direction: column;
+                gap: 30px;
+                text-align: center;
+            }
+            
+            .hero-left, .hero-right {
+                max-width: 100%;
+            }
+            
+            nav {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px;
+            }
+            
+            .logo-img {
+                width: 180px;
+                margin: 0;
+            }
+            
+            .nav-menu {
+                gap: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .main-title {
+                font-size: 32px;
+            }
+            
+            .main-subtitle {
+                font-size: 15px;
+            }
+            
+            .signup-button {
+                padding: 14px 35px;
+                font-size: 15px;
+            }
+            
+            .bear-image {
+                width: 260px;
+            }
+            
+            .footer-logo {
+                flex-direction: column;
+                gap: 6px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .nav-menu {
+                flex-direction: column;
+                gap: 12px;
+                align-items: center;
+            }
+            
+            .main-title {
+                font-size: 28px;
+            }
+            
+            .main-subtitle {
+                font-size: 14px;
+            }
+            
+            .signup-button {
+                padding: 12px 30px;
+                font-size: 14px;
+            }
+            
+            .bear-image {
+                width: 220px;
+            }
+            
+            .footer-logo-img {
+                height: 25px;
+            }
+            
+            .footer-logo-text {
+                font-size: 14px;
+            }
+        }
+        
+        /* Estilos para fallback caso as imagens não carreguem */
+        .bg-fallback {
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%) !important;
+        }
+        
+        .logo-fallback {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            width: 250px;
+            height: 60px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 24px;
+        }
+        
+        .footer-logo-fallback {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .bear-fallback {
+            width: 360px;
+            height: 360px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 14px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Animações */
+        @keyframes fadeInLeft {
+            from { 
+                opacity: 0; 
+                transform: translateX(-20px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateX(0); 
+            }
+        }
+        
+        @keyframes fadeInRight {
+            from { 
+                opacity: 0; 
+                transform: translateX(20px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateX(0); 
+            }
+        }
+        
+        .hero-left > * {
+            opacity: 0;
+            animation: fadeInLeft 0.8s ease-out forwards;
+        }
+        
+        .hero-right > * {
+            opacity: 0;
+            animation: fadeInRight 0.8s ease-out forwards;
+        }
+        
+        .main-title { animation-delay: 0.2s; }
+        .main-subtitle { animation-delay: 0.4s; }
+        .signup-button { animation-delay: 0.6s; }
+        .bear-image { animation-delay: 0.8s; }
+    </style>
+</head>
+<body>
+    <!-- NAVBAR NOVA COM ESTILO DO SEGUNDO CÓDIGO -->
+    <nav>
+        <div class="logo-container">
+            <img src="imagens/logo.png" alt="Backstage Logo" class="logo-img" id="logo-img">
+        </div>
+        <ul class="nav-menu">
+            <li><a href="#">Blog</a></li>
+            <li><a href="perfil.html">Login</a></li>
+            <li><a href="perfil_usuario.html">Registrar-se</a></li>
+        </ul>
+    </nav>
+    
+    <main class="main-content">
+        <div class="container">
+            <div class="hero">
+                <div class="hero-left">
+                    <h1 class="main-title">Conecte-se com músicos, encontre parceiros, crie seus projetos.</h1>
+                    <p class="main-subtitle">A cena musical independente começa aqui.</p>
+                    
+                    <a href="registrar.html" class="signup-button">INSCREVA-SE</a>
+                </div>
+                
+                <div class="hero-right">
+                    <img src="imagens/urso.png" alt="Imagem de urso" class="bear-image" id="bear-img">
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="imagens/logo.png" alt="Backstage Logo" class="footer-logo-img" id="footer-logo-img">
+                </div>
+                <p>A cena musical independente começa aqui. &copy; 2025</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Verificar se as imagens carregaram
+        window.addEventListener('load', function() {
+            const body = document.querySelector('body');
+            const logoImg = document.getElementById('logo-img');
+            const footerLogoImg = document.getElementById('footer-logo-img');
+            const bearImg = document.getElementById('bear-img');
+            
+            // Verificar imagem de fundo (imagens/background.png)
+            const bgImg = new Image();
+            bgImg.src = 'imagens/background.png';
+            
+            bgImg.onload = function() {
+                console.log('Imagem de fundo "imagens/background.png" carregada com sucesso');
+            };
+            
+            bgImg.onerror = function() {
+                console.log('Imagem "imagens/background.png" não encontrada. Usando fallback...');
+                body.classList.add('bg-fallback');
+                
+                // Tentar caminhos alternativos para fundo
+                const bgAltPaths = [
+                    'background.png',
+                    'imagens/background.jpg',
+                    'background.jpg',
+                    'img/background.png',
+                    'assets/background.png',
+                    'backgrounds/background.png'
+                ];
+                
+                for (let path of bgAltPaths) {
+                    const testImg = new Image();
+                    testImg.src = path;
+                    testImg.onload = function() {
+                        console.log(`Imagem de fundo encontrada em: ${path}`);
+                        body.style.backgroundImage = `url('${path}')`;
+                        body.classList.remove('bg-fallback');
+                    };
+                }
+            };
+            
+            // Função para verificar e criar fallback para logo
+            function checkLogo(imgElement, fallbackClass, fallbackText, isLarge = false) {
+                imgElement.onerror = function() {
+                    console.log(`Logo "${imgElement.src}" não encontrada. Criando fallback...`);
+                    const container = imgElement.parentElement;
+                    const fallbackDiv = document.createElement('div');
+                    fallbackDiv.className = fallbackClass;
+                    fallbackDiv.textContent = fallbackText;
+                    
+                    if (isLarge) {
+                        fallbackDiv.style.width = '250px';
+                        fallbackDiv.style.height = '60px';
+                        fallbackDiv.style.fontSize = '24px';
+                    }
+                    
+                    imgElement.style.display = 'none';
+                    container.appendChild(fallbackDiv);
+                    
+                    // Tentar caminhos alternativos para logo
+                    const logoAltPaths = [
+                        'imagens/logo.png',
+                        'logo.png',
+                        'img/logo.png',
+                        'assets/logo.png',
+                        'logo/logo.png'
+                    ];
+                    
+                    for (let path of logoAltPaths) {
+                        const testImg = new Image();
+                        testImg.src = path;
+                        testImg.onload = function() {
+                            console.log(`Logo encontrado em: ${path}`);
+                            imgElement.src = path;
+                            imgElement.style.display = 'block';
+                            if (fallbackDiv.parentNode) {
+                                fallbackDiv.parentNode.removeChild(fallbackDiv);
+                            }
+                        };
+                    }
+                };
+            }
+            
+            // Verificar logos
+            checkLogo(logoImg, 'logo-fallback', 'BACKSTAGE', true);
+            checkLogo(footerLogoImg, 'footer-logo-fallback', 'BS', false);
+            
+            // Verificar imagem do urso (imagens/urso.png)
+            bearImg.onerror = function() {
+                console.log('Imagem do urso "imagens/urso.png" não encontrada. Criando fallback...');
+                const heroRight = document.querySelector('.hero-right');
+                const fallbackDiv = document.createElement('div');
+                fallbackDiv.className = 'bear-fallback';
+                fallbackDiv.textContent = 'urso.png';
+                
+                bearImg.style.display = 'none';
+                heroRight.appendChild(fallbackDiv);
+                
+                // Tentar caminhos alternativos para imagem do urso
+                const bearAltPaths = [
+                    'imagens/urso.png',
+                    'urso.png',
+                    'bear.png',
+                    'img/urso.png',
+                    'assets/urso.png',
+                    'images/urso.png'
+                ];
+                
+                for (let path of bearAltPaths) {
+                    const testImg = new Image();
+                    testImg.src = path;
+                    testImg.onload = function() {
+                        console.log(`Imagem do urso encontrada em: ${path}`);
+                        bearImg.src = path;
+                        bearImg.style.display = 'block';
+                        if (fallbackDiv.parentNode) {
+                            fallbackDiv.parentNode.removeChild(fallbackDiv);
+                        }
+                    };
+                }
+            };
+        });
+        
+        // Interações
+        document.querySelector('.signup-button').addEventListener('click', function(e) {
+            e.preventDefault();
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = '';
+                window.location.href = 'registrar.html';
+            }, 150);
+        });
+        
+        // Efeito de digitação no título
+        const title = document.querySelector('.main-title');
+        const originalTitle = title.textContent;
+        title.textContent = '';
+        
+        let charIndex = 0;
+        function typeTitle() {
+            if (charIndex < originalTitle.length) {
+                title.textContent += originalTitle.charAt(charIndex);
+                charIndex++;
+                setTimeout(typeTitle, 30);
+            }
+        }
+        
+        // Iniciar após as animações
+        setTimeout(typeTitle, 800);
+    </script>
+</body>
+</html>

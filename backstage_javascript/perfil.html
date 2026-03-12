@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backstage | Meu Perfil</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #ffffff;
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: url('imagens/background.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: -1;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* NAVEGAÇÃO NO ESTILO DA PÁGINA DE USERS */
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 30px;
+            background-color: black;
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.7);
+            position: relative;
+        }
+        
+        .logo {
+            width: 180px;
+            height: auto;
+        }
+        
+        .search-box {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            padding: 8px 20px;
+            min-width: 300px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+        
+        .search-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            filter: invert(1);
+            opacity: 0.7;
+        }
+        
+        #search {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            width: 100%;
+        }
+        
+        #search::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .perfil {
+            display: flex;
+            align-items: center;
+        }
+        
+        .perfil_photo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #8b5cf6;
+        }
+        
+        /* Conteúdo principal do perfil */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 40px 0;
+        }
+        
+        .profile-container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+        
+        /* Painel esquerdo com foto e informações básicas */
+        .profile-sidebar {
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .profile-avatar {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-bottom: 25px;
+            border: 4px solid #8b5cf6;
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);
+        }
+        
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .profile-basic-info {
+            width: 100%;
+            margin-bottom: 30px;
+        }
+        
+        .profile-name {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #ffffff;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .profile-details {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .detail-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            color: #d1d5db;
+            font-size: 0.95rem;
+            text-align: left;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-item i {
+            color: #8b5cf6;
+            font-size: 1rem;
+            margin-top: 2px;
+            min-width: 20px;
+        }
+        
+        .contact-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 50%, #6d28d9 100%);
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            padding: 14px 30px;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: all 0.3s;
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+            border: none;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            width: 100%;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .contact-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.6);
+        }
+        
+        /* Painel direito com biografia e outras informações */
+        .profile-main {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .profile-bio {
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .section-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .section-title i {
+            color: #8b5cf6;
+        }
+        
+        .bio-text {
+            color: #d1d5db;
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+        
+        /* Seções de talentos e gêneros */
+        .profile-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .profile-section {
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .profile-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
+        }
+        
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        
+        .tag {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(139, 92, 246, 0.15);
+            color: #d1d5db;
+            padding: 10px 18px;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .tag:hover {
+            background: rgba(139, 92, 246, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4);
+        }
+        
+        .tag i {
+            color: #8b5cf6;
+            font-size: 0.9rem;
+        }
+        
+        /* Rodapé */
+        footer {
+            padding: 20px 0;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 13px;
+            margin-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+        
+        .footer-logo-img {
+            height: 30px;
+            width: auto;
+            opacity: 0.8;
+        }
+        
+        /* Responsividade */
+        @media (max-width: 992px) {
+            .profile-container {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .profile-sidebar {
+                max-width: 400px;
+                margin: 0 auto;
+            }
+            
+            .search-box {
+                min-width: 250px;
+                position: relative;
+                left: auto;
+                transform: none;
+                margin: 0 20px;
+            }
+            
+            .container {
+                padding: 0 20px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                gap: 20px;
+                padding: 15px;
+            }
+            
+            .search-box {
+                order: 3;
+                width: 100%;
+                max-width: 400px;
+                margin: 10px 0 0 0;
+            }
+            
+            .logo {
+                width: 150px;
+            }
+            
+            .profile-sidebar {
+                padding: 25px;
+            }
+            
+            .profile-avatar {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .profile-name {
+                font-size: 1.6rem;
+            }
+            
+            .profile-sections {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-section {
+                padding: 25px;
+            }
+            
+            .section-title {
+                font-size: 1.6rem;
+            }
+            
+            .contact-btn {
+                padding: 12px 25px;
+                font-size: 14px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .profile-sidebar {
+                padding: 20px;
+            }
+            
+            .profile-avatar {
+                width: 130px;
+                height: 130px;
+            }
+            
+            .profile-name {
+                font-size: 1.5rem;
+            }
+            
+            .profile-section {
+                padding: 20px;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .tag {
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .contact-btn {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+            
+            .footer-logo-img {
+                height: 25px;
+            }
+        }
+        
+        /* Fallback para imagens */
+        .avatar-fallback {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+            font-weight: bold;
+            border: 4px solid #8b5cf6;
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);
+        }
+        
+        /* Animações */
+        @keyframes fadeInUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(20px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+        
+        .profile-sidebar, .profile-bio, .profile-section {
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        
+        .profile-sidebar { animation-delay: 0.2s; }
+        .profile-bio { animation-delay: 0.4s; }
+        .profile-section:nth-child(1) { animation-delay: 0.6s; }
+        .profile-section:nth-child(2) { animation-delay: 0.8s; }
+    </style>
+</head>
+<body>
+    <!-- NAVEGAÇÃO -->
+    <nav>
+        <a href="index.html">
+            <img src="imagens/logo.png" alt="Backstage Logo" class="logo">
+        </a>
+
+        <div class="search-box">
+            <img src="imagens/lupu.png" class="search-icon" alt="Pesquisar">
+            <input type="search" id="search" placeholder="Pesquisar...">
+        </div>
+
+        <a href="perfil.html">
+            <div class="perfil">
+                <img src="imagens/user_photo.png" class="perfil_photo" alt="Perfil">
+            </div>
+        </a>
+    </nav>
+    
+    <!-- CONTEÚDO PRINCIPAL DO PERFIL -->
+    <main class="main-content">
+        <div class="container">
+            <div class="profile-container">
+                <!-- Painel esquerdo: Foto e informações básicas -->
+                <div class="profile-sidebar">
+                    <div class="profile-avatar" id="avatar-container">
+                        <img src="imagens/maria_silva.png" alt="Maria Silva" id="avatar-img" onerror="handleAvatarError()">
+                    </div>
+                    
+                    <div class="profile-basic-info">
+                        <h1 class="profile-name" id="user-name">Maria Silva</h1>
+                        
+                        <div class="profile-details">
+                            <div class="detail-item">
+                                <i class="fas fa-envelope"></i>
+                                <span id="user-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="95f8f4e7fcf4bbe6fcf9e3f4d5f0f8f4fcf9bbf6faf8">[email&#160;protected]</a></span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span id="user-location">São Paulo, SP, Brasil</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-briefcase"></i>
+                                <span id="user-profession">Vocalista e Compositora</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="contact-btn" id="contact-btn">
+                        <i class="fas fa-envelope"></i>
+                        <span>Enviar Mensagem</span>
+                    </button>
+                </div>
+                
+                <!-- Painel direito: Biografia e outras informações -->
+                <div class="profile-main">
+                    <!-- Biografia -->
+                    <div class="profile-bio">
+                        <h2 class="section-title">
+                            <i class="fas fa-user-circle"></i>
+                            <span>Sobre Mim</span>
+                        </h2>
+                        <p class="bio-text" id="user-description">
+                            Apaixonada por música desde criança, atuo como vocalista e compositora há 8 anos. 
+                            Busco colaborar em projetos de indie rock, folk e MPB. Amo experimentar novos sons 
+                            e criar conexões significativas através da música. Minha jornada musical começou 
+                            no coral da escola e evoluiu para performances em casas noturnas e festivais locais. 
+                            Atualmente, estou trabalhando em meu primeiro EP autoral.
+                        </p>
+                    </div>
+                    
+                    <!-- Seções de talentos e gêneros -->
+                    <div class="profile-sections">
+                        <!-- Seção de Talentos -->
+                        <div class="profile-section">
+                            <h2 class="section-title">
+                                <i class="fas fa-star"></i>
+                                <span>Talentos</span>
+                            </h2>
+                            <div class="tags-container" id="talents-container">
+                                <div class="tag">
+                                    <i class="fas fa-microphone"></i>
+                                    <span>Vocal</span>
+                                </div>
+                                <div class="tag">
+                                    <i class="fas fa-guitar"></i>
+                                    <span>Violão</span>
+                                </div>
+                                <div class="tag">
+                                    <i class="fas fa-pen"></i>
+                                    <span>Composição</span>
+                                </div>
+                                <div class="tag">
+                                    <i class="fas fa-music"></i>
+                                    <span>Produção Musical</span>
+                                </div>
+                                <div class="tag">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                    <span>Outros</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Seção de Gêneros Favoritos -->
+                        <div class="profile-section">
+                            <h2 class="section-title">
+                                <i class="fas fa-heart"></i>
+                                <span>Gêneros Favoritos</span>
+                            </h2>
+                            <div class="tags-container" id="genres-container">
+                                <div class="tag">
+                                    <i class="fas fa-guitar"></i>
+                                    <span>Indie Rock</span>
+                                </div>
+                                <div class="tag">
+                                    <i class="fas fa-leaf"></i>
+                                    <span>Folk</span>
+                                </div>
+                                <div class="tag">
+                                    <i class="fas fa-globe-americas"></i>
+                                    <span>MPB</span>
+                                </div>
+                                <div class="tag">
+                                    <i class="fas fa-record-vinyl"></i>
+                                    <span>Pop Alternativo</span>
+                                </div>
+                                <div class="tag">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                    <span>Outros</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- RODAPÉ -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="imagens/logo.png" alt="Backstage Logo" class="footer-logo-img" id="footer-logo-img">
+                </div>
+                <p>A cena musical independente começa aqui. &copy; 2025</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        // Função para lidar com erro no avatar
+        function handleAvatarError() {
+            const avatarContainer = document.getElementById('avatar-container');
+            const avatarImg = document.getElementById('avatar-img');
+            
+            // Criar fallback para avatar
+            const fallbackDiv = document.createElement('div');
+            fallbackDiv.className = 'avatar-fallback';
+            fallbackDiv.textContent = 'MS';
+            
+            avatarImg.style.display = 'none';
+            avatarContainer.appendChild(fallbackDiv);
+            
+            // Tentar caminhos alternativos para o avatar
+            const avatarAltPaths = [
+                'imagens/maria_silva.png',
+                'imagens/avatar.png',
+                'avatar.png',
+                'img/avatar.png',
+                'assets/avatar.png',
+                'imagens/user.png',
+                'user.png'
+            ];
+            
+            for (let path of avatarAltPaths) {
+                const testImg = new Image();
+                testImg.src = path;
+                testImg.onload = function() {
+                    console.log(`Avatar encontrado em: ${path}`);
+                    avatarImg.src = path;
+                    avatarImg.style.display = 'block';
+                    if (fallbackDiv.parentNode) {
+                        fallbackDiv.parentNode.removeChild(fallbackDiv);
+                    }
+                };
+            }
+        }
+        
+        // Dados do usuário
+        const userData = {
+            name: "Maria Silva",
+            email: "maria.silva@email.com",
+            location: "São Paulo, SP, Brasil",
+            profession: "Vocalista e Compositora",
+            description: "Apaixonada por música desde criança, atuo como vocalista e compositora há 8 anos. Busco colaborar em projetos de indie rock, folk e MPB. Amo experimentar novos sons e criar conexões significativas através da música. Minha jornada musical começou no coral da escola e evoluiu para performances em casas noturnas e festivais locais. Atualmente, estou trabalhando em meu primeiro EP autoral.",
+            talents: ["Vocal", "Violão", "Composição", "Produção Musical", "Outros"],
+            genres: ["Indie Rock", "Folk", "MPB", "Pop Alternativo", "Outros"]
+        };
+        
+        // Preencher dados do usuário na página
+        function fillUserData() {
+            document.getElementById('user-name').textContent = userData.name;
+            document.getElementById('user-email').textContent = userData.email;
+            document.getElementById('user-location').textContent = userData.location;
+            document.getElementById('user-profession').textContent = userData.profession;
+            document.getElementById('user-description').textContent = userData.description;
+        }
+        
+        // Chamar a função quando a página carregar
+        document.addEventListener('DOMContentLoaded', fillUserData);
+        
+        // Botão de contato
+        document.getElementById('contact-btn').addEventListener('click', function() {
+            alert('Mensagem enviada para Maria Silva!');
+            this.innerHTML = '<i class="fas fa-check"></i><span>Mensagem Enviada</span>';
+            
+            setTimeout(() => {
+                this.innerHTML = '<i class="fas fa-envelope"></i><span>Enviar Mensagem</span>';
+            }, 2000);
+        });
+        
+        // Interatividade nas tags
+        document.querySelectorAll('.tag').forEach(tag => {
+            tag.addEventListener('click', function() {
+                const tagText = this.querySelector('span').textContent;
+                if (tagText !== "Outros") {
+                    // Efeito visual
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                    
+                    // Em uma aplicação real, isso poderia filtrar por esse talento/gênero
+                    console.log(`Tag clicada: ${tagText}`);
+                } else {
+                    alert('Clique em "Enviar Mensagem" para conversar sobre outros talentos ou gêneros!');
+                }
+            });
+        });
+        
+        // Sistema de busca (simplificado)
+        document.getElementById('search').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            if (searchTerm.length > 2) {
+                console.log(`Buscando por: ${searchTerm}`);
+                // Em uma aplicação real, aqui você faria a busca no perfil ou redirecionaria para a página de busca
+            }
+        });
+        
+        // Verificar se as imagens do logo carregaram
+        window.addEventListener('load', function() {
+            const logo = document.querySelector('.logo');
+            const footerLogoImg = document.getElementById('footer-logo-img');
+            
+            // Função para verificar e criar fallback para logo
+            function checkLogo(imgElement, fallbackClass, fallbackText, isLarge = false) {
+                imgElement.onerror = function() {
+                    console.log(`Logo "${imgElement.src}" não encontrada. Criando fallback...`);
+                    const container = imgElement.parentElement;
+                    const fallbackDiv = document.createElement('div');
+                    fallbackDiv.className = fallbackClass;
+                    fallbackDiv.textContent = fallbackText;
+                    
+                    if (isLarge) {
+                        fallbackDiv.style.width = '180px';
+                        fallbackDiv.style.height = '50px';
+                        fallbackDiv.style.fontSize = '20px';
+                    } else {
+                        fallbackDiv.style.width = '30px';
+                        fallbackDiv.style.height = '30px';
+                        fallbackDiv.style.fontSize = '14px';
+                    }
+                    
+                    imgElement.style.display = 'none';
+                    container.appendChild(fallbackDiv);
+                    
+                    // Tentar caminhos alternativos para logo
+                    const logoAltPaths = [
+                        'imagens/logo.png',
+                        'logo.png',
+                        'img/logo.png',
+                        'assets/logo.png',
+                        'logo/logo.png'
+                    ];
+                    
+                    for (let path of logoAltPaths) {
+                        const testImg = new Image();
+                        testImg.src = path;
+                        testImg.onload = function() {
+                            console.log(`Logo encontrado em: ${path}`);
+                            imgElement.src = path;
+                            imgElement.style.display = 'block';
+                            if (fallbackDiv.parentNode) {
+                                fallbackDiv.parentNode.removeChild(fallbackDiv);
+                            }
+                        };
+                    }
+                };
+            }
+            
+            // Verificar logos
+            checkLogo(logo, 'logo-fallback', 'BACKSTAGE', true);
+            checkLogo(footerLogoImg, 'footer-logo-fallback', 'BS', false);
+            
+            // Verificar ícone de busca
+            const searchIcon = document.querySelector('.search-icon');
+            searchIcon.onerror = function() {
+                console.log('Ícone de busca não encontrado. Criando fallback...');
+                this.style.display = 'none';
+                const searchBox = document.querySelector('.search-box');
+                const fallbackIcon = document.createElement('i');
+                fallbackIcon.className = 'fas fa-search';
+                fallbackIcon.style.
