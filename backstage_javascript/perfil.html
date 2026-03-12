@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Backstage | Meu Perfil</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <title>Meu Perfil - Backstage Cena</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -17,277 +15,352 @@
         
         body {
             font-family: 'Inter', sans-serif;
-            color: #ffffff;
-            line-height: 1.5;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
             background-image: url('imagens/background.png');
             background-size: cover;
             background-position: center;
-            background-repeat: no-repeat;
             background-attachment: fixed;
             position: relative;
         }
         
         body::before {
             content: '';
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            z-index: -1;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 0;
         }
         
+        /* HEADER */
+        .header {
+            position: relative;
+            z-index: 100;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(15px);
+            border-bottom: 2px solid rgba(139, 92, 246, 0.4);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.7);
+        }
+        
+        .logo-img {
+            height: 50px;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .btn-explore {
+            padding: 10px 24px;
+            background: rgba(139, 92, 246, 0.15);
+            border: 2px solid rgba(139, 92, 246, 0.5);
+            border-radius: 10px;
+            color: #a78bfa;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-explore:hover {
+            background: rgba(139, 92, 246, 0.3);
+            border-color: #8b5cf6;
+            transform: translateY(-2px);
+        }
+        
+        .profile-dropdown {
+            position: relative;
+        }
+        
+        .profile-trigger {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            border: 2px solid rgba(139, 92, 246, 0.5);
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+            font-size: 16px;
+        }
+        
+        .profile-trigger:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.6);
+        }
+        
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 60px;
+            right: 0;
+            background: rgba(0, 0, 0, 0.95);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 12px;
+            padding: 10px;
+            min-width: 200px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+        
+        .dropdown-menu.active {
+            display: block;
+        }
+        
+        .dropdown-menu a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            color: #d1d5db;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .dropdown-menu a:hover {
+            background: rgba(139, 92, 246, 0.2);
+            color: #ffffff;
+        }
+        
+        /* CONTAINER */
         .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 15px;
             position: relative;
             z-index: 1;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 30px;
         }
         
-        /* NAVEGAÇÃO NO ESTILO DA PÁGINA DE USERS */
-        nav {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 20px 30px;
-            background-color: black;
-            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.7);
-            position: relative;
-        }
-        
-        .logo {
-            width: 180px;
-            height: auto;
-        }
-        
-        .search-box {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 30px;
-            padding: 8px 20px;
-            min-width: 300px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-        }
-        
-        .search-icon {
-            width: 20px;
-            height: 20px;
-            margin-right: 10px;
-            filter: invert(1);
-            opacity: 0.7;
-        }
-        
-        #search {
-            background: transparent;
-            border: none;
-            outline: none;
-            color: white;
-            font-family: 'Inter', sans-serif;
-            font-size: 14px;
-            width: 100%;
-        }
-        
-        #search::placeholder {
-            color: rgba(255, 255, 255, 0.6);
-        }
-        
-        .perfil {
-            display: flex;
-            align-items: center;
-        }
-        
-        .perfil_photo {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #8b5cf6;
-        }
-        
-        /* Conteúdo principal do perfil */
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            padding: 40px 0;
-        }
-        
-        .profile-container {
+        /* LAYOUT */
+        .profile-layout {
             display: grid;
-            grid-template-columns: 300px 1fr;
-            gap: 40px;
-            margin-bottom: 50px;
+            grid-template-columns: 280px 1fr;
+            gap: 35px;
         }
         
-        /* Painel esquerdo com foto e informações básicas */
-        .profile-sidebar {
-            background: rgba(0, 0, 0, 0.6);
+        /* CARD PERFIL LATERAL */
+        .profile-card {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(139, 92, 246, 0.3);
             border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            padding: 25px;
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            position: sticky;
+            top: 30px;
+            height: fit-content;
+        }
+        
+        .avatar-container {
             text-align: center;
+            margin-bottom: 20px;
         }
         
-        .profile-avatar {
-            width: 180px;
-            height: 180px;
+        .avatar {
+            width: 140px;
+            height: 140px;
             border-radius: 50%;
-            overflow: hidden;
-            margin-bottom: 25px;
-            border: 4px solid #8b5cf6;
-            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);
-        }
-        
-        .profile-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .profile-basic-info {
-            width: 100%;
-            margin-bottom: 30px;
-        }
-        
-        .profile-name {
-            font-family: 'Poppins', sans-serif;
-            font-size: 1.8rem;
+            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
             font-weight: 700;
-            margin-bottom: 15px;
-            color: #ffffff;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            border: 4px solid rgba(139, 92, 246, 0.5);
+            margin: 0 auto;
+            color: white;
         }
         
-        .profile-details {
+        .user-name {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-align: center;
+            margin: 15px 0 5px;
+        }
+        
+        .user-email {
+            text-align: center;
+            color: #9ca3af;
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+        }
+        
+        .user-details {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 15px;
         }
         
-        .detail-item {
+        .detail-row {
             display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            color: #d1d5db;
-            font-size: 0.95rem;
-            text-align: left;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(139, 92, 246, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(139, 92, 246, 0.2);
         }
         
-        .detail-item:last-child {
-            border-bottom: none;
-        }
-        
-        .detail-item i {
+        .detail-row i {
             color: #8b5cf6;
-            font-size: 1rem;
-            margin-top: 2px;
             min-width: 20px;
         }
         
-        .contact-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 50%, #6d28d9 100%);
-            color: white;
-            font-size: 15px;
-            font-weight: 600;
-            padding: 14px 30px;
-            border-radius: 10px;
-            text-decoration: none;
-            transition: all 0.3s;
-            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
-            border: none;
-            cursor: pointer;
-            letter-spacing: 0.5px;
+        .detail-text {
+            color: #d1d5db;
+            font-size: 0.9rem;
+        }
+        
+        .area-badge {
             width: 100%;
-            justify-content: center;
+            padding: 12px;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(109, 40, 217, 0.2));
+            border: 1px solid #8b5cf6;
+            border-radius: 10px;
+            color: #a78bfa;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 15px;
+            text-align: center;
+        }
+        
+        .disponibilidade-section {
             margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(139, 92, 246, 0.2);
         }
         
-        .contact-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.6);
+        .disponibilidade-title {
+            font-size: 0.85rem;
+            color: #8b5cf6;
+            font-weight: 600;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         
-        /* Painel direito com biografia e outras informações */
-        .profile-main {
+        .disponibilidade-tags {
             display: flex;
             flex-direction: column;
-            gap: 30px;
+            gap: 8px;
         }
         
-        .profile-bio {
-            background: rgba(0, 0, 0, 0.6);
+        .disp-tag {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 8px;
+            color: #d1d5db;
+            font-size: 0.85rem;
+        }
+        
+        .disp-tag i {
+            color: #8b5cf6;
+        }
+        
+        /* CONTENT SECTION */
+        .content-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+        
+        .card-full {
+            grid-column: 1 / -1;
+        }
+        
+        .content-card {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(139, 92, 246, 0.3);
             border-radius: 20px;
             padding: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
         }
         
-        .section-title {
-            font-family: 'Poppins', sans-serif;
-            font-size: 1.8rem;
-            font-weight: 700;
+        .content-card:hover {
+            border-color: rgba(139, 92, 246, 0.5);
+            box-shadow: 0 15px 50px rgba(139, 92, 246, 0.3);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             margin-bottom: 20px;
-            color: #ffffff;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+        }
+        
+        .card-header-left {
             display: flex;
             align-items: center;
             gap: 12px;
         }
         
-        .section-title i {
+        .card-icon {
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(139, 92, 246, 0.2);
+            border-radius: 10px;
             color: #8b5cf6;
-        }
-        
-        .bio-text {
-            color: #d1d5db;
             font-size: 1.1rem;
+        }
+        
+        .card-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+        
+        .btn-edit {
+            padding: 8px 18px;
+            background: rgba(139, 92, 246, 0.15);
+            border: 1px solid rgba(139, 92, 246, 0.4);
+            border-radius: 8px;
+            color: #a78bfa;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+        
+        .btn-edit:hover {
+            background: rgba(139, 92, 246, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .card-content {
+            color: #d1d5db;
             line-height: 1.7;
+            font-size: 0.95rem;
         }
         
-        /* Seções de talentos e gêneros */
-        .profile-sections {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-        
-        .profile-section {
-            background: rgba(0, 0, 0, 0.6);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        
-        .profile-section:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
-        }
-        
-        .tags-container {
+        .tags-grid {
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
@@ -297,523 +370,299 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            background: rgba(139, 92, 246, 0.15);
-            color: #d1d5db;
             padding: 10px 18px;
-            border-radius: 50px;
-            font-size: 0.95rem;
-            font-weight: 500;
+            background: rgba(139, 92, 246, 0.15);
             border: 1px solid rgba(139, 92, 246, 0.3);
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-        
-        .tag:hover {
-            background: rgba(139, 92, 246, 0.3);
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4);
-        }
-        
-        .tag i {
-            color: #8b5cf6;
+            border-radius: 20px;
+            color: #a78bfa;
             font-size: 0.9rem;
+            font-weight: 500;
         }
         
-        /* Rodapé */
+        .tag.principal {
+            background: rgba(139, 92, 246, 0.3);
+            border-color: #8b5cf6;
+        }
+        
+        .empty-state {
+            color: #6b7280;
+            font-style: italic;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        /* FOOTER */
         footer {
-            padding: 20px 0;
+            position: relative;
+            z-index: 1;
+            padding: 20px;
             text-align: center;
             color: rgba(255, 255, 255, 0.7);
             font-size: 13px;
-            margin-top: 10px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 40px;
         }
         
-        .footer-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .footer-logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 5px;
-        }
-        
-        .footer-logo-img {
-            height: 30px;
-            width: auto;
-            opacity: 0.8;
-        }
-        
-        /* Responsividade */
-        @media (max-width: 992px) {
-            .profile-container {
-                grid-template-columns: 1fr;
-                gap: 30px;
-            }
-            
-            .profile-sidebar {
-                max-width: 400px;
-                margin: 0 auto;
-            }
-            
-            .search-box {
-                min-width: 250px;
-                position: relative;
-                left: auto;
-                transform: none;
-                margin: 0 20px;
-            }
-            
-            .container {
-                padding: 0 20px;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            nav {
-                flex-direction: column;
-                gap: 20px;
-                padding: 15px;
-            }
-            
-            .search-box {
-                order: 3;
-                width: 100%;
-                max-width: 400px;
-                margin: 10px 0 0 0;
-            }
-            
-            .logo {
-                width: 150px;
-            }
-            
-            .profile-sidebar {
-                padding: 25px;
-            }
-            
-            .profile-avatar {
-                width: 150px;
-                height: 150px;
-            }
-            
-            .profile-name {
-                font-size: 1.6rem;
-            }
-            
-            .profile-sections {
+        @media (max-width: 968px) {
+            .profile-layout {
                 grid-template-columns: 1fr;
             }
             
-            .profile-section {
-                padding: 25px;
+            .content-section {
+                grid-template-columns: 1fr;
             }
             
-            .section-title {
-                font-size: 1.6rem;
-            }
-            
-            .contact-btn {
-                padding: 12px 25px;
-                font-size: 14px;
+            .profile-card {
+                position: static;
             }
         }
-        
-        @media (max-width: 480px) {
-            .container {
-                padding: 0 15px;
-            }
-            
-            .profile-sidebar {
-                padding: 20px;
-            }
-            
-            .profile-avatar {
-                width: 130px;
-                height: 130px;
-            }
-            
-            .profile-name {
-                font-size: 1.5rem;
-            }
-            
-            .profile-section {
-                padding: 20px;
-            }
-            
-            .section-title {
-                font-size: 1.5rem;
-            }
-            
-            .tag {
-                padding: 8px 15px;
-                font-size: 0.9rem;
-            }
-            
-            .contact-btn {
-                padding: 10px 20px;
-                font-size: 14px;
-            }
-            
-            .footer-logo-img {
-                height: 25px;
-            }
-        }
-        
-        /* Fallback para imagens */
-        .avatar-fallback {
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 48px;
-            font-weight: bold;
-            border: 4px solid #8b5cf6;
-            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);
-        }
-        
-        /* Animações */
-        @keyframes fadeInUp {
-            from { 
-                opacity: 0; 
-                transform: translateY(20px); 
-            }
-            to { 
-                opacity: 1; 
-                transform: translateY(0); 
-            }
-        }
-        
-        .profile-sidebar, .profile-bio, .profile-section {
-            opacity: 0;
-            animation: fadeInUp 0.8s ease-out forwards;
-        }
-        
-        .profile-sidebar { animation-delay: 0.2s; }
-        .profile-bio { animation-delay: 0.4s; }
-        .profile-section:nth-child(1) { animation-delay: 0.6s; }
-        .profile-section:nth-child(2) { animation-delay: 0.8s; }
     </style>
 </head>
 <body>
-    <!-- NAVEGAÇÃO -->
-    <nav>
-        <a href="index.html">
-            <img src="imagens/logo.png" alt="Backstage Logo" class="logo">
-        </a>
-
-        <div class="search-box">
-            <img src="imagens/lupu.png" class="search-icon" alt="Pesquisar">
-            <input type="search" id="search" placeholder="Pesquisar...">
-        </div>
-
-        <a href="perfil.html">
-            <div class="perfil">
-                <img src="imagens/user_photo.png" class="perfil_photo" alt="Perfil">
+    <header class="header">
+        <img src="imagens/logo.png" alt="Backstage Logo" class="logo-img">
+        <div class="header-actions">
+            <a href="perfil_usuario.html" class="btn-explore">
+                <i class="fas fa-users"></i>
+                Explorar Músicos
+            </a>
+            <div class="profile-dropdown">
+                <div class="profile-trigger" id="profileTrigger">TU</div>
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <a href="#" id="editarPerfil">
+                        <i class="fas fa-edit"></i>
+                        Editar Perfil
+                    </a>
+                    <a href="#" id="configuracoes">
+                        <i class="fas fa-cog"></i>
+                        Configurações
+                    </a>
+                    <a href="index.html" id="logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Sair
+                    </a>
+                </div>
             </div>
-        </a>
-    </nav>
+        </div>
+    </header>
     
-    <!-- CONTEÚDO PRINCIPAL DO PERFIL -->
-    <main class="main-content">
-        <div class="container">
-            <div class="profile-container">
-                <!-- Painel esquerdo: Foto e informações básicas -->
-                <div class="profile-sidebar">
-                    <div class="profile-avatar" id="avatar-container">
-                        <img src="imagens/maria_silva.png" alt="Maria Silva" id="avatar-img" onerror="handleAvatarError()">
-                    </div>
-                    
-                    <div class="profile-basic-info">
-                        <h1 class="profile-name" id="user-name">Maria Silva</h1>
-                        
-                        <div class="profile-details">
-                            <div class="detail-item">
-                                <i class="fas fa-envelope"></i>
-                                <span id="user-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="95f8f4e7fcf4bbe6fcf9e3f4d5f0f8f4fcf9bbf6faf8">[email&#160;protected]</a></span>
-                            </div>
-                            <div class="detail-item">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span id="user-location">São Paulo, SP, Brasil</span>
-                            </div>
-                            <div class="detail-item">
-                                <i class="fas fa-briefcase"></i>
-                                <span id="user-profession">Vocalista e Compositora</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <button class="contact-btn" id="contact-btn">
-                        <i class="fas fa-envelope"></i>
-                        <span>Enviar Mensagem</span>
-                    </button>
+    <div class="container">
+        <div class="profile-layout">
+            <!-- CARD LATERAL -->
+            <div class="profile-card">
+                <div class="avatar-container">
+                    <div class="avatar" id="avatar">TU</div>
                 </div>
                 
-                <!-- Painel direito: Biografia e outras informações -->
-                <div class="profile-main">
-                    <!-- Biografia -->
-                    <div class="profile-bio">
-                        <h2 class="section-title">
-                            <i class="fas fa-user-circle"></i>
-                            <span>Sobre Mim</span>
-                        </h2>
-                        <p class="bio-text" id="user-description">
-                            Apaixonada por música desde criança, atuo como vocalista e compositora há 8 anos. 
-                            Busco colaborar em projetos de indie rock, folk e MPB. Amo experimentar novos sons 
-                            e criar conexões significativas através da música. Minha jornada musical começou 
-                            no coral da escola e evoluiu para performances em casas noturnas e festivais locais. 
-                            Atualmente, estou trabalhando em meu primeiro EP autoral.
-                        </p>
+                <h1 class="user-name" id="userName">Tucko</h1>
+                <p class="user-email" id="userEmail">email@example.com</p>
+                
+                <div class="user-details">
+                    <div class="detail-row">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span class="detail-text" id="userLocation">João Pessoa, PB</span>
                     </div>
                     
-                    <!-- Seções de talentos e gêneros -->
-                    <div class="profile-sections">
-                        <!-- Seção de Talentos -->
-                        <div class="profile-section">
-                            <h2 class="section-title">
-                                <i class="fas fa-star"></i>
-                                <span>Talentos</span>
-                            </h2>
-                            <div class="tags-container" id="talents-container">
-                                <div class="tag">
-                                    <i class="fas fa-microphone"></i>
-                                    <span>Vocal</span>
-                                </div>
-                                <div class="tag">
-                                    <i class="fas fa-guitar"></i>
-                                    <span>Violão</span>
-                                </div>
-                                <div class="tag">
-                                    <i class="fas fa-pen"></i>
-                                    <span>Composição</span>
-                                </div>
-                                <div class="tag">
-                                    <i class="fas fa-music"></i>
-                                    <span>Produção Musical</span>
-                                </div>
-                                <div class="tag">
-                                    <i class="fas fa-ellipsis-h"></i>
-                                    <span>Outros</span>
-                                </div>
+                    <div class="detail-row" id="userPhoneRow" style="display: none;">
+                        <i class="fas fa-phone"></i>
+                        <span class="detail-text" id="userPhone"></span>
+                    </div>
+                    
+                    <div class="detail-row" id="userExpRow" style="display: none;">
+                        <i class="fas fa-clock"></i>
+                        <span class="detail-text" id="userExp"></span>
+                    </div>
+                </div>
+                
+                <div class="area-badge" id="userArea">Instrumentista</div>
+                
+                <div class="disponibilidade-section" id="dispSection" style="display: none;">
+                    <div class="disponibilidade-title">Disponibilidade</div>
+                    <div class="disponibilidade-tags" id="dispTags"></div>
+                </div>
+            </div>
+            
+            <!-- CONTENT -->
+            <div class="content-section">
+                <!-- BIOGRAFIA -->
+                <div class="content-card card-full">
+                    <div class="card-header">
+                        <div class="card-header-left">
+                            <div class="card-icon">
+                                <i class="fas fa-user-circle"></i>
                             </div>
+                            <h2 class="card-title">Sobre</h2>
                         </div>
-                        
-                        <!-- Seção de Gêneros Favoritos -->
-                        <div class="profile-section">
-                            <h2 class="section-title">
-                                <i class="fas fa-heart"></i>
-                                <span>Gêneros Favoritos</span>
-                            </h2>
-                            <div class="tags-container" id="genres-container">
-                                <div class="tag">
-                                    <i class="fas fa-guitar"></i>
-                                    <span>Indie Rock</span>
-                                </div>
-                                <div class="tag">
-                                    <i class="fas fa-leaf"></i>
-                                    <span>Folk</span>
-                                </div>
-                                <div class="tag">
-                                    <i class="fas fa-globe-americas"></i>
-                                    <span>MPB</span>
-                                </div>
-                                <div class="tag">
-                                    <i class="fas fa-record-vinyl"></i>
-                                    <span>Pop Alternativo</span>
-                                </div>
-                                <div class="tag">
-                                    <i class="fas fa-ellipsis-h"></i>
-                                    <span>Outros</span>
-                                </div>
+                        <a href="#" class="btn-edit" id="editarBio">Editar</a>
+                    </div>
+                    <p class="card-content" id="userBio">Nenhuma biografia adicionada ainda.</p>
+                </div>
+                
+                <!-- INSTRUMENTOS -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <div class="card-header-left">
+                            <div class="card-icon">
+                                <i class="fas fa-guitar"></i>
                             </div>
+                            <h2 class="card-title">Talentos</h2>
                         </div>
+                    </div>
+                    <div class="tags-grid" id="instrumentosTags">
+                        <p class="empty-state">Nenhum instrumento selecionado.</p>
+                    </div>
+                </div>
+                
+                <!-- GÊNEROS -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <div class="card-header-left">
+                            <div class="card-icon">
+                                <i class="fas fa-compact-disc"></i>
+                            </div>
+                            <h2 class="card-title">Gêneros</h2>
+                        </div>
+                    </div>
+                    <div class="tags-grid" id="generosTags">
+                        <p class="empty-state">Nenhum gênero selecionado.</p>
                     </div>
                 </div>
             </div>
         </div>
-    </main>
+    </div>
     
-    <!-- RODAPÉ -->
     <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-logo">
-                    <img src="imagens/logo.png" alt="Backstage Logo" class="footer-logo-img" id="footer-logo-img">
-                </div>
-                <p>A cena musical independente começa aqui. &copy; 2025</p>
-            </div>
-        </div>
+        <p>Backstage Cena &copy; 2025 - A cena musical independente começa aqui.</p>
     </footer>
     
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-        // Função para lidar com erro no avatar
-        function handleAvatarError() {
-            const avatarContainer = document.getElementById('avatar-container');
-            const avatarImg = document.getElementById('avatar-img');
-            
-            // Criar fallback para avatar
-            const fallbackDiv = document.createElement('div');
-            fallbackDiv.className = 'avatar-fallback';
-            fallbackDiv.textContent = 'MS';
-            
-            avatarImg.style.display = 'none';
-            avatarContainer.appendChild(fallbackDiv);
-            
-            // Tentar caminhos alternativos para o avatar
-            const avatarAltPaths = [
-                'imagens/maria_silva.png',
-                'imagens/avatar.png',
-                'avatar.png',
-                'img/avatar.png',
-                'assets/avatar.png',
-                'imagens/user.png',
-                'user.png'
-            ];
-            
-            for (let path of avatarAltPaths) {
-                const testImg = new Image();
-                testImg.src = path;
-                testImg.onload = function() {
-                    console.log(`Avatar encontrado em: ${path}`);
-                    avatarImg.src = path;
-                    avatarImg.style.display = 'block';
-                    if (fallbackDiv.parentNode) {
-                        fallbackDiv.parentNode.removeChild(fallbackDiv);
-                    }
-                };
-            }
-        }
-        
-        // Dados do usuário
-        const userData = {
-            name: "Maria Silva",
-            email: "maria.silva@email.com",
-            location: "São Paulo, SP, Brasil",
-            profession: "Vocalista e Compositora",
-            description: "Apaixonada por música desde criança, atuo como vocalista e compositora há 8 anos. Busco colaborar em projetos de indie rock, folk e MPB. Amo experimentar novos sons e criar conexões significativas através da música. Minha jornada musical começou no coral da escola e evoluiu para performances em casas noturnas e festivais locais. Atualmente, estou trabalhando em meu primeiro EP autoral.",
-            talents: ["Vocal", "Violão", "Composição", "Produção Musical", "Outros"],
-            genres: ["Indie Rock", "Folk", "MPB", "Pop Alternativo", "Outros"]
-        };
-        
-        // Preencher dados do usuário na página
-        function fillUserData() {
-            document.getElementById('user-name').textContent = userData.name;
-            document.getElementById('user-email').textContent = userData.email;
-            document.getElementById('user-location').textContent = userData.location;
-            document.getElementById('user-profession').textContent = userData.profession;
-            document.getElementById('user-description').textContent = userData.description;
-        }
-        
-        // Chamar a função quando a página carregar
-        document.addEventListener('DOMContentLoaded', fillUserData);
-        
-        // Botão de contato
-        document.getElementById('contact-btn').addEventListener('click', function() {
-            alert('Mensagem enviada para Maria Silva!');
-            this.innerHTML = '<i class="fas fa-check"></i><span>Mensagem Enviada</span>';
-            
-            setTimeout(() => {
-                this.innerHTML = '<i class="fas fa-envelope"></i><span>Enviar Mensagem</span>';
-            }, 2000);
+    <script>
+        // Dropdown
+        document.getElementById('profileTrigger').addEventListener('click', function() {
+            document.getElementById('dropdownMenu').classList.toggle('active');
         });
         
-        // Interatividade nas tags
-        document.querySelectorAll('.tag').forEach(tag => {
-            tag.addEventListener('click', function() {
-                const tagText = this.querySelector('span').textContent;
-                if (tagText !== "Outros") {
-                    // Efeito visual
-                    this.style.transform = 'scale(0.95)';
-                    setTimeout(() => {
-                        this.style.transform = '';
-                    }, 150);
-                    
-                    // Em uma aplicação real, isso poderia filtrar por esse talento/gênero
-                    console.log(`Tag clicada: ${tagText}`);
-                } else {
-                    alert('Clique em "Enviar Mensagem" para conversar sobre outros talentos ou gêneros!');
-                }
-            });
-        });
-        
-        // Sistema de busca (simplificado)
-        document.getElementById('search').addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            if (searchTerm.length > 2) {
-                console.log(`Buscando por: ${searchTerm}`);
-                // Em uma aplicação real, aqui você faria a busca no perfil ou redirecionaria para a página de busca
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.profile-dropdown')) {
+                document.getElementById('dropdownMenu').classList.remove('active');
             }
         });
         
-        // Verificar se as imagens do logo carregaram
+        // Logout
+        document.getElementById('logout').addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.removeItem('usuarioLogado');
+            window.location.href = 'index.html';
+        });
+        
+        // Editar perfil (simulado - em JavaScript seria outra página)
+        document.getElementById('editarPerfil').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Funcionalidade de editar perfil! (Criar página editar_perfil.html)');
+        });
+        
+        document.getElementById('editarBio').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Funcionalidade de editar biografia! (Criar página editar_perfil.html)');
+        });
+        
+        document.getElementById('configuracoes').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Funcionalidade de configurações! (Criar página configuracoes.html)');
+        });
+        
+        // Carregar dados do localStorage
         window.addEventListener('load', function() {
-            const logo = document.querySelector('.logo');
-            const footerLogoImg = document.getElementById('footer-logo-img');
+            const usuario = JSON.parse(localStorage.getItem('usuarioLogado'));
             
-            // Função para verificar e criar fallback para logo
-            function checkLogo(imgElement, fallbackClass, fallbackText, isLarge = false) {
-                imgElement.onerror = function() {
-                    console.log(`Logo "${imgElement.src}" não encontrada. Criando fallback...`);
-                    const container = imgElement.parentElement;
-                    const fallbackDiv = document.createElement('div');
-                    fallbackDiv.className = fallbackClass;
-                    fallbackDiv.textContent = fallbackText;
-                    
-                    if (isLarge) {
-                        fallbackDiv.style.width = '180px';
-                        fallbackDiv.style.height = '50px';
-                        fallbackDiv.style.fontSize = '20px';
-                    } else {
-                        fallbackDiv.style.width = '30px';
-                        fallbackDiv.style.height = '30px';
-                        fallbackDiv.style.fontSize = '14px';
-                    }
-                    
-                    imgElement.style.display = 'none';
-                    container.appendChild(fallbackDiv);
-                    
-                    // Tentar caminhos alternativos para logo
-                    const logoAltPaths = [
-                        'imagens/logo.png',
-                        'logo.png',
-                        'img/logo.png',
-                        'assets/logo.png',
-                        'logo/logo.png'
-                    ];
-                    
-                    for (let path of logoAltPaths) {
-                        const testImg = new Image();
-                        testImg.src = path;
-                        testImg.onload = function() {
-                            console.log(`Logo encontrado em: ${path}`);
-                            imgElement.src = path;
-                            imgElement.style.display = 'block';
-                            if (fallbackDiv.parentNode) {
-                                fallbackDiv.parentNode.removeChild(fallbackDiv);
-                            }
-                        };
-                    }
-                };
+            if (!usuario) {
+                window.location.href = 'login.html';
+                return;
             }
             
-            // Verificar logos
-            checkLogo(logo, 'logo-fallback', 'BACKSTAGE', true);
-            checkLogo(footerLogoImg, 'footer-logo-fallback', 'BS', false);
+            // Nome
+            const nomeExibir = usuario.nomeArtistico || usuario.nome;
+            document.getElementById('userName').textContent = nomeExibir;
             
-            // Verificar ícone de busca
-            const searchIcon = document.querySelector('.search-icon');
-            searchIcon.onerror = function() {
-                console.log('Ícone de busca não encontrado. Criando fallback...');
-                this.style.display = 'none';
-                const searchBox = document.querySelector('.search-box');
-                const fallbackIcon = document.createElement('i');
-                fallbackIcon.className = 'fas fa-search';
-                fallbackIcon.style.
+            // Iniciais
+            const iniciais = nomeExibir.substring(0, 2).toUpperCase();
+            document.getElementById('avatar').textContent = iniciais;
+            document.getElementById('profileTrigger').textContent = iniciais;
+            
+            // Email
+            document.getElementById('userEmail').textContent = usuario.email;
+            
+            // Localização
+            document.getElementById('userLocation').textContent = `${usuario.cidade}, ${usuario.estado}`;
+            
+            // Telefone
+            if (usuario.telefone) {
+                document.getElementById('userPhoneRow').style.display = 'flex';
+                document.getElementById('userPhone').textContent = usuario.telefone;
+            }
+            
+            // Experiência
+            if (usuario.anosExperiencia) {
+                document.getElementById('userExpRow').style.display = 'flex';
+                document.getElementById('userExp').textContent = `${usuario.anosExperiencia} anos de experiência`;
+            }
+            
+            // Área
+            document.getElementById('userArea').textContent = usuario.areaAtuacao;
+            
+            // Biografia
+            if (usuario.biografia) {
+                document.getElementById('userBio').textContent = usuario.biografia;
+            }
+            
+            // Instrumentos
+            if (usuario.instrumentos && usuario.instrumentos.length > 0) {
+                const instContainer = document.getElementById('instrumentosTags');
+                instContainer.innerHTML = '';
+                usuario.instrumentos.forEach(inst => {
+                    const tag = document.createElement('div');
+                    tag.className = 'tag';
+                    tag.innerHTML = `
+                        <i class="fas fa-music"></i>
+                        <span>${inst}</span>
+                    `;
+                    instContainer.appendChild(tag);
+                });
+            }
+            
+            // Gêneros
+            if (usuario.generos && usuario.generos.length > 0) {
+                const genContainer = document.getElementById('generosTags');
+                genContainer.innerHTML = '';
+                usuario.generos.forEach(gen => {
+                    const tag = document.createElement('div');
+                    tag.className = 'tag';
+                    tag.innerHTML = `
+                        <i class="fas fa-compact-disc"></i>
+                        <span>${gen}</span>
+                    `;
+                    genContainer.appendChild(tag);
+                });
+            }
+            
+            // Disponibilidade
+            if (usuario.disponibilidade && usuario.disponibilidade.length > 0) {
+                document.getElementById('dispSection').style.display = 'block';
+                const dispContainer = document.getElementById('dispTags');
+                usuario.disponibilidade.forEach(disp => {
+                    const tag = document.createElement('div');
+                    tag.className = 'disp-tag';
+                    
+                    let icon = 'fa-sun';
+                    if (disp === 'Tarde') icon = 'fa-cloud-sun';
+                    if (disp === 'Noite') icon = 'fa-moon';
+                    
+                    tag.innerHTML = `
+                        <i class="fas ${icon}"></i>
+                        <span>${disp}</span>
+                    `;
+                    dispContainer.appendChild(tag);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
