@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - Backstage Cena</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background-image: url('../imagens/background.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            padding: 40px 20px;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 0;
+        }
+        
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .cadastro-card {
+            background: rgba(0, 0, 0, 0.85);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 20px;
+            padding: 50px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+        
+        .logo-container {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .logo-img {
+            width: 220px;
+        }
+        
+        .form-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .form-subtitle {
+            text-align: center;
+            color: #9ca3af;
+            font-size: 15px;
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: #8b5cf6;
+            margin: 30px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(139, 92, 246, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
+            font-size: 20px;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group-full {
+            grid-column: 1 / -1;
+        }
+        
+        .form-group label {
+            display: block;
+            color: #d1d5db;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        
+        .required {
+            color: #ef4444;
+        }
+        
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="tel"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            border-radius: 10px;
+            color: white;
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+        }
+        
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #8b5cf6;
+            background: rgba(139, 92, 246, 0.1);
+        }
+        
+        select option {
+            background: #1a0b2e;
+            color: white;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        /* CHECKBOXES REDESENHADOS - MAIS BONITOS */
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .checkbox-item {
+            position: relative;
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+        
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid rgba(139, 92, 246, 0.2);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 14px;
+            color: #d1d5db;
+            font-weight: 500;
+            user-select: none;
+        }
+        
+        .checkbox-label:hover {
+            background: rgba(139, 92, 246, 0.1);
+            border-color: rgba(139, 92, 246, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        /* Ícone customizado */
+        .checkbox-icon {
+            width: 22px;
+            height: 22px;
+            border: 2px solid rgba(139, 92, 246, 0.5);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.3);
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+        
+        .checkbox-icon i {
+            font-size: 12px;
+            color: transparent;
+            transition: all 0.3s;
+        }
+        
+        /* Estado CHECKED */
+        .checkbox-item input[type="checkbox"]:checked + .checkbox-label {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(109, 40, 217, 0.3));
+            border-color: #8b5cf6;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+        }
+        
+        .checkbox-item input[type="checkbox"]:checked + .checkbox-label .checkbox-icon {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            border-color: #8b5cf6;
+        }
+        
+        .checkbox-item input[type="checkbox"]:checked + .checkbox-label .checkbox-icon i {
+            color: white;
+        }
+        
+        .checkbox-item input[type="checkbox"]:checked + .checkbox-label .checkbox-text {
+            color: #ffffff;
+            font-weight: 600;
+        }
+        
+        .checkbox-text {
+            flex: 1;
+            transition: all 0.3s;
+        }
+        
+        .btn-cadastrar {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-top: 30px;
+        }
+        
+        .btn-cadastrar:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(139, 92, 246, 0.6);
+        }
+        
+        .login-link {
+            text-align: center;
+            color: #9ca3af;
+            font-size: 14px;
+            margin-top: 25px;
+        }
+        
+        .login-link a {
+            color: #8b5cf6;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        
+        .login-link a:hover {
+            color: #a78bfa;
+        }
+        
+        @media (max-width: 768px) {
+            .cadastro-card {
+                padding: 30px 25px;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .checkbox-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="cadastro-card">
+            <div class="logo-container">
+                <img src="../imagens/logo.png" alt="Backstage Logo" class="logo-img">
+            </div>
+            
+            <h1 class="form-title">Criar Conta</h1>
+            <p class="form-subtitle">Junte-se à cena musical independente</p>
+            
+            <form id="cadastroForm">
+                <!-- DADOS PESSOAIS -->
+                <h3 class="section-title">
+                    <i class="fas fa-user"></i>
+                    Dados Pessoais
+                </h3>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="nome">Nome Completo <span class="required">*</span></label>
+                        <input type="text" id="nome" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="nomeArtistico">Nome Artístico</label>
+                        <input type="text" id="nomeArtistico">
+                    </div>
+                    
+                    <div class="form-group form-group-full">
+                        <label for="email">Email <span class="required">*</span></label>
+                        <input type="email" id="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="senha">Senha <span class="required">*</span></label>
+                        <input type="password" id="senha" minlength="6" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="telefone">Telefone</label>
+                        <input type="tel" id="telefone" placeholder="(83) 99999-9999">
+                    </div>
+                </div>
+                
+                <!-- LOCALIZAÇÃO -->
+                <h3 class="section-title">
+                    <i class="fas fa-map-marker-alt"></i>
+                    Localização
+                </h3>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="cidade">Cidade <span class="required">*</span></label>
+                        <input type="text" id="cidade" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="estado">Estado <span class="required">*</span></label>
+                        <select id="estado" required>
+                            <option value="">Selecione</option>
+                            <option value="AC">Acre</option>
+                            <option value="AL">Alagoas</option>
+                            <option value="AP">Amapá</option>
+                            <option value="AM">Amazonas</option>
+                            <option value="BA">Bahia</option>
+                            <option value="CE">Ceará</option>
+                            <option value="DF">Distrito Federal</option>
+                            <option value="ES">Espírito Santo</option>
+                            <option value="GO">Goiás</option>
+                            <option value="MA">Maranhão</option>
+                            <option value="MT">Mato Grosso</option>
+                            <option value="MS">Mato Grosso do Sul</option>
+                            <option value="MG">Minas Gerais</option>
+                            <option value="PA">Pará</option>
+                            <option value="PB">Paraíba</option>
+                            <option value="PR">Paraná</option>
+                            <option value="PE">Pernambuco</option>
+                            <option value="PI">Piauí</option>
+                            <option value="RJ">Rio de Janeiro</option>
+                            <option value="RN">Rio Grande do Norte</option>
+                            <option value="RS">Rio Grande do Sul</option>
+                            <option value="RO">Rondônia</option>
+                            <option value="RR">Roraima</option>
+                            <option value="SC">Santa Catarina</option>
+                            <option value="SP">São Paulo</option>
+                            <option value="SE">Sergipe</option>
+                            <option value="TO">Tocantins</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group form-group-full">
+                        <label for="bairro">Bairro</label>
+                        <input type="text" id="bairro">
+                    </div>
+                </div>
+                
+                <!-- INFORMAÇÕES PROFISSIONAIS -->
+                <h3 class="section-title">
+                    <i class="fas fa-briefcase"></i>
+                    Informações Profissionais
+                </h3>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="areaAtuacao">Área de Atuação <span class="required">*</span></label>
+                        <select id="areaAtuacao" required>
+                            <option value="">Selecione</option>
+                            <option value="Instrumentista">Instrumentista</option>
+                            <option value="Produtor Musical">Produtor Musical</option>
+                            <option value="Banda/Grupo">Banda/Grupo</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="anosExperiencia">Anos de Experiência</label>
+                        <input type="number" id="anosExperiencia" min="0" max="70">
+                    </div>
+                    
+                    <div class="form-group form-group-full">
+                        <label for="biografia">Biografia</label>
+                        <textarea id="biografia" placeholder="Conte um pouco sobre você..."></textarea>
+                    </div>
+                </div>
+                
+                <!-- INSTRUMENTOS -->
+                <h3 class="section-title">
+                    <i class="fas fa-guitar"></i>
+                    Instrumentos <span class="required">*</span>
+                </h3>
+                
+                <div class="checkbox-grid" id="instrumentosGrid"></div>
+                
+                <!-- GÊNEROS MUSICAIS -->
+                <h3 class="section-title">
+                    <i class="fas fa-music"></i>
+                    Gêneros Musicais <span class="required">*</span>
+                </h3>
+                
+                <div class="checkbox-grid" id="generosGrid"></div>
+                
+                <h3 class="section-title">
+                    <i class="fas fa-calendar-check"></i>
+                    Disponibilidade <span class="required">*</span>
+                </h3>
+                <!-- DISPONIBILIDADE -->
+
+                <div class="checkbox-grid" id="disponibilidadeGrid"></div>
+                
+                <button type="submit" class="btn-cadastrar">Criar Conta</button>
+            </form>
+            
+            <div class="login-link">
+                Já tem uma conta? <a href="login.html">Faça login</a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const instrumentos = [
+            'Violão', 'Guitarra', 'Baixo', 'Bateria', 'Teclado', 'Piano',
+            'Violino', 'Saxofone', 'Trompete', 'Flauta', 'Cavaquinho',
+            'Pandeiro', 'Vocal', 'DJ/Produção', 'Sanfona', 'Zabumba',
+            'Triângulo', 'Percussão', 'Harmônica', 'Ukulele'
+        ];
+        
+        const generos = [
+            'Rock', 'Pop', 'MPB', 'Samba', 'Forró', 'Jazz', 'Blues',
+            'Reggae', 'Hip Hop', 'Eletrônica', 'Funk', 'Gospel',
+            'Country', 'Metal', 'Indie', 'R&B', 'Soul', 'Bossa Nova',
+            'Pagode', 'Sertanejo'
+        ];
+        
+        const disponibilidade = ['Manhã', 'Tarde', 'Noite'];
+        
+        function criarCheckboxes(array, gridId, name) {
+            const grid = document.getElementById(gridId);
+            array.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'checkbox-item';
+                div.innerHTML = `
+                    <input type="checkbox" id="${name}${index}" name="${name}" value="${item}">
+                    <label for="${name}${index}" class="checkbox-label">
+                        <div class="checkbox-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <span class="checkbox-text">${item}</span>
+                    </label>
+                `;
+                grid.appendChild(div);
+            });
+        }
+        
+        criarCheckboxes(instrumentos, 'instrumentosGrid', 'instrumento');
+        criarCheckboxes(generos, 'generosGrid', 'genero');
+        criarCheckboxes(disponibilidade, 'disponibilidadeGrid', 'disponibilidade');
+        
+        document.getElementById('cadastroForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const instrumentosSelecionados = [];
+            document.querySelectorAll('input[name="instrumento"]:checked').forEach(el => {
+                instrumentosSelecionados.push(el.value);
+            });
+            
+            const generosSelecionados = [];
+            document.querySelectorAll('input[name="genero"]:checked').forEach(el => {
+                generosSelecionados.push(el.value);
+            });
+            
+            const disponibilidadeSelecionada = [];
+            document.querySelectorAll('input[name="disponibilidade"]:checked').forEach(el => {
+                disponibilidadeSelecionada.push(el.value);
+            });
+            
+            if (instrumentosSelecionados.length === 0) {
+                alert('Selecione pelo menos um instrumento!');
+                return;
+            }
+            
+            if (generosSelecionados.length === 0) {
+                alert('Selecione pelo menos um gênero musical!');
+                return;
+            }
+            
+            if (disponibilidadeSelecionada.length === 0) {
+                alert('Selecione pelo menos um período de disponibilidade!');
+                return;
+            }
+            
+            const usuario = {
+                nome: document.getElementById('nome').value,
+                nomeArtistico: document.getElementById('nomeArtistico').value,
+                email: document.getElementById('email').value,
+                telefone: document.getElementById('telefone').value,
+                cidade: document.getElementById('cidade').value,
+                estado: document.getElementById('estado').value,
+                bairro: document.getElementById('bairro').value,
+                areaAtuacao: document.getElementById('areaAtuacao').value,
+                anosExperiencia: document.getElementById('anosExperiencia').value,
+                biografia: document.getElementById('biografia').value,
+                instrumentos: instrumentosSelecionados,
+                generos: generosSelecionados,
+                disponibilidade: disponibilidadeSelecionada
+            };
+            
+            localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
+            alert(' Cadastro realizado com sucesso!');
+            window.location.href = 'perfil.html';
+        });
+    </script>
+</body>
+</html>

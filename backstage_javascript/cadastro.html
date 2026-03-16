@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - Backstage Cena</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: url('imagens/background.png');
+            background-size: cover;
+            background-position: center;
+            padding: 40px 20px;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 0;
+        }
+        
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 600px;
+        }
+        
+        .cadastro-card {
+            background: rgba(0, 0, 0, 0.85);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .logo-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo-img {
+            width: 180px;
+        }
+        
+        .form-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 26px;
+            font-weight: 700;
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .form-subtitle {
+            text-align: center;
+            color: #9ca3af;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group-full {
+            grid-column: 1 / -1;
+        }
+        
+        .form-group label {
+            display: block;
+            color: #d1d5db;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="tel"],
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            border-radius: 10px;
+            color: white;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+        }
+        
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #8b5cf6;
+            background: rgba(139, 92, 246, 0.1);
+        }
+        
+        select option {
+            background: #1a0b2e;
+            color: white;
+        }
+        
+        .btn-cadastrar {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 10px;
+        }
+        
+        .btn-cadastrar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.5);
+        }
+        
+        .login-link {
+            text-align: center;
+            color: #9ca3af;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+        
+        .login-link a {
+            color: #8b5cf6;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cadastro-card {
+                padding: 30px 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="cadastro-card">
+            <div class="logo-container">
+                <img src="../imagens/logo.png" alt="Backstage Logo" class="logo-img">
+            </div>
+            
+            <h1 class="form-title">Crie sua conta</h1>
+            <p class="form-subtitle">Junte-se à comunidade de músicos</p>
+            
+            <form id="cadastroForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="nome">Nome Completo *</label>
+                        <input type="text" id="nome" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="nomeArtistico">Nome Artístico</label>
+                        <input type="text" id="nomeArtistico">
+                    </div>
+                    
+                    <div class="form-group form-group-full">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="senha">Senha *</label>
+                        <input type="password" id="senha" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="telefone">Telefone</label>
+                        <input type="tel" id="telefone" placeholder="(83) 99999-9999">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cidade">Cidade *</label>
+                        <input type="text" id="cidade" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="estado">Estado *</label>
+                        <select id="estado" required>
+                            <option value="">Selecione</option>
+                            <option value="PB">Paraíba</option>
+                            <option value="PE">Pernambuco</option>
+                            <option value="RN">Rio Grande do Norte</option>
+                            <option value="CE">Ceará</option>
+                            <option value="SP">São Paulo</option>
+                            <option value="RJ">Rio de Janeiro</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group form-group-full">
+                        <label for="areaAtuacao">Área de Atuação *</label>
+                        <select id="areaAtuacao" required>
+                            <option value="">Selecione</option>
+                            <option value="Instrumentista">Instrumentista</option>
+                            <option value="Produtor Musical">Produtor Musical</option>
+                            <option value="Banda/Grupo">Banda/Grupo</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-cadastrar">Criar Conta</button>
+            </form>
+            
+            <div class="login-link">
+                Já tem uma conta? <a href="login.html">Faça login</a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('cadastroForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const usuario = {
+                nome: document.getElementById('nome').value,
+                nomeArtistico: document.getElementById('nomeArtistico').value,
+                email: document.getElementById('email').value,
+                telefone: document.getElementById('telefone').value,
+                cidade: document.getElementById('cidade').value,
+                estado: document.getElementById('estado').value,
+                areaAtuacao: document.getElementById('areaAtuacao').value
+            };
+            
+            // Salvar no localStorage
+            localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
+            
+            // Redirecionar para perfil
+            alert('Cadastro realizado com sucesso!');
+            window.location.href = 'perfil.html';
+        });
+    </script>
+</body>
+</html>
