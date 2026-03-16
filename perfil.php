@@ -87,6 +87,7 @@ $iniciais = strtoupper(substr($nome_exibir, 0, 2));
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Backstage | Meu Perfil</title>
+    <link rel="shortcut icon" href="imagens/favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -617,7 +618,7 @@ $iniciais = strtoupper(substr($nome_exibir, 0, 2));
 <body>
     <!-- HEADER -->
     <header class="header">
-        <img src="imagens/logo.png" alt="Backstage Logo" class="logo-img">
+        <a href="index.html"><img src="imagens/logo.png" alt="Backstage Logo" class="logo-img"> </a>
         <div class="header-actions">
             <a href="perfil_usuario.php" class="btn-explore">
                 <i class="fas fa-users"></i>

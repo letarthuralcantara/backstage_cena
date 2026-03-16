@@ -6,6 +6,7 @@
     <title>Backstage | Conecte-se com Músicos</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="shortcut icon" href="imagens/favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -425,12 +426,12 @@
     <!-- NAVBAR NOVA COM ESTILO DO SEGUNDO CÓDIGO -->
     <nav>
         <div class="logo-container">
-            <img src="imagens/logo.png" alt="Backstage Logo" class="logo-img" id="logo-img">
+            <a href="index.html"><img src="imagens/logo.png" alt="Backstage Logo" class="logo-img" id="logo-img"></a>
         </div>
         <ul class="nav-menu">
             <li><a href="#">Blog</a></li>
             <li><a href="login.html">Login</a></li>
-            <li><a href="perfil_usuario.html">Registrar-se</a></li>
+            <li><a href="cadastro.html">Registrar-se</a></li>
         </ul>
     </nav>
     
@@ -441,7 +442,9 @@
                     <h1 class="main-title">Conecte-se com músicos, encontre parceiros, crie seus projetos.</h1>
                     <p class="main-subtitle">A cena musical independente começa aqui.</p>
                     
-                    <a href="registrar.html" class="signup-button">INSCREVA-SE</a>
+                    <a class="signup-button">INSCREVA-SE</a>
+                    
+
                 </div>
                 
                 <div class="hero-right">
@@ -591,7 +594,7 @@
             this.style.transform = 'scale(0.95)';
             setTimeout(() => {
                 this.style.transform = '';
-                window.location.href = 'registrar.html';
+                window.location.href = 'cadastro.html';
             }, 150);
         });
         

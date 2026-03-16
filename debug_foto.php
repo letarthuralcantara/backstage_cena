@@ -18,6 +18,7 @@ $conn->close();
 <html>
 <head>
     <meta charset="UTF-8">
+    <link rel="shortcut icon" href="imagens/favicon.ico" type="image/x-icon">
     <title>Debug Foto</title>
     <style>
         body {
