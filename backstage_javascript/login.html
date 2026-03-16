@@ -277,8 +277,7 @@
                     <label for="lembrar">Lembrar-me</label>
                 </div>
                 
-                <button type="submit" class="btn-login">Entrar</button>
-            </form>
+                    <button type="button" class="btn-login" onclick="window.location.href='perfil.html'">Entrar</button>            </form>
             
             <div class="divider">
                 <span>OU</span>
@@ -298,26 +297,7 @@
     </div>
     
     <script>
-        // Simular login (sem backend)
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('email').value;
-            const senha = document.getElementById('senha').value;
-            
-            // Validação simples
-            if (email && senha) {
-                // Salvar no localStorage (simulando sessão)
-                localStorage.setItem('usuarioLogado', JSON.stringify({
-                    nome: 'Usuário Teste',
-                    email: email,
-                    nomeArtistico: 'Test User'
-                }));
-                
-                // Redirecionar para perfil
-                window.location.href = 'perfil.html';
-            }
-        });
+       
     </script>
 </body>
 </html>
