@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Backstage | Conecte-se com Músicos</title>
+    <link rel="shortcut icon" href="../imagens/favicon.ico" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
@@ -462,127 +463,7 @@
     </footer>
     
     <script>
-        window.addEventListener('load', function() {
-            const body = document.querySelector('body');
-            const logoImg = document.getElementById('logo-img');
-            const footerLogoImg = document.getElementById('footer-logo-img');
-            const bearImg = document.getElementById('bear-img');
-            
-            // Verificar imagem de fundo (imagens/background.png)
-            const bgImg = new Image();
-            bgImg.src = '../imagens/background.png';
-            
-            bgImg.onload = function() {
-                console.log('Imagem de fundo "../imagens/background.png" carregada com sucesso');
-            };
-            
-            bgImg.onerror = function() {
-                console.log('Imagem "imagens/background.png" não encontrada. Usando fallback...');
-                body.classList.add('bg-fallback');
-                
-                // Tentar caminhos alternativos para fundo
-                const bgAltPaths = [
-                    'background.png',
-                    'imagens/background.jpg',
-                    'background.jpg',
-                    'img/background.png',
-                    'assets/background.png',
-                    'backgrounds/background.png'
-                ];
-                
-                for (let path of bgAltPaths) {
-                    const testImg = new Image();
-                    testImg.src = path;
-                    testImg.onload = function() {
-                        console.log(`Imagem de fundo encontrada em: ${path}`);
-                        body.style.backgroundImage = `url('${path}')`;
-                        body.classList.remove('bg-fallback');
-                    };
-                }
-            };
-            
-            // Função para verificar e criar fallback para logo
-            function checkLogo(imgElement, fallbackClass, fallbackText, isLarge = false) {
-                imgElement.onerror = function() {
-                    console.log(`Logo "${imgElement.src}" não encontrada. Criando fallback...`);
-                    const container = imgElement.parentElement;
-                    const fallbackDiv = document.createElement('div');
-                    fallbackDiv.className = fallbackClass;
-                    fallbackDiv.textContent = fallbackText;
-                    
-                    if (isLarge) {
-                        fallbackDiv.style.width = '250px';
-                        fallbackDiv.style.height = '60px';
-                        fallbackDiv.style.fontSize = '24px';
-                    }
-                    
-                    imgElement.style.display = 'none';
-                    container.appendChild(fallbackDiv);
-                    
-                    // Tentar caminhos alternativos para logo
-                    const logoAltPaths = [
-                        'imagens/logo.png',
-                        'logo.png',
-                        'img/logo.png',
-                        'assets/logo.png',
-                        'logo/logo.png'
-                    ];
-                    
-                    for (let path of logoAltPaths) {
-                        const testImg = new Image();
-                        testImg.src = path;
-                        testImg.onload = function() {
-                            console.log(`Logo encontrado em: ${path}`);
-                            imgElement.src = path;
-                            imgElement.style.display = 'block';
-                            if (fallbackDiv.parentNode) {
-                                fallbackDiv.parentNode.removeChild(fallbackDiv);
-                            }
-                        };
-                    }
-                };
-            }
-            
-            // Verificar logos
-            checkLogo(logoImg, 'logo-fallback', 'BACKSTAGE', true);
-            checkLogo(footerLogoImg, 'footer-logo-fallback', 'BS', false);
-            
-            // Verificar imagem do urso (imagens/urso.png)
-            bearImg.onerror = function() {
-                console.log('Imagem do urso "imagens/urso.png" não encontrada. Criando fallback...');
-                const heroRight = document.querySelector('.hero-right');
-                const fallbackDiv = document.createElement('div');
-                fallbackDiv.className = 'bear-fallback';
-                fallbackDiv.textContent = 'urso.png';
-                
-                bearImg.style.display = 'none';
-                heroRight.appendChild(fallbackDiv);
-                
-                // Tentar caminhos alternativos para imagem do urso
-                const bearAltPaths = [
-                    'imagens/urso.png',
-                    'urso.png',
-                    'bear.png',
-                    'img/urso.png',
-                    'assets/urso.png',
-                    'images/urso.png'
-                ];
-                
-                for (let path of bearAltPaths) {
-                    const testImg = new Image();
-                    testImg.src = path;
-                    testImg.onload = function() {
-                        console.log(`Imagem do urso encontrada em: ${path}`);
-                        bearImg.src = path;
-                        bearImg.style.display = 'block';
-                        if (fallbackDiv.parentNode) {
-                            fallbackDiv.parentNode.removeChild(fallbackDiv);
-                        }
-                    };
-                }
-            };
-        });
-        
+      
         // Interações
         document.querySelector('.signup-button').addEventListener('click', function(e) {
             e.preventDefault();
