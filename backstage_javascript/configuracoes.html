@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurações - Backstage Cena</title>
+    <link rel="shortcut icon" href="../imagens/favicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background-image: url('../imagens/background.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: #fff;
+            position: relative;
+            padding-bottom: 60px;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            z-index: 0;
+        }
+
+        /* HEADER */
+        .header {
+            position: relative;
+            z-index: 100;
+            padding: 18px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 2px solid rgba(139,92,246,0.35);
+        }
+
+        .logo-img { height: 46px; }
+
+        .btn-voltar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: rgba(139,92,246,0.15);
+            border: 2px solid rgba(139,92,246,0.4);
+            border-radius: 10px;
+            color: #a78bfa;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-voltar:hover {
+            background: rgba(139,92,246,0.3);
+            transform: translateY(-2px);
+        }
+
+        /* CONTAINER */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 650px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        .page-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            color: #9ca3af;
+            font-size: 14px;
+            margin-bottom: 35px;
+        }
+
+        /* CARD */
+        .card {
+            background: rgba(0,0,0,0.75);
+            border: 1px solid rgba(139,92,246,0.3);
+            border-radius: 20px;
+            padding: 35px;
+            backdrop-filter: blur(10px);
+            margin-bottom: 25px;
+        }
+
+        .card-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 17px;
+            color: #8b5cf6;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(139,92,246,0.2);
+        }
+
+        /* FORM */
+        .form-group { margin-bottom: 22px; }
+
+        .form-group label {
+            display: block;
+            color: #e5e7eb;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .password-container { position: relative; }
+
+        .password-container input { padding-right: 50px; }
+
+        input[type="password"],
+        input[type="text"],
+        input[type="email"] {
+            width: 100%;
+            padding: 13px 18px;
+            background: rgba(255,255,255,0.07);
+            border: 2px solid rgba(139,92,246,0.25);
+            border-radius: 10px;
+            color: white;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #8b5cf6;
+            background: rgba(139,92,246,0.1);
+            box-shadow: 0 0 0 3px rgba(139,92,246,0.2);
+        }
+
+        input::placeholder { color: rgba(255,255,255,0.35); }
+
+        .toggle-password {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.5);
+            cursor: pointer;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+
+        .toggle-password:hover { color: #8b5cf6; }
+
+        /* ALERTAS */
+        .alert {
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+            animation: slideDown 0.3s;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .alert-error {
+            background: rgba(220,38,38,0.15);
+            border: 1px solid rgba(220,38,38,0.3);
+            color: #fca5a5;
+        }
+
+        .alert-success {
+            background: rgba(34,197,94,0.15);
+            border: 1px solid rgba(34,197,94,0.3);
+            color: #86efac;
+        }
+
+        /* BOTÕES */
+        .btn-primario {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 18px rgba(139,92,246,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .btn-primario:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(139,92,246,0.6);
+        }
+
+        .btn-perigo {
+            width: 100%;
+            padding: 14px;
+            background: rgba(239,68,68,0.15);
+            border: 2px solid rgba(239,68,68,0.4);
+            border-radius: 12px;
+            color: #fca5a5;
+            font-size: 15px;
+            font-weight: 700;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-perigo:hover {
+            background: rgba(239,68,68,0.3);
+            border-color: #ef4444;
+            transform: translateY(-2px);
+        }
+
+        .btn-logout {
+            width: 100%;
+            padding: 14px;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.15);
+            border-radius: 12px;
+            color: #d1d5db;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-logout:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+        }
+
+        /* TOGGLE DE NOTIFICAÇÃO */
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(139,92,246,0.1);
+        }
+
+        .toggle-row:last-child { border-bottom: none; padding-bottom: 0; }
+
+        .toggle-info { display: flex; flex-direction: column; gap: 4px; }
+
+        .toggle-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #e5e7eb;
+        }
+
+        .toggle-desc { font-size: 12px; color: #6b7280; }
+
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 26px;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+            position: absolute;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            inset: 0;
+            background: rgba(255,255,255,0.1);
+            border-radius: 26px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid rgba(255,255,255,0.15);
+        }
+
+        .toggle-slider::before {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            left: 2px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #9ca3af;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background: rgba(139,92,246,0.3);
+            border-color: #8b5cf6;
+        }
+
+        .toggle-switch input:checked + .toggle-slider::before {
+            transform: translateX(22px) translateY(-50%);
+            background: #8b5cf6;
+        }
+
+        /* MODAL DE CONFIRMAÇÃO */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.75);
+            z-index: 999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .modal {
+            background: rgba(15,5,30,0.97);
+            border: 1px solid rgba(239,68,68,0.4);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 420px;
+            width: 90%;
+            text-align: center;
+            animation: slideDown 0.3s;
+        }
+
+        .modal-icon {
+            font-size: 3rem;
+            color: #ef4444;
+            margin-bottom: 15px;
+        }
+
+        .modal h3 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .modal p {
+            color: #9ca3af;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .modal-actions { display: flex; gap: 15px; }
+
+        .modal-actions button {
+            flex: 1;
+            padding: 13px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-cancelar {
+            background: rgba(255,255,255,0.07);
+            border: 2px solid rgba(255,255,255,0.15);
+            color: #d1d5db;
+        }
+
+        .btn-cancelar:hover { background: rgba(255,255,255,0.12); }
+
+        .btn-confirmar-delete {
+            background: rgba(239,68,68,0.2);
+            border: 2px solid rgba(239,68,68,0.5);
+            color: #fca5a5;
+        }
+
+        .btn-confirmar-delete:hover {
+            background: rgba(239,68,68,0.35);
+            border-color: #ef4444;
+        }
+
+        @media (max-width: 600px) {
+            .header { padding: 15px 20px; }
+            .card { padding: 25px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header class="header">
+        <a href="index.html">
+            <img src="../imagens/logo.png" alt="Backstage Cena" class="logo-img">
+        </a>
+        <a href="perfil.html" class="btn-voltar">
+            <i class="fa-solid fa-arrow-left"></i>
+            Voltar ao Perfil
+        </a>
+    </header>
+
+    <div class="container">
+        <h1 class="page-title">Configurações</h1>
+        <p class="page-subtitle">Gerencie sua conta e preferências</p>
+
+        <!-- TROCAR SENHA -->
+        <div class="card">
+            <h2 class="card-title">
+                <i class="fa-solid fa-lock"></i>
+                Trocar Senha
+            </h2>
+            <div class="alert" id="alertaSenha"></div>
+            <div class="form-group">
+                <label for="senhaAtual">Senha Atual</label>
+                <div class="password-container">
+                    <input type="password" id="senhaAtual" placeholder="••••••••">
+                    <button type="button" class="toggle-password" data-target="senhaAtual">
+                        <i class="fa-regular fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="senhaNova">Nova Senha</label>
+                <div class="password-container">
+                    <input type="password" id="senhaNova" placeholder="Mínimo 8 caracteres">
+                    <button type="button" class="toggle-password" data-target="senhaNova">
+                        <i class="fa-regular fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="senhaConfirmar">Confirmar Nova Senha</label>
+                <div class="password-container">
+                    <input type="password" id="senhaConfirmar" placeholder="Repita a nova senha">
+                    <button type="button" class="toggle-password" data-target="senhaConfirmar">
+                        <i class="fa-regular fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+            <button type="button" class="btn-primario" id="btnTrocarSenha">
+                <i class="fa-solid fa-key"></i>
+                Atualizar Senha
+            </button>
+        </div>
+
+        <!-- NOTIFICAÇÕES -->
+        <div class="card">
+            <h2 class="card-title">
+                <i class="fa-solid fa-bell"></i>
+                Notificações
+            </h2>
+            <div class="toggle-row">
+                <div class="toggle-info">
+                    <span class="toggle-label">Novas conexões</span>
+                    <span class="toggle-desc">Quando alguém te seguir ou entrar em contato</span>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="notifConexoes" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div class="toggle-row">
+                <div class="toggle-info">
+                    <span class="toggle-label">Atualizações do Backstage</span>
+                    <span class="toggle-desc">Novidades e funcionalidades da plataforma</span>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="notifUpdates" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div class="toggle-row">
+                <div class="toggle-info">
+                    <span class="toggle-label">Emails promocionais</span>
+                    <span class="toggle-desc">Eventos, oportunidades e parcerias</span>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="notifPromo">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- SESSÃO / CONTA -->
+        <div class="card">
+            <h2 class="card-title">
+                <i class="fa-solid fa-shield-halved"></i>
+                Conta
+            </h2>
+            <button type="button" class="btn-logout" id="btnLogout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Sair da conta
+            </button>
+            <br>
+            <button type="button" class="btn-perigo" id="btnDeletar">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                Deletar minha conta
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL CONFIRMAÇÃO DELETAR -->
+    <div class="modal-overlay" id="modalDeletar">
+        <div class="modal">
+            <div class="modal-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <h3>Deletar conta?</h3>
+            <p>Essa ação é irreversível. Todos os seus dados serão removidos permanentemente.</p>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancelar" id="btnCancelarModal">Cancelar</button>
+                <button type="button" class="btn-confirmar-delete" id="btnConfirmarDeletar">Sim, deletar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- type="module" habilita ESM -->
+    <script type="module">
+        import { removerUsuario } from '../js/storage.js';
+        import { trocarSenha } from '../js/usuario.js';
+        import { mostrarAlerta, toggleSenha } from '../js/ui.js';
+
+        // ─── Toggle de visibilidade das senhas ────────────────────────────────
+        // Evento delegado: um listener cobre todos os botões de olhinho
+        document.querySelectorAll('.toggle-password').forEach(btn => {
+            btn.addEventListener('click', () => {
+                toggleSenha(btn.dataset.target, btn);
+            });
+        });
+
+        // ─── Trocar senha ─────────────────────────────────────────────────────
+        document.getElementById('btnTrocarSenha').addEventListener('click', () => {
+            const atual     = document.getElementById('senhaAtual').value;
+            const nova      = document.getElementById('senhaNova').value;
+            const confirmar = document.getElementById('senhaConfirmar').value;
+
+            if (!atual || !nova || !confirmar) {
+                mostrarAlerta('alertaSenha', 'Preencha todos os campos de senha.', 'error');
+                return;
+            }
+
+            if (nova !== confirmar) {
+                mostrarAlerta('alertaSenha', 'A nova senha e a confirmação não coincidem.', 'error');
+                return;
+            }
+
+            const resultado = trocarSenha(atual, nova);
+
+            if (!resultado.ok) {
+                mostrarAlerta('alertaSenha', resultado.erro, 'error');
+                return;
+            }
+
+            mostrarAlerta('alertaSenha', 'Senha atualizada com sucesso!', 'success');
+
+            // Limpar campos após sucesso
+            document.getElementById('senhaAtual').value = '';
+            document.getElementById('senhaNova').value = '';
+            document.getElementById('senhaConfirmar').value = '';
+        });
+
+        // ─── Notificações (salvar preferência no localStorage) ────────────────
+        const prefNotif = JSON.parse(localStorage.getItem('prefNotificacoes') || '{}');
+
+        const togglesNotif = {
+            notifConexoes: prefNotif.conexoes ?? true,
+            notifUpdates:  prefNotif.updates  ?? true,
+            notifPromo:    prefNotif.promo     ?? false,
+        };
+
+        // Preencher estado inicial dos toggles
+        Object.entries(togglesNotif).forEach(([id, valor]) => {
+            document.getElementById(id).checked = valor;
+        });
+
+        // Evento: salvar ao mudar qualquer toggle
+        ['notifConexoes', 'notifUpdates', 'notifPromo'].forEach(id => {
+            document.getElementById(id).addEventListener('change', () => {
+                localStorage.setItem('prefNotificacoes', JSON.stringify({
+                    conexoes: document.getElementById('notifConexoes').checked,
+                    updates:  document.getElementById('notifUpdates').checked,
+                    promo:    document.getElementById('notifPromo').checked,
+                }));
+            });
+        });
+
+        // ─── Logout ───────────────────────────────────────────────────────────
+        document.getElementById('btnLogout').addEventListener('click', () => {
+            removerUsuario();
+            window.location.href = '../login.html';
+        });
+
+        // ─── Modal de exclusão de conta ───────────────────────────────────────
+        const modal = document.getElementById('modalDeletar');
+
+        // Abrir modal
+        document.getElementById('btnDeletar').addEventListener('click', () => {
+            modal.classList.add('active');
+        });
+
+        // Fechar modal ao clicar em cancelar
+        document.getElementById('btnCancelarModal').addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+
+        // Fechar modal ao clicar fora dele
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.classList.remove('active');
+        });
+
+        // Confirmar exclusão
+        document.getElementById('btnConfirmarDeletar').addEventListener('click', () => {
+            removerUsuario();
+            window.location.href = '../login.html';
+        });
+    </script>
+</body>
+</html>
