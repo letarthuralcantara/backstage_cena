@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - Backstage Cena</title>
+    <link rel="shortcut icon" href="../imagens/favicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: url('../imagens/background.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            position: relative;
+            padding: 40px 20px;
+        }
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 0;
+        }
+        .cadastro-container { position: relative; z-index: 1; width: 100%; max-width: 750px; }
+        .cadastro-box {
+            background: rgba(0, 0, 0, 0.75);
+            border-radius: 20px;
+            padding: 50px 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .cadastro-box::-webkit-scrollbar { width: 10px; }
+        .cadastro-box::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 10px; }
+        .cadastro-box::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #8b5cf6, #6d28d9); border-radius: 10px; }
+        .logo-container { text-align: center; margin-bottom: 30px; }
+        .logo-img { width: 200px; max-width: 100%; }
+        .cadastro-header { text-align: center; margin-bottom: 40px; }
+        .cadastro-title { font-family: 'Poppins', sans-serif; font-size: 32px; font-weight: 700; color: #fff; margin-bottom: 10px; }
+        .cadastro-subtitle { color: #d1d5db; font-size: 15px; }
+        .form-section { margin-bottom: 35px; padding-bottom: 35px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .form-section:last-of-type { border-bottom: none; margin-bottom: 20px; }
+        .section-title { font-family: 'Poppins', sans-serif; font-size: 18px; color: #8b5cf6; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .form-group { margin-bottom: 25px; }
+        .form-group.hidden { display: none; }
+        label { display: block; color: #e5e7eb; font-weight: 500; margin-bottom: 8px; font-size: 14px; }
+        .required { color: #f87171; }
+        input, select, textarea {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            transition: all 0.3s;
+        }
+        textarea { min-height: 100px; resize: vertical; }
+        select { cursor: pointer; }
+        select option { background: #1a1a1a; color: white; }
+        input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.5); }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #8b5cf6;
+            background: rgba(139,92,246,0.1);
+            box-shadow: 0 0 0 3px rgba(139,92,246,0.2);
+        }
+        .helper-text { display: block; color: #9ca3af; font-size: 12px; margin-bottom: 12px; }
+        /* Área cards */
+        .areas-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .area-card input[type="checkbox"] { display: none; }
+        .area-label {
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
+            padding: 20px 15px; border: 2px solid rgba(139,92,246,0.3);
+            border-radius: 12px; cursor: pointer; transition: all 0.3s;
+            background: rgba(139,92,246,0.05); position: relative;
+        }
+        .area-label:hover { border-color: #8b5cf6; background: rgba(139,92,246,0.15); }
+        .area-card input:checked + .area-label { border-color: #8b5cf6; background: rgba(139,92,246,0.2); }
+        .area-icon { font-size: 28px; color: #8b5cf6; }
+        .area-name { font-weight: 600; font-size: 14px; color: #e5e7eb; }
+        .area-check { position: absolute; top: 8px; right: 8px; width: 20px; height: 20px; background: #8b5cf6; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; opacity: 0; transition: opacity 0.2s; }
+        .area-card input:checked + .area-label .area-check { opacity: 1; }
+        /* Checkbox grid */
+        .checkbox-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .checkbox-item input[type="checkbox"] { display: none; }
+        .checkbox-label {
+            display: flex; align-items: center; gap: 8px;
+            padding: 12px 15px; border: 1px solid rgba(139,92,246,0.3);
+            border-radius: 8px; cursor: pointer; font-size: 14px;
+            color: #d1d5db; transition: all 0.3s;
+            background: rgba(139,92,246,0.05);
+        }
+        .checkbox-label:hover { border-color: #8b5cf6; background: rgba(139,92,246,0.1); }
+        .checkbox-item input:checked + .checkbox-label { border-color: #8b5cf6; background: rgba(139,92,246,0.2); color: white; }
+        .checkbox-icon { width: 18px; height: 18px; background: #8b5cf6; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 10px; opacity: 0; transition: opacity 0.2s; flex-shrink: 0; }
+        .checkbox-item input:checked + .checkbox-label .checkbox-icon { opacity: 1; }
+        /* Gêneros grid */
+        .generos-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+        .generos-grid .checkbox-item { flex: 0 0 auto; }
+        .generos-grid .checkbox-label { padding: 8px 16px; border-radius: 20px; font-size: 13px; }
+        /* Botão */
+        .btn-cadastrar {
+            width: 100%; padding: 18px;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            border: none; border-radius: 12px; color: white;
+            font-size: 16px; font-weight: 600; cursor: pointer;
+            transition: all 0.3s; text-transform: uppercase; letter-spacing: 1px;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .btn-cadastrar:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(139,92,246,0.5); }
+        .erro-msg {
+            background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.4);
+            color: #f87171; padding: 12px 16px; border-radius: 8px;
+            font-size: 14px; margin-bottom: 20px; display: none;
+        }
+        .login-link { text-align: center; margin-top: 25px; color: #9ca3af; font-size: 14px; }
+        .login-link a { color: #8b5cf6; text-decoration: none; font-weight: 600; }
+        .back-home { text-align: center; margin-top: 20px; }
+        .back-home a { color: #9ca3af; text-decoration: none; font-size: 13px; display: inline-flex; align-items: center; gap: 5px; transition: color 0.3s; }
+        .back-home a:hover { color: #8b5cf6; }
+    </style>
+</head>
+<body>
+    <div class="cadastro-container">
+        <div class="cadastro-box">
+            <div class="logo-container">
+                <img src="../imagens/logo.png" alt="Backstage Logo" class="logo-img">
+            </div>
+            <div class="cadastro-header">
+                <h1 class="cadastro-title">Crie sua conta</h1>
+                <p class="cadastro-subtitle">Junte-se à cena musical independente</p>
+            </div>
+
+            <div class="erro-msg" id="erroMsg"></div>
+
+            <form id="cadastroForm">
+                <!-- DADOS PESSOAIS -->
+                <div class="form-section">
+                    <h2 class="section-title"><i class="fa-solid fa-user"></i> Dados Pessoais</h2>
+
+                    <div class="form-group">
+                        <label for="nome_completo">Nome Completo <span class="required">*</span></label>
+                        <input type="text" id="nome_completo" name="nome_completo" placeholder="Seu nome completo" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nome_artistico">Nome Artístico</label>
+                        <input type="text" id="nome_artistico" name="nome_artistico" placeholder="Como você é conhecido na cena">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">E-mail <span class="required">*</span></label>
+                        <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="senha">Senha <span class="required">*</span></label>
+                        <input type="password" id="senha" name="senha" placeholder="Mínimo 6 caracteres" required minlength="6">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="telefone">Telefone</label>
+                        <input type="tel" id="telefone" name="telefone" placeholder="(XX) XXXXX-XXXX">
+                    </div>
+                </div>
+
+                <!-- LOCALIZAÇÃO -->
+                <div class="form-section">
+                    <h2 class="section-title"><i class="fa-solid fa-map-marker-alt"></i> Localização</h2>
+
+                    <div class="form-group">
+                        <label for="cidade">Cidade <span class="required">*</span></label>
+                        <input type="text" id="cidade" name="cidade" placeholder="Sua cidade" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="estado">Estado <span class="required">*</span></label>
+                        <select id="estado" name="estado" required>
+                            <option value="">Selecione o estado</option>
+                            <option value="AC">Acre</option><option value="AL">Alagoas</option>
+                            <option value="AP">Amapá</option><option value="AM">Amazonas</option>
+                            <option value="BA">Bahia</option><option value="CE">Ceará</option>
+                            <option value="DF">Distrito Federal</option><option value="ES">Espírito Santo</option>
+                            <option value="GO">Goiás</option><option value="MA">Maranhão</option>
+                            <option value="MT">Mato Grosso</option><option value="MS">Mato Grosso do Sul</option>
+                            <option value="MG">Minas Gerais</option><option value="PA">Pará</option>
+                            <option value="PB">Paraíba</option><option value="PR">Paraná</option>
+                            <option value="PE">Pernambuco</option><option value="PI">Piauí</option>
+                            <option value="RJ">Rio de Janeiro</option><option value="RN">Rio Grande do Norte</option>
+                            <option value="RS">Rio Grande do Sul</option><option value="RO">Rondônia</option>
+                            <option value="RR">Roraima</option><option value="SC">Santa Catarina</option>
+                            <option value="SP">São Paulo</option><option value="SE">Sergipe</option>
+                            <option value="TO">Tocantins</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bairro">Bairro</label>
+                        <input type="text" id="bairro" name="bairro" placeholder="Seu bairro">
+                    </div>
+                </div>
+
+                <!-- PERFIL MUSICAL -->
+                <div class="form-section">
+                    <h2 class="section-title"><i class="fa-solid fa-music"></i> Perfil Musical</h2>
+
+                    <div class="form-group">
+                        <label>Área de Atuação <span class="required">*</span></label>
+                        <small class="helper-text">Selecione todas que se aplicam</small>
+                        <!-- Cards gerados dinamicamente via JS a partir do JSON -->
+                        <div class="areas-grid" id="areasGrid"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="anos_experiencia">Anos de Experiência</label>
+                        <input type="number" id="anos_experiencia" name="anos_experiencia" placeholder="Ex: 5" min="0" max="80">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="biografia">Sobre Você</label>
+                        <textarea id="biografia" name="biografia" placeholder="Conte um pouco sobre sua jornada musical..."></textarea>
+                    </div>
+
+                    <!-- Instrumentos (aparece só se for Instrumentista) -->
+                    <div class="form-group hidden" id="instrumentos-section">
+                        <label>Instrumentos que Domina</label>
+                        <small class="helper-text">Selecione todos os instrumentos que você toca</small>
+                        <div class="checkbox-grid" id="instrumentos-grid"></div>
+                    </div>
+
+                    <!-- DAWs (aparece só se for Produtor) -->
+                    <div class="form-group hidden" id="daws-section">
+                        <label>DAWs que Utiliza</label>
+                        <small class="helper-text">Selecione as DAWs/softwares que você usa para produzir</small>
+                        <div class="checkbox-grid" id="daws-grid"></div>
+                    </div>
+
+                    <!-- Gêneros gerados dinamicamente via JS a partir do JSON -->
+                    <div class="form-group">
+                        <label>Gêneros Musicais Favoritos <span class="required">*</span></label>
+                        <small class="helper-text">Selecione os gêneros que você mais gosta ou trabalha</small>
+                        <div class="generos-grid" id="generos-grid"></div>
+                    </div>
+
+                    <!-- Disponibilidade gerada dinamicamente via JS a partir do JSON -->
+                    <div class="form-group">
+                        <label>Disponibilidade <span class="required">*</span></label>
+                        <small class="helper-text">Quando você está disponível para colaborações?</small>
+                        <div class="checkbox-grid" id="disponibilidade-grid"></div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-cadastrar">
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                    Criar Minha Conta
+                </button>
+            </form>
+
+            <div class="login-link">
+                Já tem uma conta? <a href="login.html">Faça login aqui</a>
+            </div>
+        </div>
+
+        <div class="back-home">
+            <a href="index.html">
+                <i class="fa-solid fa-arrow-left"></i>
+                Voltar para página inicial
+            </a>
+        </div>
+    </div>
+
+    <!-- type="module" habilita import/export ES Modules -->
+    <script type="module">
+        import { salvarCadastro } from '../js/auth.js';
+        import { fetchDados } from '../js/dados.js';
+
+        // Busca os dados do JSON e popula os campos dinamicamente
+        const dados = await fetchDados();
+
+        // Gera os cards de área de atuação a partir do JSON
+        const areasGrid = document.getElementById('areasGrid');
+        dados.areas.forEach(area => {
+            const div = document.createElement('div');
+            div.className = 'area-card';
+            div.innerHTML = `
+                <input type="checkbox" id="area_${area.id}" name="areas_atuacao" value="${area.id}">
+                <label for="area_${area.id}" class="area-label">
+                    <div class="area-icon"><i class="fa-solid ${area.icon}"></i></div>
+                    <div class="area-name">${area.id}</div>
+                    <div class="area-check"><i class="fa-solid fa-check"></i></div>
+                </label>
+            `;
+            areasGrid.appendChild(div);
+        });
+
+        // Gera os checkboxes de instrumentos a partir do JSON
+        popularGrid('instrumentos-grid', dados.instrumentos, 'instrumentos', 'inst', i => i.id, i => i.nome);
+
+        // Gera os checkboxes de DAWs a partir do JSON
+        popularGrid('daws-grid', dados.daws, 'daws', 'daw', (d, i) => i, d => d);
+
+        // Gera os checkboxes de gêneros a partir do JSON
+        popularGrid('generos-grid', dados.generos, 'generos', 'gen', g => g.id, g => g.nome);
+
+        // Gera os checkboxes de disponibilidade a partir do JSON
+        const dispGrid = document.getElementById('disponibilidade-grid');
+        dados.disponibilidade.forEach(d => {
+            const div = document.createElement('div');
+            div.className = 'checkbox-item';
+            div.innerHTML = `
+                <input type="checkbox" id="disp_${d.id}" name="disponibilidade" value="${d.id}">
+                <label for="disp_${d.id}" class="checkbox-label">
+                    <div class="checkbox-icon"><i class="fa-solid fa-check"></i></div>
+                    <i class="fa-solid ${d.icon}"></i> ${d.label}
+                </label>
+            `;
+            dispGrid.appendChild(div);
+        });
+
+        // Evento: mostrar/ocultar seções de instrumentos e DAWs ao mudar área
+        areasGrid.addEventListener('change', (e) => {
+            if (e.target.type === 'checkbox') {
+                const isInstrumentista = document.getElementById('area_Instrumentista')?.checked;
+                const isProdutor = document.getElementById('area_Produtor')?.checked;
+                document.getElementById('instrumentos-section').classList.toggle('hidden', !isInstrumentista);
+                document.getElementById('daws-section').classList.toggle('hidden', !isProdutor);
+            }
+        });
+
+        // Evento: submissão do formulário de cadastro
+        document.getElementById('cadastroForm').addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const erroMsg = document.getElementById('erroMsg');
+            erroMsg.style.display = 'none';
+
+            // Coleta todos os campos em um objeto
+            const dadosForm = {
+                nome_completo: document.getElementById('nome_completo').value.trim(),
+                nome_artistico: document.getElementById('nome_artistico').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                senha: document.getElementById('senha').value,
+                telefone: document.getElementById('telefone').value.trim(),
+                cidade: document.getElementById('cidade').value.trim(),
+                estado: document.getElementById('estado').value,
+                bairro: document.getElementById('bairro').value.trim(),
+                anos_experiencia: document.getElementById('anos_experiencia').value,
+                biografia: document.getElementById('biografia').value.trim(),
+                areas_atuacao: coletarCheckboxes('areas_atuacao'),
+                instrumentos: coletarCheckboxes('instrumentos'),
+                daws: coletarCheckboxes('daws'),
+                generos: coletarCheckboxes('generos'),
+                disponibilidade: coletarCheckboxes('disponibilidade'),
+            };
+
+            try {
+                salvarCadastro(dadosForm);
+                window.location.href = 'perfil.html';
+            } catch (erro) {
+                erroMsg.textContent = erro.message;
+                erroMsg.style.display = 'block';
+            }
+        });
+
+        // ── Helpers ──────────────────────────────────────────────────────────
+
+        /** Gera checkboxes num grid a partir de um array de dados */
+        function popularGrid(gridId, itens, nameAttr, idPrefix, getId, getNome) {
+            const grid = document.getElementById(gridId);
+            itens.forEach((item, i) => {
+                const id = getId(item, i);
+                const nome = getNome(item, i);
+                const div = document.createElement('div');
+                div.className = 'checkbox-item';
+                div.innerHTML = `
+                    <input type="checkbox" id="${idPrefix}_${id}" name="${nameAttr}" value="${id}">
+                    <label for="${idPrefix}_${id}" class="checkbox-label">
+                        <div class="checkbox-icon"><i class="fa-solid fa-check"></i></div>
+                        ${nome}
+                    </label>`;
+                grid.appendChild(div);
+            });
+        }
+
+        /** Retorna array com os values dos checkboxes marcados */
+        function coletarCheckboxes(name) {
+            return [...document.querySelectorAll(`input[name="${name}"]:checked`)]
+                .map(el => el.value);
+        }
+    </script>
+</body>
+</html>
