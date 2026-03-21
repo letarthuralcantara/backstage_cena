@@ -97,7 +97,10 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-        .btn-login:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(139, 92, 246, 0.5); }
+        .btn-login:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.5); 
+        }
         .erro-msg {
             background: rgba(239, 68, 68, 0.15);
             border: 1px solid rgba(239, 68, 68, 0.4);
@@ -108,19 +111,68 @@
             margin-bottom: 20px;
             display: none;
         }
-        .divider { text-align: center; margin: 30px 0; position: relative; }
-        .divider::before { content: ''; position: absolute; left: 0; top: 50%; width: 100%; height: 1px; background: rgba(139, 92, 246, 0.3); }
-        .divider span { background: rgba(0, 0, 0, 0.85); padding: 0 15px; color: #9ca3af; font-size: 13px; position: relative; z-index: 1; }
-        .signup-link { text-align: center; color: #9ca3af; font-size: 14px; }
-        .signup-link a { color: #8b5cf6; text-decoration: none; font-weight: 600; transition: color 0.3s; }
-        .signup-link a:hover { color: #a78bfa; }
-        .back-home { text-align: center; margin-top: 20px; }
-        .back-home a { color: #9ca3af; text-decoration: none; font-size: 13px; display: inline-flex; align-items: center; gap: 5px; transition: color 0.3s; }
-        .back-home a:hover { color: #8b5cf6; }
+        .divider { 
+            text-align: center; 
+            margin: 30px 0; 
+            position: relative; 
+        }
+        .divider::before { 
+            content: ''; 
+            position: absolute; 
+            left: 0; 
+            top: 50%; 
+            width: 100%; 
+            height: 1px; 
+            background: rgba(139, 92, 246, 0.3); 
+        }
+        .divider span { 
+            background: rgba(0, 0, 0, 0.85); 
+            padding: 0 15px; 
+            color: #9ca3af; 
+            font-size: 13px; 
+            position: relative; 
+            z-index: 1; 
+        }
+        .signup-link { 
+            text-align: center; 
+            color: #9ca3af; 
+            font-size: 14px; 
+        }
+        .signup-link a { 
+            color: #8b5cf6; 
+            text-decoration: none; 
+            font-weight: 600; 
+            transition: color 0.3s; 
+        }
+        .signup-link a:hover { 
+            color: #a78bfa; 
+        }
+        .back-home { 
+            text-align: center; 
+            margin-top: 20px; 
+        }
+        .back-home a { 
+            color: #9ca3af; 
+            text-decoration: none; 
+            font-size: 13px; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 5px; 
+            transition: color 0.3s; 
+        }
+        .back-home a:hover { 
+            color: #8b5cf6; 
+        }
         @media (max-width: 480px) {
-            .login-card { padding: 40px 30px; }
-            .logo-img { width: 160px; }
-            .form-title { font-size: 24px; }
+            .login-card { 
+                padding: 40px 30px; 
+            }
+            .logo-img { 
+                width: 160px; 
+            }
+            .form-title { 
+                font-size: 24px; 
+            }
         }
     </style>
 </head>
@@ -128,7 +180,7 @@
     <div class="container">
         <div class="login-card">
             <div class="logo-container">
-                <img src="../images/logo.png" alt="Backstage Logo" class="logo-img">
+                <a href="index.html"><img src="../images/logo.png" alt="Backstage Logo" class="logo-img"></a>
             </div>
 
             <h1 class="form-title">Bem-vindo de volta!</h1>
