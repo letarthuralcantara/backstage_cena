@@ -1,6 +1,6 @@
 # Backstage Cena — Web Platform for Connecting Musicians
 
-access the web page: https://letarthuralcantara.github.io/backstage_cena/backstage_javascript/index.html
+access the web page: https://letarthuralcantara.github.io/backstage_cena/backstage_javascript/pages/index.html
 
 Backstage Cena is a web application created to connect musicians through a centralized platform. The project allows users to register, store information in a relational database, and interact through a structured web system designed to support collaboration and visibility.
 
