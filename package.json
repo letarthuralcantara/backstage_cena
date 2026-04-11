@@ -1,0 +1,27 @@
+{
+  "name": "backstage_cena",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "access the web page: https://letarthuralcantara.github.io/backstage_cena/backstage_javascript/pages/index.html",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "npx nodemon src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/letarthuralcantara/backstage_cena.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/letarthuralcantara/backstage_cena/issues"
+  },
+  "homepage": "https://github.com/letarthuralcantara/backstage_cena#readme",
+  "dependencies": {
+    "express": "^4.22.1",
+    "morgan": "^1.10.1"
+  }
+}
