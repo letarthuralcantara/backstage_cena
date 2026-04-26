@@ -473,10 +473,87 @@
 
     <!-- type="module" habilita import/export ES Modules -->
     <script type="module">
-        import { iniciarPesquisa } from '../js/pesquisa.js';
+  const API = 'http://localhost:3000/api/musicos';
 
-        // Inicia a página (busca musicos.json e renderiza os cards)
-        iniciarPesquisa();
-    </script>
+  let todosMusicoes = [];
+
+  // busca os musicos da API
+  async function carregarMusicos() {
+    try {
+      const res = await fetch(API);
+      todosMusicoes = await res.json();
+      renderizar(todosMusicoes);
+      document.getElementById('totalCount').textContent = `${todosMusicoes.length} músicos encontrados`;
+    } catch (err) {
+      document.getElementById('totalCount').textContent = 'Erro ao conectar com a API';
+    }
+  }
+
+  // gera os cards na tela
+  function renderizar(lista) {
+    const grid = document.getElementById('musiciansGrid');
+    const empty = document.getElementById('emptyState');
+
+    if (lista.length === 0) {
+      grid.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+
+    empty.style.display = 'none';
+    grid.innerHTML = lista.map(m => `
+      <div class="musician-card">
+        <div class="musician-photo">${m.iniciais}</div>
+        <div class="musician-info">
+          <div class="musician-name">${m.nome}</div>
+          <div class="musician-location">
+            <i class="fas fa-map-marker-alt"></i> ${m.cidade}, ${m.estado}
+          </div>
+          <div class="musician-bio">${m.bio}</div>
+          <div class="musician-tags">
+            ${m.instrumentos.map(i => `<span class="tag"><i class="fas fa-guitar"></i> ${i}</span>`).join('')}
+            ${m.generos.map(g => `<span class="tag">${g}</span>`).join('')}
+          </div>
+          <button class="view-profile-btn">Ver perfil</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // filtra com base nos selects e no input de busca
+  function filtrar() {
+    const busca       = document.getElementById('searchInput').value.toLowerCase();
+    const cidade      = document.getElementById('filtroCidade').value;
+    const instrumento = document.getElementById('filtroInstrumento').value;
+    const genero      = document.getElementById('filtroGenero').value;
+    const disponib    = document.getElementById('filtroDisponibilidade').value;
+    const area        = document.getElementById('filtroArea').value;
+
+    const resultado = todosMusicoes.filter(m => {
+      const buscaOk    = m.nome.toLowerCase().includes(busca) || m.nomeArtistico.toLowerCase().includes(busca);
+      const cidadeOk   = cidade      ? m.cidade === cidade : true;
+      const instOk     = instrumento ? m.instrumentos.includes(instrumento) : true;
+      const generoOk   = genero      ? m.generos.includes(genero) : true;
+      const disponOk   = disponib    ? m.disponibilidade.includes(disponib) : true;
+      const areaOk     = area        ? m.area === area : true;
+
+      return buscaOk && cidadeOk && instOk && generoOk && disponOk && areaOk;
+    });
+
+    renderizar(resultado);
+    document.getElementById('totalCount').textContent = `${resultado.length} músicos encontrados`;
+  }
+
+  // eventos
+  document.getElementById('btnBuscar').addEventListener('click', filtrar);
+  document.getElementById('searchInput').addEventListener('keyup', filtrar);
+  document.getElementById('filtroCidade').addEventListener('change', filtrar);
+  document.getElementById('filtroInstrumento').addEventListener('change', filtrar);
+  document.getElementById('filtroGenero').addEventListener('change', filtrar);
+  document.getElementById('filtroDisponibilidade').addEventListener('change', filtrar);
+  document.getElementById('filtroArea').addEventListener('change', filtrar);
+
+  carregarMusicos();
+</script>
 </body>
 </html>

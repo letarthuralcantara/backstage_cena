@@ -1,8 +1,74 @@
-### Get Hello World 
+@baseUrl = http://localhost:3000/api/musicos
 
-GET http://127.0.0.1:3000/hello/en
+### GET — listar todos os músicos
+GET {{baseUrl}}
+Accept: application/json
 
-### Get Olá Mundo
+###
 
-Get http://127.0.0.1:3000/hello/pt
+### GET — filtrar por disponibilidade
+GET {{baseUrl}}?disponibilidade=noite
+Accept: application/json
 
+###
+
+### GET — buscar músico por ID
+GET {{baseUrl}}/1
+Accept: application/json
+
+###
+
+### GET — ID inexistente (espera 404)
+GET {{baseUrl}}/999
+Accept: application/json
+
+###
+
+### POST — cadastrar novo músico
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+  "nome": "Arthur Alcântara",
+  "nomeArtistico": "Tucko",
+  "cidade": "João Pessoa",
+  "estado": "PB",
+  "bio": "Guitarrista e desenvolvedor web.",
+  "generos": ["Trap"],
+  "area": "Produtor",
+  "disponibilidade": ["tarde", "noite"]
+}
+
+###
+
+### POST — dados inválidos (espera 400)
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+  "nome": ""
+}
+
+###
+
+### PUT — atualizar músico de ID 2
+PUT {{baseUrl}}/2
+Content-Type: application/json
+
+{
+  "nome": "Mariana Costa",
+  "cidade": "Recife",
+  "area": "Vocalista"
+}
+
+###
+
+### DELETE — remover músico de ID 3
+DELETE {{baseUrl}}/3
+Accept: application/json
+
+###
+
+### GET — verificar lista após operações
+GET {{baseUrl}}
+Accept: application/json
