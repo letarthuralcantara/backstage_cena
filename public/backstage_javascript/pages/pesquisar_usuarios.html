@@ -472,15 +472,15 @@
     </div>
 
     <!-- type="module" habilita import/export ES Modules -->
-    <script type="module">
-  const API = 'http://localhost:3000/api/musicos';
+<script type="module">
+  const API = '/api/musicos';
 
   let todosMusicoes = [];
 
   // busca os musicos da API
   async function carregarMusicos() {
     try {
-      const res = await fetch(API);
+      const res = await fetch(API); '|'
       todosMusicoes = await res.json();
       renderizar(todosMusicoes);
       document.getElementById('totalCount').textContent = `${todosMusicoes.length} músicos encontrados`;
