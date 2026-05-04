@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import Musico from './models/Musico.js';
+import Musico from './models/musico.js';
 
 const router = Router();
 

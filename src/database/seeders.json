@@ -94,4 +94,15 @@
     {
       "id": 8,
       "nome": "Thaís Oliveira",
-      "nomeArtist
+      "nomeArtistico": "Tha Compositor",
+      "cidade": "João Pessoa",
+      "estado": "PB",
+      "bio": "Compositora e multi-instrumentista.",
+      "instrumentos": ["Violão", "Vocal"],
+      "generos": ["MPB", "Samba", "Pop"],
+      "area": "Compositor",
+      "disponibilidade": ["manha", "tarde"],
+      "iniciais": "TO"
+    }
+  ]
+}
