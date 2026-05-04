@@ -1,7 +1,7 @@
 import express from 'express'; //importa o express
 import morgan from 'morgan'; //importa o morgan
 import cors from 'cors';
-import musicosRouter from './routes/musicos.js';
+import Seed from './database/seeders.js';
 
 const app = express();
 const PORT = 3000;
@@ -11,7 +11,7 @@ app.use(morgan('dev')); //mostrar requisições no terminal
 app.use(express.json()); //conversão de de texto pra objeto js
 app.use(cors()); //permissão do front-end
 app.use(express.static('public')); //manda os arquivos pro front
-app.use('/api/musicos', musicosRouter); //rotas dos musicos
+app.use('/api/musicos', musicosRouter); //rotas dos musicosapp.use('/api/musicos', router);  
 
 app.get('/', (req, res) => {
     res.json({mensagem: 'API rodando'})    
