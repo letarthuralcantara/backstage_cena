@@ -1,4 +1,4 @@
-import Migration from './migration.js';
+import Migration from './migrations.js';
 import Seed from './seeders.js';
 
 async function load() {

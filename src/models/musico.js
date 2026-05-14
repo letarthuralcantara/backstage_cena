@@ -1,74 +1,98 @@
-import { musicos } from '../database/data.js';
+import Database from '../database/database.js';
 
-let proximoId = 9;
+async function create(dados) {
+  const db = await Database.connect();
 
-function validarMusico(dados) {
-  const erros = [];
+  const sql = `
+    INSERT INTO usuario (nome_completo, nome_artistico, email, senha, telefone, cidade, estado, bairro, area_atuacao, anos_experiencia, biografia)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
 
-  if (!dados.nome || dados.nome.trim() === '')
-    erros.push('O campo nome é obrigatório.');
+  const { lastID } = await db.run(sql, [
+    dados.nome_completo,
+    dados.nome_artistico,
+    dados.email,
+    dados.senha,
+    dados.telefone || null,
+    dados.cidade || null,
+    dados.estado || null,
+    dados.bairro || null,
+    dados.area_atuacao || null,
+    dados.anos_experiencia || 0,
+    dados.biografia || null,
+  ]);
 
-  if (!dados.cidade || dados.cidade.trim() === '')
-    erros.push('O campo cidade é obrigatório.');
-
-  if (!dados.area || dados.area.trim() === '')
-    erros.push('O campo area é obrigatório.');
-
-  return erros;
+  await db.close();
+  return readById(lastID);
 }
 
-function create(dados) {
-  const erros = validarMusico(dados);
+async function read(field, value) {
+  const db = await Database.connect();
 
-  if (erros.length > 0) throw new Error(erros.join(', '));
+  let sql = `SELECT * FROM usuario`;
+  let params = [];
 
-  const novoMusico = {
-    id: dados.id || proximoId++,
-    nome: dados.nome,
-    nomeArtistico: dados.nomeArtistico || '',
-    cidade: dados.cidade,
-    estado: dados.estado || '',
-    bio: dados.bio || '',
-    instrumentos: dados.instrumentos || [],
-    generos: dados.generos || [],
-    area: dados.area,
-    disponibilidade: dados.disponibilidade || [],
-    iniciais: dados.iniciais || dados.nome.substring(0, 2).toUpperCase(),
-  };
-
-  musicos.push(novoMusico);
-  return novoMusico;
-}
-
-function read(field, value) {
   if (field && value) {
-    return musicos.filter(m => m[field].includes(value));
+    sql += ` WHERE ${field} = ?`;
+    params = [value];
   }
-  return musicos;
+
+  const usuarios = await db.all(sql, params);
+  await db.close();
+  return usuarios;
 }
 
-function readById(id) {
-  const musico = musicos.find(m => m.id === id);
-  if (!musico) throw new Error(`Músico com id ${id} não encontrado.`);
-  return musico;
+async function readById(id) {
+  const db = await Database.connect();
+
+  const sql = `SELECT * FROM usuario WHERE id_usuario = ?`;
+  const usuario = await db.get(sql, [id]);
+
+  await db.close();
+
+  if (!usuario) throw new Error(`Usuário com id ${id} não encontrado.`);
+  return usuario;
 }
 
-function update({ id, ...dados }) {
-  const erros = validarMusico(dados);
-  if (erros.length > 0) throw new Error(erros.join(', '));
+async function update({ id_usuario, ...dados }) {
+  const db = await Database.connect();
 
-  const indice = musicos.findIndex(m => m.id === id);
-  if (indice === -1) throw new Error(`Músico com id ${id} não encontrado.`);
+  const sql = `
+    UPDATE usuario
+    SET nome_completo = ?, nome_artistico = ?, email = ?, telefone = ?,
+        cidade = ?, estado = ?, bairro = ?, area_atuacao = ?, anos_experiencia = ?, biografia = ?
+    WHERE id_usuario = ?
+  `;
 
-  musicos[indice] = { ...musicos[indice], ...dados, id };
-  return musicos[indice];
+  const { changes } = await db.run(sql, [
+    dados.nome_completo,
+    dados.nome_artistico,
+    dados.email,
+    dados.telefone || null,
+    dados.cidade || null,
+    dados.estado || null,
+    dados.bairro || null,
+    dados.area_atuacao || null,
+    dados.anos_experiencia || 0,
+    dados.biografia || null,
+    id_usuario,
+  ]);
+
+  await db.close();
+
+  if (changes === 0) throw new Error(`Usuário com id ${id_usuario} não encontrado.`);
+  return readById(id_usuario);
 }
 
-function remove(id) {
-  const indice = musicos.findIndex(m => m.id === id);
-  if (indice === -1) throw new Error(`Músico com id ${id} não encontrado.`);
+async function remove(id) {
+  const db = await Database.connect();
 
-  musicos.splice(indice, 1);
+  const sql = `DELETE FROM usuario WHERE id_usuario = ?`;
+  const { changes } = await db.run(sql, [id]);
+
+  await db.close();
+
+  if (changes === 0) throw new Error(`Usuário com id ${id} não encontrado.`);
   return true;
 }
 

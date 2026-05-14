@@ -7,6 +7,9 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "npx nodemon src/server.js",
+    "db:load": "node src/database/load.js",
+    "db:drop": "rm -f src/database/db.sqlite",
+    "db:reload": "npm run db:drop && npm run db:load",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -25,4 +28,5 @@
     "express": "^4.22.1",
     "morgan": "^1.10.1"
   }
+ 
 }

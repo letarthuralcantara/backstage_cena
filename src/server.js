@@ -12,7 +12,7 @@ app.use(morgan('dev')); //mostrar requisições no terminal
 app.use(express.json()); //conversão de de texto pra objeto js
 app.use(cors()); //permissão do front-end
 app.use(express.static('public')); //manda os arquivos pro front
-app.use('/api/musicos', router);  
+app.use('/api/usuarios', router);  
 
 app.get('/', (req, res) => {
     res.json({mensagem: 'API rodando'})    
@@ -26,7 +26,6 @@ app.use((err, req, res, next) => {
 
 }); //manda mensagem de erro
 
-await Seed.up();
 
 app.listen(PORT, () => {
     console.log('App running on port 3000');

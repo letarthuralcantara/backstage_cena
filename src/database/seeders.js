@@ -6,8 +6,8 @@ async function up() {
   const file = resolve('src', 'database', 'seeders.json');
   const seed = JSON.parse(readFileSync(file));
 
-  for (const musico of seed.musicos) {
-    await Musico.create(musico);
+  for (const usuario of seed.usuarios) {
+    await Musico.create(usuario);
   }
 }
 
