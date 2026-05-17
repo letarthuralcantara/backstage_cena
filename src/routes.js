@@ -9,6 +9,52 @@ router.get('/', async (req, res) => {
   res.status(200).json(resultado);
 });
 
+router.get('/estados', async (req, res) => {
+  try {
+    const usuarios = await Musico.read();
+    const estados = [...new Set(usuarios.map(u => u.estado).filter(Boolean))].sort();
+    res.status(200).json(estados);
+  } catch (error) {
+    res.status(500).json({ erro: error.message });
+  }
+});
+
+router.get('/instrumentos', async (req, res) => {
+  try {
+    const instrumentos = await Musico.listarInstrumentos();
+    res.status(200).json(instrumentos);
+  } catch (error) {
+    res.status(500).json({ erro: error.message });
+  }
+});
+
+router.get('/generos', async (req, res) => {
+  try {
+    const generos = await Musico.listarGeneros();
+    res.status(200).json(generos);
+  } catch (error) {
+    res.status(500).json({ erro: error.message });
+  }
+});
+
+router.get('/areas', async (req, res) => {
+  try {
+    const usuarios = await Musico.read();
+    const areas = [...new Set(usuarios.map(u => u.area_atuacao).filter(Boolean))].sort();
+    res.status(200).json(areas);
+  } catch (error) {
+    res.status(500).json({ erro: error.message });
+  }
+});
+router.get('/daws', async (req, res) => {
+  try {
+    const daws = await Musico.listarDaws();
+    res.status(200).json(daws);
+  } catch (error) {
+    res.status(500).json({ erro: error.message });
+  }
+});
+
 router.get('/:id', async (req, res) => {
   try {
     const id = Number(req.params.id);
@@ -47,5 +93,6 @@ router.delete('/:id', async (req, res) => {
     res.status(404).json({ erro: error.message });
   }
 });
+
 
 export default router;

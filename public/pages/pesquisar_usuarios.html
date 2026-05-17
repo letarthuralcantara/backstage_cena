@@ -106,6 +106,19 @@
             margin-bottom: 50px;
             animation: fadeInDown 0.8s ease-out;
         }
+        .musician-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .musician-title {
+            flex: 1;
+        }
+
+        .musician-card {
+            cursor: pointer;
+        }
 
         @keyframes fadeInDown {
             from { opacity: 0; transform: translateY(-30px); }
@@ -210,7 +223,7 @@
 
         .filters-grid {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
+            grid-template-columns: repeat(6, 1fr);
             gap: 15px;
         }
 
@@ -402,67 +415,47 @@
 
             <div class="filters-grid">
                 <div class="filter-group">
-                    <label>Cidade</label>
-                    <select id="filtroCidade">
-                        <option value="">Todas</option>
-                        <option value="João Pessoa">João Pessoa</option>
-                        <option value="Recife">Recife</option>
-                        <option value="Natal">Natal</option>
-                        <option value="Fortaleza">Fortaleza</option>
-                        <option value="São Paulo">São Paulo</option>
-                        <option value="Rio de Janeiro">Rio de Janeiro</option>
+                    <label>Estado</label>
+                    <select id="filtroEstado">
+                        <option value="">Todos</option>
                     </select>
                 </div>
                 <div class="filter-group">
                     <label>Instrumento</label>
                     <select id="filtroInstrumento">
-                        <option value="">Todos</option>
-                        <option value="Violão">Violão</option>
-                        <option value="Guitarra">Guitarra</option>
-                        <option value="Baixo">Baixo</option>
-                        <option value="Bateria">Bateria</option>
-                        <option value="Piano">Piano</option>
-                        <option value="Vocal">Vocal</option>
+                         <option value="">Todos</option>
                     </select>
                 </div>
                 <div class="filter-group">
                     <label>Gênero</label>
                     <select id="filtroGenero">
-                        <option value="">Todos</option>
-                        <option value="Rock">Rock</option>
-                        <option value="Pop">Pop</option>
-                        <option value="MPB">MPB</option>
-                        <option value="Jazz">Jazz</option>
-                        <option value="Funk">Funk</option>
-                        <option value="Hip-Hop">Hip-Hop</option>
-                        <option value="Metal">Metal</option>
-                        <option value="Forró">Forró</option>
+                         <option value="">Todos</option>
                     </select>
                 </div>
                 <div class="filter-group">
                     <label>Disponibilidade</label>
                     <select id="filtroDisponibilidade">
                         <option value="">Qualquer</option>
-                        <option value="manha">Manhã</option>
-                        <option value="tarde">Tarde</option>
-                        <option value="noite">Noite</option>
+                        <option value="Manhã">Manhã</option>
+                        <option value="Tarde">Tarde</option>
+                        <option value="Noite">Noite</option>
                     </select>
                 </div>
                 <div class="filter-group">
                     <label>Área</label>
                     <select id="filtroArea">
+                         <option value="">Todos</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>DAW</label>
+                    <select id="filtroDaw">
                         <option value="">Todas</option>
-                        <option value="Vocalista">Vocalista</option>
-                        <option value="Instrumentista">Instrumentista</option>
-                        <option value="Produtor">Produtor</option>
-                        <option value="Compositor">Compositor</option>
-                        <option value="DJ">DJ</option>
-                        <option value="Beatmaker">Beatmaker</option>
                     </select>
                 </div>
             </div>
         </div>
-
+        
         <div class="musicians-grid" id="musiciansGrid"></div>
         <div class="empty-state" id="emptyState">
             <i class="fas fa-search"></i>
@@ -473,14 +466,72 @@
 
     <!-- type="module" habilita import/export ES Modules -->
 <script type="module">
-  const API = '/api/musicos';
-
+  const API = '/api/usuarios';
   let todosMusicoes = [];
 
-  // busca os musicos da API
+  async function carregarEstados() {
+    const res = await fetch('/api/usuarios/estados');
+    const estados = await res.json();
+    const select = document.getElementById('filtroEstado');
+    estados.forEach(e => {
+      const option = document.createElement('option');
+      option.value = e;
+      option.textContent = e;
+      select.appendChild(option);
+    });
+  }
+
+  async function carregarInstrumentos() {
+    const res = await fetch('/api/usuarios/instrumentos');
+    const instrumentos = await res.json();
+    const select = document.getElementById('filtroInstrumento');
+    instrumentos.forEach(i => {
+      const option = document.createElement('option');
+      option.value = i;
+      option.textContent = i;
+      select.appendChild(option);
+    });
+  }
+
+  async function carregarGeneros() {
+    const res = await fetch('/api/usuarios/generos');
+    const generos = await res.json();
+    const select = document.getElementById('filtroGenero');
+    generos.forEach(g => {
+      const option = document.createElement('option');
+      option.value = g;
+      option.textContent = g;
+      select.appendChild(option);
+    });
+  }
+
+  async function carregarAreas() {
+    const res = await fetch('/api/usuarios/areas');
+    const areas = await res.json();
+    const select = document.getElementById('filtroArea');
+    areas.forEach(a => {
+      const option = document.createElement('option');
+      option.value = a;
+      option.textContent = a;
+      select.appendChild(option);
+    });
+  }
+
+  async function carregarDaws() {
+    const res = await fetch('/api/usuarios/daws');
+    const daws = await res.json();
+    const select = document.getElementById('filtroDaw');
+    daws.forEach(d => {
+      const option = document.createElement('option');
+      option.value = d;
+      option.textContent = d;
+      select.appendChild(option);
+    });
+  }
+
   async function carregarMusicos() {
     try {
-      const res = await fetch(API); '|'
+      const res = await fetch(API);
       todosMusicoes = await res.json();
       renderizar(todosMusicoes);
       document.getElementById('totalCount').textContent = `${todosMusicoes.length} músicos encontrados`;
@@ -489,7 +540,6 @@
     }
   }
 
-  // gera os cards na tela
   function renderizar(lista) {
     const grid = document.getElementById('musiciansGrid');
     const empty = document.getElementById('emptyState');
@@ -502,57 +552,61 @@
 
     empty.style.display = 'none';
     grid.innerHTML = lista.map(m => `
-      <div class="musician-card">
-        <div class="musician-photo">${m.iniciais}</div>
-        <div class="musician-info">
-          <div class="musician-name">${m.nome}</div>
-          <div class="musician-location">
-            <i class="fas fa-map-marker-alt"></i> ${m.cidade}, ${m.estado}
+      <div class="musician-card" onclick="window.location.href='perfil.html?id=${m.id_usuario}'">
+        <div class="musician-header">
+          <div class="musician-photo">${(m.nome_artistico || m.nome_completo).substring(0, 2).toUpperCase()}</div>
+          <div class="musician-title">
+            <div class="musician-name">${m.nome_artistico || m.nome_completo}</div>
+            <div class="musician-location">
+              <i class="fas fa-map-marker-alt"></i> ${m.cidade || ''}, ${m.estado || ''}
+            </div>
+            <div class="musician-bio">${m.biografia || ''}</div>
           </div>
-          <div class="musician-bio">${m.bio}</div>
-          <div class="musician-tags">
-            ${m.instrumentos.map(i => `<span class="tag"><i class="fas fa-guitar"></i> ${i}</span>`).join('')}
-            ${m.generos.map(g => `<span class="tag">${g}</span>`).join('')}
-          </div>
-          <button class="view-profile-btn">Ver perfil</button>
         </div>
       </div>
     `).join('');
   }
 
-  // filtra com base nos selects e no input de busca
   function filtrar() {
-    const busca       = document.getElementById('searchInput').value.toLowerCase();
-    const cidade      = document.getElementById('filtroCidade').value;
-    const instrumento = document.getElementById('filtroInstrumento').value;
-    const genero      = document.getElementById('filtroGenero').value;
-    const disponib    = document.getElementById('filtroDisponibilidade').value;
-    const area        = document.getElementById('filtroArea').value;
+    const busca           = document.getElementById('searchInput').value.toLowerCase();
+    const estado          = document.getElementById('filtroEstado').value;
+    const area            = document.getElementById('filtroArea').value;
+    const instrumento     = document.getElementById('filtroInstrumento').value;
+    const genero          = document.getElementById('filtroGenero').value;
+    const disponibilidade = document.getElementById('filtroDisponibilidade').value;
+    const daw             = document.getElementById('filtroDaw').value;
 
     const resultado = todosMusicoes.filter(m => {
-      const buscaOk    = m.nome.toLowerCase().includes(busca) || m.nomeArtistico.toLowerCase().includes(busca);
-      const cidadeOk   = cidade      ? m.cidade === cidade : true;
-      const instOk     = instrumento ? m.instrumentos.includes(instrumento) : true;
-      const generoOk   = genero      ? m.generos.includes(genero) : true;
-      const disponOk   = disponib    ? m.disponibilidade.includes(disponib) : true;
-      const areaOk     = area        ? m.area === area : true;
-
-      return buscaOk && cidadeOk && instOk && generoOk && disponOk && areaOk;
+      const nomeCompleto  = (m.nome_completo || '').toLowerCase();
+      const nomeArtistico = (m.nome_artistico || '').toLowerCase();
+      const buscaOk  = nomeCompleto.includes(busca) || nomeArtistico.includes(busca);
+      const estadoOk = estado          ? m.estado === estado : true;
+      const areaOk   = area            ? m.area_atuacao === area : true;
+      const instOk   = instrumento     ? (m.instrumentos || []).includes(instrumento) : true;
+      const generoOk = genero          ? (m.generos || []).includes(genero) : true;
+      const dispOk   = disponibilidade ? (m.disponibilidades || []).includes(disponibilidade) : true;
+      const dawOk    = daw             ? (m.daws || []).includes(daw) : true;
+      return buscaOk && estadoOk && areaOk && instOk && generoOk && dispOk && dawOk;
     });
 
     renderizar(resultado);
     document.getElementById('totalCount').textContent = `${resultado.length} músicos encontrados`;
   }
 
-  // eventos
   document.getElementById('btnBuscar').addEventListener('click', filtrar);
   document.getElementById('searchInput').addEventListener('keyup', filtrar);
-  document.getElementById('filtroCidade').addEventListener('change', filtrar);
+  document.getElementById('filtroEstado').addEventListener('change', filtrar);
+  document.getElementById('filtroArea').addEventListener('change', filtrar);
   document.getElementById('filtroInstrumento').addEventListener('change', filtrar);
   document.getElementById('filtroGenero').addEventListener('change', filtrar);
   document.getElementById('filtroDisponibilidade').addEventListener('change', filtrar);
-  document.getElementById('filtroArea').addEventListener('change', filtrar);
+  document.getElementById('filtroDaw').addEventListener('change', filtrar);
 
+  carregarDaws();
+  carregarEstados();
+  carregarInstrumentos();
+  carregarGeneros();
+  carregarAreas();
   carregarMusicos();
 </script>
 </body>

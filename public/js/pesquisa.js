@@ -1,3 +1,5 @@
+import { fetchMusicos } from './dados.js';
+
 function criarCard(musico) {
   const nomeExibir = musico.nome_artistico || musico.nome_completo;
   const iniciais = nomeExibir.substring(0, 2).toUpperCase();
@@ -19,3 +21,42 @@ function criarCard(musico) {
   `;
   return card;
 }
+
+async function renderizarMusicos(lista) {
+  const container = document.querySelector('.musicians-grid');
+  if (!container) return;
+
+  container.innerHTML = '';
+
+  if (lista.length === 0) {
+    container.innerHTML = '<p class="sem-resultados">Nenhum músico encontrado.</p>';
+    return;
+  }
+
+  lista.forEach(musico => container.appendChild(criarCard(musico)));
+}
+
+async function init() {
+  try {
+    const musicos = await fetchMusicos();
+    await renderizarMusicos(musicos);
+
+    const inputBusca = document.querySelector('#busca');
+    if (inputBusca) {
+      inputBusca.addEventListener('input', () => {
+        const termo = inputBusca.value.toLowerCase();
+        const filtrados = musicos.filter(m =>
+          (m.nome_completo || '').toLowerCase().includes(termo) ||
+          (m.nome_artistico || '').toLowerCase().includes(termo)
+        );
+        renderizarMusicos(filtrados);
+      });
+    }
+  } catch (erro) {
+    console.error('Erro ao carregar músicos:', erro);
+    const container = document.querySelector('.musicians-grid');
+    if (container) container.innerHTML = '<p>Erro ao conectar com a API</p>';
+  }
+}
+
+init();

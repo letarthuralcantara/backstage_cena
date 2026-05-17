@@ -9,7 +9,11 @@
       "estado": "PB",
       "area_atuacao": "Instrumentista",
       "anos_experiencia": 8,
-      "biografia": "Baixista com 8 anos de experiência em rock e MPB."
+      "biografia": "Baixista com 8 anos de experiência em rock e MPB.",
+      "instrumentos": ["Baixo"],
+      "generos": ["Rock", "MPB"],
+      "disponibilidades": ["Tarde", "Noite"],
+      "daws": []
     },
     {
       "nome_completo": "Mariana Costa",
@@ -20,7 +24,11 @@
       "estado": "PE",
       "area_atuacao": "Vocalista",
       "anos_experiencia": 5,
-      "biografia": "Vocalista e compositora do nordeste."
+      "biografia": "Vocalista e compositora do nordeste.",
+      "instrumentos": ["Vocal"],
+      "generos": ["MPB", "Pop"],
+      "disponibilidades": ["Manhã", "Tarde"],
+      "daws": []
     },
     {
       "nome_completo": "Felipe Drummond",
@@ -31,7 +39,11 @@
       "estado": "RN",
       "area_atuacao": "Beatmaker",
       "anos_experiencia": 4,
-      "biografia": "Baterista e beatmaker. Produzo beats trap e funk."
+      "biografia": "Baterista e beatmaker. Produzo beats trap e funk.",
+      "instrumentos": ["Bateria"],
+      "generos": ["Hip Hop", "Funk"],
+      "disponibilidades": ["Noite"],
+      "daws": ["FL Studio", "Ableton Live"]
     },
     {
       "nome_completo": "Ana Luz",
@@ -42,7 +54,11 @@
       "estado": "PB",
       "area_atuacao": "Instrumentista",
       "anos_experiencia": 6,
-      "biografia": "Pianista clássica com formação no conservatório."
+      "biografia": "Pianista clássica com formação no conservatório.",
+      "instrumentos": ["Piano", "Teclado"],
+      "generos": ["Jazz", "MPB"],
+      "disponibilidades": ["Manhã", "Tarde", "Noite"],
+      "daws": []
     },
     {
       "nome_completo": "Rafael Santos",
@@ -53,7 +69,11 @@
       "estado": "CE",
       "area_atuacao": "Produtor",
       "anos_experiencia": 7,
-      "biografia": "Produtor musical com home studio equipado."
+      "biografia": "Produtor musical com home studio equipado.",
+      "instrumentos": ["DJ"],
+      "generos": ["Hip Hop", "Funk"],
+      "disponibilidades": ["Tarde", "Noite"],
+      "daws": ["FL Studio", "Studio One"]
     },
     {
       "nome_completo": "Isabela Melo",
@@ -64,7 +84,11 @@
       "estado": "SP",
       "area_atuacao": "Instrumentista",
       "anos_experiencia": 9,
-      "biografia": "Guitarrista de metal e rock."
+      "biografia": "Guitarrista de metal e rock.",
+      "instrumentos": ["Guitarra"],
+      "generos": ["Metal", "Rock"],
+      "disponibilidades": ["Noite"],
+      "daws": ["Logic Pro"]
     },
     {
       "nome_completo": "Carlos Menezes",
@@ -75,7 +99,11 @@
       "estado": "RJ",
       "area_atuacao": "DJ",
       "anos_experiencia": 10,
-      "biografia": "DJ com mais de 10 anos em festas e eventos."
+      "biografia": "DJ com mais de 10 anos em festas e eventos.",
+      "instrumentos": ["DJ"],
+      "generos": ["Eletrônica", "Funk"],
+      "disponibilidades": ["Noite"],
+      "daws": ["FL Studio", "Ableton Live"]
     },
     {
       "nome_completo": "Thaís Oliveira",
@@ -86,7 +114,11 @@
       "estado": "PB",
       "area_atuacao": "Compositor",
       "anos_experiencia": 3,
-      "biografia": "Compositora e multi-instrumentista."
+      "biografia": "Compositora e multi-instrumentista.",
+      "instrumentos": ["Violão", "Vocal"],
+      "generos": ["MPB", "Samba"],
+      "disponibilidades": ["Manhã", "Tarde"],
+      "daws": ["Ableton Live"]
     }
   ]
 }

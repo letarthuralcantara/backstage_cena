@@ -42,6 +42,13 @@ async function up() {
   `);
 
   await db.run(`
+    CREATE TABLE IF NOT EXISTS daw (
+      id_daw INTEGER PRIMARY KEY AUTOINCREMENT,
+      nome VARCHAR(100) NOT NULL UNIQUE
+    )
+  `);
+
+  await db.run(`
     CREATE TABLE IF NOT EXISTS usuario_instrumento (
       id_usuario INTEGER REFERENCES usuario(id_usuario) ON DELETE CASCADE,
       id_instrumento INTEGER REFERENCES instrumento(id_instrumento) ON DELETE CASCADE,
@@ -64,6 +71,14 @@ async function up() {
       id_usuario INTEGER REFERENCES usuario(id_usuario) ON DELETE CASCADE,
       id_disponibilidade INTEGER REFERENCES disponibilidade(id_disponibilidade) ON DELETE CASCADE,
       PRIMARY KEY (id_usuario, id_disponibilidade)
+    )
+  `);
+
+  await db.run(`
+    CREATE TABLE IF NOT EXISTS usuario_daw (
+      id_usuario INTEGER REFERENCES usuario(id_usuario) ON DELETE CASCADE,
+      id_daw INTEGER REFERENCES daw(id_daw) ON DELETE CASCADE,
+      PRIMARY KEY (id_usuario, id_daw)
     )
   `);
 
