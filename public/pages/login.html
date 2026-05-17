@@ -229,27 +229,32 @@
     </div>
 
     <!-- type="module" habilita o uso de import/export ES Modules -->
-    <script type="module">
-        import { fazerLogin } from '../js/auth.js';
+<script type="module">
+    const form = document.getElementById('loginForm');
+    const erroMsg = document.getElementById('erroMsg');
 
-        const form = document.getElementById('loginForm');
-        const erroMsg = document.getElementById('erroMsg');
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const email = document.getElementById('email').value.trim();
+        const senha = document.getElementById('senha').value;
 
-        // Evento: submissão do formulário de login
-        form.addEventListener('submit', (event) => {
-            event.preventDefault(); // impede o recarregamento da página
-
-            const email = document.getElementById('email').value.trim();
-            const senha = document.getElementById('senha').value;
-
-            try {
-                fazerLogin(email, senha);
-                window.location.href = 'perfil.html';
-            } catch (erro) {
-                erroMsg.textContent = erro.message;
-                erroMsg.style.display = 'block';
-            }
+        const res = await fetch('/api/usuarios/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, senha }),
         });
-    </script>
+
+        if (!res.ok) {
+        const erro = await res.json();
+        erroMsg.textContent = erro.erro;
+        erroMsg.style.display = 'block';
+        return;
+        }
+
+        const usuario = await res.json();
+        localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
+        window.location.href = 'perfil.html';
+    });
+</script>
 </body>
 </html>

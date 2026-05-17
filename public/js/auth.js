@@ -6,22 +6,45 @@
  * Salva os dados do formulário de cadastro no localStorage.
  * @param {Object} dados - objeto com os campos do formulário
  */
-export function salvarCadastro(dados) {
-  // Busca cadastros existentes ou inicia array vazio
-  const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+export async function salvarCadastro(dados) {
+  const body = {
+    nome_completo: dados.nome_completo,
+    nome_artistico: dados.nome_artistico || dados.nome_completo,
+    email: dados.email,
+    senha: dados.senha,
+    telefone: dados.telefone || null,
+    cidade: dados.cidade,
+    estado: dados.estado,
+    bairro: dados.bairro || null,
+    area_atuacao: dados.areas_atuacao?.[0] || null,
+    anos_experiencia: Number(dados.anos_experiencia) || 0,
+    biografia: dados.biografia || null,
+  };
 
-  // Verifica se o e-mail já está cadastrado
-  const jaExiste = usuarios.some(u => u.email === dados.email);
-  if (jaExiste) {
-    throw new Error('E-mail já cadastrado.');
+  const res = await fetch('/api/usuarios', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    const erro = await res.json();
+    throw new Error(erro.erro || 'Erro ao cadastrar');
   }
 
-  // Adiciona novo usuário e salva
-  usuarios.push(dados);
-  localStorage.setItem('usuarios', JSON.stringify(usuarios));
+  const usuario = await res.json();
+  localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
+  return usuario;
+}
 
-  // Define como usuário logado na sessão atual
-  localStorage.setItem('usuarioLogado', JSON.stringify(dados));
+export function getUsuarioLogado() {
+  const u = localStorage.getItem('usuarioLogado');
+  return u ? JSON.parse(u) : null;
+}
+
+export function fazerLogout() {
+  localStorage.removeItem('usuarioLogado');
+  window.location.href = 'login.html';
 }
 
 /**

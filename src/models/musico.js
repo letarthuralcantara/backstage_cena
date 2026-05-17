@@ -19,6 +19,12 @@ async function listarDaws() {
   await db.close();
   return daws.map(d => d.nome);
 }
+async function listarDisponibilidades() {
+  const db = await Database.connect();
+  const disponibilidades = await db.all(`SELECT descricao FROM disponibilidade ORDER BY id_disponibilidade`);
+  await db.close();
+  return disponibilidades.map(d => d.descricao);
+}
 
 
 async function create(dados) {
@@ -151,4 +157,4 @@ async function remove(id) {
   return true;
 }
 
-export default { create, read, readById, update, remove, listarInstrumentos, listarGeneros, listarDaws };
+export default { create, read, readById, update, remove, listarInstrumentos, listarGeneros, listarDaws, listarDisponibilidades };

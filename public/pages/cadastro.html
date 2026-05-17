@@ -539,32 +539,37 @@
             erroMsg.style.display = 'none';
 
             // Coleta todos os campos em um objeto
-            const dadosForm = {
-                nome_completo: document.getElementById('nome_completo').value.trim(),
-                nome_artistico: document.getElementById('nome_artistico').value.trim(),
-                email: document.getElementById('email').value.trim(),
-                senha: document.getElementById('senha').value,
-                telefone: document.getElementById('telefone').value.trim(),
-                cidade: document.getElementById('cidade').value.trim(),
-                estado: document.getElementById('estado').value,
-                bairro: document.getElementById('bairro').value.trim(),
-                anos_experiencia: document.getElementById('anos_experiencia').value,
-                biografia: document.getElementById('biografia').value.trim(),
-                areas_atuacao: coletarCheckboxes('areas_atuacao'),
-                instrumentos: coletarCheckboxes('instrumentos'),
-                daws: coletarCheckboxes('daws'),
-                generos: coletarCheckboxes('generos'),
-                disponibilidade: coletarCheckboxes('disponibilidade'),
-            };
+            document.getElementById('cadastroForm').addEventListener('submit', async (event) => {
+                event.preventDefault();
+                const erroMsg = document.getElementById('erroMsg');
+                erroMsg.style.display = 'none';
 
-            try {
-                salvarCadastro(dadosForm);
-                window.location.href = 'perfil.html';
-            } catch (erro) {
-                erroMsg.textContent = erro.message;
-                erroMsg.style.display = 'block';
-            }
-        });
+                const dadosForm = {
+                    nome_completo: document.getElementById('nome_completo').value.trim(),
+                    nome_artistico: document.getElementById('nome_artistico').value.trim(),
+                    email: document.getElementById('email').value.trim(),
+                    senha: document.getElementById('senha').value,
+                    telefone: document.getElementById('telefone').value.trim(),
+                    cidade: document.getElementById('cidade').value.trim(),
+                    estado: document.getElementById('estado').value,
+                    bairro: document.getElementById('bairro').value.trim(),
+                    anos_experiencia: document.getElementById('anos_experiencia').value,
+                    biografia: document.getElementById('biografia').value.trim(),
+                    areas_atuacao: coletarCheckboxes('areas_atuacao'),
+                    instrumentos: coletarCheckboxes('instrumentos'),
+                    daws: coletarCheckboxes('daws'),
+                    generos: coletarCheckboxes('generos'),
+                    disponibilidade: coletarCheckboxes('disponibilidade'),
+                };
+
+                try {
+                    await salvarCadastro(dadosForm);
+                    window.location.href = 'perfil.html';
+                } catch (erro) {
+                    erroMsg.textContent = erro.message;
+                    erroMsg.style.display = 'block';
+                }
+                });
 
         // ── Helpers ──────────────────────────────────────────────────────────
 
@@ -590,7 +595,8 @@
         function coletarCheckboxes(name) {
             return [...document.querySelectorAll(`input[name="${name}"]:checked`)]
                 .map(el => el.value);
-        }
+        }});
     </script>
 </body>
 </html>
+        

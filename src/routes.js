@@ -46,10 +46,20 @@ router.get('/areas', async (req, res) => {
     res.status(500).json({ erro: error.message });
   }
 });
+
 router.get('/daws', async (req, res) => {
   try {
     const daws = await Musico.listarDaws();
     res.status(200).json(daws);
+  } catch (error) {
+    res.status(500).json({ erro: error.message });
+  }
+});
+
+router.get('/disponibilidades', async (req, res) => {
+  try {
+    const disponibilidades = await Musico.listarDisponibilidades();
+    res.status(200).json(disponibilidades);
   } catch (error) {
     res.status(500).json({ erro: error.message });
   }
@@ -71,6 +81,18 @@ router.post('/', async (req, res) => {
     res.status(201).json(novoMusico);
   } catch (error) {
     res.status(400).json({ erro: error.message });
+  }
+});
+
+router.post('/login', async (req, res) => {
+  try {
+    const { email, senha } = req.body;
+    const usuarios = await Musico.read();
+    const usuario = usuarios.find(u => u.email === email && u.senha === senha);
+    if (!usuario) return res.status(401).json({ erro: 'Email ou senha incorretos.' });
+    res.status(200).json(usuario);
+  } catch (error) {
+    res.status(500).json({ erro: error.message });
   }
 });
 
