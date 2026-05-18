@@ -24,9 +24,7 @@ async function up() {
   }
 
   const disponibilidades = [
-    'Manhã','Tarde','Noite','Segunda','Terça','Quarta',
-    'Quinta','Sexta','Sábado','Domingo','Integral',
-    'Fins de semana','Eventos','Shows','Gravações'
+    'Manhã','Tarde','Noite'
   ];
   for (const descricao of disponibilidades) {
     await db.run(`INSERT OR IGNORE INTO disponibilidade (descricao) VALUES (?)`, [descricao]);

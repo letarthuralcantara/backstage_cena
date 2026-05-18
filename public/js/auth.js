@@ -1,11 +1,3 @@
-// js/auth.js
-// Módulo de autenticação: cadastro e login via localStorage.
-// Exporta funções usadas pelas páginas cadastro.html e login.html.
-
-/**
- * Salva os dados do formulário de cadastro no localStorage.
- * @param {Object} dados - objeto com os campos do formulário
- */
 export async function salvarCadastro(dados) {
   const body = {
     nome_completo: dados.nome_completo,
@@ -19,6 +11,12 @@ export async function salvarCadastro(dados) {
     area_atuacao: dados.areas_atuacao?.[0] || null,
     anos_experiencia: Number(dados.anos_experiencia) || 0,
     biografia: dados.biografia || null,
+    
+    // Enviando as listas para o backend
+    instrumentos: dados.instrumentos || [],
+    generos: dados.generos || [],
+    disponibilidades: dados.disponibilidade || [],
+    daws: dados.daws || [],
   };
 
   const res = await fetch('/api/usuarios', {
@@ -37,9 +35,21 @@ export async function salvarCadastro(dados) {
   return usuario;
 }
 
-export function getUsuarioLogado() {
-  const u = localStorage.getItem('usuarioLogado');
-  return u ? JSON.parse(u) : null;
+export async function fazerLogin(email, senha) {
+  const res = await fetch('/api/usuarios/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, senha }),
+  });
+
+  if (!res.ok) {
+    const erro = await res.json();
+    throw new Error(erro.erro || 'Email ou senha incorretos');
+  }
+
+  const usuario = await res.json();
+  localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
+  return usuario;
 }
 
 export function fazerLogout() {
@@ -47,37 +57,11 @@ export function fazerLogout() {
   window.location.href = 'login.html';
 }
 
-/**
- * Valida e-mail e senha contra os cadastros salvos.
- * @param {string} email
- * @param {string} senha
- * @returns {Object} usuário encontrado
- * @throws {Error} se credenciais inválidas
- */
-export function fazerLogin(email, senha) {
-  const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-
-  const usuario = usuarios.find(u => u.email === email && u.senha === senha);
+export function verificarAutenticacao() {
+  const usuario = localStorage.getItem('usuarioLogado');
   if (!usuario) {
-    throw new Error('E-mail ou senha incorretos.');
+    window.location.href = 'login.html';
+    return null;
   }
-
-  // Salva sessão do usuário logado
-  localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
-  return usuario;
-}
-
-/**
- * Remove o usuário da sessão (logout).
- */
-export function fazerLogout() {
-  localStorage.removeItem('usuarioLogado');
-}
-
-/**
- * Retorna o usuário logado ou null se não houver sessão.
- * @returns {Object|null}
- */
-export function getUsuarioLogado() {
-  return JSON.parse(localStorage.getItem('usuarioLogado'));
+  return JSON.parse(usuario);
 }

@@ -10,7 +10,6 @@
     "db:load": "node src/database/load.js",
     "db:drop": "del /f src\\database\\db.sqlite",
     "db:reload": "npm run db:drop && npm run db:load",
-    
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -27,7 +26,8 @@
   "dependencies": {
     "cors": "^2.8.6",
     "express": "^4.22.1",
-    "morgan": "^1.10.1"
+    "morgan": "^1.10.1",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^6.0.1"
   }
- 
 }
