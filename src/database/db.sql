@@ -69,12 +69,7 @@ INSERT INTO genero VALUES
 (13,'Metal'),(14,'Indie'),(15,'Bossa Nova');
 
 INSERT INTO disponibilidade VALUES
-(1,'Manhã'),(2,'Tarde'),(3,'Noite'),
-(4,'Segunda'),(5,'Terça'),(6,'Quarta'),
-(7,'Quinta'),(8,'Sexta'),(9,'Sábado'),
-(10,'Domingo'),(11,'Integral'),
-(12,'Fins de semana'),(13,'Eventos'),
-(14,'Shows'),(15,'Gravações');
+(1,'Manhã'),(2,'Tarde'),(3,'Noite');
 
 -- ========================
 -- USUÁRIOS

@@ -99,7 +99,7 @@ router.post('/login', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const id = Number(req.params.id);
-    const atualizado = await Musico.update({ ...req.body, id });
+    const atualizado = await Musico.update({ ...req.body, id_usuario: id });
     res.status(200).json(atualizado);
   } catch (error) {
     res.status(400).json({ erro: error.message });
