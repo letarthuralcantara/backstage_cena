@@ -1,4 +1,4 @@
-@baseUrl = /
+@baseUrl = http://localhost:3000/api/usuarios
 
 ### GET — listar todos os músicos
 GET {{baseUrl}}
@@ -6,8 +6,32 @@ Accept: application/json
 
 ###
 
-### GET — filtrar por disponibilidade
-GET {{baseUrl}}?disponibilidade=noite
+### GET — listar disponibilidades cadastradas
+GET {{baseUrl}}/disponibilidades
+Accept: application/json
+
+###
+
+### GET — listar instrumentos cadastrados
+GET {{baseUrl}}/instrumentos
+Accept: application/json
+
+###
+
+### GET — listar gêneros cadastrados
+GET {{baseUrl}}/generos
+Accept: application/json
+
+###
+
+### GET — listar DAWs cadastradas
+GET {{baseUrl}}/daws
+Accept: application/json
+
+###
+
+### GET — listar estados dos usuários
+GET {{baseUrl}}/estados
 Accept: application/json
 
 ###
@@ -24,29 +48,70 @@ Accept: application/json
 
 ###
 
-### POST — cadastrar novo músico
+### POST — cadastrar novo músico (válido)
 POST {{baseUrl}}
 Content-Type: application/json
 
 {
-  "nome": "Arthur Alcântara",
-  "nomeArtistico": "Tucko",
+  "nome_completo": "Arthur Alcântara",
+  "nome_artistico": "Tucko",
+  "email": "tucko@mail.com",
+  "senha": "123456",
+  "telefone": "83999999999",
   "cidade": "João Pessoa",
   "estado": "PB",
-  "bio": "Guitarrista e desenvolvedor web.",
-  "generos": ["Trap"],
-  "area": "Produtor",
-  "disponibilidade": ["tarde", "noite"]
+  "bairro": "Tambiá",
+  "area_atuacao": "Produtor",
+  "anos_experiencia": 3,
+  "biografia": "Produtor de trap e beat maker.",
+  "instrumentos": ["Guitarra"],
+  "generos": ["Hip Hop", "Eletrônica"],
+  "disponibilidades": ["Tarde", "Noite"],
+  "daws": ["FL Studio", "Ableton Live"]
 }
 
 ###
 
-### POST — dados inválidos (espera 400)
+### POST — login válido
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "lucas@mail.com",
+  "senha": "123"
+}
+
+###
+
+### POST — login inválido (espera 401)
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "naoexiste@mail.com",
+  "senha": "errado"
+}
+
+###
+
+### POST — dados inválidos, sem email (espera 400)
 POST {{baseUrl}}
 Content-Type: application/json
 
 {
-  "nome": ""
+  "nome_completo": "Sem Email"
+}
+
+###
+
+### POST — email já cadastrado (espera 400)
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+  "nome_completo": "Lucas Duplicado",
+  "email": "lucas@mail.com",
+  "senha": "123"
 }
 
 ###
@@ -56,15 +121,32 @@ PUT {{baseUrl}}/2
 Content-Type: application/json
 
 {
-  "nome": "Mariana Costa",
+  "nome_completo": "Mariana Costa",
+  "nome_artistico": "Mari",
+  "email": "mariana@mail.com",
+  "senha": "123",
   "cidade": "Recife",
-  "area": "Vocalista"
+  "estado": "PE",
+  "bairro": "Boa Viagem",
+  "area_atuacao": "Vocalista",
+  "anos_experiencia": 5,
+  "biografia": "Vocalista de MPB.",
+  "instrumentos": ["Vocal"],
+  "generos": ["MPB", "Bossa Nova"],
+  "disponibilidades": ["Manhã"],
+  "daws": []
 }
 
 ###
 
-### DELETE — remover músico de ID 3
-DELETE {{baseUrl}}/3
+### DELETE — remover músico
+DELETE {{baseUrl}}/9
+Accept: application/json
+
+###
+
+### DELETE — ID inexistente (espera 404)
+DELETE {{baseUrl}}/999
 Accept: application/json
 
 ###
