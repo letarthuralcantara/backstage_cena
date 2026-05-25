@@ -227,14 +227,14 @@
 
     <!-- type="module" habilita import/export ES Modules -->
     <script type="module">
-        import { getUsuarioLogado } from '../js/auth.js';
+        import { verificarAutenticacao } from '../js/auth.js';
 
         // Evento: clique no botão de inscrição
         document.querySelector('.signup-button').addEventListener('click', (e) => {
             e.preventDefault();
 
             // Se já estiver logado, vai direto pro perfil
-            const usuario = getUsuarioLogado();
+            const usuario = verificarAutenticacao();
             if (usuario) {
                 window.location.href = 'perfil.html';
             } else {

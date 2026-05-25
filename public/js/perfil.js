@@ -1,14 +1,20 @@
-import { getUsuarioLogado, fazerLogout } from './auth.js';
+import { verificarAutenticacao, fazerLogout } from './auth.js';
 
 export async function iniciarPerfil() {
-  const usuarioLocal = getUsuarioLogado();
-  if (!usuarioLocal) {
-    window.location.href = 'login.html';
-    return;
-  }
+  // Verifica se tem ?id= na URL (visualizando perfil de outro usuário)
+  const params = new URLSearchParams(window.location.search);
+  const idParam = params.get('id');
 
-  const res = await fetch(`/api/usuarios/${usuarioLocal.id_usuario}`);
-  const u = await res.json();
+  let u;
+  if (idParam) {
+    const res = await fetch(`/api/usuarios/${idParam}`);
+    u = await res.json();
+  } else {
+    const usuarioLocal = verificarAutenticacao();
+    if (!usuarioLocal) return;
+    const res = await fetch(`/api/usuarios/${usuarioLocal.id_usuario}`);
+    u = await res.json();
+  }
 
   const nome = u.nome_artistico || u.nome_completo;
   const iniciais = nome.substring(0, 2).toUpperCase();
@@ -43,23 +49,18 @@ export async function iniciarPerfil() {
     document.getElementById('expRow').classList.remove('hidden');
   }
 
-  // Busca instrumentos e gêneros do banco
-  const resFull = await fetch(`/api/usuarios`);
-  const todos = await resFull.json();
-  const completo = todos.find(x => x.id_usuario === u.id_usuario);
-
-  if (completo?.disponibilidades?.length) {
+  if (u.disponibilidades?.length) {
     const dispSection = document.getElementById('dispSection');
     const dispTags = document.getElementById('dispTags');
     dispSection.classList.remove('hidden');
-    dispTags.innerHTML = completo.disponibilidades.map(d =>
+    dispTags.innerHTML = u.disponibilidades.map(d =>
       `<span class="disp-tag"><i class="fas fa-clock"></i>${d}</span>`
     ).join('');
   }
 
   const talentosCont = document.getElementById('talentosCont');
-  if (completo?.instrumentos?.length) {
-    talentosCont.innerHTML = `<div class="tags-grid">${completo.instrumentos.map(i =>
+  if (u.instrumentos?.length) {
+    talentosCont.innerHTML = `<div class="tags-grid">${u.instrumentos.map(i =>
       `<span class="tag"><i class="fas fa-guitar"></i>${i}</span>`
     ).join('')}</div>`;
   } else {
@@ -67,8 +68,8 @@ export async function iniciarPerfil() {
   }
 
   const generosCont = document.getElementById('generosCont');
-  if (completo?.generos?.length) {
-    generosCont.innerHTML = `<div class="tags-grid">${completo.generos.map(g =>
+  if (u.generos?.length) {
+    generosCont.innerHTML = `<div class="tags-grid">${u.generos.map(g =>
       `<span class="tag">${g}</span>`
     ).join('')}</div>`;
   } else {
