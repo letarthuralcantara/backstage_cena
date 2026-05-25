@@ -2,19 +2,17 @@
 CREATE DATABASE backstage_cena;
 
 -- CRIAR TABELAS 
-CREATE TABLE usuario (
-    id_usuario SERIAL PRIMARY KEY,
-    nome_completo VARCHAR(150) NOT NULL,
-    nome_artistico VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL UNIQUE,       -- corrigido: UNIQUE + NOT NULL
-    senha VARCHAR(255) NOT NULL,
-    telefone VARCHAR(20),
-    cidade VARCHAR(100),
-    estado VARCHAR(2),
-    bairro VARCHAR(100),
-    area_atuacao VARCHAR(100),
-    anos_experiencia INT DEFAULT 0,
-    biografia TEXT                            -- agora usado corretamente como texto descritivo
+CREATE TABLE usuarios (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(100),
+    email VARCHAR(100) UNIQUE,
+    senha VARCHAR(255),
+    nome_artistico VARCHAR(100),
+    instrumento VARCHAR(100),
+    genero_musical VARCHAR(100),
+    bio TEXT,
+    foto_perfil VARCHAR(255),
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE instrumento (
@@ -28,8 +26,16 @@ CREATE TABLE genero (
 );
 
 CREATE TABLE disponibilidade (
-    id_disponibilidade SERIAL PRIMARY KEY,
-    descricao VARCHAR(50) NOT NULL UNIQUE
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    usuario_id INT,
+    dia_semana VARCHAR(20),
+    hora_inicio TIME,
+    hora_fim TIME,
+    modalidade VARCHAR(50),
+
+    FOREIGN KEY (usuario_id)
+    REFERENCES usuarios(id)
+    ON DELETE CASCADE
 );
 
 CREATE TABLE usuario_instrumento (

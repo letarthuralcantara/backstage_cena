@@ -1,4 +1,4 @@
-@baseUrl = https://super-duper-train-7qqqppr7w6r3rq5-3000.app.github.dev/api/usuarios
+@baseUrl = https://crispy-umbrella-5666xx4v9p5249q5-3000.app.github.dev/api/usuarios
 ### GET — listar todos os músicos
 GET {{baseUrl}}
 Accept: application/json

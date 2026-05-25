@@ -137,15 +137,13 @@
             </div>
             <div class="erro-msg" id="erroMsg"></div>
             <form id="cadastroForm">
-                <div class="form-section">
-                    <h2 class="section-title"><i class="fa-solid fa-user"></i> Dados Pessoais</h2>
+                <div id="etapa1">
+                    <!-- só a section de Dados Pessoais: nome, email, senha -->
+                    <div class="form-section">
+                    <h2 class="section-title"><i class="fa-solid fa-user"></i> Dados da Conta</h2>
                     <div class="form-group">
                         <label for="nome_completo">Nome Completo <span class="required">*</span></label>
                         <input type="text" id="nome_completo" name="nome_completo" placeholder="Seu nome completo" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="nome_artistico">Nome Artístico</label>
-                        <input type="text" id="nome_artistico" name="nome_artistico" placeholder="Como você é conhecido na cena">
                     </div>
                     <div class="form-group">
                         <label for="email">E-mail <span class="required">*</span></label>
@@ -155,182 +153,97 @@
                         <label for="senha">Senha <span class="required">*</span></label>
                         <input type="password" id="senha" name="senha" placeholder="Mínimo 6 caracteres" required minlength="6">
                     </div>
-                    <div class="form-group">
-                        <label for="telefone">Telefone</label>
-                        <input type="tel" id="telefone" name="telefone" placeholder="(XX) XXXXX-XXXX">
                     </div>
+                    <button type="submit" class="btn-cadastrar">
+                    <i class="fa-solid fa-arrow-right"></i> Continuar
+                    </button>
                 </div>
-                <div class="form-section">
-                    <h2 class="section-title"><i class="fa-solid fa-map-marker-alt"></i> Localização</h2>
-                    <div class="form-group">
-                        <label for="cidade">Cidade <span class="required">*</span></label>
-                        <input type="text" id="cidade" name="cidade" placeholder="Sua cidade" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="estado">Estado <span class="required">*</span></label>
-                        <select id="estado" name="estado" required>
-                            <option value="">Selecione o estado</option>
-                            <option value="AC">Acre</option><option value="AL">Alagoas</option>
-                            <option value="AP">Amapá</option><option value="AM">Amazonas</option>
-                            <option value="BA">Bahia</option><option value="CE">Ceará</option>
-                            <option value="DF">Distrito Federal</option><option value="ES">Espírito Santo</option>
-                            <option value="GO">Goiás</option><option value="MA">Maranhão</option>
-                            <option value="MT">Mato Grosso</option><option value="MS">Mato Grosso do Sul</option>
-                            <option value="MG">Minas Gerais</option><option value="PA">Pará</option>
-                            <option value="PB">Paraíba</option><option value="PR">Paraná</option>
-                            <option value="PE">Pernambuco</option><option value="PI">Piauí</option>
-                            <option value="RJ">Rio de Janeiro</option><option value="RN">Rio Grande do Norte</option>
-                            <option value="RS">Rio Grande do Sul</option><option value="RO">Rondônia</option>
-                            <option value="RR">Roraima</option><option value="SC">Santa Catarina</option>
-                            <option value="SP">São Paulo</option><option value="SE">Sergipe</option>
-                            <option value="TO">Tocantins</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="bairro">Bairro</label>
-                        <input type="text" id="bairro" name="bairro" placeholder="Seu bairro">
-                    </div>
-                </div>
-                <div class="form-section">
-                    <h2 class="section-title"><i class="fa-solid fa-music"></i> Perfil Musical</h2>
-                    <div class="form-group">
-                        <label>Área de Atuação <span class="required">*</span></label>
-                        <small class="helper-text">Selecione todas que se aplicam</small>
-                        <div class="areas-grid" id="areasGrid"></div>
-                    </div>
-                    <div class="form-group">
-                        <label for="anos_experiencia">Anos de Experiência</label>
-                        <input type="number" id="anos_experiencia" name="anos_experiencia" placeholder="Ex: 5" min="0" max="80">
-                    </div>
-                    <div class="form-group">
-                        <label for="biografia">Sobre Você</label>
-                        <textarea id="biografia" name="biografia" placeholder="Conte um pouco sobre sua jornada musical..."></textarea>
-                    </div>
-                    <div class="form-group hidden" id="instrumentos-section">
-                        <label>Instrumentos que Domina</label>
-                        <div class="checkbox-grid" id="instrumentos-grid"></div>
-                    </div>
-                    <div class="form-group hidden" id="daws-section">
-                        <label>DAWs que Utiliza</label>
-                        <div class="checkbox-grid" id="daws-grid"></div>
-                    </div>
-                    <div class="form-group">
-                        <label>Gêneros Musicais Favoritos <span class="required">*</span></label>
-                        <div class="generos-grid" id="generos-grid"></div>
-                    </div>
-                    <div class="form-group">
-                        <label>Disponibilidade <span class="required">*</span></label>
-                        <div class="checkbox-grid" id="disponibilidade-grid"></div>
-                    </div>
-                </div>
-                <button type="submit" class="btn-cadastrar">
+
+                <div id="etapa2" style="display: none;">
+                    <!-- todas as outras sections: localização + perfil musical -->
+                    <!-- cola aqui as form-sections de localização e perfil musical que já existem -->
+                    <button type="submit" class="btn-cadastrar">
                     <i class="fa-solid fa-arrow-right-to-bracket"></i> Criar Minha Conta
-                </button>
-            </form>
+                    </button>
+                </div>
+
+                    </form>
             <div class="login-link">Já tem uma conta? <a href="login.html">Faça login aqui</a></div>
         </div>
         <div class="back-home"><a href="index.html"><i class="fa-solid fa-arrow-left"></i> Voltar para página inicial</a></div>
     </div>
 
     <script type="module">
-        import { salvarCadastro } from '../js/auth.js';
-        import { fetchDados } from '../js/dados.js';
+        import { salvarCadastro, completarCadastro, verificarAutenticacao } from '../js/auth.js';
+import { fetchDados } from '../js/dados.js';
 
-        const dados = await fetchDados();
+const usuarioLogado = verificarAutenticacao();  // retorna null se não logado, não redireciona
 
-        // Popula Áreas
-        const areasGrid = document.getElementById('areasGrid');
-        dados.areas.forEach(area => {
-            const div = document.createElement('div');
-            div.className = 'area-card';
-            div.innerHTML = `
-                <input type="checkbox" id="area_${area.id}" name="areas_atuacao" value="${area.id}">
-                <label for="area_${area.id}" class="area-label">
-                    <div class="area-icon"><i class="fa-solid ${area.icon}"></i></div>
-                    <div class="area-name">${area.id}</div>
-                    <div class="area-check"><i class="fa-solid fa-check"></i></div>
-                </label>`;
-            areasGrid.appendChild(div);
-        });
+// Se já logado e completo, vai pro perfil
+if (usuarioLogado?.cadastro_completo == 1) {
+  window.location.href = 'perfil.html';
+}
 
-        popularGrid('instrumentos-grid', dados.instrumentos, 'instrumentos', 'inst', i => i.id, i => i.nome);
-        popularGrid('daws-grid', dados.daws, 'daws', 'daw', (d, i) => i, d => d);
-        popularGrid('generos-grid', dados.generos, 'generos', 'gen', g => g.id, g => g.nome);
+const etapa1 = document.getElementById('etapa1');
+const etapa2 = document.getElementById('etapa2');
 
-        const dispGrid = document.getElementById('disponibilidade-grid');
-        dados.disponibilidade.forEach(d => {
-            const div = document.createElement('div');
-            div.className = 'checkbox-item';
-            div.innerHTML = `
-                <input type="checkbox" id="disp_${d.id}" name="disponibilidade" value="${d.id}">
-                <label for="disp_${d.id}" class="checkbox-label">
-                    <div class="checkbox-icon"><i class="fa-solid fa-check"></i></div>
-                    <i class="fa-solid ${d.icon}"></i> ${d.label}
-                </label>`;
-            dispGrid.appendChild(div);
-        });
+// Se já logado mas incompleto, pula direto para etapa 2
+if (usuarioLogado && usuarioLogado.cadastro_completo == 0) {
+  etapa1.style.display = 'none';
+  etapa2.style.display = 'block';
+}
 
-        areasGrid.addEventListener('change', () => {
-            const isInstrumentista = document.getElementById('area_Instrumentista')?.checked;
-            const isProdutor = document.getElementById('area_Produtor')?.checked;
-            document.getElementById('instrumentos-section').classList.toggle('hidden', !isInstrumentista);
-            document.getElementById('daws-section').classList.toggle('hidden', !isProdutor);
-        });
+const dados = await fetchDados();
+// ... resto do código de popular grids igual ao atual ...
 
-        document.getElementById('cadastroForm').addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const erroMsg = document.getElementById('erroMsg');
-            erroMsg.style.display = 'none';
+document.getElementById('cadastroForm').addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const erroMsg = document.getElementById('erroMsg');
+  erroMsg.style.display = 'none';
 
-            const dadosForm = {
-                nome_completo: document.getElementById('nome_completo').value.trim(),
-                nome_artistico: document.getElementById('nome_artistico').value.trim(),
-                email: document.getElementById('email').value.trim(),
-                senha: document.getElementById('senha').value,
-                telefone: document.getElementById('telefone').value.trim(),
-                cidade: document.getElementById('cidade').value.trim(),
-                estado: document.getElementById('estado').value,
-                bairro: document.getElementById('bairro').value.trim(),
-                anos_experiencia: document.getElementById('anos_experiencia').value,
-                biografia: document.getElementById('biografia').value.trim(),
-                areas_atuacao: coletarCheckboxes('areas_atuacao'),
-                instrumentos: coletarCheckboxes('instrumentos'),
-                daws: coletarCheckboxes('daws'),
-                generos: coletarCheckboxes('generos'),
-                disponibilidade: coletarCheckboxes('disponibilidade'),
-            };
+  const etapaAtiva = etapa2.style.display !== 'none' ? 2 : 1;
 
-            try {
-                await salvarCadastro(dadosForm);
-                window.location.href = 'perfil.html';
-            } catch (erro) {
-                erroMsg.textContent = erro.message;
-                erroMsg.style.display = 'block';
-                window.scrollTo(0, 0);
-            }
-        });
-
-        function popularGrid(gridId, itens, nameAttr, idPrefix, getId, getNome) {
-            const grid = document.getElementById(gridId);
-            itens.forEach((item, i) => {
-                const id = getId(item, i);
-                const nome = getNome(item, i);
-                const div = document.createElement('div');
-                div.className = 'checkbox-item';
-                div.innerHTML = `
-                    <input type="checkbox" id="${idPrefix}_${id}" name="${nameAttr}" value="${nome}">
-                    <label for="${idPrefix}_${id}" class="checkbox-label">
-                        <div class="checkbox-icon"><i class="fa-solid fa-check"></i></div>
-                        ${nome}
-                    </label>`;
-                grid.appendChild(div);
-            });
-        }
-
-        function coletarCheckboxes(name) {
-            return [...document.querySelectorAll(`input[name="${name}"]:checked`)]
-                .map(el => el.value);
-        }
+  if (etapaAtiva === 1) {
+    // Salva só o básico e avança para etapa 2
+    const dadosMinimos = {
+      nome_completo: document.getElementById('nome_completo').value.trim(),
+      email: document.getElementById('email').value.trim(),
+      senha: document.getElementById('senha').value,
+      cadastro_completo: 0,
+    };
+    try {
+      await salvarCadastro(dadosMinimos);
+      etapa1.style.display = 'none';
+      etapa2.style.display = 'block';
+      window.scrollTo(0, 0);
+    } catch (erro) {
+      erroMsg.textContent = erro.message;
+      erroMsg.style.display = 'block';
+    }
+  } else {
+    // Etapa 2: completa o perfil
+    const dadosForm = {
+      telefone: document.getElementById('telefone').value.trim(),
+      cidade: document.getElementById('cidade').value.trim(),
+      estado: document.getElementById('estado').value,
+      bairro: document.getElementById('bairro').value.trim(),
+      areas_atuacao: coletarCheckboxes('areas_atuacao'),
+      anos_experiencia: document.getElementById('anos_experiencia').value,
+      biografia: document.getElementById('biografia').value.trim(),
+      instrumentos: coletarCheckboxes('instrumentos'),
+      daws: coletarCheckboxes('daws'),
+      generos: coletarCheckboxes('generos'),
+      disponibilidade: coletarCheckboxes('disponibilidade'),
+    };
+    try {
+      await completarCadastro(dadosForm);
+      window.location.href = 'perfil.html';
+    } catch (erro) {
+      erroMsg.textContent = erro.message;
+      erroMsg.style.display = 'block';
+    }
+  }
+});
     </script>
 </body>
 </html>

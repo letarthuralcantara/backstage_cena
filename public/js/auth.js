@@ -17,7 +17,43 @@ export async function salvarCadastro(dados) {
     generos: dados.generos || [],
     disponibilidades: dados.disponibilidade || [],
     daws: dados.daws || [],
+    cadastro_completo: dados.cadastro_completo ?? 0, 
   };
+  export async function completarCadastro(dados) {
+  const usuarioLocal = JSON.parse(localStorage.getItem('usuarioLogado'));
+  if (!usuarioLocal) throw new Error('Usuário não autenticado.');
+
+  const body = {
+    ...usuarioLocal,
+    telefone: dados.telefone || null,
+    cidade: dados.cidade,
+    estado: dados.estado,
+    bairro: dados.bairro || null,
+    area_atuacao: dados.areas_atuacao?.[0] || null,
+    anos_experiencia: Number(dados.anos_experiencia) || 0,
+    biografia: dados.biografia || null,
+    instrumentos: dados.instrumentos || [],
+    generos: dados.generos || [],
+    disponibilidades: dados.disponibilidade || [],
+    daws: dados.daws || [],
+    cadastro_completo: 1,
+  };
+
+  const res = await fetch(`/api/usuarios/${usuarioLocal.id_usuario}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    const erro = await res.json();
+    throw new Error(erro.erro || 'Erro ao atualizar cadastro');
+  }
+
+  const usuario = await res.json();
+  localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
+  return usuario;
+}
 
   const res = await fetch('/api/usuarios', {
     method: 'POST',
@@ -61,6 +97,14 @@ export function verificarAutenticacao() {
   const usuario = localStorage.getItem('usuarioLogado');
   if (!usuario) {
     window.location.href = 'login.html';
+    return null;
+  }
+  return JSON.parse(usuario);
+}
+export function verificarAutenticacao(redirecionar = true) {
+  const usuario = localStorage.getItem('usuarioLogado');
+  if (!usuario) {
+    if (redirecionar) window.location.href = 'login.html';
     return null;
   }
   return JSON.parse(usuario);

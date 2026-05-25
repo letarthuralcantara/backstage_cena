@@ -75,6 +75,42 @@ export async function iniciarPerfil() {
   } else {
     generosCont.innerHTML = '<p class="empty-state">Nenhum gênero cadastrado.</p>';
   }
+  // Banner de cadastro incompleto (só aparece no perfil próprio)
+if (!idParam && u.cadastro_completo == 0) {
+  const banner = document.createElement('div');
+  banner.style.cssText = `
+    background: rgba(139,92,246,0.15);
+    border: 1px solid rgba(139,92,246,0.4);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  `;
+  banner.innerHTML = `
+    <div style="display:flex; align-items:center; gap:12px;">
+      <i class="fas fa-circle-exclamation" style="color:#a78bfa; font-size:20px;"></i>
+      <div>
+        <p style="font-weight:600; color:#e5e7eb; margin:0 0 2px;">Seu perfil está incompleto</p>
+        <p style="font-size:13px; color:#9ca3af; margin:0;">Adicione sua localização, instrumentos e disponibilidade para aparecer nas buscas.</p>
+      </div>
+    </div>
+    <a href="cadastro.html" style="
+      white-space: nowrap;
+      padding: 10px 20px;
+      background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+      border-radius: 8px;
+      color: white;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+    ">Completar agora</a>
+  `;
+  // Insere antes do profile-layout
+  document.querySelector('.container').prepend(banner);
+}
 
   // Dropdown e logout
   document.getElementById('profileDropdown')?.addEventListener('click', () => {

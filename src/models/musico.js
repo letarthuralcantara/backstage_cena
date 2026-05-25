@@ -46,9 +46,9 @@ async function create(dados) {
     throw new Error('Email já cadastrado.');
   }
 
-  const sql = `
-    INSERT INTO usuario (nome_completo, nome_artistico, email, senha, telefone, cidade, estado, bairro, area_atuacao, anos_experiencia, biografia)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    const sql = `
+    INSERT INTO usuario (nome_completo, nome_artistico, email, senha, telefone, cidade, estado, bairro, area_atuacao, anos_experiencia, biografia, cadastro_completo)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   const { lastID } = await db.run(sql, [
@@ -63,6 +63,7 @@ async function create(dados) {
     dados.area_atuacao || null,
     dados.anos_experiencia || 0,
     dados.biografia || null,
+    dados.cadastro_completo ?? 0,   // << novo campo
   ]);
 
   // Salva relacionamentos
@@ -97,10 +98,19 @@ async function update({ id_usuario, ...dados }) {
     throw new Error(`Usuário com id ${id_usuario} não encontrado.`);
   }
   const sql = `
-    UPDATE usuario SET nome_completo = ?, nome_artistico = ?, email = ?, telefone = ?, cidade = ?, estado = ?, bairro = ?, area_atuacao = ?, anos_experiencia = ?, biografia = ?
-    WHERE id_usuario = ?
-  `;
-  await db.run(sql, [dados.nome_completo, dados.nome_artistico, dados.email, dados.telefone, dados.cidade, dados.estado, dados.bairro, dados.area_atuacao, dados.anos_experiencia, dados.biografia, id_usuario]);
+  UPDATE usuario SET
+    nome_completo = ?, nome_artistico = ?, email = ?, telefone = ?,
+    cidade = ?, estado = ?, bairro = ?, area_atuacao = ?,
+    anos_experiencia = ?, biografia = ?, cadastro_completo = ?
+  WHERE id_usuario = ?
+`;
+await db.run(sql, [
+  dados.nome_completo, dados.nome_artistico, dados.email, dados.telefone,
+  dados.cidade, dados.estado, dados.bairro, dados.area_atuacao,
+  dados.anos_experiencia, dados.biografia,
+  dados.cadastro_completo ?? 1,   // << novo campo — update assume completo por padrão
+  id_usuario
+]);
 
   // Atualiza relacionamentos (apaga e insere novos)
   const categorias = [
