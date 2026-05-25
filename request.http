@@ -1,5 +1,4 @@
-@baseUrl = http://localhost:3000/api/usuarios
-
+@baseUrl = https://super-duper-train-7qqqppr7w6r3rq5-3000.app.github.dev/api/usuarios
 ### GET — listar todos os músicos
 GET {{baseUrl}}
 Accept: application/json
@@ -27,14 +26,6 @@ Accept: application/json
 ### GET — listar DAWs cadastradas
 GET {{baseUrl}}/daws
 Accept: application/json
-
-###
-
-### GET — listar estados dos usuários
-GET {{baseUrl}}/estados
-Accept: application/json
-
-###
 
 ### GET — buscar músico por ID
 GET {{baseUrl}}/1
