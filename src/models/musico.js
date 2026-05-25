@@ -91,6 +91,11 @@ async function create(dados) {
 
 async function update({ id_usuario, ...dados }) {
   const db = await Database.connect();
+  const existe = await db.get('SELECT id_usuario FROM usuario WHERE id_usuario = ?', [id_usuario]);
+  if (!existe) {
+    await db.close();
+    throw new Error(`Usuário com id ${id_usuario} não encontrado.`);
+  }
   const sql = `
     UPDATE usuario SET nome_completo = ?, nome_artistico = ?, email = ?, telefone = ?, cidade = ?, estado = ?, bairro = ?, area_atuacao = ?, anos_experiencia = ?, biografia = ?
     WHERE id_usuario = ?

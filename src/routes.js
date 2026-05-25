@@ -4,9 +4,13 @@ import Musico from './models/musico.js';
 const router = Router();
 
 router.get('/', async (req, res) => {
-  const { disponibilidade } = req.query;
-  const resultado = await Musico.read('disponibilidade', disponibilidade);
-  res.status(200).json(resultado);
+  try {
+    const { disponibilidade } = req.query;
+    const resultado = await Musico.read('disponibilidade', disponibilidade);
+    res.status(200).json(resultado);
+  } catch (error) {
+    res.status(500).json({ erro: error.message });
+  }
 });
 
 router.get('/estados', async (req, res) => {
@@ -75,15 +79,6 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-router.post('/', async (req, res) => {
-  try {
-    const novoMusico = await Musico.create(req.body);
-    res.status(201).json(novoMusico);
-  } catch (error) {
-    res.status(400).json({ erro: error.message });
-  }
-});
-
 router.post('/login', async (req, res) => {
   try {
     const { email, senha } = req.body;
@@ -95,6 +90,17 @@ router.post('/login', async (req, res) => {
     res.status(500).json({ erro: error.message });
   }
 });
+
+router.post('/', async (req, res) => {
+  try {
+    const novoMusico = await Musico.create(req.body);
+    res.status(201).json(novoMusico);
+  } catch (error) {
+    res.status(400).json({ erro: error.message });
+  }
+});
+
+
 
 router.put('/:id', async (req, res) => {
   try {
