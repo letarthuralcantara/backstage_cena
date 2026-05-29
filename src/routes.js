@@ -96,7 +96,7 @@ router.post('/', async (req, res) => {
     const novoMusico = await Musico.create(req.body);
     res.status(201).json(novoMusico);
   } catch (error) {
-    res.status(400).json({ erro: error.message });
+    res.status(404).json({ erro: error.message });
   }
 });
 

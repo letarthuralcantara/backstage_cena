@@ -3,22 +3,7 @@ import Database from './database.js';
 async function up() {
   const db = await Database.connect();
 
-  await db.run(`
-    CREATE TABLE IF NOT EXISTS usuario (
-      id_usuario INTEGER PRIMARY KEY AUTOINCREMENT,
-      nome_completo VARCHAR(150) NOT NULL,
-      nome_artistico VARCHAR(100) NOT NULL,
-      email VARCHAR(100) NOT NULL UNIQUE,
-      senha VARCHAR(255) NOT NULL,
-      telefone VARCHAR(20),
-      cidade VARCHAR(100),
-      estado VARCHAR(2),
-      bairro VARCHAR(100),
-      area_atuacao VARCHAR(100),
-      anos_experiencia INT DEFAULT 0,
-      biografia TEXT
-    )
-  `);
+
     await db.run(`
     CREATE TABLE IF NOT EXISTS usuario (
       id_usuario INTEGER PRIMARY KEY AUTOINCREMENT,

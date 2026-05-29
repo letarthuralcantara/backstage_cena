@@ -5,29 +5,44 @@ export async function salvarCadastro(dados) {
     email: dados.email,
     senha: dados.senha,
     telefone: dados.telefone || null,
-    cidade: dados.cidade,
-    estado: dados.estado,
+    cidade: dados.cidade || null,
+    estado: dados.estado || null,
     bairro: dados.bairro || null,
     area_atuacao: dados.areas_atuacao?.[0] || null,
     anos_experiencia: Number(dados.anos_experiencia) || 0,
     biografia: dados.biografia || null,
-    
-    // Enviando as listas para o backend
     instrumentos: dados.instrumentos || [],
     generos: dados.generos || [],
     disponibilidades: dados.disponibilidade || [],
     daws: dados.daws || [],
-    cadastro_completo: dados.cadastro_completo ?? 0, 
+    cadastro_completo: dados.cadastro_completo ?? 0,
   };
-  export async function completarCadastro(dados) {
+
+  const res = await fetch('/api/usuarios', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    const erro = await res.json();
+    throw new Error(erro.erro || 'Erro ao cadastrar');
+  }
+
+  const usuario = await res.json();
+  localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
+  return usuario;
+}
+
+export async function completarCadastro(dados) {
   const usuarioLocal = JSON.parse(localStorage.getItem('usuarioLogado'));
   if (!usuarioLocal) throw new Error('Usuário não autenticado.');
 
   const body = {
     ...usuarioLocal,
     telefone: dados.telefone || null,
-    cidade: dados.cidade,
-    estado: dados.estado,
+    cidade: dados.cidade || null,
+    estado: dados.estado || null,
     bairro: dados.bairro || null,
     area_atuacao: dados.areas_atuacao?.[0] || null,
     anos_experiencia: Number(dados.anos_experiencia) || 0,
@@ -48,22 +63,6 @@ export async function salvarCadastro(dados) {
   if (!res.ok) {
     const erro = await res.json();
     throw new Error(erro.erro || 'Erro ao atualizar cadastro');
-  }
-
-  const usuario = await res.json();
-  localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
-  return usuario;
-}
-
-  const res = await fetch('/api/usuarios', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
-
-  if (!res.ok) {
-    const erro = await res.json();
-    throw new Error(erro.erro || 'Erro ao cadastrar');
   }
 
   const usuario = await res.json();
@@ -93,14 +92,8 @@ export function fazerLogout() {
   window.location.href = 'login.html';
 }
 
-export function verificarAutenticacao() {
-  const usuario = localStorage.getItem('usuarioLogado');
-  if (!usuario) {
-    window.location.href = 'login.html';
-    return null;
-  }
-  return JSON.parse(usuario);
-}
+// redirecionar=true: redireciona para login se não autenticado
+// redirecionar=false: só retorna null, sem redirecionar (usado no cadastro)
 export function verificarAutenticacao(redirecionar = true) {
   const usuario = localStorage.getItem('usuarioLogado');
   if (!usuario) {

@@ -329,41 +329,23 @@
             background: rgba(139,92,246,0.2); 
         }
         footer { 
-            position: relative;
-            z-index: 1; 
-            padding: 30px 0; 
+            padding: 20px 0; 
+            text-align: center; 
+            color: rgba(255,255,255,0.7); 
+            font-size: 13px; 
+            margin-top: 10px; 
             border-top: 1px solid rgba(255,255,255,0.1); 
-            margin-top: 50px; 
         }
         .footer-content { 
-            max-width: 1000px; 
-            margin: 0 auto; 
-            padding: 0 30px; 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
-            gap: 15px; 
+            gap: 10px; 
         }
         .footer-logo-img { 
-            height: 35px; 
+            height: 30px; 
+            width: auto; 
             opacity: 0.8; 
-        }
-        .footer-text { 
-            color: rgba(255,255,255,0.5); 
-            font-size: 13px; 
-        }
-        .footer-links { 
-            display: flex; 
-            gap: 20px; 
-        }
-        .footer-link { 
-            color: rgba(255,255,255,0.4); 
-            text-decoration: none; 
-            font-size: 13px; 
-            transition: color 0.3s; 
-        }
-        .footer-link:hover { 
-            color: #8b5cf6; 
         }
     </style>
 </head>
@@ -446,14 +428,10 @@
     </div>
 
     <footer>
-        <div class="footer-content">
-            <a href="index.html"<img src="../images/logo.png" alt="Backstage Logo" class="footer-logo-img"></a>
-            <p class="footer-text">A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
-            <div class="footer-links">
-                <a href="#" class="footer-link">Sobre</a>
-                <a href="#" class="footer-link">Termos</a>
-                <a href="#" class="footer-link">Privacidade</a>
-                <a href="#" class="footer-link">Contato</a>
+        <div class="container">
+            <div class="footer-content">
+                <img src="../images/logo.png" alt="Backstage Logo" class="footer-logo-img">
+                <p>A cena musical independente começa aqui. &copy; 2025</p>
             </div>
         </div>
     </footer>
