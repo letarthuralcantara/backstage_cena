@@ -10,8 +10,7 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Inter', sans-serif;
-            min-height: 100vh;
+            font-family: 'Inter', sans-serif; min-height: 100vh;
             background-image: url('../images/background.png');
             background-size: cover; background-position: center;
             background-repeat: no-repeat; background-attachment: fixed;
@@ -19,100 +18,150 @@
         }
         body::before {
             content: ''; position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); z-index: 0;
+            width: 100%; height: 100%; background: rgba(0,0,0,0.55); z-index: 0;
         }
         .header {
-            position: relative; z-index: 100;
-            padding: 16px 40px;
-            display: flex; justify-content: space-between; align-items: center;
-            background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(139,92,246,0.3);
+            position: relative; z-index: 100; width: 100%; padding: 14px 24px;
+            display: grid; grid-template-columns: auto 1fr auto;
+            align-items: center; gap: 16px;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(15px);
+            border-bottom: 2px solid rgba(139,92,246,0.4);
+            box-shadow: 0 4px 30px rgba(0,0,0,0.7);
         }
-        .logo-img { height: 46px; width: auto; }
-        .header-actions { display: flex; gap: 16px; align-items: center; }
-        .btn-back {
-            display: flex; align-items: center; gap: 8px;
-            padding: 10px 20px;
-            background: rgba(139,92,246,0.12);
-            border: 1px solid rgba(139,92,246,0.3);
-            border-radius: 10px; color: #a78bfa;
-            text-decoration: none; font-size: 14px; font-weight: 600;
-            transition: all 0.3s;
+        .header-left { display: flex; align-items: center; }
+        .header-center { display: flex; align-items: center; justify-content: center; }
+        .header-actions { display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
+        .logo-img { height: 44px; width: auto; display: block; }
+        .header-search {
+            width: 100%; max-width: 580px; display: flex; align-items: center;
+            background: rgba(255,255,255,0.07); border: 1.5px solid rgba(139,92,246,0.35);
+            border-radius: 12px; overflow: hidden; transition: all 0.3s; cursor: pointer;
         }
-        .btn-back:hover { background: rgba(139,92,246,0.22); border-color: #8b5cf6; color: white; }
+        .header-search:hover { border-color: #8b5cf6; background: rgba(139,92,246,0.08); }
+        .header-search-icon { padding: 0 12px; color: #8b5cf6; font-size: 14px; flex-shrink: 0; }
+        .header-search-input {
+            flex: 1; min-width: 0; padding: 11px 0;
+            background: transparent; border: none; color: white;
+            font-size: 14px; font-family: 'Inter', sans-serif; cursor: pointer;
+        }
+        .header-search-input::placeholder { color: rgba(255,255,255,0.35); }
+        .header-search-input:focus { outline: none; }
+        .header-search-btn {
+            padding: 11px 18px; background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            border: none; color: white; font-size: 13px; font-weight: 600;
+            cursor: pointer; font-family: 'Inter', sans-serif; transition: opacity 0.2s; flex-shrink: 0;
+        }
+        .header-search-btn:hover { opacity: 0.85; }
+        .profile-dropdown { position: relative; }
+        .profile-trigger {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 14px; cursor: pointer;
+            border: 2px solid rgba(139,92,246,0.5); transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(139,92,246,0.3); overflow: hidden;
+        }
+        .profile-trigger:hover { transform: scale(1.05); border-color: #8b5cf6; }
+        .dropdown-menu {
+            position: absolute; top: 60px; right: 0;
+            background: rgba(26,11,46,0.95); backdrop-filter: blur(10px);
+            border: 1px solid rgba(139,92,246,0.3); border-radius: 15px;
+            padding: 10px; min-width: 220px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            opacity: 0; visibility: hidden; transform: translateY(-10px);
+            transition: all 0.3s; z-index: 200;
+        }
+        .profile-dropdown.active .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+        .dropdown-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 16px; color: #d1d5db; text-decoration: none;
+            border-radius: 10px; transition: all 0.3s; font-size: 14px; cursor: pointer;
+        }
+        .dropdown-item:hover { background: rgba(139,92,246,0.2); color: #a78bfa; }
+        .dropdown-item i { width: 20px; text-align: center; color: #8b5cf6; }
+        .dropdown-divider { height: 1px; background: rgba(139,92,246,0.2); margin: 8px 0; }
 
-        .container {
-            position: relative; z-index: 1;
-            width: 100%; max-width: 900px;
-            margin: 36px auto; padding: 0 24px; flex: 1;
+        .page-wrap {
+            position: relative; z-index: 1; max-width: 960px;
+            margin: 40px auto; padding: 0 24px;
+            display: grid; grid-template-columns: 220px 1fr;
+            gap: 32px; align-items: start; flex: 1;
         }
-
-        .page-title {
-            font-family: 'Poppins', sans-serif;
-            font-size: 28px; font-weight: 700;
-            margin-bottom: 8px;
+        .edit-sidebar {
+            background: rgba(0,0,0,0.6); border: 1px solid rgba(139,92,246,0.2);
+            border-radius: 14px; overflow: hidden; backdrop-filter: blur(10px);
+            position: sticky; top: 30px;
         }
-        .page-subtitle { color: #9ca3af; font-size: 14px; margin-bottom: 32px; }
+        .sidebar-user {
+            padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.07);
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
+        }
+        .sidebar-avatar {
+            width: 72px; height: 72px; border-radius: 50%;
+            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.6rem; font-weight: 700;
+            border: 3px solid rgba(139,92,246,0.5); overflow: hidden;
+        }
+        .sidebar-name { font-size: 14px; font-weight: 600; text-align: center; }
+        .sidebar-nav { padding: 8px; }
+        .nav-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 9px 12px; border-radius: 8px;
+            color: #d1d5db; font-size: 13px; cursor: pointer;
+            transition: all 0.2s; border: none; background: transparent;
+            width: 100%; text-align: left; font-family: 'Inter', sans-serif;
+        }
+        .nav-item:hover { background: rgba(139,92,246,0.15); color: #e5e7eb; }
+        .nav-item.active { background: rgba(139,92,246,0.2); color: white; font-weight: 600; }
+        .nav-item i { width: 16px; text-align: center; color: #8b5cf6; font-size: 13px; }
+        .nav-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 6px 8px; }
 
+        .edit-content { display: flex; flex-direction: column; }
+        .edit-panel { display: none; }
+        .edit-panel.active { display: block; }
+        .panel-header { margin-bottom: 20px; }
+        .panel-title { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+        .panel-subtitle { color: #9ca3af; font-size: 14px; }
         .edit-card {
-            background: rgba(0,0,0,0.65);
-            border: 1px solid rgba(139,92,246,0.2);
-            border-radius: 16px; padding: 28px;
-            margin-bottom: 24px;
+            background: rgba(0,0,0,0.6); border: 1px solid rgba(139,92,246,0.2);
+            border-radius: 14px; padding: 24px; margin-bottom: 16px;
             backdrop-filter: blur(10px);
         }
-        .section-title {
-            font-family: 'Poppins', sans-serif;
-            font-size: 16px; color: #8b5cf6;
-            margin-bottom: 20px;
-            display: flex; align-items: center; gap: 12px;
-            font-weight: 700;
+        .foto-section { display: flex; align-items: center; gap: 20px; padding: 4px 0; }
+        .foto-avatar-big {
+            width: 90px; height: 90px; border-radius: 50%;
+            background: rgba(139,92,246,0.2); border: 3px solid rgba(139,92,246,0.4);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; color: #8b5cf6; font-weight: 700; flex-shrink: 0; overflow: hidden;
         }
-
+        .foto-info { flex: 1; }
+        .foto-info p { color: #d1d5db; font-size: 14px; margin-bottom: 6px; }
+        .foto-info small { color: #6b7280; font-size: 12px; }
+        .btn-upload {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 8px 16px; background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.15); border-radius: 8px;
+            color: #d1d5db; font-size: 13px; cursor: not-allowed; margin-top: 8px; opacity: 0.6;
+        }
+        .em-breve { display: inline-block; background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3); color: #a78bfa; font-size: 11px; padding: 2px 8px; border-radius: 6px; margin-left: 8px; }
         .form-group { margin-bottom: 18px; }
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-        label { display: block; color: #e5e7eb; font-weight: 600; margin-bottom: 8px; font-size: 14px; }
+        label { display: block; color: #9ca3af; font-weight: 500; margin-bottom: 6px; font-size: 13px; }
         input, select, textarea {
-            width: 100%; padding: 12px 14px;
-            background: rgba(255,255,255,0.07);
-            border: 2px solid rgba(255,255,255,0.12);
+            width: 100%; padding: 11px 14px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
             border-radius: 10px; font-size: 14px;
-            font-family: 'Inter', sans-serif;
-            color: white; transition: all 0.3s;
+            font-family: 'Inter', sans-serif; color: white; transition: all 0.3s;
         }
         textarea { min-height: 100px; resize: vertical; }
         select option { background: #1a1a1a; }
-        input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.3); }
+        input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.25); }
         input:focus, select:focus, textarea:focus {
             outline: none; border-color: #8b5cf6;
-            background: rgba(139,92,246,0.08);
-            box-shadow: 0 0 0 3px rgba(139,92,246,0.15);
+            background: rgba(139,92,246,0.07);
+            box-shadow: 0 0 0 3px rgba(139,92,246,0.12);
         }
-
-        .foto-upload {
-            display: flex; align-items: center; gap: 20px;
-            padding: 20px; border: 2px dashed rgba(255,255,255,0.1);
-            border-radius: 12px; background: rgba(255,255,255,0.02);
-            opacity: 0.6; cursor: not-allowed;
-        }
-        .foto-avatar {
-            width: 80px; height: 80px; border-radius: 50%;
-            background: rgba(139,92,246,0.2);
-            border: 2px solid rgba(139,92,246,0.3);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 28px; color: #8b5cf6; flex-shrink: 0;
-            font-weight: 700;
-        }
-        .foto-info p { color: #9ca3af; font-size: 14px; margin-bottom: 5px; }
-        .foto-badge {
-            display: inline-block;
-            background: rgba(139,92,246,0.15);
-            border: 1px solid rgba(139,92,246,0.3);
-            color: #a78bfa; font-size: 11px; padding: 4px 10px; border-radius: 10px;
-        }
-
-        /* Grid de Checkboxes - 3 colunas */
         .checkbox-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
         .checkbox-item input[type="checkbox"] { display: none; }
         .checkbox-label {
@@ -125,33 +174,32 @@
         .checkbox-item input:checked + .checkbox-label { border-color: #8b5cf6; background: rgba(139,92,246,0.15); color: white; }
         .checkbox-icon { width: 15px; height: 15px; background: #8b5cf6; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 8px; opacity: 0; transition: opacity 0.2s; flex-shrink: 0; }
         .checkbox-item input:checked + .checkbox-label .checkbox-icon { opacity: 1; color: white; }
-
-        /* Grid de Gêneros - 2 colunas, mais compacto */
         .generos-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
         .generos-grid .checkbox-label { padding: 8px 12px; border-radius: 20px; font-size: 12px; }
-
-        /* Grid de Áreas - 2 colunas */
-        .areas-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .areas-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
         .area-card input[type="radio"] { display: none; }
         .area-label {
-            display: flex; flex-direction: column; align-items: center; gap: 10px;
-            padding: 16px 12px; border: 2px solid rgba(255,255,255,0.1);
-            border-radius: 12px; cursor: pointer; transition: all 0.3s;
-            background: rgba(255,255,255,0.02);
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            padding: 14px 10px; border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px; cursor: pointer; transition: all 0.3s; background: rgba(255,255,255,0.02);
         }
         .area-label:hover { border-color: #8b5cf6; }
         .area-card input:checked + .area-label { border-color: #8b5cf6; background: rgba(139,92,246,0.15); }
-        .area-icon { font-size: 24px; color: #8b5cf6; }
+        .area-icon { font-size: 22px; color: #8b5cf6; }
         .area-name { font-size: 12px; font-weight: 600; color: #e5e7eb; text-align: center; }
-
-        /* Botões de ação */
-        .action-bar {
-            display: flex; gap: 12px; margin-top: 8px;
+        .social-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
         }
+        .social-item:last-child { border-bottom: none; }
+        .social-icon { width: 32px; height: 32px; border-radius: 8px; background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.2); display: flex; align-items: center; justify-content: center; font-size: 14px; color: #8b5cf6; flex-shrink: 0; }
+        .social-label { width: 90px; font-size: 13px; color: #9ca3af; flex-shrink: 0; }
+        .social-item input { margin: 0; flex: 1; }
+        .action-bar { display: flex; gap: 12px; margin-top: 8px; }
         .btn-salvar {
-            flex: 1; padding: 14px;
+            flex: 1; padding: 13px;
             background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-            border: none; border-radius: 12px; color: white;
+            border: none; border-radius: 10px; color: white;
             font-size: 15px; font-weight: 600; cursor: pointer;
             transition: all 0.3s; font-family: 'Inter', sans-serif;
             display: flex; align-items: center; justify-content: center; gap: 8px;
@@ -159,14 +207,13 @@
         .btn-salvar:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(139,92,246,0.4); }
         .btn-salvar:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
         .btn-cancelar {
-            padding: 14px 24px; background: transparent;
-            border: 2px solid rgba(255,255,255,0.15); border-radius: 12px;
+            padding: 13px 24px; background: transparent;
+            border: 1px solid rgba(255,255,255,0.15); border-radius: 10px;
             color: #9ca3af; font-size: 15px; font-weight: 600;
             cursor: pointer; transition: all 0.3s; font-family: 'Inter', sans-serif;
             text-decoration: none; display: flex; align-items: center;
         }
         .btn-cancelar:hover { border-color: #8b5cf6; color: #a78bfa; }
-
         .sucesso-msg {
             background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3);
             color: #6ee7b7; padding: 12px 16px; border-radius: 8px;
@@ -178,175 +225,288 @@
             color: #f87171; padding: 12px 16px; border-radius: 8px;
             font-size: 14px; margin-bottom: 20px; display: none;
         }
-
         footer {
-            position: relative; z-index: 1;
-            padding: 24px 0; text-align: center;
-            color: rgba(255,255,255,0.6); font-size: 13px;
-            border-top: 1px solid rgba(255,255,255,0.08); margin-top: auto;
+            position: relative; z-index: 1; padding: 24px 0; text-align: center;
+            color: rgba(255,255,255,0.5); font-size: 13px;
+            border-top: 1px solid rgba(255,255,255,0.07); margin-top: 40px;
         }
-        .footer-content { display: flex; flex-direction: column; align-items: center; gap: 10px; }
-        .footer-logo-img { height: 30px; width: auto; opacity: 0.7; }
-
-        @media (max-width: 600px) {
+        .footer-content { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .footer-logo-img { height: 28px; width: auto; opacity: 0.6; }
+        @media (max-width: 700px) {
+            .page-wrap { grid-template-columns: 1fr; padding: 0 16px; }
+            .edit-sidebar { position: static; }
             .form-row { grid-template-columns: 1fr; }
             .checkbox-grid { grid-template-columns: repeat(2, 1fr); }
             .generos-grid { grid-template-columns: 1fr; }
-            .areas-grid { grid-template-columns: 1fr; }
-            .container { padding: 0 16px; margin: 24px auto; }
-            .header { padding: 14px 16px; }
-            .action-bar { flex-direction: column; }
+            .areas-grid { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
 <body>
     <header class="header">
-        <a href="index.html"><img src="../images/logo.png" alt="Backstage Logo" class="logo-img"></a>
+        <div class="header-left">
+            <a href="index.html"><img src="../images/logo.png" alt="Backstage Logo" class="logo-img"></a>
+        </div>
+        <div class="header-center">
+            <div class="header-search" id="searchBar">
+                <i class="fas fa-search header-search-icon"></i>
+                <input type="text" class="header-search-input" placeholder="Buscar músicos..." readonly>
+                <button class="header-search-btn">Buscar</button>
+            </div>
+        </div>
         <div class="header-actions">
-            <a href="perfil.html" class="btn-back"><i class="fas fa-arrow-left"></i> Voltar</a>
+            <div class="profile-dropdown" id="profileDropdown">
+                <div class="profile-trigger" id="profileTrigger"></div>
+                <div class="dropdown-menu">
+                    <a href="perfil.html" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a>
+                    <a href="config.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações</a>
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-item" id="btnSair"><i class="fas fa-sign-out-alt"></i> Sair</div>
+                </div>
+            </div>
         </div>
     </header>
 
-    <div class="container">
-        <h1 class="page-title">Editar Perfil</h1>
-        <p class="page-subtitle">Atualize suas informações e preferências musicais</p>
+    <div class="page-wrap">
+        <aside class="edit-sidebar">
+            <div class="sidebar-user">
+                <div class="sidebar-avatar" id="sidebarAvatar"></div>
+                <div class="sidebar-name" id="sidebarNome"></div>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-item active" data-panel="foto"><i class="fas fa-camera"></i> Foto de Perfil</button>
+                <button class="nav-item" data-panel="dados"><i class="fas fa-user"></i> Dados Pessoais</button>
+                <div class="nav-divider"></div>
+                <button class="nav-item" data-panel="localizacao"><i class="fas fa-map-marker-alt"></i> Localização e Disponibilidade</button>
+                <div class="nav-divider"></div>
+                <button class="nav-item" data-panel="musical"><i class="fas fa-guitar"></i> Área, Instrumentos, Gêneros e DAWs</button>
+                <div class="nav-divider"></div>
+                <button class="nav-item" data-panel="redes"><i class="fas fa-share-alt"></i> Redes Sociais</button>
+            </nav>
+        </aside>
 
-        <div class="sucesso-msg" id="sucessoMsg">
-            <i class="fas fa-check-circle"></i> Perfil atualizado com sucesso!
-        </div>
-        <div class="erro-msg" id="erroMsg"></div>
-
-        <form id="editarForm">
+        <div class="edit-content">
+            <div class="sucesso-msg" id="sucessoMsg"><i class="fas fa-check-circle"></i> Perfil atualizado com sucesso!</div>
+            <div class="erro-msg" id="erroMsg"></div>
 
             <!-- Foto -->
-            <div class="edit-card">
-                <h2 class="section-title"><i class="fa-solid fa-camera"></i> Foto de Perfil</h2>
-                <div class="foto-upload">
-                    <div class="foto-avatar" id="fotoIniciais"></div>
-                    <div class="foto-info">
-                        <p>Upload de foto ainda não disponível</p>
-                        <span class="foto-badge">Em breve</span>
+            <div class="edit-panel active" id="panel-foto">
+                <div class="panel-header">
+                    <h1 class="panel-title">Foto de Perfil</h1>
+                    <p class="panel-subtitle">Sua imagem de identificação na plataforma</p>
+                </div>
+                <div class="edit-card">
+                    <div class="foto-section">
+                        <div class="foto-avatar-big" id="fotoAvatarBig"></div>
+                        <div class="foto-info">
+                            <p>Foto de Perfil <span class="em-breve">Em breve</span></p>
+                            <small>Upload de foto estará disponível em breve. Por enquanto, suas iniciais são exibidas.</small>
+                            <div><button class="btn-upload" disabled><i class="fas fa-upload"></i> Alterar foto</button></div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Dados básicos -->
-            <div class="edit-card">
-                <h2 class="section-title"><i class="fa-solid fa-user"></i> Dados Pessoais</h2>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="nome_completo">Nome Completo</label>
-                        <input type="text" id="nome_completo" placeholder="Seu nome completo">
-                    </div>
-                    <div class="form-group">
-                        <label for="nome_artistico">Nome Artístico</label>
-                        <input type="text" id="nome_artistico" placeholder="Como é conhecido">
-                    </div>
+            <!-- Dados Pessoais -->
+            <div class="edit-panel" id="panel-dados">
+                <div class="panel-header">
+                    <h1 class="panel-title">Dados Pessoais</h1>
+                    <p class="panel-subtitle">Seu nome, contato e descrição</p>
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="email">E-mail</label>
-                        <input type="email" id="email" placeholder="seu@email.com">
+                <div class="edit-card">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nome_completo">Nome Completo</label>
+                            <input type="text" id="nome_completo" placeholder="Seu nome completo">
+                        </div>
+                        <div class="form-group">
+                            <label for="nome_artistico">Nome Artístico</label>
+                            <input type="text" id="nome_artistico" placeholder="Como é conhecido">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="email">E-mail</label>
+                            <input type="email" id="email" placeholder="seu@email.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="telefone">Telefone / WhatsApp</label>
+                            <input type="tel" id="telefone" placeholder="(00) 00000-0000">
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="telefone">Telefone / WhatsApp</label>
-                        <input type="tel" id="telefone" placeholder="(00) 00000-0000">
+                        <label for="biografia">Biografia</label>
+                        <textarea id="biografia" placeholder="Fale sobre você, sua trajetória musical..."></textarea>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="biografia">Biografia</label>
-                    <textarea id="biografia" placeholder="Fale sobre você, sua trajetória musical..."></textarea>
-                </div>
-            </div>
-
-            <!-- Localização -->
-            <div class="edit-card">
-                <h2 class="section-title"><i class="fa-solid fa-location-dot"></i> Localização</h2>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="cidade">Cidade</label>
-                        <input type="text" id="cidade" placeholder="Sua cidade">
-                    </div>
-                    <div class="form-group">
-                        <label for="estado">Estado</label>
-                        <select id="estado">
-                            <option value="">Selecione</option>
-                            <option>AC</option><option>AL</option><option>AM</option><option>AP</option>
-                            <option>BA</option><option>CE</option><option>DF</option><option>ES</option>
-                            <option>GO</option><option>MA</option><option>MG</option><option>MS</option>
-                            <option>MT</option><option>PA</option><option>PB</option><option>PE</option>
-                            <option>PI</option><option>PR</option><option>RJ</option><option>RN</option>
-                            <option>RO</option><option>RR</option><option>RS</option><option>SC</option>
-                            <option>SE</option><option>SP</option><option>TO</option>
-                        </select>
+                    <div class="action-bar">
+                        <a href="perfil.html" class="btn-cancelar">Cancelar</a>
+                        <button type="button" class="btn-salvar" onclick="salvarPerfil()"><i class="fas fa-check"></i> Salvar</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Área de atuação -->
-            <div class="edit-card">
-                <h2 class="section-title"><i class="fa-solid fa-star"></i> Área de Atuação</h2>
-                <div class="areas-grid" id="areasGrid"></div>
+            <!-- Localização e Disponibilidade -->
+            <div class="edit-panel" id="panel-localizacao">
+                <div class="panel-header">
+                    <h1 class="panel-title">Localização e Disponibilidade</h1>
+                    <p class="panel-subtitle">Onde você está e quando pode tocar</p>
+                </div>
+                <div class="edit-card">
+                    <div class="form-row" style="margin-bottom:18px;">
+                        <div class="form-group">
+                            <label for="cidade">Cidade</label>
+                            <input type="text" id="cidade" placeholder="Sua cidade">
+                        </div>
+                        <div class="form-group">
+                            <label for="estado">Estado</label>
+                            <select id="estado">
+                                <option value="">Selecione</option>
+                                <option>AC</option><option>AL</option><option>AM</option><option>AP</option>
+                                <option>BA</option><option>CE</option><option>DF</option><option>ES</option>
+                                <option>GO</option><option>MA</option><option>MG</option><option>MS</option>
+                                <option>MT</option><option>PA</option><option>PB</option><option>PE</option>
+                                <option>PI</option><option>PR</option><option>RJ</option><option>RN</option>
+                                <option>RO</option><option>RR</option><option>RS</option><option>SC</option>
+                                <option>SE</option><option>SP</option><option>TO</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Disponibilidade</label>
+                        <div class="checkbox-grid" id="disponibilidadeGrid"></div>
+                    </div>
+                    <div class="action-bar">
+                        <a href="perfil.html" class="btn-cancelar">Cancelar</a>
+                        <button type="button" class="btn-salvar" onclick="salvarPerfil()"><i class="fas fa-check"></i> Salvar</button>
+                    </div>
+                </div>
             </div>
 
-            <!-- Instrumentos -->
-            <div class="edit-card">
-                <h2 class="section-title"><i class="fa-solid fa-guitar"></i> Instrumentos</h2>
-                <div class="checkbox-grid" id="instrumentosGrid"></div>
+            <!-- Área, Instrumentos, Gêneros, DAWs -->
+            <div class="edit-panel" id="panel-musical">
+                <div class="panel-header">
+                    <h1 class="panel-title">Área, Instrumentos, Gêneros e DAWs</h1>
+                    <p class="panel-subtitle">Suas habilidades e preferências musicais</p>
+                </div>
+                <div class="edit-card" style="margin-bottom:12px;">
+                    <div class="form-group">
+                        <label>Área de Atuação</label>
+                        <div class="areas-grid" id="areasGrid"></div>
+                    </div>
+                </div>
+                <div class="edit-card" style="margin-bottom:12px;">
+                    <div class="form-group">
+                        <label>Instrumentos</label>
+                        <div class="checkbox-grid" id="instrumentosGrid"></div>
+                    </div>
+                </div>
+                <div class="edit-card" style="margin-bottom:12px;">
+                    <div class="form-group">
+                        <label>Gêneros Musicais</label>
+                        <div class="generos-grid" id="generosGrid"></div>
+                    </div>
+                </div>
+                <div class="edit-card">
+                    <div class="form-group">
+                        <label>DAWs que usa</label>
+                        <div class="checkbox-grid" id="dawsGrid"></div>
+                    </div>
+                    <div class="action-bar">
+                        <a href="perfil.html" class="btn-cancelar">Cancelar</a>
+                        <button type="button" class="btn-salvar" onclick="salvarPerfil()"><i class="fas fa-check"></i> Salvar</button>
+                    </div>
+                </div>
             </div>
 
-            <!-- Gêneros -->
-            <div class="edit-card">
-                <h2 class="section-title"><i class="fa-solid fa-music"></i> Gêneros Musicais</h2>
-                <div class="generos-grid" id="generosGrid"></div>
+            <!-- Redes Sociais -->
+            <div class="edit-panel" id="panel-redes">
+                <div class="panel-header">
+                    <h1 class="panel-title">Redes Sociais</h1>
+                    <p class="panel-subtitle">Seus links aparecerão no seu perfil</p>
+                </div>
+                <div class="edit-card">
+                    <div id="redesSociaisForm">
+                        <div class="social-item">
+                            <div class="social-icon"><i class="fa-brands fa-instagram"></i></div>
+                            <span class="social-label">Instagram</span>
+                            <input type="url" id="social_instagram" placeholder="https://instagram.com/seunome">
+                        </div>
+                        <div class="social-item">
+                            <div class="social-icon"><i class="fa-brands fa-youtube"></i></div>
+                            <span class="social-label">YouTube</span>
+                            <input type="url" id="social_youtube" placeholder="https://youtube.com/@seunome">
+                        </div>
+                        <div class="social-item">
+                            <div class="social-icon"><i class="fa-brands fa-spotify"></i></div>
+                            <span class="social-label">Spotify</span>
+                            <input type="url" id="social_spotify" placeholder="https://open.spotify.com/artist/...">
+                        </div>
+                        <div class="social-item">
+                            <div class="social-icon"><i class="fa-brands fa-soundcloud"></i></div>
+                            <span class="social-label">SoundCloud</span>
+                            <input type="url" id="social_soundcloud" placeholder="https://soundcloud.com/seunome">
+                        </div>
+                        <div class="social-item">
+                            <div class="social-icon"><i class="fa-brands fa-tiktok"></i></div>
+                            <span class="social-label">TikTok</span>
+                            <input type="url" id="social_tiktok" placeholder="https://tiktok.com/@seunome">
+                        </div>
+                        <div class="social-item">
+                            <div class="social-icon"><i class="fa-brands fa-x-twitter"></i></div>
+                            <span class="social-label">X / Twitter</span>
+                            <input type="url" id="social_twitter" placeholder="https://twitter.com/seunome">
+                        </div>
+                        <div class="social-item">
+                            <div class="social-icon"><i class="fa-brands fa-facebook"></i></div>
+                            <span class="social-label">Facebook</span>
+                            <input type="url" id="social_facebook" placeholder="https://facebook.com/seunome">
+                        </div>
+                        <div class="social-item">
+                            <div class="social-icon"><i class="fa-brands fa-linkedin"></i></div>
+                            <span class="social-label">LinkedIn</span>
+                            <input type="url" id="social_linkedin" placeholder="https://linkedin.com/in/seunome">
+                        </div>
+                        <div class="social-item">
+                            <div class="social-icon"><i class="fa-solid fa-globe"></i></div>
+                            <span class="social-label">Site</span>
+                            <input type="url" id="social_site" placeholder="https://seusite.com">
+                        </div>
+                    </div>
+                    <div class="action-bar" style="margin-top:20px;">
+                        <a href="perfil.html" class="btn-cancelar">Cancelar</a>
+                        <button type="button" class="btn-salvar" onclick="salvarPerfil()"><i class="fas fa-check"></i> Salvar</button>
+                    </div>
+                </div>
             </div>
 
-            <!-- Disponibilidade -->
-            <div class="edit-card">
-                <h2 class="section-title"><i class="fa-solid fa-clock"></i> Disponibilidade</h2>
-                <div class="checkbox-grid" id="disponibilidadeGrid"></div>
-            </div>
-
-            <!-- DAWs -->
-            <div class="edit-card">
-                <h2 class="section-title"><i class="fa-solid fa-sliders"></i> DAWs que usa</h2>
-                <div class="checkbox-grid" id="dawsGrid"></div>
-            </div>
-
-            <div class="action-bar">
-                <a href="perfil.html" class="btn-cancelar">Cancelar</a>
-                <button type="submit" class="btn-salvar" id="btnSalvar">
-                    <i class="fas fa-check"></i> Salvar Alterações
-                </button>
-            </div>
-        </form>
+        </div>
     </div>
 
     <footer>
-        <div class="container">
-            <div class="footer-content">
-                <img src="../images/logo.png" alt="Backstage Logo" class="footer-logo-img">
-                <p>A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
-            </div>
+        <div class="footer-content">
+            <img src="../images/logo.png" alt="Backstage Logo" class="footer-logo-img">
+            <p>A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
         </div>
     </footer>
 
     <script type="module">
-        import { verificarAutenticacao } from '../js/auth.js';
+        import { verificarAutenticacao, fazerLogout } from '../js/auth.js';
         import { fetchDados } from '../js/dados.js';
 
         const usuario = verificarAutenticacao();
-        if (!usuario) return;
+        if (!usuario) { window.location.href = 'login.html'; }
 
-        // Busca dados atuais do usuário
         const res = await fetch(`/api/usuarios/${usuario.id_usuario}`);
         const u = await res.json();
 
-        // Iniciais na foto
         const nome = u.nome_artistico || u.nome_completo;
-        document.getElementById('fotoIniciais').textContent = nome.substring(0, 2).toUpperCase();
+        const iniciais = nome.substring(0, 2).toUpperCase();
 
-        // Preenche campos de texto
+        document.getElementById('sidebarAvatar').textContent = iniciais;
+        document.getElementById('sidebarNome').textContent = nome;
+        document.getElementById('profileTrigger').textContent = iniciais;
+        document.getElementById('fotoAvatarBig').textContent = iniciais;
+
         document.getElementById('nome_completo').value  = u.nome_completo || '';
         document.getElementById('nome_artistico').value = u.nome_artistico || '';
         document.getElementById('email').value          = u.email || '';
@@ -355,19 +515,18 @@
         document.getElementById('cidade').value         = u.cidade || '';
         if (u.estado) document.getElementById('estado').value = u.estado;
 
-        // Popula e marca opções
+        const redes = u.redes_sociais || {};
+        ['instagram','youtube','spotify','soundcloud','tiktok','twitter','facebook','linkedin','site'].forEach(k => {
+            const el = document.getElementById(`social_${k}`);
+            if (el && redes[k]) el.value = redes[k];
+        });
+
         const dados = await fetchDados();
 
-        // Áreas
-        const areaIcones = { 
-            'Vocalista':'fa-microphone',
-            'Instrumentista':'fa-guitar',
-            'Produtor':'fa-sliders',
-            'Compositor':'fa-pen-nib',
-            'DJ':'fa-headphones',
-            'Beatmaker':'fa-drum' 
+        const areaIcones = {
+            'Vocalista':'fa-microphone','Instrumentista':'fa-guitar','Produtor':'fa-sliders',
+            'Compositor':'fa-pen-nib','DJ':'fa-headphones','Beatmaker':'fa-drum'
         };
-        
         document.getElementById('areasGrid').innerHTML =
             ['Vocalista','Instrumentista','Produtor','Compositor','DJ','Beatmaker'].map(a => `
                 <div class="area-card">
@@ -378,7 +537,6 @@
                     </label>
                 </div>`).join('');
 
-        // Instrumentos
         document.getElementById('instrumentosGrid').innerHTML = dados.instrumentos.map(i => `
             <div class="checkbox-item">
                 <input type="checkbox" id="inst_${i.id}" name="instrumentos" value="${i.nome}" ${(u.instrumentos||[]).includes(i.nome) ? 'checked' : ''}>
@@ -387,7 +545,6 @@
                 </label>
             </div>`).join('');
 
-        // Gêneros
         document.getElementById('generosGrid').innerHTML = dados.generos.map(g => `
             <div class="checkbox-item">
                 <input type="checkbox" id="gen_${g.id}" name="generos" value="${g.nome}" ${(u.generos||[]).includes(g.nome) ? 'checked' : ''}>
@@ -396,7 +553,6 @@
                 </label>
             </div>`).join('');
 
-        // Disponibilidade
         document.getElementById('disponibilidadeGrid').innerHTML = dados.disponibilidade.map(d => `
             <div class="checkbox-item">
                 <input type="checkbox" id="disp_${d.id}" name="disponibilidade" value="${d.id}" ${(u.disponibilidades||[]).includes(d.label) ? 'checked' : ''}>
@@ -405,9 +561,8 @@
                 </label>
             </div>`).join('');
 
-        // DAWs - CORRIGIDO
         document.getElementById('dawsGrid').innerHTML = dados.daws.map(d => {
-            const idSafe = d.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
+            const idSafe = d.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'');
             return `
             <div class="checkbox-item">
                 <input type="checkbox" id="daw_${idSafe}" name="daws" value="${d}" ${(u.daws||[]).includes(d) ? 'checked' : ''}>
@@ -417,19 +572,35 @@
             </div>`;
         }).join('');
 
-        function coletarCheckboxes(name) {
-            return [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(el => el.value);
-        }
+        const navItems = document.querySelectorAll('.nav-item[data-panel]');
+        const panels = document.querySelectorAll('.edit-panel');
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                navItems.forEach(n => n.classList.remove('active'));
+                panels.forEach(p => p.classList.remove('active'));
+                item.classList.add('active');
+                document.getElementById('panel-' + item.dataset.panel)?.classList.add('active');
+                window.scrollTo(0, 0);
+            });
+        });
 
-        document.getElementById('editarForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('btnSalvar');
+        window.salvarPerfil = async function() {
+            const btns = document.querySelectorAll('.btn-salvar');
             const erroMsg = document.getElementById('erroMsg');
             const sucessoMsg = document.getElementById('sucessoMsg');
             erroMsg.style.display = 'none';
             sucessoMsg.style.display = 'none';
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+            btns.forEach(b => { b.disabled = true; b.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...'; });
+
+            function coletarCheckboxes(name) {
+                return [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(el => el.value);
+            }
+
+            const redesSociais = {};
+            ['instagram','youtube','spotify','soundcloud','tiktok','twitter','facebook','linkedin','site'].forEach(k => {
+                const v = document.getElementById(`social_${k}`)?.value?.trim();
+                if (v) redesSociais[k] = v;
+            });
 
             const area = document.querySelector('input[name="area_atuacao"]:checked')?.value || u.area_atuacao || '';
 
@@ -446,17 +617,18 @@
                 generos:        coletarCheckboxes('generos'),
                 disponibilidades: coletarCheckboxes('disponibilidade'),
                 daws:           coletarCheckboxes('daws'),
+                redes_sociais:  redesSociais,
                 cadastro_completo: 1,
             };
 
             try {
-                const res = await fetch(`/api/usuarios/${usuario.id_usuario}`, {
+                const r = await fetch(`/api/usuarios/${usuario.id_usuario}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(dadosForm),
                 });
-                if (!res.ok) throw new Error((await res.json()).erro);
-                const atualizado = await res.json();
+                if (!r.ok) throw new Error((await r.json()).erro);
+                const atualizado = await r.json();
                 localStorage.setItem('usuarioLogado', JSON.stringify(atualizado));
                 sucessoMsg.style.display = 'flex';
                 window.scrollTo(0, 0);
@@ -465,10 +637,23 @@
                 erroMsg.textContent = erro.message;
                 erroMsg.style.display = 'block';
             } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-check"></i> Salvar Alterações';
+                btns.forEach(b => { b.disabled = false; b.innerHTML = '<i class="fas fa-check"></i> Salvar'; });
             }
+        };
+
+        document.getElementById('profileDropdown')?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.getElementById('profileDropdown').classList.toggle('active');
         });
+        document.addEventListener('click', () => {
+            document.getElementById('profileDropdown')?.classList.remove('active');
+        });
+
+        document.getElementById('searchBar')?.addEventListener('click', () => {
+            window.location.href = 'pesquisar_usuarios.html?focar=true';
+        });
+
+        document.getElementById('btnSair')?.addEventListener('click', fazerLogout);
     </script>
 </body>
 </html>

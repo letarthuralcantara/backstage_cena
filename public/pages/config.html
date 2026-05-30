@@ -20,464 +20,444 @@
         body::before {
             content: ''; position: fixed; top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); z-index: 0;
+            background: rgba(0,0,0,0.55); z-index: 0;
         }
         .header {
             position: relative; z-index: 100;
-            padding: 16px 40px;
-            display: flex; justify-content: space-between; align-items: center;
-            background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(139,92,246,0.3);
+            width: 100%; padding: 14px 24px;
+            display: grid; grid-template-columns: auto 1fr auto;
+            align-items: center; gap: 16px;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(15px);
+            border-bottom: 2px solid rgba(139,92,246,0.4);
+            box-shadow: 0 4px 30px rgba(0,0,0,0.7);
         }
-        .logo-img { height: 46px; width: auto; }
-        .header-actions { display: flex; gap: 16px; align-items: center; }
-        .btn-back {
-            display: flex; align-items: center; gap: 8px;
-            padding: 10px 20px;
-            background: rgba(139,92,246,0.12);
-            border: 1px solid rgba(139,92,246,0.3);
-            border-radius: 10px; color: #a78bfa;
-            text-decoration: none; font-size: 14px; font-weight: 600;
-            transition: all 0.3s;
-        }
-        .btn-back:hover { background: rgba(139,92,246,0.22); border-color: #8b5cf6; color: white; }
-
-        .container {
-            position: relative; z-index: 1;
-            width: 100%; max-width: 700px;
-            margin: 36px auto; padding: 0 24px; flex: 1;
-        }
-
-        .page-title {
-            font-family: 'Poppins', sans-serif;
-            font-size: 28px; font-weight: 700;
-            margin-bottom: 8px;
-        }
-        .page-subtitle { color: #9ca3af; font-size: 14px; margin-bottom: 32px; }
-
-        .settings-card {
-            background: rgba(0,0,0,0.65);
-            border: 1px solid rgba(139,92,246,0.2);
-            border-radius: 16px; padding: 24px;
-            margin-bottom: 20px;
-            backdrop-filter: blur(10px);
-        }
-
-        .section-title {
-            font-family: 'Poppins', sans-serif;
-            font-size: 14px; color: #8b5cf6;
-            margin-bottom: 18px;
-            display: flex; align-items: center; gap: 10px;
-            font-weight: 600;
-        }
-
-        .settings-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.07);
-        }
-
-        .settings-item:last-child {
-            border-bottom: none;
-        }
-
-        .settings-item-left {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .settings-item-label {
-            font-size: 14px;
-            font-weight: 500;
-            color: #e5e7eb;
-        }
-
-        .settings-item-desc {
-            font-size: 12px;
-            color: #9ca3af;
-        }
-
-        .toggle-switch {
-            position: relative;
-            width: 48px;
-            height: 28px;
-            background: rgba(139,92,246,0.3);
-            border-radius: 14px;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 1px solid rgba(139,92,246,0.4);
-        }
-
-        .toggle-switch.active {
-            background: rgba(139,92,246,0.8);
-            border-color: #8b5cf6;
-        }
-
-        .toggle-circle {
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 24px;
-            height: 24px;
-            background: white;
-            border-radius: 50%;
-            transition: all 0.3s;
-        }
-
-        .toggle-switch.active .toggle-circle {
-            left: 22px;
-        }
-
-        .danger-zone {
-            background: rgba(239,68,68,0.08);
-            border: 1px solid rgba(239,68,68,0.2);
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-
-        .danger-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #f87171;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .danger-desc {
-            font-size: 13px;
-            color: #9ca3af;
-            margin-bottom: 16px;
-        }
-
-        .btn-danger {
-            width: 100%;
-            padding: 12px;
-            background: rgba(239,68,68,0.15);
-            border: 1px solid rgba(239,68,68,0.4);
-            border-radius: 10px;
-            color: #f87171;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-family: 'Inter', sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .btn-danger:hover {
-            background: rgba(239,68,68,0.25);
-            border-color: #ef4444;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 200;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal.show {
-            display: flex;
-        }
-
-        .modal-content {
-            background: rgba(26,11,46,0.95);
-            border: 1px solid rgba(139,92,246,0.3);
-            border-radius: 16px;
-            padding: 32px;
-            max-width: 400px;
-            backdrop-filter: blur(10px);
-            animation: slideUp 0.3s ease-out;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .modal-title {
-            font-family: 'Poppins', sans-serif;
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            color: #e5e7eb;
-        }
-
-        .modal-desc {
-            font-size: 14px;
-            color: #9ca3af;
-            margin-bottom: 24px;
-            line-height: 1.6;
-        }
-
-        .modal-input {
-            width: 100%;
-            padding: 12px 14px;
+        .header-left { display: flex; align-items: center; }
+        .header-center { display: flex; align-items: center; justify-content: center; }
+        .header-actions { display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
+        .logo-img { height: 44px; width: auto; display: block; }
+        .header-search {
+            width: 100%; max-width: 580px;
+            display: flex; align-items: center;
             background: rgba(255,255,255,0.07);
-            border: 2px solid rgba(255,255,255,0.12);
-            border-radius: 10px;
-            font-size: 14px;
+            border: 1.5px solid rgba(139,92,246,0.35);
+            border-radius: 12px; overflow: hidden;
+            transition: border-color 0.3s, box-shadow 0.3s; cursor: pointer;
+        }
+        .header-search:hover { border-color: #8b5cf6; background: rgba(139,92,246,0.08); box-shadow: 0 0 0 3px rgba(139,92,246,0.15); }
+        .header-search-icon { padding: 0 12px; color: #8b5cf6; font-size: 14px; flex-shrink: 0; }
+        .header-search-input {
+            flex: 1; min-width: 0; padding: 11px 0;
+            background: transparent; border: none; color: white;
+            font-size: 14px; font-family: 'Inter', sans-serif; cursor: pointer;
+        }
+        .header-search-input::placeholder { color: rgba(255,255,255,0.35); }
+        .header-search-input:focus { outline: none; }
+        .header-search-btn {
+            padding: 11px 18px; background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            border: none; color: white; font-size: 13px; font-weight: 600;
+            cursor: pointer; font-family: 'Inter', sans-serif; transition: opacity 0.2s; flex-shrink: 0;
+        }
+        .header-search-btn:hover { opacity: 0.85; }
+        .profile-dropdown { position: relative; }
+        .profile-trigger {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 14px; cursor: pointer;
+            border: 2px solid rgba(139,92,246,0.5); transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(139,92,246,0.3); overflow: hidden;
+        }
+        .profile-trigger:hover { transform: scale(1.05); border-color: #8b5cf6; }
+        .profile-incomplete-badge {
+            position: absolute; top: -5px; right: -5px;
+            width: 18px; height: 18px; background: #f59e0b; border-radius: 50%;
+            border: 2px solid rgba(0,0,0,0.8); display: none;
+            align-items: center; justify-content: center;
+            font-size: 10px; color: white; font-weight: 700; z-index: 10;
+        }
+        .profile-incomplete-badge.show { display: flex; }
+        .dropdown-menu {
+            position: absolute; top: 60px; right: 0;
+            background: rgba(26,11,46,0.95); backdrop-filter: blur(10px);
+            border: 1px solid rgba(139,92,246,0.3); border-radius: 15px;
+            padding: 10px; min-width: 220px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            opacity: 0; visibility: hidden; transform: translateY(-10px);
+            transition: all 0.3s; z-index: 200;
+        }
+        .profile-dropdown.active .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+        .dropdown-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 16px; color: #d1d5db; text-decoration: none;
+            border-radius: 10px; transition: all 0.3s; font-size: 14px; cursor: pointer;
+        }
+        .dropdown-item:hover { background: rgba(139,92,246,0.2); color: #a78bfa; }
+        .dropdown-item i { width: 20px; text-align: center; color: #8b5cf6; }
+        .dropdown-divider { height: 1px; background: rgba(139,92,246,0.2); margin: 8px 0; }
+
+        .page-wrap {
+            position: relative; z-index: 1;
+            max-width: 960px; margin: 40px auto; padding: 0 24px;
+            display: grid; grid-template-columns: 220px 1fr;
+            gap: 32px; align-items: start; flex: 1;
+        }
+        .settings-sidebar {
+            background: rgba(0,0,0,0.6);
+            border: 1px solid rgba(139,92,246,0.2);
+            border-radius: 14px; overflow: hidden;
+            backdrop-filter: blur(10px);
+            position: sticky; top: 30px;
+        }
+        .sidebar-profile {
+            padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.07);
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
+        }
+        .sidebar-avatar {
+            width: 72px; height: 72px; border-radius: 50%;
+            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.6rem; font-weight: 700;
+            border: 3px solid rgba(139,92,246,0.5); overflow: hidden;
+        }
+        .sidebar-name { font-size: 14px; font-weight: 600; text-align: center; }
+        .sidebar-email { font-size: 12px; color: #9ca3af; text-align: center; word-break: break-all; }
+        .sidebar-nav { padding: 8px; }
+        .nav-section-title {
+            font-size: 11px; color: #6b7280;
+            text-transform: uppercase; letter-spacing: 1px;
+            padding: 10px 12px 4px; font-weight: 600;
+        }
+        .nav-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 9px 12px; border-radius: 8px;
+            color: #d1d5db; font-size: 13px; cursor: pointer;
+            transition: all 0.2s; text-decoration: none; border: none;
+            background: transparent; width: 100%; text-align: left;
             font-family: 'Inter', sans-serif;
-            color: white;
-            margin-bottom: 20px;
-            transition: all 0.3s;
         }
-
-        .modal-input::placeholder {
-            color: rgba(255,255,255,0.3);
+        .nav-item:hover { background: rgba(139,92,246,0.15); color: #e5e7eb; }
+        .nav-item.active { background: rgba(139,92,246,0.2); color: white; font-weight: 600; }
+        .nav-item i { width: 16px; text-align: center; color: #8b5cf6; font-size: 13px; }
+        .nav-item .nav-badge {
+            margin-left: auto;
+            background: #f59e0b; color: #000;
+            font-size: 10px; font-weight: 700;
+            padding: 2px 6px; border-radius: 10px; display: none;
         }
+        .nav-item .nav-badge.show { display: block; }
+        .nav-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 6px 8px; }
 
-        .modal-input:focus {
-            outline: none;
-            border-color: #8b5cf6;
-            background: rgba(139,92,246,0.08);
-            box-shadow: 0 0 0 3px rgba(139,92,246,0.15);
+        .settings-content { display: flex; flex-direction: column; }
+        .settings-panel { display: none; }
+        .settings-panel.active { display: block; }
+        .panel-header { margin-bottom: 24px; }
+        .panel-title { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+        .panel-subtitle { color: #9ca3af; font-size: 14px; }
+        .settings-card {
+            background: rgba(0,0,0,0.6);
+            border: 1px solid rgba(139,92,246,0.2);
+            border-radius: 14px; overflow: hidden;
+            backdrop-filter: blur(10px); margin-bottom: 16px;
         }
-
-        .modal-actions {
-            display: flex;
-            gap: 12px;
+        .settings-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,0.05);
         }
-
-        .modal-btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .modal-btn-cancel {
-            background: rgba(255,255,255,0.1);
-            color: #9ca3af;
-            border: 1px solid rgba(255,255,255,0.15);
-        }
-
-        .modal-btn-cancel:hover {
+        .settings-row:last-child { border-bottom: none; }
+        .settings-row-left { display: flex; flex-direction: column; gap: 3px; }
+        .settings-row-label { font-size: 14px; font-weight: 500; color: #e5e7eb; }
+        .settings-row-desc { font-size: 12px; color: #9ca3af; }
+        .toggle-switch {
+            position: relative; width: 44px; height: 24px;
             background: rgba(255,255,255,0.15);
-            color: #e5e7eb;
+            border-radius: 12px; cursor: pointer; transition: all 0.3s;
+            border: 1px solid rgba(255,255,255,0.2); flex-shrink: 0;
         }
-
-        .modal-btn-confirm {
-            background: rgba(239,68,68,0.2);
-            color: #f87171;
-            border: 1px solid rgba(239,68,68,0.3);
+        .toggle-switch.active { background: #7c3aed; border-color: #8b5cf6; }
+        .toggle-circle {
+            position: absolute; top: 2px; left: 2px;
+            width: 20px; height: 20px; background: white;
+            border-radius: 50%; transition: all 0.3s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
         }
-
-        .modal-btn-confirm:hover {
-            background: rgba(239,68,68,0.3);
+        .toggle-switch.active .toggle-circle { left: 22px; }
+        .btn-link {
+            display: flex; align-items: center; gap: 6px;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 8px; color: #d1d5db;
+            text-decoration: none; font-size: 13px; font-weight: 500;
+            transition: all 0.2s; white-space: nowrap;
         }
-
-        .modal-btn-confirm:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
+        .btn-link:hover { background: rgba(139,92,246,0.2); border-color: rgba(139,92,246,0.4); color: white; }
+        .pending-row {
+            display: flex; align-items: center; gap: 8px;
+            background: rgba(245,158,11,0.08);
+            border: 1px solid rgba(245,158,11,0.25);
+            border-radius: 8px; padding: 10px 14px;
+            font-size: 13px; color: #fcd34d; margin: 16px 20px;
         }
-
-        .erro-msg {
+        .pending-row i { color: #f59e0b; }
+        .danger-card {
+            background: rgba(239,68,68,0.07);
+            border: 1px solid rgba(239,68,68,0.25);
+            border-radius: 14px; overflow: hidden; margin-bottom: 16px;
+        }
+        .danger-card .card-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(239,68,68,0.15);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .danger-card .card-header-title { font-size: 14px; font-weight: 600; color: #f87171; }
+        .danger-inner { padding: 20px; }
+        .danger-desc { font-size: 13px; color: #9ca3af; margin-bottom: 16px; line-height: 1.6; }
+        .btn-danger {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            padding: 10px 20px;
             background: rgba(239,68,68,0.12);
-            border: 1px solid rgba(239,68,68,0.3);
-            color: #f87171;
-            padding: 12px 16px;
-            border-radius: 8px;
-            font-size: 13px;
+            border: 1px solid rgba(239,68,68,0.35);
+            border-radius: 8px; color: #f87171;
+            font-size: 14px; font-weight: 600; cursor: pointer;
+            transition: all 0.3s; font-family: 'Inter', sans-serif;
+        }
+        .btn-danger:hover { background: rgba(239,68,68,0.22); border-color: #ef4444; }
+        .modal {
+            display: none; position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%; background: rgba(0,0,0,0.8);
+            z-index: 500; align-items: center; justify-content: center;
+        }
+        .modal.show { display: flex; }
+        .modal-content {
+            background: rgba(15,8,30,0.98);
+            border: 1px solid rgba(139,92,246,0.3);
+            border-radius: 16px; padding: 32px; max-width: 420px; width: 90%;
+            backdrop-filter: blur(20px); animation: slideUp 0.25s ease-out;
+        }
+        @keyframes slideUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+        .modal-icon { font-size: 32px; color: #ef4444; margin-bottom: 16px; }
+        .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+        .modal-desc { font-size: 14px; color: #9ca3af; margin-bottom: 20px; line-height: 1.6; }
+        .modal-warn {
+            background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.25);
+            border-radius: 8px; padding: 12px 14px; font-size: 13px; color: #fca5a5;
             margin-bottom: 20px;
-            display: none;
         }
-
+        .modal-actions { display: flex; gap: 12px; }
+        .modal-btn {
+            flex: 1; padding: 11px; border: none; border-radius: 10px;
+            font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+        .modal-btn-cancel { background: rgba(255,255,255,0.08); color: #9ca3af; border: 1px solid rgba(255,255,255,0.12); }
+        .modal-btn-cancel:hover { background: rgba(255,255,255,0.14); color: #e5e7eb; }
+        .modal-btn-danger { background: rgba(239,68,68,0.18); color: #f87171; border: 1px solid rgba(239,68,68,0.35); }
+        .modal-btn-danger:hover { background: rgba(239,68,68,0.28); }
+        .modal-btn-danger:disabled { opacity: 0.5; cursor: not-allowed; }
+        .erro-msg {
+            background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.3);
+            color: #f87171; padding: 12px 16px; border-radius: 8px;
+            font-size: 13px; margin-bottom: 16px; display: none;
+        }
         footer {
-            position: relative;
-            z-index: 1;
-            padding: 24px 0;
-            text-align: center;
-            color: rgba(255,255,255,0.6);
-            font-size: 13px;
-            border-top: 1px solid rgba(255,255,255,0.08);
-            margin-top: auto;
+            position: relative; z-index: 1; padding: 24px 0;
+            text-align: center; color: rgba(255,255,255,0.5);
+            font-size: 13px; border-top: 1px solid rgba(255,255,255,0.07);
+            margin-top: 40px;
         }
-
-        .footer-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .footer-logo-img {
-            height: 30px;
-            width: auto;
-            opacity: 0.7;
-        }
-
-        @media (max-width: 600px) {
-            .container { padding: 0 16px; margin: 24px auto; }
-            .header { padding: 14px 16px; }
-            .modal-content { max-width: 90%; }
+        .footer-content { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .footer-logo-img { height: 28px; width: auto; opacity: 0.6; }
+        @media (max-width: 700px) {
+            .page-wrap { grid-template-columns: 1fr; padding: 0 16px; }
+            .settings-sidebar { position: static; }
         }
     </style>
 </head>
 <body>
     <header class="header">
-        <a href="index.html"><img src="../images/logo.png" alt="Backstage Logo" class="logo-img"></a>
+        <div class="header-left">
+            <a href="index.html"><img src="../images/logo.png" alt="Backstage Logo" class="logo-img"></a>
+        </div>
+        <div class="header-center">
+            <div class="header-search" id="searchBar">
+                <i class="fas fa-search header-search-icon"></i>
+                <input type="text" class="header-search-input" placeholder="Buscar músicos..." readonly>
+                <button class="header-search-btn">Buscar</button>
+            </div>
+        </div>
         <div class="header-actions">
-            <a href="perfil.html" class="btn-back"><i class="fas fa-arrow-left"></i> Voltar</a>
+            <div class="profile-dropdown" id="profileDropdown">
+                <div class="profile-trigger" id="profileTrigger"></div>
+                <div class="profile-incomplete-badge" id="incompleteBadge">!</div>
+                <div class="dropdown-menu">
+                    <a href="perfil.html" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a>
+                    <a href="config.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações</a>
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-item" id="btnSair"><i class="fas fa-sign-out-alt"></i> Sair</div>
+                </div>
+            </div>
         </div>
     </header>
 
-    <div class="container">
-        <h1 class="page-title">Configurações</h1>
-        <p class="page-subtitle">Gerencie sua conta e preferências</p>
+    <div class="page-wrap">
+        <aside class="settings-sidebar">
+            <div class="sidebar-profile">
+                <div class="sidebar-avatar" id="sidebarAvatar"></div>
+                <div class="sidebar-name" id="sidebarNome"></div>
+                <div class="sidebar-email" id="sidebarEmail"></div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section-title">Perfil</div>
+                <button class="nav-item active" data-panel="perfil">
+                    <i class="fas fa-user-edit"></i> Editar Perfil
+                </button>
+                <button class="nav-item" data-panel="cadastro" id="navCadastro">
+                    <i class="fas fa-clipboard-check"></i> Completar Cadastro
+                    <span class="nav-badge" id="cadastroBadge">!</span>
+                </button>
+                <div class="nav-divider"></div>
+                <div class="nav-section-title">Privacidade</div>
+                <button class="nav-item" data-panel="privacidade">
+                    <i class="fas fa-lock"></i> Privacidade
+                </button>
+                <div class="nav-divider"></div>
+                <div class="nav-section-title">Notificações</div>
+                <button class="nav-item" data-panel="notificacoes">
+                    <i class="fas fa-bell"></i> Notificações
+                </button>
+                <div class="nav-divider"></div>
+                <div class="nav-section-title">Conta</div>
+                <button class="nav-item" data-panel="perigo" style="color:#f87171;">
+                    <i class="fas fa-exclamation-triangle" style="color:#ef4444;"></i> Zona de Perigo
+                </button>
+            </nav>
+        </aside>
 
-        <div class="erro-msg" id="erroMsg"></div>
+        <div class="settings-content">
 
-        <!-- Seção de Perfil -->
-        <div class="settings-card">
-            <h2 class="section-title"><i class="fas fa-user"></i> Perfil</h2>
-            
-            <div class="settings-item">
-                <div class="settings-item-left">
-                    <span class="settings-item-label">Editar Perfil</span>
-                    <span class="settings-item-desc">Atualize suas informações pessoais</span>
+            <div class="settings-panel active" id="panel-perfil">
+                <div class="panel-header">
+                    <h1 class="panel-title">Editar Perfil</h1>
+                    <p class="panel-subtitle">Atualize suas informações pessoais</p>
                 </div>
-                <a href="editar.html" style="padding: 8px 16px; background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.3); border-radius: 8px; color: #a78bfa; text-decoration: none; font-size: 13px; font-weight: 600; transition: all 0.3s;" onmouseover="this.style.background='rgba(139,92,246,0.2)'" onmouseout="this.style.background='rgba(139,92,246,0.1)'">
-                    <i class="fas fa-arrow-right"></i>
-                </a>
+                <div class="settings-card">
+                    <div class="settings-row">
+                        <div class="settings-row-left">
+                            <span class="settings-row-label">Editar Perfil</span>
+                            <span class="settings-row-desc">Atualize suas informações pessoais, instrumentos, gêneros e mais</span>
+                        </div>
+                        <a href="editar.html" class="btn-link"><i class="fas fa-arrow-right"></i> Ir</a>
+                    </div>
+                </div>
             </div>
 
-            <div class="settings-item">
-                <div class="settings-item-left">
-                    <span class="settings-item-label">Completar Cadastro</span>
-                    <span class="settings-item-desc">Finalize seu perfil para aparecer nas buscas</span>
+            <div class="settings-panel" id="panel-cadastro">
+                <div class="panel-header">
+                    <h1 class="panel-title">Completar Cadastro</h1>
+                    <p class="panel-subtitle">Finalize seu perfil para aparecer nas buscas</p>
                 </div>
-                <a href="editar.html" style="padding: 8px 16px; background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.3); border-radius: 8px; color: #a78bfa; text-decoration: none; font-size: 13px; font-weight: 600; transition: all 0.3s;" onmouseover="this.style.background='rgba(139,92,246,0.2)'" onmouseout="this.style.background='rgba(139,92,246,0.1)'">
-                    <i class="fas fa-arrow-right"></i>
-                </a>
+                <div class="settings-card" id="cadastroCard">
+                    <div class="settings-row">
+                        <div class="settings-row-left">
+                            <span class="settings-row-label">Completar Cadastro</span>
+                            <span class="settings-row-desc">Finalize seu perfil para aparecer nas buscas</span>
+                        </div>
+                        <a href="editar.html" class="btn-link"><i class="fas fa-arrow-right"></i> Ir</a>
+                    </div>
+                </div>
             </div>
+
+            <div class="settings-panel" id="panel-privacidade">
+                <div class="panel-header">
+                    <h1 class="panel-title">Privacidade</h1>
+                    <p class="panel-subtitle">Controle quem pode ver suas informações</p>
+                </div>
+                <div class="settings-card">
+                    <div class="settings-row">
+                        <div class="settings-row-left">
+                            <span class="settings-row-label">Compartilhar e-mail no perfil</span>
+                            <span class="settings-row-desc">Exibir seu e-mail para outros usuários</span>
+                        </div>
+                        <div class="toggle-switch active" id="toggleEmail" onclick="this.classList.toggle('active')">
+                            <div class="toggle-circle"></div>
+                        </div>
+                    </div>
+                    <div class="settings-row">
+                        <div class="settings-row-left">
+                            <span class="settings-row-label">Aparecer em Buscas</span>
+                            <span class="settings-row-desc">Seja encontrado por outros usuários</span>
+                        </div>
+                        <div class="toggle-switch active" id="toggleBuscas" onclick="this.classList.toggle('active')">
+                            <div class="toggle-circle"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-panel" id="panel-notificacoes">
+                <div class="panel-header">
+                    <h1 class="panel-title">Notificações</h1>
+                    <p class="panel-subtitle">Gerencie como você recebe atualizações</p>
+                </div>
+                <div class="settings-card">
+                    <div class="settings-row">
+                        <div class="settings-row-left">
+                            <span class="settings-row-label">Notificações por E-mail</span>
+                            <span class="settings-row-desc">Receba atualizações importantes por e-mail</span>
+                        </div>
+                        <div class="toggle-switch active" id="toggleNotifEmail" onclick="this.classList.toggle('active')">
+                            <div class="toggle-circle"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-panel" id="panel-perigo">
+                <div class="panel-header">
+                    <h1 class="panel-title">Zona de Perigo</h1>
+                    <p class="panel-subtitle">Ações irreversíveis para sua conta</p>
+                </div>
+                <div class="danger-card">
+                    <div class="card-header">
+                        <i class="fas fa-trash-alt" style="color:#ef4444;"></i>
+                        <span class="card-header-title">Excluir Conta</span>
+                    </div>
+                    <div class="danger-inner">
+                        <p class="danger-desc">
+                            Uma vez que você exclua sua conta, não há volta. Todos os seus dados serão removidos permanentemente do banco de dados.
+                        </p>
+                        <button class="btn-danger" onclick="abrirModalExclusao()">
+                            <i class="fas fa-trash-alt"></i> Excluir Minha Conta
+                        </button>
+                    </div>
+                </div>
+            </div>
+
         </div>
+    </div>
 
-        <!-- Seção de Privacidade -->
-        <div class="settings-card">
-            <h2 class="section-title"><i class="fas fa-lock"></i> Privacidade</h2>
-            
-            <div class="settings-item">
-                <div class="settings-item-left">
-                    <span class="settings-item-label">Perfil Público</span>
-                    <span class="settings-item-desc">Permita que outros usuários vejam seu perfil</span>
-                </div>
-                <div class="toggle-switch active" id="togglePublico" onclick="togglePublico()">
-                    <div class="toggle-circle"></div>
-                </div>
+    <div class="modal" id="modalExclusao">
+        <div class="modal-content">
+            <div class="modal-icon"><i class="fas fa-trash-alt"></i></div>
+            <div class="modal-title">Excluir conta?</div>
+            <p class="modal-desc">Esta ação é permanente e não pode ser desfeita.</p>
+            <div class="modal-warn">
+                <i class="fas fa-exclamation-triangle"></i>
+                Isso excluirá permanentemente sua conta e todos os seus dados do banco de dados.
             </div>
-
-            <div class="settings-item">
-                <div class="settings-item-left">
-                    <span class="settings-item-label">Receber Mensagens</span>
-                    <span class="settings-item-desc">Permita que outros músicos entrem em contato</span>
-                </div>
-                <div class="toggle-switch active" id="toggleMensagens" onclick="toggleMensagens()">
-                    <div class="toggle-circle"></div>
-                </div>
-            </div>
-
-            <div class="settings-item">
-                <div class="settings-item-left">
-                    <span class="settings-item-label">Aparecer em Buscas</span>
-                    <span class="settings-item-desc">Seja encontrado por outros usuários</span>
-                </div>
-                <div class="toggle-switch active" id="toggleBuscas" onclick="toggleBuscas()">
-                    <div class="toggle-circle"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Seção de Notificações -->
-        <div class="settings-card">
-            <h2 class="section-title"><i class="fas fa-bell"></i> Notificações</h2>
-            
-            <div class="settings-item">
-                <div class="settings-item-left">
-                    <span class="settings-item-label">Notificações por E-mail</span>
-                    <span class="settings-item-desc">Receba atualizações importantes por e-mail</span>
-                </div>
-                <div class="toggle-switch active" id="toggleEmail" onclick="toggleEmail()">
-                    <div class="toggle-circle"></div>
-                </div>
-            </div>
-
-            <div class="settings-item">
-                <div class="settings-item-left">
-                    <span class="settings-item-label">Novos Contatos</span>
-                    <span class="settings-item-desc">Notifique-me quando alguém me seguir</span>
-                </div>
-                <div class="toggle-switch active" id="toggleContatos" onclick="toggleContatos()">
-                    <div class="toggle-circle"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Zona de Perigo -->
-        <div class="settings-card">
-            <h2 class="section-title"><i class="fas fa-exclamation-triangle"></i> Zona de Perigo</h2>
-            
-            <div class="danger-zone">
-                <div class="danger-title">
-                    <i class="fas fa-trash-alt"></i> Excluir Conta
-                </div>
-                <p class="danger-desc">
-                    Uma vez que você exclua sua conta, não há volta. Todos os seus dados serão removidos permanentemente do banco de dados.
-                </p>
-                <button class="btn-danger" onclick="abrirModalExclusao()">
-                    <i class="fas fa-trash-alt"></i> Excluir Minha Conta
+            <div class="erro-msg" id="erroMsg"></div>
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-cancel" onclick="fecharModalExclusao()">Cancelar</button>
+                <button class="modal-btn modal-btn-danger" id="btnConfirmarExclusao" onclick="confirmarExclusao()">
+                    <i class="fas fa-trash-alt"></i> Confirmar exclusão
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Modal de Confirmação de Exclusão -->
-    <div class="modal" id="modalExclusao">
-        <div class="modal-content">
-            <div class="modal-title">Excluir Conta</div>
-            <p class="modal-desc">
-                Tem certeza que deseja excluir sua conta? Esta ação é irreversível e todos os seus dados serão removidos permanentemente do banco de dados.
-            </p>
-            <input type="password" class="modal-input" id="senhaExclusao" placeholder="Digite sua senha para confirmar">
-            <div class="modal-actions">
-                <button class="modal-btn modal-btn-cancel" onclick="fecharModalExclusao()">Cancelar</button>
-                <button class="modal-btn modal-btn-confirm" id="btnConfirmarExclusao" onclick="confirmarExclusao()">Excluir</button>
-            </div>
-        </div>
-    </div>
-
     <footer>
-        <div class="container">
-            <div class="footer-content">
-                <img src="../images/logo.png" alt="Backstage Logo" class="footer-logo-img">
-                <p>A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
-            </div>
+        <div class="footer-content">
+            <img src="../images/logo.png" alt="Backstage Logo" class="footer-logo-img">
+            <p>A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
         </div>
     </footer>
 
@@ -485,83 +465,92 @@
         import { verificarAutenticacao, fazerLogout } from '../js/auth.js';
 
         const usuario = verificarAutenticacao();
-        if (!usuario) return;
+        if (!usuario) { window.location.href = 'login.html'; }
 
-        // Funções de Toggle
-        window.togglePublico = function() {
-            document.getElementById('togglePublico').classList.toggle('active');
-        };
+        const res = await fetch(`/api/usuarios/${usuario.id_usuario}`);
+        const u = await res.json();
 
-        window.toggleMensagens = function() {
-            document.getElementById('toggleMensagens').classList.toggle('active');
-        };
+        const nome = u.nome_artistico || u.nome_completo;
+        const iniciais = nome.substring(0, 2).toUpperCase();
 
-        window.toggleBuscas = function() {
-            document.getElementById('toggleBuscas').classList.toggle('active');
-        };
+        document.getElementById('sidebarAvatar').textContent = iniciais;
+        document.getElementById('sidebarNome').textContent = nome;
+        document.getElementById('sidebarEmail').textContent = u.email;
+        document.getElementById('profileTrigger').textContent = iniciais;
 
-        window.toggleEmail = function() {
-            document.getElementById('toggleEmail').classList.toggle('active');
-        };
+        if (u.cadastro_completo == 0) {
+            document.getElementById('incompleteBadge')?.classList.add('show');
+            document.getElementById('cadastroBadge')?.classList.add('show');
+            const card = document.getElementById('cadastroCard');
+            if (card) {
+                const warn = document.createElement('div');
+                warn.className = 'pending-row';
+                warn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Seu cadastro ainda não foi concluído. Complete para aparecer nas buscas.';
+                card.prepend(warn);
+            }
+        }
 
-        window.toggleContatos = function() {
-            document.getElementById('toggleContatos').classList.toggle('active');
-        };
+        const navItems = document.querySelectorAll('.nav-item[data-panel]');
+        const panels = document.querySelectorAll('.settings-panel');
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                navItems.forEach(n => n.classList.remove('active'));
+                panels.forEach(p => p.classList.remove('active'));
+                item.classList.add('active');
+                document.getElementById('panel-' + item.dataset.panel)?.classList.add('active');
+            });
+        });
 
-        // Modal de Exclusão
+        document.getElementById('profileDropdown')?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.getElementById('profileDropdown').classList.toggle('active');
+        });
+        document.addEventListener('click', () => {
+            document.getElementById('profileDropdown')?.classList.remove('active');
+        });
+
+        document.getElementById('searchBar')?.addEventListener('click', () => {
+            window.location.href = 'pesquisar_usuarios.html?focar=true';
+        });
+
+        document.getElementById('btnSair')?.addEventListener('click', fazerLogout);
+
         window.abrirModalExclusao = function() {
             document.getElementById('modalExclusao').classList.add('show');
-            document.getElementById('senhaExclusao').value = '';
+            document.getElementById('erroMsg').style.display = 'none';
         };
-
         window.fecharModalExclusao = function() {
             document.getElementById('modalExclusao').classList.remove('show');
         };
+        document.getElementById('modalExclusao').addEventListener('click', (e) => {
+            if (e.target.id === 'modalExclusao') fecharModalExclusao();
+        });
 
         window.confirmarExclusao = async function() {
-            const senha = document.getElementById('senhaExclusao').value.trim();
             const btn = document.getElementById('btnConfirmarExclusao');
             const erroMsg = document.getElementById('erroMsg');
-
-            if (!senha) {
-                erroMsg.textContent = 'Por favor, digite sua senha para confirmar.';
-                erroMsg.style.display = 'block';
-                return;
-            }
-
+            erroMsg.style.display = 'none';
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Excluindo...';
-            erroMsg.style.display = 'none';
-
             try {
-                const res = await fetch(`/api/usuarios/${usuario.id_usuario}`, {
+                const r = await fetch(`/api/usuarios/${usuario.id_usuario}`, {
                     method: 'DELETE',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ senha }),
+                    body: JSON.stringify({ senha: '' }),
                 });
-
-                if (!res.ok) {
-                    const erro = await res.json();
+                if (!r.ok) {
+                    const erro = await r.json();
                     throw new Error(erro.erro || 'Erro ao excluir conta');
                 }
-
-                // Limpar localStorage e redirecionar
                 localStorage.removeItem('usuarioLogado');
                 window.location.href = 'login.html';
             } catch (erro) {
                 erroMsg.textContent = erro.message;
                 erroMsg.style.display = 'block';
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-trash-alt"></i> Excluir';
+                btn.innerHTML = '<i class="fas fa-trash-alt"></i> Confirmar exclusão';
             }
         };
-
-        // Fechar modal ao clicar fora
-        document.getElementById('modalExclusao').addEventListener('click', (e) => {
-            if (e.target.id === 'modalExclusao') {
-                fecharModalExclusao();
-            }
-        });
     </script>
 </body>
 </html>

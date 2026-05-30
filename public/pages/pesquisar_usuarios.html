@@ -592,6 +592,16 @@
         await popularSelect('/api/usuarios/generos', 'filtroGenero');
         await popularSelect('/api/usuarios/areas', 'filtroArea');
         await carregarMusicos();
+
+        // Se veio de outra página com ?focar=true, foca no campo de busca
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('focar') === 'true') {
+            const input = document.getElementById('searchInput');
+            if (input) {
+                input.focus();
+                input.select();
+            }
+        }
     </script>
 </body>
 </html>
