@@ -8,7 +8,6 @@ async function read(field, value) {
   }
   const usuarios = await db.all(sql, value ? [value] : []);
   
-  // Para cada usuário, busca seus relacionamentos
   for (const u of usuarios) {
     const insts = await db.all('SELECT i.nome FROM instrumento i JOIN usuario_instrumento ui ON i.id_instrumento = ui.id_instrumento WHERE ui.id_usuario = ?', [u.id_usuario]);
     u.instrumentos = insts.map(i => i.nome);
@@ -21,10 +20,42 @@ async function read(field, value) {
 
     const daws = await db.all('SELECT dw.nome FROM daw dw JOIN usuario_daw udw ON dw.id_daw = udw.id_daw WHERE udw.id_usuario = ?', [u.id_usuario]);
     u.daws = daws.map(dw => dw.nome);
+
+    // Parse redes_sociais JSON
+    try {
+      u.redes_sociais = u.redes_sociais ? JSON.parse(u.redes_sociais) : {};
+    } catch {
+      u.redes_sociais = {};
+    }
+
+    // Parse area_atuacao — suporta múltiplas áreas (array JSON) ou string única
+    try {
+      if (u.area_atuacao && u.area_atuacao.startsWith('[')) {
+        u.area_atuacao = JSON.parse(u.area_atuacao);
+      } else if (u.area_atuacao) {
+        u.area_atuacao = [u.area_atuacao];
+      } else {
+        u.area_atuacao = [];
+      }
+    } catch {
+      u.area_atuacao = u.area_atuacao ? [u.area_atuacao] : [];
+    }
+
+    // Verificar se cadastro está completo
+    u.cadastro_completo = calcularCadastroCompleto(u);
   }
 
   await db.close();
   return usuarios;
+}
+
+// Cadastro completo = tem área, pelo menos 1 instrumento, pelo menos 1 gênero e cidade
+function calcularCadastroCompleto(u) {
+  const temArea = u.area_atuacao && u.area_atuacao.length > 0;
+  const temInstrumento = u.instrumentos && u.instrumentos.length > 0;
+  const temGenero = u.generos && u.generos.length > 0;
+  const temCidade = !!u.cidade;
+  return (temArea && temInstrumento && temGenero && temCidade) ? 1 : 0;
 }
 
 async function readById(id) {
@@ -46,9 +77,14 @@ async function create(dados) {
     throw new Error('Email já cadastrado.');
   }
 
-    const sql = `
-    INSERT INTO usuario (nome_completo, nome_artistico, email, senha, telefone, cidade, estado, bairro, area_atuacao, anos_experiencia, biografia, cadastro_completo)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  // area_atuacao salva como JSON se for array
+  const areaParaSalvar = Array.isArray(dados.area_atuacao)
+    ? JSON.stringify(dados.area_atuacao)
+    : dados.area_atuacao || null;
+
+  const sql = `
+    INSERT INTO usuario (nome_completo, nome_artistico, email, senha, telefone, cidade, estado, bairro, area_atuacao, anos_experiencia, biografia, cadastro_completo, redes_sociais)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   const { lastID } = await db.run(sql, [
@@ -60,13 +96,13 @@ async function create(dados) {
     dados.cidade || null,
     dados.estado || null,
     dados.bairro || null,
-    dados.area_atuacao || null,
+    areaParaSalvar,
     dados.anos_experiencia || 0,
     dados.biografia || null,
-    dados.cadastro_completo ?? 0,   // << novo campo
+    0, // cadastro_completo calculado automaticamente
+    dados.redes_sociais ? JSON.stringify(dados.redes_sociais) : null,
   ]);
 
-  // Salva relacionamentos
   const categorias = [
     { lista: dados.instrumentos, tabela: 'usuario_instrumento', ref: 'id_instrumento', busca: 'instrumento' },
     { lista: dados.generos, tabela: 'usuario_genero', ref: 'id_genero', busca: 'genero' },
@@ -97,22 +133,29 @@ async function update({ id_usuario, ...dados }) {
     await db.close();
     throw new Error(`Usuário com id ${id_usuario} não encontrado.`);
   }
-  const sql = `
-  UPDATE usuario SET
-    nome_completo = ?, nome_artistico = ?, email = ?, telefone = ?,
-    cidade = ?, estado = ?, bairro = ?, area_atuacao = ?,
-    anos_experiencia = ?, biografia = ?, cadastro_completo = ?
-  WHERE id_usuario = ?
-`;
-await db.run(sql, [
-  dados.nome_completo, dados.nome_artistico, dados.email, dados.telefone,
-  dados.cidade, dados.estado, dados.bairro, dados.area_atuacao,
-  dados.anos_experiencia, dados.biografia,
-  dados.cadastro_completo ?? 1,   // << novo campo — update assume completo por padrão
-  id_usuario
-]);
 
-  // Atualiza relacionamentos (apaga e insere novos)
+  // area_atuacao salva como JSON se for array
+  const areaParaSalvar = Array.isArray(dados.area_atuacao)
+    ? JSON.stringify(dados.area_atuacao)
+    : dados.area_atuacao || null;
+
+  const sql = `
+    UPDATE usuario SET
+      nome_completo = ?, nome_artistico = ?, email = ?, telefone = ?,
+      cidade = ?, estado = ?, bairro = ?, area_atuacao = ?,
+      anos_experiencia = ?, biografia = ?,
+      redes_sociais = ?
+    WHERE id_usuario = ?
+  `;
+
+  await db.run(sql, [
+    dados.nome_completo, dados.nome_artistico, dados.email, dados.telefone,
+    dados.cidade, dados.estado, dados.bairro, areaParaSalvar,
+    dados.anos_experiencia || 0, dados.biografia,
+    dados.redes_sociais ? JSON.stringify(dados.redes_sociais) : null,
+    id_usuario
+  ]);
+
   const categorias = [
     { lista: dados.instrumentos, tabela: 'usuario_instrumento', ref: 'id_instrumento', busca: 'instrumento' },
     { lista: dados.generos, tabela: 'usuario_genero', ref: 'id_genero', busca: 'genero' },
@@ -134,6 +177,7 @@ await db.run(sql, [
       }
     }
   }
+
   await db.close();
   return readById(id_usuario);
 }
@@ -150,7 +194,6 @@ async function remove(id) {
   return true;
 }
 
-// Funções para listar os catálogos (usadas no frontend)
 async function listarInstrumentos() {
   const db = await Database.connect();
   const res = await db.all('SELECT nome FROM instrumento ORDER BY nome');

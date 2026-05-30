@@ -113,19 +113,11 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   try {
     const id = Number(req.params.id);
-    const { senha } = req.body;
 
-    // Buscar usuário para validar senha
+    // Verificar se usuário existe
     const usuarios = await Musico.read('id_usuario', id);
     if (usuarios.length === 0) {
       return res.status(404).json({ erro: 'Usuário não encontrado.' });
-    }
-
-    const usuario = usuarios[0];
-    
-    // Validar senha
-    if (!senha || usuario.senha !== senha) {
-      return res.status(401).json({ erro: 'Senha incorreta. Exclusão de conta cancelada.' });
     }
 
     // Remover usuário do banco de dados

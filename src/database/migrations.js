@@ -3,8 +3,7 @@ import Database from './database.js';
 async function up() {
   const db = await Database.connect();
 
-
-    await db.run(`
+  await db.run(`
     CREATE TABLE IF NOT EXISTS usuario (
       id_usuario INTEGER PRIMARY KEY AUTOINCREMENT,
       nome_completo VARCHAR(150) NOT NULL,
@@ -15,10 +14,11 @@ async function up() {
       cidade VARCHAR(100),
       estado VARCHAR(2),
       bairro VARCHAR(100),
-      area_atuacao VARCHAR(100),
+      area_atuacao TEXT,
       anos_experiencia INT DEFAULT 0,
       biografia TEXT,
-      cadastro_completo INTEGER DEFAULT 0
+      cadastro_completo INTEGER DEFAULT 0,
+      redes_sociais TEXT DEFAULT NULL
     )
   `);
 
@@ -83,6 +83,14 @@ async function up() {
       PRIMARY KEY (id_usuario, id_daw)
     )
   `);
+
+  // Adiciona coluna redes_sociais em bancos já existentes
+  try {
+    await db.run(`ALTER TABLE usuario ADD COLUMN redes_sociais TEXT DEFAULT NULL`);
+  } catch (e) { /* já existe, ignorar */ }
+
+  // area_atuacao como TEXT para suportar múltiplas áreas
+  // (SQLite não altera tipo de coluna, mas TEXT já aceita JSON)
 
   await db.close();
 }
