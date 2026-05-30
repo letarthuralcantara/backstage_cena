@@ -44,13 +44,13 @@
 
         .container {
             position: relative; z-index: 1;
-            width: 100%; max-width: 800px;
+            width: 100%; max-width: 900px;
             margin: 36px auto; padding: 0 24px; flex: 1;
         }
 
         .page-title {
             font-family: 'Poppins', sans-serif;
-            font-size: 24px; font-weight: 700;
+            font-size: 28px; font-weight: 700;
             margin-bottom: 8px;
         }
         .page-subtitle { color: #9ca3af; font-size: 14px; margin-bottom: 32px; }
@@ -59,28 +59,29 @@
             background: rgba(0,0,0,0.65);
             border: 1px solid rgba(139,92,246,0.2);
             border-radius: 16px; padding: 28px;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             backdrop-filter: blur(10px);
         }
         .section-title {
             font-family: 'Poppins', sans-serif;
-            font-size: 15px; color: #8b5cf6;
+            font-size: 16px; color: #8b5cf6;
             margin-bottom: 20px;
-            display: flex; align-items: center; gap: 10px;
+            display: flex; align-items: center; gap: 12px;
+            font-weight: 700;
         }
 
         .form-group { margin-bottom: 18px; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        label { display: block; color: #e5e7eb; font-weight: 500; margin-bottom: 7px; font-size: 14px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+        label { display: block; color: #e5e7eb; font-weight: 600; margin-bottom: 8px; font-size: 14px; }
         input, select, textarea {
-            width: 100%; padding: 13px 16px;
+            width: 100%; padding: 12px 14px;
             background: rgba(255,255,255,0.07);
             border: 2px solid rgba(255,255,255,0.12);
             border-radius: 10px; font-size: 14px;
             font-family: 'Inter', sans-serif;
             color: white; transition: all 0.3s;
         }
-        textarea { min-height: 90px; resize: vertical; }
+        textarea { min-height: 100px; resize: vertical; }
         select option { background: #1a1a1a; }
         input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.3); }
         input:focus, select:focus, textarea:focus {
@@ -89,7 +90,6 @@
             box-shadow: 0 0 0 3px rgba(139,92,246,0.15);
         }
 
-        /* Foto placeholder */
         .foto-upload {
             display: flex; align-items: center; gap: 20px;
             padding: 20px; border: 2px dashed rgba(255,255,255,0.1);
@@ -97,11 +97,11 @@
             opacity: 0.6; cursor: not-allowed;
         }
         .foto-avatar {
-            width: 72px; height: 72px; border-radius: 50%;
+            width: 80px; height: 80px; border-radius: 50%;
             background: rgba(139,92,246,0.2);
             border: 2px solid rgba(139,92,246,0.3);
             display: flex; align-items: center; justify-content: center;
-            font-size: 26px; color: #8b5cf6; flex-shrink: 0;
+            font-size: 28px; color: #8b5cf6; flex-shrink: 0;
             font-weight: 700;
         }
         .foto-info p { color: #9ca3af; font-size: 14px; margin-bottom: 5px; }
@@ -109,35 +109,39 @@
             display: inline-block;
             background: rgba(139,92,246,0.15);
             border: 1px solid rgba(139,92,246,0.3);
-            color: #a78bfa; font-size: 11px; padding: 2px 8px; border-radius: 10px;
+            color: #a78bfa; font-size: 11px; padding: 4px 10px; border-radius: 10px;
         }
 
-        /* Checkboxes */
-        .checkbox-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        /* Grid de Checkboxes - 3 colunas */
+        .checkbox-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
         .checkbox-item input[type="checkbox"] { display: none; }
         .checkbox-label {
             display: flex; align-items: center; gap: 8px;
-            padding: 9px 12px; border: 1px solid rgba(255,255,255,0.1);
+            padding: 10px 12px; border: 1px solid rgba(255,255,255,0.1);
             border-radius: 8px; cursor: pointer; font-size: 13px;
             color: #9ca3af; transition: all 0.3s; background: rgba(255,255,255,0.03);
         }
         .checkbox-label:hover { border-color: #8b5cf6; color: #e5e7eb; }
         .checkbox-item input:checked + .checkbox-label { border-color: #8b5cf6; background: rgba(139,92,246,0.15); color: white; }
         .checkbox-icon { width: 15px; height: 15px; background: #8b5cf6; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 8px; opacity: 0; transition: opacity 0.2s; flex-shrink: 0; }
-        .checkbox-item input:checked + .checkbox-label .checkbox-icon { opacity: 1; }
-        .generos-grid { display: flex; flex-wrap: wrap; gap: 8px; }
-        .generos-grid .checkbox-label { padding: 6px 14px; border-radius: 20px; }
-        .areas-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .checkbox-item input:checked + .checkbox-label .checkbox-icon { opacity: 1; color: white; }
+
+        /* Grid de Gêneros - 2 colunas, mais compacto */
+        .generos-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .generos-grid .checkbox-label { padding: 8px 12px; border-radius: 20px; font-size: 12px; }
+
+        /* Grid de Áreas - 2 colunas */
+        .areas-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
         .area-card input[type="radio"] { display: none; }
         .area-label {
-            display: flex; flex-direction: column; align-items: center; gap: 8px;
-            padding: 16px 10px; border: 2px solid rgba(255,255,255,0.1);
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
+            padding: 16px 12px; border: 2px solid rgba(255,255,255,0.1);
             border-radius: 12px; cursor: pointer; transition: all 0.3s;
             background: rgba(255,255,255,0.02);
         }
         .area-label:hover { border-color: #8b5cf6; }
         .area-card input:checked + .area-label { border-color: #8b5cf6; background: rgba(139,92,246,0.15); }
-        .area-icon { font-size: 22px; color: #8b5cf6; }
+        .area-icon { font-size: 24px; color: #8b5cf6; }
         .area-name { font-size: 12px; font-weight: 600; color: #e5e7eb; text-align: center; }
 
         /* Botões de ação */
@@ -145,7 +149,7 @@
             display: flex; gap: 12px; margin-top: 8px;
         }
         .btn-salvar {
-            flex: 1; padding: 15px;
+            flex: 1; padding: 14px;
             background: linear-gradient(135deg, #8b5cf6, #7c3aed);
             border: none; border-radius: 12px; color: white;
             font-size: 15px; font-weight: 600; cursor: pointer;
@@ -155,7 +159,7 @@
         .btn-salvar:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(139,92,246,0.4); }
         .btn-salvar:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
         .btn-cancelar {
-            padding: 15px 24px; background: transparent;
+            padding: 14px 24px; background: transparent;
             border: 2px solid rgba(255,255,255,0.15); border-radius: 12px;
             color: #9ca3af; font-size: 15px; font-weight: 600;
             cursor: pointer; transition: all 0.3s; font-family: 'Inter', sans-serif;
@@ -187,7 +191,8 @@
         @media (max-width: 600px) {
             .form-row { grid-template-columns: 1fr; }
             .checkbox-grid { grid-template-columns: repeat(2, 1fr); }
-            .areas-grid { grid-template-columns: repeat(2, 1fr); }
+            .generos-grid { grid-template-columns: 1fr; }
+            .areas-grid { grid-template-columns: 1fr; }
             .container { padding: 0 16px; margin: 24px auto; }
             .header { padding: 14px 16px; }
             .action-bar { flex-direction: column; }
@@ -198,7 +203,7 @@
     <header class="header">
         <a href="index.html"><img src="../images/logo.png" alt="Backstage Logo" class="logo-img"></a>
         <div class="header-actions">
-            <a href="perfil.html" class="btn-back"><i class="fas fa-arrow-left"></i> Voltar ao Perfil</a>
+            <a href="perfil.html" class="btn-back"><i class="fas fa-arrow-left"></i> Voltar</a>
         </div>
     </header>
 
@@ -314,14 +319,15 @@
                     <i class="fas fa-check"></i> Salvar Alterações
                 </button>
             </div>
-
         </form>
     </div>
 
     <footer>
-        <div class="footer-content">
-            <img src="../images/logo.png" alt="Backstage Logo" class="footer-logo-img">
-            <p>A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
+        <div class="container">
+            <div class="footer-content">
+                <img src="../images/logo.png" alt="Backstage Logo" class="footer-logo-img">
+                <p>A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
+            </div>
         </div>
     </footer>
 
@@ -352,7 +358,16 @@
         // Popula e marca opções
         const dados = await fetchDados();
 
-        const areaIcones = { 'Vocalista':'fa-microphone','Instrumentista':'fa-guitar','Produtor':'fa-sliders','Compositor':'fa-pen-nib','DJ':'fa-headphones','Beatmaker':'fa-drum' };
+        // Áreas
+        const areaIcones = { 
+            'Vocalista':'fa-microphone',
+            'Instrumentista':'fa-guitar',
+            'Produtor':'fa-sliders',
+            'Compositor':'fa-pen-nib',
+            'DJ':'fa-headphones',
+            'Beatmaker':'fa-drum' 
+        };
+        
         document.getElementById('areasGrid').innerHTML =
             ['Vocalista','Instrumentista','Produtor','Compositor','DJ','Beatmaker'].map(a => `
                 <div class="area-card">
@@ -363,6 +378,7 @@
                     </label>
                 </div>`).join('');
 
+        // Instrumentos
         document.getElementById('instrumentosGrid').innerHTML = dados.instrumentos.map(i => `
             <div class="checkbox-item">
                 <input type="checkbox" id="inst_${i.id}" name="instrumentos" value="${i.nome}" ${(u.instrumentos||[]).includes(i.nome) ? 'checked' : ''}>
@@ -371,6 +387,7 @@
                 </label>
             </div>`).join('');
 
+        // Gêneros
         document.getElementById('generosGrid').innerHTML = dados.generos.map(g => `
             <div class="checkbox-item">
                 <input type="checkbox" id="gen_${g.id}" name="generos" value="${g.nome}" ${(u.generos||[]).includes(g.nome) ? 'checked' : ''}>
@@ -379,6 +396,7 @@
                 </label>
             </div>`).join('');
 
+        // Disponibilidade
         document.getElementById('disponibilidadeGrid').innerHTML = dados.disponibilidade.map(d => `
             <div class="checkbox-item">
                 <input type="checkbox" id="disp_${d.id}" name="disponibilidade" value="${d.id}" ${(u.disponibilidades||[]).includes(d.label) ? 'checked' : ''}>
@@ -387,13 +405,17 @@
                 </label>
             </div>`).join('');
 
-        document.getElementById('dawsGrid').innerHTML = dados.daws.map(d => `
+        // DAWs - CORRIGIDO
+        document.getElementById('dawsGrid').innerHTML = dados.daws.map(d => {
+            const idSafe = d.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
+            return `
             <div class="checkbox-item">
-                <input type="checkbox" id="daw_${d}" name="daws" value="${d}" ${(u.daws||[]).includes(d) ? 'checked' : ''}>
-                <label for="daw_${d}" class="checkbox-label">
+                <input type="checkbox" id="daw_${idSafe}" name="daws" value="${d}" ${(u.daws||[]).includes(d) ? 'checked' : ''}>
+                <label for="daw_${idSafe}" class="checkbox-label">
                     <span class="checkbox-icon"><i class="fa-solid fa-check"></i></span>${d}
                 </label>
-            </div>`).join('');
+            </div>`;
+        }).join('');
 
         function coletarCheckboxes(name) {
             return [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(el => el.value);
@@ -419,10 +441,10 @@
                 biografia:      document.getElementById('biografia').value.trim(),
                 cidade:         document.getElementById('cidade').value.trim(),
                 estado:         document.getElementById('estado').value,
-                areas_atuacao:  area ? [area] : [],
+                area_atuacao:   area,
                 instrumentos:   coletarCheckboxes('instrumentos'),
                 generos:        coletarCheckboxes('generos'),
-                disponibilidade: coletarCheckboxes('disponibilidade'),
+                disponibilidades: coletarCheckboxes('disponibilidade'),
                 daws:           coletarCheckboxes('daws'),
                 cadastro_completo: 1,
             };

@@ -100,8 +100,6 @@ router.post('/', async (req, res) => {
   }
 });
 
-
-
 router.put('/:id', async (req, res) => {
   try {
     const id = Number(req.params.id);
@@ -115,12 +113,27 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   try {
     const id = Number(req.params.id);
+    const { senha } = req.body;
+
+    // Buscar usuário para validar senha
+    const usuarios = await Musico.read('id_usuario', id);
+    if (usuarios.length === 0) {
+      return res.status(404).json({ erro: 'Usuário não encontrado.' });
+    }
+
+    const usuario = usuarios[0];
+    
+    // Validar senha
+    if (!senha || usuario.senha !== senha) {
+      return res.status(401).json({ erro: 'Senha incorreta. Exclusão de conta cancelada.' });
+    }
+
+    // Remover usuário do banco de dados
     await Musico.remove(id);
-    res.status(200).json({ mensagem: `Músico ${id} removido com sucesso.` });
+    res.status(200).json({ mensagem: 'Conta removida com sucesso.' });
   } catch (error) {
-    res.status(404).json({ erro: error.message });
+    res.status(500).json({ erro: error.message });
   }
 });
-
 
 export default router;

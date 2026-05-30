@@ -28,66 +28,142 @@
             background: rgba(0, 0, 0, 0.5);
             z-index: 0;
         }
-        .header {
-            position: relative; 
-            z-index: 100;
-            padding: 20px 40px;
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(139, 92, 246, 0.3);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-        }
         .logo-img { 
             height: 50px; 
             width: auto; 
         }
-        .header-actions { 
-            display: flex; 
-            gap: 20px; 
-            align-items: center; 
+        /* ── HEADER ── */
+        .header {
+            position: relative;
+            z-index: 100;
+            width: 100%;
+            padding: 14px 24px;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            align-items: center;
+            gap: 16px;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(15px);
+            border-bottom: 2px solid rgba(139,92,246,0.4);
+            box-shadow: 0 4px 30px rgba(0,0,0,0.7);
         }
-        .btn-explore {
-            padding: 10px 24px;
-            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
-            border: none; 
-            border-radius: 25px; 
+        .header-left { display: flex; align-items: center; }
+        .header-center { display: flex; align-items: center; justify-content: center; }
+        .header-actions { display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
+
+        .logo-img { height: 44px; width: auto; display: block; }
+
+        .header-search {
+            width: 100%;
+            max-width: 580px;
+            display: flex;
+            align-items: center;
+            background: rgba(255,255,255,0.07);
+            border: 1.5px solid rgba(139,92,246,0.35);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .header-search:focus-within {
+            border-color: #8b5cf6;
+            background: rgba(139,92,246,0.08);
+            box-shadow: 0 0 0 3px rgba(139,92,246,0.15);
+        }
+        .header-search-icon {
+            padding: 0 12px;
+            color: #8b5cf6;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        .header-search-input {
+            flex: 1;
+            min-width: 0;
+            padding: 11px 0;
+            background: transparent;
+            border: none;
             color: white;
-            text-decoration: none; 
-            font-size: 14px; 
-            font-weight: 600;
-            transition: all 0.3s; 
-            display: flex; 
-            align-items: center; 
-            gap: 8px;
-            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+            font-size: 14px;
+            font-family: 'Work Sans', sans-serif;
         }
-        .btn-explore:hover { 
-            transform: translateY(-2px); 
-            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6); }
-        .profile-dropdown { 
-            position: relative; 
-        }
-        .profile-trigger {
-            width: 45px; 
-            height: 45px; 
-            border-radius: 50%;
-            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
-            display: flex; 
-            align-items: center; 
+        .header-search-input::placeholder { color: rgba(255,255,255,0.35); }
+        .header-search-input:focus { outline: none; }
+
+        .btn-filtrar {
+            display: flex;
+            align-items: center;
             justify-content: center;
-            font-weight: 700; 
-            font-size: 1rem; 
+            gap: 6px;
+            padding: 0 14px;
+            align-self: stretch;
+            background: rgba(139,92,246,0.10);
+            border: none;
+            border-left: 1px solid rgba(139,92,246,0.25);
+            color: #a78bfa;
             cursor: pointer;
-            border: 2px solid rgba(139, 92, 246, 0.5); 
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+            transition: background 0.25s;
+            flex-shrink: 0;
+            font-size: 14px;
         }
-        .profile-trigger:hover { 
-            transform: scale(1.05); 
-            border-color: #8b5cf6; 
+        .btn-filtrar:hover { background: rgba(139,92,246,0.20); }
+        .btn-filtrar.active { background: rgba(139,92,246,0.3); color: white; }
+
+        .filtrar-count {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: #8b5cf6;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            width: 16px; height: 16px;
+            border-radius: 50%;
+        }
+        .filtrar-count.show { display: flex; }
+
+        .header-search-btn {
+            padding: 11px 18px;
+            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            border: none;
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Work Sans', sans-serif;
+            transition: opacity 0.2s;
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+        .header-search-btn:hover { opacity: 0.85; }
+
+        /* Dropdown perfil */
+        .profile-dropdown { position: relative; }
+        .profile-trigger {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 14px; cursor: pointer;
+            border: 2px solid rgba(139,92,246,0.5); transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(139,92,246,0.3);
+        }
+        .profile-trigger:hover { transform: scale(1.05); border-color: #8b5cf6; }
+        
+        .profile-incomplete-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 16px;
+            height: 16px;
+            background: #ef4444;
+            border-radius: 50%;
+            border: 2px solid rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: white;
+        }
+        .profile-incomplete-badge.show {
+            display: flex;
         }
         .dropdown-menu {
             position: absolute; 
@@ -104,6 +180,7 @@
             visibility: hidden; 
             transform: translateY(-10px);
             transition: all 0.3s;
+            z-index: 200;
         }
         .profile-dropdown.active .dropdown-menu { 
             opacity: 1; 
@@ -134,7 +211,8 @@
         .dropdown-divider { 
             height: 1px; 
             background: rgba(139, 92, 246, 0.2); 
-            margin: 8px 0; }
+            margin: 8px 0; 
+        }
         .container { 
             position: relative; 
             z-index: 1; 
@@ -192,8 +270,8 @@
             align-self: center; 
             margin-bottom: 20px;
             padding: 6px 16px; 
-            background: rgba(139, 92, 246, 0.2);
-            border: 1px solid rgba(139, 92, 246, 0.4);
+            background: rgba(139,92,246,0.2);
+            border: 1px solid rgba(139,92,246,0.4);
             border-radius: 20px; 
             font-size: 13px; 
             color: #a78bfa; 
@@ -347,19 +425,50 @@
             width: auto; 
             opacity: 0.8; 
         }
+
+        @media (max-width: 768px) {
+            .profile-layout {
+                grid-template-columns: 1fr;
+            }
+            .profile-card {
+                position: static;
+            }
+            .header {
+                flex-direction: column;
+                gap: 16px;
+            }
+            .search-container {
+                max-width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
     <header class="header">
-        <a href="index.html"><img src="../images/logo.png" alt="Backstage Logo" class="logo-img"></a>
-        <div class="header-actions">
-            <a href="pesquisar_usuarios.html" class="btn-explore">
-                <i class="fas fa-compass"></i> Explorar Músicos
+        <div class="header-left">
+            <a href="index.html">
+                <img src="../images/logo.png" alt="Backstage Logo" class="logo-img">
             </a>
+        </div>
+        
+        <div class="header-center">
+            <div class="header-search">
+                <i class="fas fa-search header-search-icon"></i>
+                <input type="text" class="header-search-input" id="searchInput" placeholder="Buscar músicos...">
+                <button class="btn-filtrar" id="btnFiltrar" title="Filtros">
+                    <i class="fas fa-sliders"></i>
+                    <span class="filtrar-count" id="filtrarCount">0</span>
+                </button>
+                <button class="header-search-btn" id="btnBuscar">Buscar</button>
+            </div>
+        </div>
+
+        <div class="header-actions">
             <div class="profile-dropdown" id="profileDropdown">
                 <div class="profile-trigger" id="profileTrigger"></div>
                 <div class="dropdown-menu">
                     <a href="perfil.html" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a>
+                    <a href="config.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações</a>
                     <div class="dropdown-divider"></div>
                     <div class="dropdown-item" id="btnSair"><i class="fas fa-sign-out-alt"></i> Sair</div>
                 </div>
@@ -369,7 +478,6 @@
 
     <div class="container">
         <div class="profile-layout">
-            <!-- CARD ESQUERDO -->
             <aside class="profile-card">
                 <div class="avatar-container">
                     <div class="avatar" id="avatar"></div>
@@ -391,7 +499,6 @@
                 </div>
             </aside>
 
-            <!-- CONTEÚDO DIREITO -->
             <main>
                 <div class="content-card">
                     <div class="card-header">
@@ -423,6 +530,16 @@
                     </div>
                     <div id="generosCont"></div>
                 </div>
+
+                <div class="content-card hidden" id="dawsCard">
+                    <div class="card-header">
+                        <div class="card-header-left">
+                            <div class="card-icon"><i class="fas fa-sliders"></i></div>
+                            <h2 class="card-title">DAWs</h2>
+                        </div>
+                    </div>
+                    <div id="dawsCont"></div>
+                </div>
             </main>
         </div>
     </div>
@@ -431,16 +548,155 @@
         <div class="container">
             <div class="footer-content">
                 <img src="../images/logo.png" alt="Backstage Logo" class="footer-logo-img">
-                <p>A cena musical independente começa aqui. &copy; 2025</p>
+                <p>A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
             </div>
         </div>
     </footer>
 
-    <!-- type="module" habilita import/export ES Modules -->
     <script type="module">
-        import { iniciarPerfil } from '../js/perfil.js';
+        import { verificarAutenticacao, fazerLogout } from '../js/auth.js';
 
-        // Inicia a página de perfil (busca dados e popula o HTML)
+        let todosOsMusicos = [];
+
+        export async function iniciarPerfil() {
+            const params = new URLSearchParams(window.location.search);
+            const idParam = params.get('id');
+
+            let u;
+            if (idParam) {
+                const res = await fetch(`/api/usuarios/${idParam}`);
+                u = await res.json();
+            } else {
+                const usuarioLocal = verificarAutenticacao();
+                if (!usuarioLocal) return;
+                const res = await fetch(`/api/usuarios/${usuarioLocal.id_usuario}`);
+                u = await res.json();
+            }
+
+            const nome = u.nome_artistico || u.nome_completo;
+            const iniciais = nome.substring(0, 2).toUpperCase();
+
+            document.getElementById('avatar').textContent = iniciais;
+            document.getElementById('nomeExibir').textContent = nome;
+            document.getElementById('emailExibir').textContent = u.email;
+            document.getElementById('localExibir').textContent = `${u.cidade || 'Não informado'}, ${u.estado || 'Não informado'}`;
+            document.getElementById('bioExibir').textContent = u.biografia || 'Sem descrição ainda.';
+
+            const profileTrigger = document.getElementById('profileTrigger');
+            if (profileTrigger) profileTrigger.textContent = iniciais;
+
+            // Mostrar badge de perfil incompleto
+            if (!idParam && u.cadastro_completo == 0) {
+                const badge = document.getElementById('incompleteBadge');
+                if(badge) badge.classList.add('show');
+            }
+
+            if (u.area_atuacao) {
+                const badge = document.getElementById('areaBadge');
+                badge.textContent = u.area_atuacao;
+                badge.classList.remove('hidden');
+            }
+
+            if (u.telefone) {
+                document.getElementById('telefoneExibir').textContent = u.telefone;
+                document.getElementById('telefoneRow').classList.remove('hidden');
+            }
+
+            if (u.bairro) {
+                document.getElementById('bairroExibir').textContent = u.bairro;
+                document.getElementById('bairroRow').classList.remove('hidden');
+            }
+
+            if (u.anos_experiencia) {
+                document.getElementById('expExibir').textContent = `${u.anos_experiencia} anos de experiência`;
+                document.getElementById('expRow').classList.remove('hidden');
+            }
+
+            if (u.disponibilidades?.length) {
+                const dispSection = document.getElementById('dispSection');
+                const dispTags = document.getElementById('dispTags');
+                dispSection.classList.remove('hidden');
+                dispTags.innerHTML = u.disponibilidades.map(d =>
+                    `<span class="disp-tag"><i class="fas fa-clock"></i>${d}</span>`
+                ).join('');
+            }
+
+            const talentosCont = document.getElementById('talentosCont');
+            if (u.instrumentos?.length) {
+                talentosCont.innerHTML = `<div class="tags-grid">${u.instrumentos.map(i =>
+                    `<span class="tag"><i class="fas fa-guitar"></i>${i}</span>`
+                ).join('')}</div>`;
+            } else {
+                talentosCont.innerHTML = '<p class="empty-state">Nenhum instrumento cadastrado.</p>';
+            }
+
+            const generosCont = document.getElementById('generosCont');
+            if (u.generos?.length) {
+                generosCont.innerHTML = `<div class="tags-grid">${u.generos.map(g =>
+                    `<span class="tag">${g}</span>`
+                ).join('')}</div>`;
+            } else {
+                generosCont.innerHTML = '<p class="empty-state">Nenhum gênero cadastrado.</p>';
+            }
+
+            // Mostrar DAWs se existirem
+            if (u.daws?.length) {
+                const dawsCard = document.getElementById('dawsCard');
+                const dawsCont = document.getElementById('dawsCont');
+                dawsCard.classList.remove('hidden');
+                dawsCont.innerHTML = `<div class="tags-grid">${u.daws.map(d =>
+                    `<span class="tag"><i class="fas fa-sliders"></i>${d}</span>`
+                ).join('')}</div>`;
+            }
+        }
+
+        // Carregar todos os músicos para sugestões
+        async function carregarMusicos() {
+            try {
+                const res = await fetch('/api/usuarios');
+                todosOsMusicos = await res.json();
+            } catch (error) {
+                console.error('Erro ao carregar músicos:', error);
+            }
+        }
+                // Barra de pesquisa
+        const searchInput = document.getElementById('searchInput');
+
+        // Quando clicar ou focar, manda para a página de pesquisa avisando que deve focar lá também
+        searchInput.addEventListener('focus', () => {
+            window.location.href = 'pesquisar_usuarios.html?focar=true';
+        });
+
+        // Caso o usuário clique diretamente no botão roxo escrito "Buscar"
+        document.getElementById('btnBuscar')?.addEventListener('click', () => {
+            window.location.href = 'pesquisar_usuarios.html?focar=true';
+        });
+
+        // CORREÇÃO: Quando clicar ou focar na barra de pesquisa, redireciona na hora
+        searchInput.addEventListener('focus', () => {
+            window.location.href = 'pesquisar_usuarios.html';
+        });
+
+        // Caso o usuário clique no botão "Buscar" (opcional para garantir)
+        document.getElementById('btnBuscar')?.addEventListener('click', () => {
+            window.location.href = 'pesquisar_usuarios.html';
+        });
+
+        // Dropdown de perfil
+        document.getElementById('profileDropdown')?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.getElementById('profileDropdown').classList.toggle('active');
+        });
+
+        document.addEventListener('click', () => {
+            document.getElementById('profileDropdown')?.classList.remove('active');
+        });
+
+        // Logout
+        document.getElementById('btnSair')?.addEventListener('click', fazerLogout);
+
+        // Inicializar
+        carregarMusicos();
         iniciarPerfil();
     </script>
 </body>
