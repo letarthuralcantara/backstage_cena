@@ -306,16 +306,6 @@
             display: flex; align-items: center; gap: 3px;
         }
         .card-spacer { flex: 1; }
-        .view-profile-btn {
-            width: 100%; padding: 9px;
-            background: rgba(139,92,246,0.12);
-            border: 1px solid rgba(139,92,246,0.3);
-            border-radius: 8px; color: #a78bfa;
-            font-size: 13px; font-weight: 600; cursor: pointer;
-            transition: all 0.3s; font-family: 'Work Sans', sans-serif;
-            margin-top: auto;
-        }
-        .view-profile-btn:hover { background: rgba(139,92,246,0.25); border-color: #8b5cf6; }
 
         .empty-state {
             display: none; text-align: center;
@@ -356,7 +346,6 @@
             .filters-panel.open { max-height: 500px; padding: 16px; }
         }
         @media (max-width: 540px) {
-            /* header vira coluna: logo+perfil na mesma linha, busca embaixo */
             .header {
                 grid-template-columns: 1fr auto;
                 grid-template-rows: auto auto;
@@ -552,7 +541,6 @@
                     </div>
                     ${m.biografia ? `<p class="musician-bio">${m.biografia}</p>` : '<div class="card-spacer"></div>'}
                     ${tagsInst || tagsGen ? `<div class="musician-tags">${tagsInst}${tagsGen}</div>` : ''}
-                    <button class="view-profile-btn">Ver perfil completo</button>
                 </div>`;
             }).join('');
         }
@@ -593,14 +581,11 @@
         await popularSelect('/api/usuarios/areas', 'filtroArea');
         await carregarMusicos();
 
-        // Se veio de outra página com ?focar=true, foca no campo de busca
-        const params = new URLSearchParams(window.location.search);
-        if (params.get('focar') === 'true') {
-            const input = document.getElementById('searchInput');
-            if (input) {
-                input.focus();
-                input.select();
-            }
+        // Foca automaticamente no campo de busca ao entrar na página
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.focus();
+            searchInput.select();
         }
     </script>
 </body>

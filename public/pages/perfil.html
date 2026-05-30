@@ -215,6 +215,7 @@
         .empty-state { color: #6b7280; font-style: italic; font-size: 14px; }
         .btn-edit-card { display: flex; align-items: center; gap: 6px; padding: 8px 16px; background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.3); border-radius: 8px; color: #a78bfa; text-decoration: none; font-size: 13px; transition: all 0.3s; }
         .btn-edit-card:hover { background: rgba(139,92,246,0.2); }
+        .btn-edit-card.hidden { display: none; }
         footer { padding: 20px 0; text-align: center; color: rgba(255,255,255,0.7); font-size: 13px; margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); }
         .footer-content { display: flex; flex-direction: column; align-items: center; gap: 10px; }
         .footer-logo-img { height: 30px; width: auto; opacity: 0.8; }
@@ -296,7 +297,7 @@
                             <div class="card-icon"><i class="fas fa-user-circle"></i></div>
                             <h2 class="card-title">Descrição</h2>
                         </div>
-                        <a href="editar.html" class="btn-edit-card"><i class="fas fa-pen"></i> Editar</a>
+                        <a href="editar.html" class="btn-edit-card" id="btnEditar"><i class="fas fa-pen"></i> Editar</a>
                     </div>
                     <p class="card-content" id="bioExibir"></p>
                 </div>
@@ -367,6 +368,11 @@
             if (idParam) {
                 const res = await fetch(`/api/usuarios/${idParam}`);
                 u = await res.json();
+                // Esconde botão de editar ao ver perfil de outro usuário
+                const usuarioLogado = verificarAutenticacao(false);
+                if (!usuarioLogado || String(usuarioLogado.id_usuario) !== String(idParam)) {
+                    document.getElementById('btnEditar')?.classList.add('hidden');
+                }
             } else {
                 const usuarioLocal = verificarAutenticacao();
                 if (!usuarioLocal) return;

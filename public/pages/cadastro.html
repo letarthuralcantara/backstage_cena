@@ -127,7 +127,8 @@
     .checkbox-label { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; cursor: pointer; font-size: 13px; color: #9ca3af; transition: all 0.3s; background: rgba(255,255,255,0.03); }
     .checkbox-label:hover { border-color: #8b5cf6; color: #e5e7eb; }
     .checkbox-item input:checked + .checkbox-label { border-color: #8b5cf6; background: rgba(139,92,246,0.15); color: white; }
-    .checkbox-icon { width: 16px; height: 16px; background: #8b5cf6; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 9px; opacity: 0; transition: opacity 0.2s; flex-shrink: 0; }
+    .checkbox-icon { width: 16px; height: 16px; background: transparent; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 9px; flex-shrink: 0; visibility: hidden; }
+.checkbox-item input:checked + .checkbox-label .checkbox-icon { background: #8b5cf6; visibility: visible; }
     .checkbox-item input:checked + .checkbox-label .checkbox-icon { opacity: 1; }
     .generos-grid { display: flex; flex-wrap: wrap; gap: 8px; }
     .generos-grid .checkbox-label { padding: 7px 14px; border-radius: 20px; font-size: 13px; }

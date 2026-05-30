@@ -129,6 +129,11 @@
         .nav-item.active { background: rgba(139,92,246,0.22); color: white; font-weight: 600; }
         .nav-item i { width: 16px; text-align: center; color: #8b5cf6; font-size: 13px; flex-shrink: 0; }
         .nav-divider { height: 1px; background: rgba(255,255,255,0.05); margin: 6px 10px; }
+        .nav-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: #f59e0b; margin-left: auto; flex-shrink: 0;
+            box-shadow: 0 0 6px rgba(245,158,11,0.6);
+        }
 
         /* ── MAIN CONTENT ── */
         .edit-main {
@@ -222,11 +227,11 @@
             border-color: #8b5cf6; background: rgba(139,92,246,0.14); color: white;
         }
         .checkbox-icon {
-            width: 14px; height: 14px; background: #7c3aed; border-radius: 3px;
+            width: 14px; height: 14px; background: transparent; border-radius: 3px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 7px; opacity: 0; transition: opacity 0.2s; flex-shrink: 0;
+            font-size: 7px; flex-shrink: 0; visibility: hidden;
         }
-        .checkbox-item input:checked + .checkbox-label .checkbox-icon { opacity: 1; color: white; }
+        .checkbox-item input:checked + .checkbox-label .checkbox-icon { background: #7c3aed; visibility: visible; color: white; }
         .generos-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
         .generos-grid .checkbox-label { border-radius: 20px; font-size: 12px; padding: 8px 12px; }
 
@@ -346,13 +351,13 @@
             <nav class="sidebar-nav">
                 <div class="nav-section-title">Editar Perfil</div>
                 <button class="nav-item active" data-panel="foto"><i class="fas fa-camera"></i> Foto de Perfil</button>
-                <button class="nav-item" data-panel="dados"><i class="fas fa-user"></i> Dados Pessoais</button>
+                <button class="nav-item" data-panel="dados" id="nav-dados"><i class="fas fa-user"></i> Dados Pessoais</button>
                 <div class="nav-divider"></div>
-                <button class="nav-item" data-panel="localizacao"><i class="fas fa-map-marker-alt"></i> Localização</button>
+                <button class="nav-item" data-panel="localizacao" id="nav-localizacao"><i class="fas fa-map-marker-alt"></i> Localização</button>
                 <div class="nav-divider"></div>
-                <button class="nav-item" data-panel="musical"><i class="fas fa-guitar"></i> Área e Habilidades</button>
+                <button class="nav-item" data-panel="musical" id="nav-musical"><i class="fas fa-guitar"></i> Área e Habilidades</button>
                 <div class="nav-divider"></div>
-                <button class="nav-item" data-panel="redes"><i class="fas fa-share-alt"></i> Redes Sociais</button>
+                <button class="nav-item" data-panel="redes" id="nav-redes"><i class="fas fa-share-alt"></i> Redes Sociais</button>
             </nav>
         </aside>
 
@@ -643,6 +648,43 @@
             </div>`;
         }).join('');
 
+        // ── Pontos amarelos nos itens do sidebar ──
+        function atualizarPontos(dados) {
+            const dadosFaltam = !dados.nome_completo || !dados.biografia || !dados.telefone;
+            const navDados = document.getElementById('nav-dados');
+            if (dadosFaltam) {
+                if (!navDados.querySelector('.nav-dot')) navDados.insertAdjacentHTML('beforeend', '<span class="nav-dot"></span>');
+            } else {
+                navDados.querySelector('.nav-dot')?.remove();
+            }
+
+            const locFaltam = !dados.cidade || !dados.estado;
+            const navLoc = document.getElementById('nav-localizacao');
+            if (locFaltam) {
+                if (!navLoc.querySelector('.nav-dot')) navLoc.insertAdjacentHTML('beforeend', '<span class="nav-dot"></span>');
+            } else {
+                navLoc.querySelector('.nav-dot')?.remove();
+            }
+
+            const musicalFaltam = !dados.area_atuacao?.length && !dados.instrumentos?.length && !dados.generos?.length;
+            const navMusical = document.getElementById('nav-musical');
+            if (musicalFaltam) {
+                if (!navMusical.querySelector('.nav-dot')) navMusical.insertAdjacentHTML('beforeend', '<span class="nav-dot"></span>');
+            } else {
+                navMusical.querySelector('.nav-dot')?.remove();
+            }
+
+            const redesObj = dados.redes_sociais || {};
+            const redesFaltam = !Object.values(redesObj).some(v => v);
+            const navRedes = document.getElementById('nav-redes');
+            if (redesFaltam) {
+                if (!navRedes.querySelector('.nav-dot')) navRedes.insertAdjacentHTML('beforeend', '<span class="nav-dot"></span>');
+            } else {
+                navRedes.querySelector('.nav-dot')?.remove();
+            }
+        }
+        atualizarPontos(u);
+
         // Navegação sidebar
         const navItems = document.querySelectorAll('.nav-item[data-panel]');
         const panels = document.querySelectorAll('.edit-panel');
@@ -656,7 +698,7 @@
             });
         });
 
-        // Salvar perfil — envia tudo, incluindo redes_sociais para o banco
+        // Salvar perfil
         window.salvarPerfil = async function() {
             const btns = document.querySelectorAll('.btn-salvar');
             const erroMsg = document.getElementById('erroMsg');
@@ -669,7 +711,6 @@
                 return [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(el => el.value);
             }
 
-            // Coletar redes sociais e salvar apenas as preenchidas
             const redesSociais = {};
             ['instagram','youtube','spotify','soundcloud','tiktok','twitter','facebook','linkedin','site'].forEach(k => {
                 const v = document.getElementById(`social_${k}`)?.value?.trim();
@@ -686,12 +727,12 @@
                 biografia:        document.getElementById('biografia').value.trim(),
                 cidade:           document.getElementById('cidade').value.trim(),
                 estado:           document.getElementById('estado').value,
-                area_atuacao: area, // agora é array
+                area_atuacao:     area,
                 instrumentos:     coletarCheckboxes('instrumentos'),
                 generos:          coletarCheckboxes('generos'),
                 disponibilidades: coletarCheckboxes('disponibilidade'),
                 daws:             coletarCheckboxes('daws'),
-                redes_sociais:    redesSociais,   // ← salvo como JSON no banco
+                redes_sociais:    redesSociais,
                 cadastro_completo: 1,
             };
 
@@ -706,7 +747,8 @@
                 localStorage.setItem('usuarioLogado', JSON.stringify(atualizado));
                 sucessoMsg.style.display = 'flex';
                 window.scrollTo(0, 0);
-                setTimeout(() => { window.location.href = 'perfil.html'; }, 1500);
+                setTimeout(() => { sucessoMsg.style.display = 'none'; }, 3000);
+                atualizarPontos(atualizado);
             } catch (erro) {
                 erroMsg.textContent = erro.message;
                 erroMsg.style.display = 'block';
