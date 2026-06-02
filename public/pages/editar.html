@@ -7,83 +7,9 @@
     <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/global.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', sans-serif; min-height: 100vh;
-            background-image: url('../images/background.png');
-            background-size: cover; background-position: center;
-            background-repeat: no-repeat; background-attachment: fixed;
-            color: #ffffff; position: relative;
-        }
-        body::before {
-            content: ''; position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 0;
-        }
-
-        /* ── HEADER ── */
-        .header {
-            position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-            padding: 0 24px; height: 56px;
-            display: grid; grid-template-columns: auto 1fr auto;
-            align-items: center; gap: 16px;
-            background: rgba(0,0,0,0.92); backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(139,92,246,0.3);
-        }
-        .header-left { display: flex; align-items: center; }
-        .header-center { display: flex; align-items: center; justify-content: center; }
-        .header-actions { display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
-        .logo-img { height: 38px; width: auto; display: block; }
-        .header-search {
-            width: 100%; max-width: 540px;
-            display: flex; align-items: center;
-            background: rgba(255,255,255,0.07);
-            border: 1.5px solid rgba(139,92,246,0.3);
-            border-radius: 10px; overflow: hidden;
-            transition: border-color 0.3s; cursor: pointer;
-        }
-        .header-search:hover { border-color: #8b5cf6; }
-        .header-search-icon { padding: 0 12px; color: #8b5cf6; font-size: 13px; flex-shrink: 0; }
-        .header-search-input {
-            flex: 1; min-width: 0; padding: 9px 0;
-            background: transparent; border: none; color: white;
-            font-size: 13px; font-family: 'Inter', sans-serif; cursor: pointer;
-        }
-        .header-search-input::placeholder { color: rgba(255,255,255,0.3); }
-        .header-search-input:focus { outline: none; }
-        .header-search-btn {
-            padding: 9px 16px; background: linear-gradient(135deg, #8b5cf6, #6d28d9);
-            border: none; color: white; font-size: 12px; font-weight: 600;
-            cursor: pointer; font-family: 'Inter', sans-serif; transition: opacity 0.2s; flex-shrink: 0;
-        }
-        .header-search-btn:hover { opacity: 0.85; }
-        .profile-dropdown { position: relative; }
-        .profile-trigger {
-            width: 36px; height: 36px; border-radius: 50%;
-            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 700; font-size: 13px; cursor: pointer;
-            border: 2px solid rgba(139,92,246,0.5); transition: all 0.3s; overflow: hidden;
-        }
-        .profile-trigger:hover { transform: scale(1.05); border-color: #8b5cf6; }
-        .dropdown-menu {
-            position: absolute; top: 50px; right: 0;
-            background: rgba(18,8,36,0.98); backdrop-filter: blur(10px);
-            border: 1px solid rgba(139,92,246,0.3); border-radius: 12px;
-            padding: 8px; min-width: 200px; box-shadow: 0 8px 30px rgba(0,0,0,0.6);
-            opacity: 0; visibility: hidden; transform: translateY(-8px);
-            transition: all 0.25s; z-index: 300;
-        }
-        .profile-dropdown.active .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
-        .dropdown-item {
-            display: flex; align-items: center; gap: 10px;
-            padding: 10px 14px; color: #d1d5db; text-decoration: none;
-            border-radius: 8px; transition: all 0.2s; font-size: 13px; cursor: pointer;
-        }
-        .dropdown-item:hover { background: rgba(139,92,246,0.2); color: #a78bfa; }
-        .dropdown-item i { width: 18px; text-align: center; color: #8b5cf6; }
-        .dropdown-divider { height: 1px; background: rgba(139,92,246,0.2); margin: 6px 0; }
-
+        
         /* ── LAYOUT ── */
         .app-layout {
             position: relative; z-index: 1;
@@ -207,6 +133,10 @@
         textarea { min-height: 96px; resize: vertical; }
         select option { background: #1a0a2e; }
         input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.2); }
+        .bio-wrap { position: relative; }
+        .bio-counter { position: absolute; bottom: 8px; right: 12px; font-size: 11px; color: #6b7280; pointer-events: none; }
+        .bio-counter.warning { color: #f59e0b; }
+        .bio-counter.limit { color: #ef4444; }
         input:focus, select:focus, textarea:focus {
             outline: none; border-color: #8b5cf6;
             background: rgba(139,92,246,0.06);
@@ -228,16 +158,16 @@
         }
         .checkbox-icon {
             width: 14px; height: 14px; background: transparent; border-radius: 3px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 7px; flex-shrink: 0; visibility: hidden;
+            display: none; align-items: center; justify-content: center;
+            font-size: 8px; flex-shrink: 0; color: white;
         }
-        .checkbox-item input:checked + .checkbox-label .checkbox-icon { background: #7c3aed; visibility: visible; color: white; }
+        .checkbox-item input:checked + .checkbox-label .checkbox-icon { display: flex; background: #7c3aed; }
         .generos-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
         .generos-grid .checkbox-label { border-radius: 20px; font-size: 12px; padding: 8px 12px; }
 
         /* Areas */
         .areas-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .area-card input[type="radio"] { display: none; }
+        .area-card input { display: none; }
         .area-label {
             display: flex; flex-direction: column; align-items: center; gap: 8px;
             padding: 14px 10px; border: 1px solid rgba(255,255,255,0.08);
@@ -294,14 +224,7 @@
         }
         .btn-cancelar:hover { border-color: #8b5cf6; color: #a78bfa; }
 
-        footer {
-            position: relative; z-index: 1; padding: 24px 0;
-            text-align: center; color: rgba(255,255,255,0.4);
-            font-size: 12px; border-top: 1px solid rgba(255,255,255,0.05);
-            margin-left: 260px;
-        }
-        .footer-content { display: flex; flex-direction: column; align-items: center; gap: 6px; }
-        .footer-logo-img { height: 24px; width: auto; opacity: 0.5; }
+      
 
         @media (max-width: 768px) {
             .edit-sidebar { position: static; width: 100%; border-right: none; border-bottom: 1px solid rgba(139,92,246,0.18); }
@@ -405,12 +328,15 @@
                     </div>
                     <div class="form-group">
                         <label for="telefone">Telefone / WhatsApp</label>
-                        <input type="tel" id="telefone" placeholder="(00) 00000-0000">
+                        <input type="tel" id="telefone" placeholder="(00) 00000-0000" maxlength="15">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="biografia">Biografia</label>
-                    <textarea id="biografia" placeholder="Fale sobre você, sua trajetória musical..."></textarea>
+                    <div class="bio-wrap">
+                        <textarea id="biografia" placeholder="Fale sobre você, sua trajetória musical..." maxlength="500"></textarea>
+                        <span class="bio-counter" id="bioCounter">0 / 500</span>
+                    </div>
                 </div>
                 <div class="action-bar">
                     <a href="perfil.html" class="btn-cancelar">Cancelar</a>
@@ -445,7 +371,7 @@
                 </div>
                 <div class="form-group">
                     <label>Disponibilidade</label>
-                    <div class="checkbox-grid" id="disponibilidadeGrid"></div>
+                    <div id="disponibilidadeGrid"></div>
                 </div>
                 <div class="action-bar">
                     <a href="perfil.html" class="btn-cancelar">Cancelar</a>
@@ -556,11 +482,35 @@
     </footer>
 
     <script type="module">
+        import { showLoading, hideLoading } from '../js/loading.js';
         import { verificarAutenticacao, fazerLogout } from '../js/auth.js';
         import { fetchDados } from '../js/dados.js';
 
+        showLoading('Carregando dados...');
         const usuario = verificarAutenticacao();
         if (!usuario) { window.location.href = 'login.html'; }
+
+        // Máscara de telefone
+        function mascaraTelefone(el) {
+            let v = el.value.replace(/\D/g, '').substring(0, 11);
+            if (v.length <= 10) {
+                v = v.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+            } else {
+                v = v.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+            }
+            el.value = v;
+        }
+        function formatarTelefone(val) {
+            let v = (val || '').replace(/\D/g, '').substring(0, 11);
+            if (!v) return '';
+            if (v.length <= 10) return v.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+            return v.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+        }
+        function validarTelefone(val) {
+            const digits = (val || '').replace(/\D/g, '');
+            return digits.length === 0 || digits.length === 10 || digits.length === 11;
+        }
+        document.getElementById('telefone')?.addEventListener('input', function() { mascaraTelefone(this); });
 
         // Carregar dados do usuário
         const res = await fetch(`/api/usuarios/${usuario.id_usuario}`);
@@ -578,8 +528,20 @@
         document.getElementById('nome_completo').value  = u.nome_completo || '';
         document.getElementById('nome_artistico').value = u.nome_artistico || '';
         document.getElementById('email').value          = u.email || '';
-        document.getElementById('telefone').value       = u.telefone || '';
-        document.getElementById('biografia').value      = u.biografia || '';
+        document.getElementById('telefone').value = formatarTelefone(u.telefone || '');
+        const _bioEl = document.getElementById('biografia');
+        const _bioCounter = document.getElementById('bioCounter');
+        _bioEl.value = u.biografia || '';
+        if (_bioCounter) {
+            const _len = _bioEl.value.length;
+            _bioCounter.textContent = _len + ' / 500';
+            _bioCounter.className = 'bio-counter' + (_len >= 500 ? ' limit' : _len >= 400 ? ' warning' : '');
+            _bioEl.addEventListener('input', () => {
+                const len = _bioEl.value.length;
+                _bioCounter.textContent = len + ' / 500';
+                _bioCounter.className = 'bio-counter' + (len >= 500 ? ' limit' : len >= 400 ? ' warning' : '');
+            });
+        }
         document.getElementById('cidade').value         = u.cidade || '';
         if (u.estado) document.getElementById('estado').value = u.estado;
 
@@ -628,13 +590,59 @@
             </div>`).join('');
 
         // Disponibilidade
-        document.getElementById('disponibilidadeGrid').innerHTML = dados.disponibilidade.map(d => `
-            <div class="checkbox-item">
-                <input type="checkbox" id="disp_${d.id}" name="disponibilidade" value="${d.id}" ${(u.disponibilidades||[]).includes(d.label) ? 'checked' : ''}>
-                <label for="disp_${d.id}" class="checkbox-label">
-                    <span class="checkbox-icon"><i class="fa-solid fa-check"></i></span>${d.label}
-                </label>
-            </div>`).join('');
+        // Grade de disponibilidade: dias x períodos
+        const dias = ['Segunda','Terça','Quarta','Quinta','Sexta','Sábado','Domingo'];
+        const periodos = ['Manhã','Tarde','Noite'];
+        const dispAtual = u.disponibilidades || [];
+
+        const gradeStyle = '<style>'
+            + '.disp-grade{width:100%;border-collapse:collapse;font-size:12px}'
+            + '.disp-grade th{padding:8px 6px;color:#9ca3af;font-weight:600;text-align:center}'
+            + '.disp-grade td{padding:4px;text-align:center}'
+            + '.disp-cell{display:none}'
+            + '.disp-cell+.disp-cell-label{display:inline-flex;align-items:center;justify-content:center;width:100%;padding:7px 4px;border-radius:8px;cursor:pointer;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.02);color:#6b7280;font-size:11px;transition:all 0.2s}'
+            + '.disp-cell:checked+.disp-cell-label{background:rgba(139,92,246,0.25);border-color:#8b5cf6;color:white;font-weight:600}'
+            + '.disp-cell-label:hover{border-color:rgba(139,92,246,0.4);color:#e5e7eb}'
+            + '.disp-dia-label{color:#e5e7eb;font-size:12px;font-weight:500;padding-right:8px;text-align:right;white-space:nowrap}'
+            + '.disp-especiais{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}'
+            + '</style>';
+
+        let headerRow = '<tr><th></th>';
+        periodos.forEach(function(p) { headerRow += '<th>' + p + '</th>'; });
+        headerRow += '</tr>';
+
+        let bodyRows = '';
+        dias.forEach(function(dia) {
+            let row = '<tr><td class="disp-dia-label">' + dia + '</td>';
+            periodos.forEach(function(p) {
+                const chave = dia + ' - ' + p;
+                const checked = dispAtual.includes(chave) ? 'checked' : '';
+                const sid = 'disp_' + dia + '_' + p;
+                row += '<td>'
+                    + '<input type="checkbox" class="disp-cell" id="' + sid + '" name="disponibilidade" value="' + chave + '" ' + checked + '>'
+                    + '<label for="' + sid + '" class="disp-cell-label">✓</label>'
+                    + '</td>';
+            });
+            row += '</tr>';
+            bodyRows += row;
+        });
+
+        let especiais = '<div class="disp-especiais">';
+        ['Manhã','Tarde','Noite','Fins de semana','Integral'].forEach(function(e) {
+            const checked = dispAtual.includes(e) ? 'checked' : '';
+            const sid = 'disp_esp_' + e.replace(/ /g, '_');
+            especiais += '<div class="checkbox-item" style="flex:none">'
+                + '<input type="checkbox" id="' + sid + '" name="disponibilidade" value="' + e + '" ' + checked + '>'
+                + '<label for="' + sid + '" class="checkbox-label">'
+                + '<span class="checkbox-icon"><i class="fa-solid fa-check"></i></span>' + e
+                + '</label></div>';
+        });
+        especiais += '</div>';
+
+        document.getElementById('disponibilidadeGrid').innerHTML =
+            gradeStyle
+            + '<table class="disp-grade"><thead>' + headerRow + '</thead><tbody>' + bodyRows + '</tbody></table>'
+            + especiais;
 
         // DAWs
         document.getElementById('dawsGrid').innerHTML = dados.daws.map(d => {
@@ -750,6 +758,7 @@
                 setTimeout(() => { sucessoMsg.style.display = 'none'; }, 3000);
                 atualizarPontos(atualizado);
             } catch (erro) {
+                hideLoading();
                 erroMsg.textContent = erro.message;
                 erroMsg.style.display = 'block';
                 window.scrollTo(0, 0);

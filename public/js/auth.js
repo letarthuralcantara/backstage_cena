@@ -38,23 +38,28 @@ export async function completarCadastro(dados) {
   const usuarioLocal = JSON.parse(localStorage.getItem('usuarioLogado'));
   if (!usuarioLocal) throw new Error('Usuário não autenticado.');
 
+  const id = Number(usuarioLocal.id_usuario);
+
   const body = {
-    ...usuarioLocal,
-    telefone: dados.telefone || null,
-    cidade: dados.cidade || null,
-    estado: dados.estado || null,
-    bairro: dados.bairro || null,
-    area_atuacao: dados.areas_atuacao?.[0] || null,
-    anos_experiencia: Number(dados.anos_experiencia) || 0,
-    biografia: dados.biografia || null,
-    instrumentos: dados.instrumentos || [],
-    generos: dados.generos || [],
-    disponibilidades: dados.disponibilidade || [],
-    daws: dados.daws || [],
+    id_usuario: id,
+    nome_completo:  usuarioLocal.nome_completo,
+    nome_artistico: dados.nome_artistico || usuarioLocal.nome_artistico || usuarioLocal.nome_completo,
+    email:          usuarioLocal.email,
+    senha:          usuarioLocal.senha,
+    telefone:       dados.telefone || usuarioLocal.telefone || null,
+    cidade:         dados.cidade   || usuarioLocal.cidade   || null,
+    estado:         dados.estado   || usuarioLocal.estado   || null,
+    bairro:         dados.bairro   || usuarioLocal.bairro   || null,
+    area_atuacao:   dados.areas_atuacao?.[0] || usuarioLocal.area_atuacao || null,
+    biografia:      dados.biografia || usuarioLocal.biografia || null,
+    instrumentos:   dados.instrumentos   || [],
+    generos:        dados.generos        || [],
+    disponibilidades: dados.disponibilidade || dados.disponibilidades || [],
+    daws:           dados.daws           || [],
     cadastro_completo: 1,
   };
 
-  const res = await fetch(`/api/usuarios/${usuarioLocal.id_usuario}`, {
+  const res = await fetch(`/api/usuarios/${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),

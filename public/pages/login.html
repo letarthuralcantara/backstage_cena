@@ -9,29 +9,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/global.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-image: url('../images/background.png');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            position: relative;
-        }
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 0;
-        }
+    
         .container {
             position: relative;
             z-index: 1;
@@ -230,6 +210,7 @@
 
     <!-- type="module" habilita o uso de import/export ES Modules -->
 <script type="module">
+    import { showLoading, hideLoading } from '../js/loading.js';
     const form = document.getElementById('loginForm');
     const erroMsg = document.getElementById('erroMsg');
 
@@ -255,6 +236,8 @@
         localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
         window.location.href = 'perfil.html';
     });
+    showLoading('Carregando...');  // aparece
+hideLoading();                  // some
 </script>
 </body>
 </html>

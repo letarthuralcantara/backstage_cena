@@ -7,127 +7,9 @@
     <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/global.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', sans-serif;
-            min-height: 100vh;
-            background-image: url('../images/background.png');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            color: #ffffff;
-            position: relative;
-        }
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 0;
-        }
-        .logo-img { height: 50px; width: auto; }
-        .header {
-            position: relative;
-            z-index: 100;
-            width: 100%;
-            padding: 14px 24px;
-            display: grid;
-            grid-template-columns: auto 1fr auto;
-            align-items: center;
-            gap: 16px;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(15px);
-            border-bottom: 2px solid rgba(139,92,246,0.4);
-            box-shadow: 0 4px 30px rgba(0,0,0,0.7);
-        }
-        .header-left { display: flex; align-items: center; }
-        .header-center { display: flex; align-items: center; justify-content: center; }
-        .header-actions { display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
-        .logo-img { height: 44px; width: auto; display: block; }
-        .header-search {
-            width: 100%;
-            max-width: 580px;
-            display: flex;
-            align-items: center;
-            background: rgba(255,255,255,0.07);
-            border: 1.5px solid rgba(139,92,246,0.35);
-            border-radius: 12px;
-            overflow: hidden;
-            transition: border-color 0.3s, box-shadow 0.3s;
-            cursor: pointer;
-        }
-        .header-search:focus-within, .header-search:hover {
-            border-color: #8b5cf6;
-            background: rgba(139,92,246,0.08);
-            box-shadow: 0 0 0 3px rgba(139,92,246,0.15);
-        }
-        .header-search-icon { padding: 0 12px; color: #8b5cf6; font-size: 14px; flex-shrink: 0; }
-        .header-search-input {
-            flex: 1; min-width: 0; padding: 11px 0;
-            background: transparent; border: none; color: white;
-            font-size: 14px; font-family: 'Inter', sans-serif; cursor: pointer;
-        }
-        .header-search-input::placeholder { color: rgba(255,255,255,0.35); }
-        .header-search-input:focus { outline: none; }
-        .header-search-btn {
-            padding: 11px 18px;
-            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
-            border: none; color: white; font-size: 13px; font-weight: 600;
-            cursor: pointer; font-family: 'Inter', sans-serif;
-            transition: opacity 0.2s; flex-shrink: 0; white-space: nowrap;
-        }
-        .header-search-btn:hover { opacity: 0.85; }
-
-        .profile-dropdown { position: relative; }
-        .profile-trigger {
-            width: 40px; height: 40px; border-radius: 50%;
-            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 700; font-size: 14px; cursor: pointer;
-            border: 2px solid rgba(139,92,246,0.5); transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(139,92,246,0.3); overflow: hidden;
-        }
-        .profile-trigger img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
-        .profile-trigger:hover { transform: scale(1.05); border-color: #8b5cf6; }
-        .profile-incomplete-badge {
-            position: absolute; top: -5px; right: -5px;
-            width: 18px; height: 18px;
-            background: #f59e0b; border-radius: 50%;
-            border: 2px solid rgba(0,0,0,0.8);
-            display: none; align-items: center; justify-content: center;
-            font-size: 10px; color: white; font-weight: 700;
-            z-index: 10;
-        }
-        .profile-incomplete-badge.show { display: flex; }
-        .dropdown-menu {
-            position: absolute; top: 60px; right: 0;
-            background: rgba(26, 11, 46, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(139, 92, 246, 0.3);
-            border-radius: 15px; padding: 10px; min-width: 220px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            opacity: 0; visibility: hidden; transform: translateY(-10px);
-            transition: all 0.3s; z-index: 200;
-        }
-        .profile-dropdown.active .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
-        .dropdown-item {
-            display: flex; align-items: center; gap: 12px;
-            padding: 12px 16px; color: #d1d5db; text-decoration: none;
-            border-radius: 10px; transition: all 0.3s; font-size: 14px; cursor: pointer;
-        }
-        .dropdown-item:hover { background: rgba(139, 92, 246, 0.2); color: #a78bfa; }
-        .dropdown-item i { width: 20px; text-align: center; color: #8b5cf6; }
-        .dropdown-item .pending-dot {
-            margin-left: auto;
-            width: 8px; height: 8px;
-            background: #f59e0b; border-radius: 50%;
-            display: none;
-        }
-        .dropdown-item .pending-dot.show { display: block; }
-        .dropdown-divider { height: 1px; background: rgba(139, 92, 246, 0.2); margin: 8px 0; }
+      
 
         .container { position: relative; z-index: 1; max-width: 1000px; margin: 50px auto; padding: 0 30px; }
         .profile-layout { display: grid; grid-template-columns: 280px 1fr; gap: 35px; align-items: start; }
@@ -209,17 +91,27 @@
         .card-header-left { display: flex; align-items: center; gap: 12px; }
         .card-icon { width: 40px; height: 40px; background: rgba(139,92,246,0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #8b5cf6; font-size: 18px; }
         .card-title { font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 600; }
-        .card-content { color: #d1d5db; line-height: 1.7; }
+        .card-content {
+            color: #d1d5db; line-height: 1.7;
+            word-break: break-word;
+            white-space: pre-wrap;
+            max-width: 100%;
+        }
+        .bio-collapsed { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+        .btn-ler-mais {
+            display: inline-block; margin-top: 10px;
+            color: #8b5cf6; font-size: 13px; font-weight: 600;
+            cursor: pointer; background: none; border: none;
+            padding: 0; transition: color 0.2s;
+        }
+        .btn-ler-mais:hover { color: #a78bfa; }
         .tags-grid { display: flex; flex-wrap: wrap; gap: 10px; }
         .tag { display: flex; align-items: center; gap: 6px; padding: 8px 14px; background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3); border-radius: 20px; font-size: 14px; color: #a78bfa; }
         .empty-state { color: #6b7280; font-style: italic; font-size: 14px; }
         .btn-edit-card { display: flex; align-items: center; gap: 6px; padding: 8px 16px; background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.3); border-radius: 8px; color: #a78bfa; text-decoration: none; font-size: 13px; transition: all 0.3s; }
         .btn-edit-card:hover { background: rgba(139,92,246,0.2); }
         .btn-edit-card.hidden { display: none; }
-        footer { padding: 20px 0; text-align: center; color: rgba(255,255,255,0.7); font-size: 13px; margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); }
-        .footer-content { display: flex; flex-direction: column; align-items: center; gap: 10px; }
-        .footer-logo-img { height: 30px; width: auto; opacity: 0.8; }
-
+        
         @media (max-width: 768px) {
             .profile-layout { grid-template-columns: 1fr; }
             .profile-card { position: static; }
@@ -268,7 +160,7 @@
 
                 <div class="incomplete-banner" id="incompleteBanner">
                     <i class="fas fa-exclamation-triangle"></i>
-                    <span>Cadastro incompleto. <a href="config.html">Complete agora</a> para aparecer nas buscas.</span>
+                    <span>Seu perfil está incompleto e <strong>não aparece nas buscas</strong>. <a href="cadastro.html">Complete agora</a> para ser encontrado por outros músicos.</span>
                 </div>
 
                 <ul class="info-list">
@@ -345,6 +237,7 @@
     </footer>
 
     <script type="module">
+        import { showLoading, hideLoading } from '../js/loading.js';
         import { verificarAutenticacao, fazerLogout } from '../js/auth.js';
 
         const SOCIAL_ICONS = {
@@ -387,7 +280,25 @@
             document.getElementById('nomeExibir').textContent = nome;
             document.getElementById('emailExibir').textContent = u.email;
             document.getElementById('localExibir').textContent = `${u.cidade || 'Não informado'}, ${u.estado || 'Não informado'}`;
-            document.getElementById('bioExibir').textContent = u.biografia || 'Sem descrição ainda.';
+            const bioEl = document.getElementById('bioExibir');
+            const bioTexto = u.biografia || 'Sem descrição ainda.';
+            const BIO_LIMITE = 280;
+            if (bioTexto.length > BIO_LIMITE) {
+                bioEl.textContent = bioTexto;
+                bioEl.classList.add('bio-collapsed');
+                const btnLer = document.createElement('button');
+                btnLer.className = 'btn-ler-mais';
+                btnLer.textContent = 'Ler mais';
+                let expandido = false;
+                btnLer.addEventListener('click', () => {
+                    expandido = !expandido;
+                    bioEl.classList.toggle('bio-collapsed', !expandido);
+                    btnLer.textContent = expandido ? 'Ler menos' : 'Ler mais';
+                });
+                bioEl.insertAdjacentElement('afterend', btnLer);
+            } else {
+                bioEl.textContent = bioTexto;
+            }
 
             const profileTrigger = document.getElementById('profileTrigger');
             if (profileTrigger) profileTrigger.textContent = iniciais;
@@ -479,7 +390,8 @@
 
         document.getElementById('btnSair')?.addEventListener('click', fazerLogout);
 
-        iniciarPerfil();
+        showLoading('Carregando perfil...');
+        await iniciarPerfil().finally(() => hideLoading());
     </script>
 </body>
 </html>

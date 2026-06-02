@@ -7,85 +7,9 @@
     <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Work+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/global.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Work Sans', sans-serif;
-            min-height: 100vh;
-            background-image: url('../images/background.png');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            color: #ffffff;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-        }
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            z-index: 0;
-        }
-
-        /* ── HEADER ── */
-        .header {
-            position: relative;
-            z-index: 100;
-            width: 100%;
-            padding: 14px 24px;
-            display: grid;
-            grid-template-columns: auto 1fr auto;
-            align-items: center;
-            gap: 16px;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(15px);
-            border-bottom: 2px solid rgba(139,92,246,0.4);
-            box-shadow: 0 4px 30px rgba(0,0,0,0.7);
-        }
-        .header-left { display: flex; align-items: center; }
-        .header-center { display: flex; align-items: center; justify-content: center; }
-        .header-actions { display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
-
-        .logo-img { height: 44px; width: auto; display: block; }
-
-        .header-search {
-            width: 100%;
-            max-width: 580px;
-            display: flex;
-            align-items: center;
-            background: rgba(255,255,255,0.07);
-            border: 1.5px solid rgba(139,92,246,0.35);
-            border-radius: 12px;
-            overflow: hidden;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-        .header-search:focus-within {
-            border-color: #8b5cf6;
-            background: rgba(139,92,246,0.08);
-            box-shadow: 0 0 0 3px rgba(139,92,246,0.15);
-        }
-        .header-search-icon {
-            padding: 0 12px;
-            color: #8b5cf6;
-            font-size: 14px;
-            flex-shrink: 0;
-        }
-        .header-search-input {
-            flex: 1;
-            min-width: 0;
-            padding: 11px 0;
-            background: transparent;
-            border: none;
-            color: white;
-            font-size: 14px;
-            font-family: 'Work Sans', sans-serif;
-        }
-        .header-search-input::placeholder { color: rgba(255,255,255,0.35); }
-        .header-search-input:focus { outline: none; }
+        
 
         .btn-filtrar {
             display: flex;
@@ -134,38 +58,7 @@
         }
         .header-search-btn:hover { opacity: 0.85; }
 
-        /* Dropdown perfil */
-        .profile-dropdown { position: relative; }
-        .profile-trigger {
-            width: 40px; height: 40px; border-radius: 50%;
-            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 700; font-size: 14px; cursor: pointer;
-            border: 2px solid rgba(139,92,246,0.5); transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(139,92,246,0.3);
-        }
-        .profile-trigger:hover { transform: scale(1.05); border-color: #8b5cf6; }
-        .dropdown-menu {
-            position: absolute; top: 54px; right: 0;
-            background: rgba(26,11,46,0.97);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(139,92,246,0.3);
-            border-radius: 14px; padding: 8px;
-            min-width: 190px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            opacity: 0; visibility: hidden; transform: translateY(-10px);
-            transition: all 0.3s; z-index: 200;
-        }
-        .profile-dropdown.active .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
-        .dropdown-item {
-            display: flex; align-items: center; gap: 12px;
-            padding: 11px 14px; color: #d1d5db; text-decoration: none;
-            border-radius: 8px; transition: all 0.3s; font-size: 14px; cursor: pointer;
-        }
-        .dropdown-item:hover { background: rgba(139,92,246,0.2); color: #a78bfa; }
-        .dropdown-item i { width: 18px; text-align: center; color: #8b5cf6; }
-        .dropdown-divider { height: 1px; background: rgba(139,92,246,0.2); margin: 6px 0; }
-
+        
         /* ── FILTROS colapsável ── */
         .filters-panel {
             position: relative; z-index: 50;
@@ -296,6 +189,9 @@
             display: -webkit-box; -webkit-line-clamp: 2;
             -webkit-box-orient: vertical; overflow: hidden;
             flex: 1;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
         }
         .musician-tags { display: flex; flex-wrap: wrap; gap: 5px; }
         .tag {
@@ -314,19 +210,7 @@
         .empty-state i { font-size: 3rem; margin-bottom: 20px; color: rgba(139,92,246,0.3); display: block; }
         .empty-state h3 { font-size: 1.2rem; margin-bottom: 8px; color: #9ca3af; }
 
-        /* ── FOOTER ── */
-        footer {
-            position: relative; z-index: 1;
-            padding: 24px 0;
-            text-align: center;
-            color: rgba(255,255,255,0.6);
-            font-size: 13px;
-            border-top: 1px solid rgba(255,255,255,0.08);
-            margin-top: auto;
-        }
-        .footer-content { display: flex; flex-direction: column; align-items: center; gap: 10px; }
-        .footer-logo-img { height: 30px; width: auto; opacity: 0.7; }
-
+       
         /* ── RESPONSIVO ── */
         @media (max-width: 1200px) {
             .musicians-grid { grid-template-columns: repeat(3, 1fr); }
@@ -461,8 +345,10 @@
     </footer>
 
     <script type="module">
+        import { showLoading, hideLoading } from '../js/loading.js';
         import { verificarAutenticacao, fazerLogout } from '../js/auth.js';
 
+        showLoading('Buscando músicos...');
         const usuario = verificarAutenticacao();
         if (usuario) {
             const nome = usuario.nome_artistico || usuario.nome_completo;
@@ -539,7 +425,7 @@
                             ${m.area_atuacao ? `<span class="musician-area">${m.area_atuacao}</span>` : ''}
                         </div>
                     </div>
-                    ${m.biografia ? `<p class="musician-bio">${m.biografia}</p>` : '<div class="card-spacer"></div>'}
+                    ${m.biografia ? `<p class="musician-bio" title="${m.biografia.replace(/"/g, '&quot;')}">${m.biografia}</p>` : '<div class="card-spacer"></div>'}
                     ${tagsInst || tagsGen ? `<div class="musician-tags">${tagsInst}${tagsGen}</div>` : ''}
                 </div>`;
             }).join('');
@@ -580,6 +466,7 @@
         await popularSelect('/api/usuarios/generos', 'filtroGenero');
         await popularSelect('/api/usuarios/areas', 'filtroArea');
         await carregarMusicos();
+        hideLoading();
 
         // Foca automaticamente no campo de busca ao entrar na página
         const searchInput = document.getElementById('searchInput');

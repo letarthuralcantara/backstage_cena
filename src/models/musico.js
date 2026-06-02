@@ -2,9 +2,9 @@ import Database from '../database/database.js';
 
 async function read(field, value) {
   const db = await Database.connect();
-  let sql = 'SELECT * FROM usuario';
+  let sql = 'SELECT * FROM usuario WHERE cadastro_completo = 1';
   if (field && value) {
-    sql += ` WHERE ${field} = ?`;
+    sql += ` AND ${field} = ?`;
   }
   const usuarios = await db.all(sql, value ? [value] : []);
   

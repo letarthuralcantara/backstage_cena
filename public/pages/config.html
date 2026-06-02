@@ -7,93 +7,9 @@
     <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/global.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', sans-serif;
-            min-height: 100vh;
-            background-image: url('../images/background.png');
-            background-size: cover; background-position: center;
-            background-repeat: no-repeat; background-attachment: fixed;
-            color: #ffffff; position: relative;
-        }
-        body::before {
-            content: ''; position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); z-index: 0;
-        }
-
-        /* ── HEADER ── */
-        .header {
-            position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-            padding: 0 24px; height: 56px;
-            display: grid; grid-template-columns: auto 1fr auto;
-            align-items: center; gap: 16px;
-            background: rgba(0,0,0,0.92); backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(139,92,246,0.3);
-        }
-        .header-left { display: flex; align-items: center; }
-        .header-center { display: flex; align-items: center; justify-content: center; }
-        .header-actions { display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
-        .logo-img { height: 38px; width: auto; display: block; }
-        .header-search {
-            width: 100%; max-width: 540px;
-            display: flex; align-items: center;
-            background: rgba(255,255,255,0.07);
-            border: 1.5px solid rgba(139,92,246,0.3);
-            border-radius: 10px; overflow: hidden;
-            transition: border-color 0.3s; cursor: pointer;
-        }
-        .header-search:hover { border-color: #8b5cf6; }
-        .header-search-icon { padding: 0 12px; color: #8b5cf6; font-size: 13px; flex-shrink: 0; }
-        .header-search-input {
-            flex: 1; min-width: 0; padding: 9px 0;
-            background: transparent; border: none; color: white;
-            font-size: 13px; font-family: 'Inter', sans-serif; cursor: pointer;
-        }
-        .header-search-input::placeholder { color: rgba(255,255,255,0.3); }
-        .header-search-input:focus { outline: none; }
-        .header-search-btn {
-            padding: 9px 16px; background: linear-gradient(135deg, #8b5cf6, #6d28d9);
-            border: none; color: white; font-size: 12px; font-weight: 600;
-            cursor: pointer; font-family: 'Inter', sans-serif; transition: opacity 0.2s; flex-shrink: 0;
-        }
-        .header-search-btn:hover { opacity: 0.85; }
-        .profile-dropdown { position: relative; }
-        .profile-trigger {
-            width: 36px; height: 36px; border-radius: 50%;
-            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 700; font-size: 13px; cursor: pointer;
-            border: 2px solid rgba(139,92,246,0.5); transition: all 0.3s; overflow: hidden;
-        }
-        .profile-trigger:hover { transform: scale(1.05); border-color: #8b5cf6; }
-        .profile-incomplete-badge {
-            position: absolute; top: -4px; right: -4px;
-            width: 16px; height: 16px; background: #f59e0b; border-radius: 50%;
-            border: 2px solid rgba(0,0,0,0.8); display: none;
-            align-items: center; justify-content: center;
-            font-size: 9px; color: white; font-weight: 700; z-index: 10;
-        }
-        .profile-incomplete-badge.show { display: flex; }
-        .dropdown-menu {
-            position: absolute; top: 50px; right: 0;
-            background: rgba(18,8,36,0.98); backdrop-filter: blur(10px);
-            border: 1px solid rgba(139,92,246,0.3); border-radius: 12px;
-            padding: 8px; min-width: 200px; box-shadow: 0 8px 30px rgba(0,0,0,0.6);
-            opacity: 0; visibility: hidden; transform: translateY(-8px);
-            transition: all 0.25s; z-index: 300;
-        }
-        .profile-dropdown.active .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
-        .dropdown-item {
-            display: flex; align-items: center; gap: 10px;
-            padding: 10px 14px; color: #d1d5db; text-decoration: none;
-            border-radius: 8px; transition: all 0.2s; font-size: 13px; cursor: pointer;
-        }
-        .dropdown-item:hover { background: rgba(139,92,246,0.2); color: #a78bfa; }
-        .dropdown-item i { width: 18px; text-align: center; color: #8b5cf6; }
-        .dropdown-divider { height: 1px; background: rgba(139,92,246,0.2); margin: 6px 0; }
-
+        
         /* ── LAYOUT ── */
         .app-layout {
             position: relative; z-index: 1;
@@ -276,21 +192,12 @@
             font-size: 12px; margin-bottom: 14px; display: none;
         }
 
-        footer {
-            position: relative; z-index: 1; padding: 24px 0;
-            text-align: center; color: rgba(255,255,255,0.4);
-            font-size: 12px; border-top: 1px solid rgba(255,255,255,0.05);
-            margin-left: 260px;
-        }
-        .footer-content { display: flex; flex-direction: column; align-items: center; gap: 6px; }
-        .footer-logo-img { height: 24px; width: auto; opacity: 0.5; }
-
+       
         @media (max-width: 768px) {
             .settings-sidebar { position: static; width: 100%; border-right: none; border-bottom: 1px solid rgba(139,92,246,0.18); }
             .app-layout { flex-direction: column; }
             .settings-main { margin-left: 0; padding: 24px 20px 60px; max-width: 100%; }
-            footer { margin-left: 0; }
-            .header-center { display: none; }
+           
         }
     </style>
 </head>
@@ -353,7 +260,7 @@
                 <div class="nav-divider"></div>
                 <div class="nav-section-title">Conta</div>
                 <button class="nav-item" data-panel="perigo" style="color:#f87171;">
-                    <i class="fas fa-exclamation-triangle" style="color:#ef4444;"></i> Zona de Perigo
+                    <i class="fas fa-exclamation-triangle" style="color:#ef4444;"></i> Excluir Perfil
                 </button>
             </nav>
         </aside>
@@ -474,7 +381,7 @@
             <!-- Zona de Perigo -->
             <div class="settings-panel" id="panel-perigo">
                 <div class="panel-header">
-                    <h1 class="panel-title">Zona de Perigo</h1>
+                    <h1 class="panel-title">Excluir perfil</h1>
                     <p class="panel-subtitle">Ações irreversíveis para sua conta</p>
                 </div>
                 <div class="danger-section">
