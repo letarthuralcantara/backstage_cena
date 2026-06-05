@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Perfil - Backstage Cena</title>
+    <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/global.css">
+    <style>
+        
+        /* ── LAYOUT ── */
+        .app-layout {
+            position: relative; z-index: 1;
+            display: flex; min-height: 100vh;
+            padding-top: 56px;
+        }
+
+        /* ── SIDEBAR ── */
+        .edit-sidebar {
+            width: 260px; flex-shrink: 0;
+            position: fixed; top: 56px; left: 0; bottom: 0;
+            background: rgba(0,0,0,0.75); backdrop-filter: blur(12px);
+            border-right: 1px solid rgba(139,92,246,0.18);
+            overflow-y: auto; display: flex; flex-direction: column;
+        }
+        .sidebar-user {
+            padding: 24px 20px 18px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
+        }
+        .sidebar-avatar {
+            width: 68px; height: 68px; border-radius: 50%;
+            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; font-weight: 700;
+            border: 3px solid rgba(139,92,246,0.5); overflow: hidden;
+        }
+        .sidebar-name { font-size: 14px; font-weight: 600; text-align: center; }
+        .sidebar-nav { padding: 10px; flex: 1; }
+        .nav-section-title {
+            font-size: 10px; color: #6b7280;
+            text-transform: uppercase; letter-spacing: 1.2px;
+            padding: 10px 12px 4px; font-weight: 700;
+        }
+        .nav-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 9px 14px; border-radius: 8px;
+            color: #c4c9d4; font-size: 13px; cursor: pointer;
+            transition: all 0.2s; border: none; background: transparent;
+            width: 100%; text-align: left; font-family: 'Inter', sans-serif;
+        }
+        .nav-item:hover { background: rgba(139,92,246,0.15); color: #e5e7eb; }
+        .nav-item.active { background: rgba(139,92,246,0.22); color: white; font-weight: 600; }
+        .nav-item i { width: 16px; text-align: center; color: #8b5cf6; font-size: 13px; flex-shrink: 0; }
+        .nav-divider { height: 1px; background: rgba(255,255,255,0.05); margin: 6px 10px; }
+        .nav-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: #f59e0b; margin-left: auto; flex-shrink: 0;
+            box-shadow: 0 0 6px rgba(245,158,11,0.6);
+        }
+
+        /* ── MAIN CONTENT ── */
+        .edit-main {
+            flex: 1; margin-left: 260px;
+            max-width: 680px;
+            padding: 40px 48px 80px;
+        }
+
+        /* Mensagens globais */
+        .sucesso-msg {
+            background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3);
+            color: #6ee7b7; padding: 12px 16px; border-radius: 10px;
+            font-size: 13px; margin-bottom: 24px; display: none;
+            align-items: center; gap: 10px;
+        }
+        .erro-msg {
+            background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3);
+            color: #f87171; padding: 12px 16px; border-radius: 10px;
+            font-size: 13px; margin-bottom: 24px; display: none;
+        }
+
+        /* ── PANELS ── */
+        .edit-panel { display: none; }
+        .edit-panel.active { display: block; }
+        .panel-header { margin-bottom: 24px; border-bottom: 1px solid rgba(255,255,255,0.07); padding-bottom: 16px; }
+        .panel-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+        .panel-subtitle { color: #9ca3af; font-size: 13px; }
+
+        /* Foto */
+        .foto-section {
+            display: flex; align-items: center; gap: 20px;
+            padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .foto-avatar-big {
+            width: 88px; height: 88px; border-radius: 50%;
+            background: rgba(139,92,246,0.15); border: 3px solid rgba(139,92,246,0.35);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; color: #8b5cf6; font-weight: 700; flex-shrink: 0; overflow: hidden;
+        }
+        .foto-info p { color: #d1d5db; font-size: 14px; margin-bottom: 4px; }
+        .foto-info small { color: #6b7280; font-size: 12px; line-height: 1.5; display: block; }
+        .em-breve {
+            display: inline-block; background: rgba(139,92,246,0.15);
+            border: 1px solid rgba(139,92,246,0.3); color: #a78bfa;
+            font-size: 10px; padding: 2px 7px; border-radius: 6px; margin-left: 6px;
+        }
+        .btn-upload {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 7px 14px; background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12); border-radius: 8px;
+            color: #6b7280; font-size: 12px; cursor: not-allowed; margin-top: 10px; opacity: 0.5;
+        }
+
+        /* Formulários */
+        .form-section { margin-bottom: 24px; }
+        .form-section-title {
+            font-size: 11px; font-weight: 700; color: #6b7280;
+            text-transform: uppercase; letter-spacing: 1.2px;
+            margin-bottom: 12px;
+        }
+        .form-group { margin-bottom: 16px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        label { display: block; color: #9ca3af; font-weight: 500; margin-bottom: 6px; font-size: 12px; }
+        input, select, textarea {
+            width: 100%; padding: 10px 14px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 9px; font-size: 14px;
+            font-family: 'Inter', sans-serif; color: white; transition: all 0.25s;
+        }
+        textarea { min-height: 96px; resize: vertical; }
+        select option { background: #1a0a2e; }
+        input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.2); }
+        .bio-wrap { position: relative; }
+        .bio-counter { position: absolute; bottom: 8px; right: 12px; font-size: 11px; color: #6b7280; pointer-events: none; }
+        .bio-counter.warning { color: #f59e0b; }
+        .bio-counter.limit { color: #ef4444; }
+        input:focus, select:focus, textarea:focus {
+            outline: none; border-color: #8b5cf6;
+            background: rgba(139,92,246,0.06);
+            box-shadow: 0 0 0 3px rgba(139,92,246,0.1);
+        }
+
+        /* Checkboxes e radios */
+        .checkbox-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .checkbox-item input[type="checkbox"] { display: none; }
+        .checkbox-label {
+            display: flex; align-items: center; gap: 8px;
+            padding: 9px 12px; border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px; cursor: pointer; font-size: 12px;
+            color: #9ca3af; transition: all 0.25s; background: rgba(255,255,255,0.02);
+        }
+        .checkbox-label:hover { border-color: rgba(139,92,246,0.5); color: #e5e7eb; background: rgba(139,92,246,0.05); }
+        .checkbox-item input:checked + .checkbox-label {
+            border-color: #8b5cf6; background: rgba(139,92,246,0.14); color: white;
+        }
+        .checkbox-icon {
+            width: 14px; height: 14px; background: transparent; border-radius: 3px;
+            display: none; align-items: center; justify-content: center;
+            font-size: 8px; flex-shrink: 0; color: white;
+        }
+        .checkbox-item input:checked + .checkbox-label .checkbox-icon { display: flex; background: #7c3aed; }
+        .generos-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+        .generos-grid .checkbox-label { border-radius: 20px; font-size: 12px; padding: 8px 12px; }
+
+        /* Areas */
+        .areas-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .area-card input { display: none; }
+        .area-label {
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            padding: 14px 10px; border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px; cursor: pointer; transition: all 0.25s;
+            background: rgba(255,255,255,0.02);
+        }
+        .area-label:hover { border-color: rgba(139,92,246,0.5); }
+        .area-card input:checked + .area-label { border-color: #8b5cf6; background: rgba(139,92,246,0.14); }
+        .area-icon { font-size: 20px; color: #8b5cf6; }
+        .area-name { font-size: 12px; font-weight: 600; color: #e5e7eb; text-align: center; }
+
+        /* Redes sociais — estilo lista plana */
+        .social-list {}
+        .social-row {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .social-row:first-child { border-top: 1px solid rgba(255,255,255,0.04); }
+        .social-icon-wrap {
+            width: 34px; height: 34px; border-radius: 8px;
+            background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.18);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; color: #8b5cf6; flex-shrink: 0;
+        }
+        .social-name { width: 88px; font-size: 12px; color: #9ca3af; flex-shrink: 0; font-weight: 500; }
+        .social-row input {
+            flex: 1; margin: 0; padding: 8px 12px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px; font-size: 13px;
+        }
+
+        /* Action bar */
+        .action-bar {
+            display: flex; gap: 10px; margin-top: 24px;
+            padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .btn-salvar {
+            flex: 1; padding: 12px;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            border: none; border-radius: 10px; color: white;
+            font-size: 14px; font-weight: 600; cursor: pointer;
+            transition: all 0.3s; font-family: 'Inter', sans-serif;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-salvar:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(139,92,246,0.4); }
+        .btn-salvar:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .btn-cancelar {
+            padding: 12px 22px; background: transparent;
+            border: 1px solid rgba(255,255,255,0.12); border-radius: 10px;
+            color: #9ca3af; font-size: 14px; font-weight: 600;
+            cursor: pointer; transition: all 0.3s; font-family: 'Inter', sans-serif;
+            text-decoration: none; display: flex; align-items: center;
+        }
+        .btn-cancelar:hover { border-color: #8b5cf6; color: #a78bfa; }
+
+      
+
+        @media (max-width: 768px) {
+            .edit-sidebar { position: static; width: 100%; border-right: none; border-bottom: 1px solid rgba(139,92,246,0.18); }
+            .app-layout { flex-direction: column; }
+            .edit-main { margin-left: 0; padding: 24px 20px 60px; max-width: 100%; }
+            footer { margin-left: 0; }
+            .header-center { display: none; }
+            .form-row { grid-template-columns: 1fr; }
+            .checkbox-grid { grid-template-columns: repeat(2, 1fr); }
+            .generos-grid { grid-template-columns: 1fr; }
+            .areas-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <a href="index.html"><img src="../images/logo.png" alt="Backstage Logo" class="logo-img"></a>
+        </div>
+        <div class="header-center">
+            <div class="header-search" id="searchBar">
+                <i class="fas fa-search header-search-icon"></i>
+                <input type="text" class="header-search-input" placeholder="Buscar músicos..." readonly>
+                <button class="header-search-btn">Buscar</button>
+            </div>
+        </div>
+        <div class="header-actions">
+            <div class="profile-dropdown" id="profileDropdown">
+                <div class="profile-trigger" id="profileTrigger"></div>
+                <div class="dropdown-menu">
+                    <a href="perfil.html" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a>
+                    <a href="config.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações</a>
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-item" id="btnSair"><i class="fas fa-sign-out-alt"></i> Sair</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="app-layout">
+        <!-- SIDEBAR -->
+        <aside class="edit-sidebar">
+            <div class="sidebar-user">
+                <div class="sidebar-avatar" id="sidebarAvatar"></div>
+                <div class="sidebar-name" id="sidebarNome"></div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section-title">Editar Perfil</div>
+                <button class="nav-item active" data-panel="foto"><i class="fas fa-camera"></i> Foto de Perfil</button>
+                <button class="nav-item" data-panel="dados" id="nav-dados"><i class="fas fa-user"></i> Dados Pessoais</button>
+                <div class="nav-divider"></div>
+                <button class="nav-item" data-panel="localizacao" id="nav-localizacao"><i class="fas fa-map-marker-alt"></i> Localização</button>
+                <div class="nav-divider"></div>
+                <button class="nav-item" data-panel="musical" id="nav-musical"><i class="fas fa-guitar"></i> Área e Habilidades</button>
+                <div class="nav-divider"></div>
+                <button class="nav-item" data-panel="redes" id="nav-redes"><i class="fas fa-share-alt"></i> Redes Sociais</button>
+            </nav>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="edit-main">
+            <div class="sucesso-msg" id="sucessoMsg"><i class="fas fa-check-circle"></i> Perfil atualizado com sucesso!</div>
+            <div class="erro-msg" id="erroMsg"></div>
+
+            <!-- FOTO -->
+            <div class="edit-panel active" id="panel-foto">
+                <div class="panel-header">
+                    <h1 class="panel-title">Foto de Perfil</h1>
+                    <p class="panel-subtitle">Sua imagem de identificação na plataforma</p>
+                </div>
+                <div class="foto-section">
+                    <div class="foto-avatar-big" id="fotoAvatarBig"></div>
+                    <div class="foto-info">
+                        <p>Foto de Perfil <span class="em-breve">Em breve</span></p>
+                        <small>Upload de foto estará disponível em breve.<br>Por enquanto, suas iniciais são exibidas no perfil.</small>
+                        <button class="btn-upload" disabled><i class="fas fa-upload"></i> Alterar foto</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DADOS PESSOAIS -->
+            <div class="edit-panel" id="panel-dados">
+                <div class="panel-header">
+                    <h1 class="panel-title">Dados Pessoais</h1>
+                    <p class="panel-subtitle">Seu nome, contato e descrição</p>
+                </div>
+                <div class="form-row" style="margin-bottom:16px;">
+                    <div class="form-group">
+                        <label for="nome_completo">Nome Completo</label>
+                        <input type="text" id="nome_completo" placeholder="Seu nome completo">
+                    </div>
+                    <div class="form-group">
+                        <label for="nome_artistico">Nome Artístico</label>
+                        <input type="text" id="nome_artistico" placeholder="Como é conhecido">
+                    </div>
+                </div>
+                <div class="form-row" style="margin-bottom:16px;">
+                    <div class="form-group">
+                        <label for="email">E-mail</label>
+                        <input type="email" id="email" placeholder="seu@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="telefone">Telefone / WhatsApp</label>
+                        <input type="tel" id="telefone" placeholder="(00) 00000-0000" maxlength="15">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="biografia">Biografia</label>
+                    <div class="bio-wrap">
+                        <textarea id="biografia" placeholder="Fale sobre você, sua trajetória musical..." maxlength="500"></textarea>
+                        <span class="bio-counter" id="bioCounter">0 / 500</span>
+                    </div>
+                </div>
+                <div class="action-bar">
+                    <a href="perfil.html" class="btn-cancelar">Cancelar</a>
+                    <button type="button" class="btn-salvar" onclick="salvarPerfil()"><i class="fas fa-check"></i> Salvar alterações</button>
+                </div>
+            </div>
+
+            <!-- LOCALIZAÇÃO -->
+            <div class="edit-panel" id="panel-localizacao">
+                <div class="panel-header">
+                    <h1 class="panel-title">Localização</h1>
+                    <p class="panel-subtitle">Onde você está e quando pode tocar</p>
+                </div>
+                <div class="form-row" style="margin-bottom:20px;">
+                    <div class="form-group">
+                        <label for="cidade">Cidade</label>
+                        <input type="text" id="cidade" placeholder="Sua cidade">
+                    </div>
+                    <div class="form-group">
+                        <label for="estado">Estado</label>
+                        <select id="estado">
+                            <option value="">Selecione</option>
+                            <option>AC</option><option>AL</option><option>AM</option><option>AP</option>
+                            <option>BA</option><option>CE</option><option>DF</option><option>ES</option>
+                            <option>GO</option><option>MA</option><option>MG</option><option>MS</option>
+                            <option>MT</option><option>PA</option><option>PB</option><option>PE</option>
+                            <option>PI</option><option>PR</option><option>RJ</option><option>RN</option>
+                            <option>RO</option><option>RR</option><option>RS</option><option>SC</option>
+                            <option>SE</option><option>SP</option><option>TO</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Disponibilidade</label>
+                    <div id="disponibilidadeGrid"></div>
+                </div>
+                <div class="action-bar">
+                    <a href="perfil.html" class="btn-cancelar">Cancelar</a>
+                    <button type="button" class="btn-salvar" onclick="salvarPerfil()"><i class="fas fa-check"></i> Salvar alterações</button>
+                </div>
+            </div>
+
+            <!-- MUSICAL -->
+            <div class="edit-panel" id="panel-musical">
+                <div class="panel-header">
+                    <h1 class="panel-title">Área e Habilidades</h1>
+                    <p class="panel-subtitle">Área de atuação, instrumentos, gêneros e DAWs</p>
+                </div>
+
+                <div class="form-section">
+                    <div class="form-section-title">Área de Atuação</div>
+                    <div class="areas-grid" id="areasGrid"></div>
+                </div>
+
+                <div class="form-section">
+                    <div class="form-section-title">Instrumentos</div>
+                    <div class="checkbox-grid" id="instrumentosGrid"></div>
+                </div>
+
+                <div class="form-section">
+                    <div class="form-section-title">Gêneros Musicais</div>
+                    <div class="generos-grid" id="generosGrid"></div>
+                </div>
+
+                <div class="form-section">
+                    <div class="form-section-title">DAWs que usa</div>
+                    <div class="checkbox-grid" id="dawsGrid"></div>
+                </div>
+
+                <div class="action-bar">
+                    <a href="perfil.html" class="btn-cancelar">Cancelar</a>
+                    <button type="button" class="btn-salvar" onclick="salvarPerfil()"><i class="fas fa-check"></i> Salvar alterações</button>
+                </div>
+            </div>
+
+            <!-- REDES SOCIAIS -->
+            <div class="edit-panel" id="panel-redes">
+                <div class="panel-header">
+                    <h1 class="panel-title">Redes Sociais</h1>
+                    <p class="panel-subtitle">Seus links aparecerão no seu perfil público</p>
+                </div>
+                <div class="social-list">
+                    <div class="social-row">
+                        <div class="social-icon-wrap"><i class="fa-brands fa-instagram"></i></div>
+                        <span class="social-name">Instagram</span>
+                        <input type="url" id="social_instagram" placeholder="https://instagram.com/seunome">
+                    </div>
+                    <div class="social-row">
+                        <div class="social-icon-wrap"><i class="fa-brands fa-youtube"></i></div>
+                        <span class="social-name">YouTube</span>
+                        <input type="url" id="social_youtube" placeholder="https://youtube.com/@seunome">
+                    </div>
+                    <div class="social-row">
+                        <div class="social-icon-wrap"><i class="fa-brands fa-spotify"></i></div>
+                        <span class="social-name">Spotify</span>
+                        <input type="url" id="social_spotify" placeholder="https://open.spotify.com/artist/...">
+                    </div>
+                    <div class="social-row">
+                        <div class="social-icon-wrap"><i class="fa-brands fa-soundcloud"></i></div>
+                        <span class="social-name">SoundCloud</span>
+                        <input type="url" id="social_soundcloud" placeholder="https://soundcloud.com/seunome">
+                    </div>
+                    <div class="social-row">
+                        <div class="social-icon-wrap"><i class="fa-brands fa-tiktok"></i></div>
+                        <span class="social-name">TikTok</span>
+                        <input type="url" id="social_tiktok" placeholder="https://tiktok.com/@seunome">
+                    </div>
+                    <div class="social-row">
+                        <div class="social-icon-wrap"><i class="fa-brands fa-x-twitter"></i></div>
+                        <span class="social-name">X / Twitter</span>
+                        <input type="url" id="social_twitter" placeholder="https://twitter.com/seunome">
+                    </div>
+                    <div class="social-row">
+                        <div class="social-icon-wrap"><i class="fa-brands fa-facebook"></i></div>
+                        <span class="social-name">Facebook</span>
+                        <input type="url" id="social_facebook" placeholder="https://facebook.com/seunome">
+                    </div>
+                    <div class="social-row">
+                        <div class="social-icon-wrap"><i class="fa-brands fa-linkedin"></i></div>
+                        <span class="social-name">LinkedIn</span>
+                        <input type="url" id="social_linkedin" placeholder="https://linkedin.com/in/seunome">
+                    </div>
+                    <div class="social-row">
+                        <div class="social-icon-wrap"><i class="fa-solid fa-globe"></i></div>
+                        <span class="social-name">Site</span>
+                        <input type="url" id="social_site" placeholder="https://seusite.com">
+                    </div>
+                </div>
+                <div class="action-bar">
+                    <a href="perfil.html" class="btn-cancelar">Cancelar</a>
+                    <button type="button" class="btn-salvar" onclick="salvarPerfil()"><i class="fas fa-check"></i> Salvar alterações</button>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <img src="../images/logo.png" alt="Backstage Logo" class="footer-logo-img">
+            <p>A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { showLoading, hideLoading } from '../js/loading.js';
+        import { verificarAutenticacao, fazerLogout } from '../js/auth.js';
+        import { fetchDados } from '../js/dados.js';
+
+        showLoading('Carregando dados...');
+        const usuario = verificarAutenticacao();
+        if (!usuario) { window.location.href = 'login.html'; }
+
+        // Máscara de telefone
+        function mascaraTelefone(el) {
+            let v = el.value.replace(/\D/g, '').substring(0, 11);
+            if (v.length <= 10) {
+                v = v.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+            } else {
+                v = v.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+            }
+            el.value = v;
+        }
+        function formatarTelefone(val) {
+            let v = (val || '').replace(/\D/g, '').substring(0, 11);
+            if (!v) return '';
+            if (v.length <= 10) return v.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+            return v.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+        }
+        function validarTelefone(val) {
+            const digits = (val || '').replace(/\D/g, '');
+            return digits.length === 0 || digits.length === 10 || digits.length === 11;
+        }
+        document.getElementById('telefone')?.addEventListener('input', function() { mascaraTelefone(this); });
+
+        // Carregar dados do usuário
+        const res = await fetch(`/api/usuarios/${usuario.id_usuario}`);
+        const u = await res.json();
+
+        const nome = u.nome_artistico || u.nome_completo;
+        const iniciais = nome.substring(0, 2).toUpperCase();
+
+        document.getElementById('sidebarAvatar').textContent = iniciais;
+        document.getElementById('sidebarNome').textContent = nome;
+        document.getElementById('profileTrigger').textContent = iniciais;
+        document.getElementById('fotoAvatarBig').textContent = iniciais;
+
+        // Preencher campos
+        document.getElementById('nome_completo').value  = u.nome_completo || '';
+        document.getElementById('nome_artistico').value = u.nome_artistico || '';
+        document.getElementById('email').value          = u.email || '';
+        document.getElementById('telefone').value = formatarTelefone(u.telefone || '');
+        const _bioEl = document.getElementById('biografia');
+        const _bioCounter = document.getElementById('bioCounter');
+        _bioEl.value = u.biografia || '';
+        if (_bioCounter) {
+            const _len = _bioEl.value.length;
+            _bioCounter.textContent = _len + ' / 500';
+            _bioCounter.className = 'bio-counter' + (_len >= 500 ? ' limit' : _len >= 400 ? ' warning' : '');
+            _bioEl.addEventListener('input', () => {
+                const len = _bioEl.value.length;
+                _bioCounter.textContent = len + ' / 500';
+                _bioCounter.className = 'bio-counter' + (len >= 500 ? ' limit' : len >= 400 ? ' warning' : '');
+            });
+        }
+        document.getElementById('cidade').value         = u.cidade || '';
+        if (u.estado) document.getElementById('estado').value = u.estado;
+
+        // Redes sociais — vem como objeto JSON do banco
+        const redes = u.redes_sociais || {};
+        ['instagram','youtube','spotify','soundcloud','tiktok','twitter','facebook','linkedin','site'].forEach(k => {
+            const el = document.getElementById(`social_${k}`);
+            if (el && redes[k]) el.value = redes[k];
+        });
+
+        // Carregar dados de catálogos
+        const dados = await fetchDados();
+
+        // Áreas
+        const areaIcones = {
+            'Vocalista':'fa-microphone','Instrumentista':'fa-guitar','Produtor':'fa-sliders',
+            'Compositor':'fa-pen-nib','DJ':'fa-headphones','Beatmaker':'fa-drum'
+        };
+        const areasUsuario = Array.isArray(u.area_atuacao) ? u.area_atuacao : (u.area_atuacao ? [u.area_atuacao] : []);
+        document.getElementById('areasGrid').innerHTML =
+            ['Vocalista','Instrumentista','Produtor','Compositor','DJ','Beatmaker'].map(a => `
+                <div class="area-card">
+                    <input type="checkbox" name="area_atuacao" id="area_${a}" value="${a}" ${areasUsuario.includes(a) ? 'checked' : ''}>
+                    <label for="area_${a}" class="area-label">
+                        <i class="fas ${areaIcones[a]} area-icon"></i>
+                        <span class="area-name">${a}</span>
+                    </label>
+                </div>`).join('');
+
+        // Instrumentos
+        document.getElementById('instrumentosGrid').innerHTML = dados.instrumentos.map(i => `
+            <div class="checkbox-item">
+                <input type="checkbox" id="inst_${i.id}" name="instrumentos" value="${i.nome}" ${(u.instrumentos||[]).includes(i.nome) ? 'checked' : ''}>
+                <label for="inst_${i.id}" class="checkbox-label">
+                    <span class="checkbox-icon"><i class="fa-solid fa-check"></i></span>${i.nome}
+                </label>
+            </div>`).join('');
+
+        // Gêneros
+        document.getElementById('generosGrid').innerHTML = dados.generos.map(g => `
+            <div class="checkbox-item">
+                <input type="checkbox" id="gen_${g.id}" name="generos" value="${g.nome}" ${(u.generos||[]).includes(g.nome) ? 'checked' : ''}>
+                <label for="gen_${g.id}" class="checkbox-label">
+                    <span class="checkbox-icon"><i class="fa-solid fa-check"></i></span>${g.nome}
+                </label>
+            </div>`).join('');
+
+        // Disponibilidade
+        // Grade de disponibilidade: dias x períodos
+        const dias = ['Segunda','Terça','Quarta','Quinta','Sexta','Sábado','Domingo'];
+        const periodos = ['Manhã','Tarde','Noite'];
+        const dispAtual = u.disponibilidades || [];
+
+        const gradeStyle = '<style>'
+            + '.disp-grade{width:100%;border-collapse:collapse;font-size:12px}'
+            + '.disp-grade th{padding:8px 6px;color:#9ca3af;font-weight:600;text-align:center}'
+            + '.disp-grade td{padding:4px;text-align:center}'
+            + '.disp-cell{display:none}'
+            + '.disp-cell+.disp-cell-label{display:inline-flex;align-items:center;justify-content:center;width:100%;padding:7px 4px;border-radius:8px;cursor:pointer;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.02);color:#6b7280;font-size:11px;transition:all 0.2s}'
+            + '.disp-cell:checked+.disp-cell-label{background:rgba(139,92,246,0.25);border-color:#8b5cf6;color:white;font-weight:600}'
+            + '.disp-cell-label:hover{border-color:rgba(139,92,246,0.4);color:#e5e7eb}'
+            + '.disp-dia-label{color:#e5e7eb;font-size:12px;font-weight:500;padding-right:8px;text-align:right;white-space:nowrap}'
+            + '.disp-especiais{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}'
+            + '</style>';
+
+        let headerRow = '<tr><th></th>';
+        periodos.forEach(function(p) { headerRow += '<th>' + p + '</th>'; });
+        headerRow += '</tr>';
+
+        let bodyRows = '';
+        dias.forEach(function(dia) {
+            let row = '<tr><td class="disp-dia-label">' + dia + '</td>';
+            periodos.forEach(function(p) {
+                const chave = dia + ' - ' + p;
+                const checked = dispAtual.includes(chave) ? 'checked' : '';
+                const sid = 'disp_' + dia + '_' + p;
+                row += '<td>'
+                    + '<input type="checkbox" class="disp-cell" id="' + sid + '" name="disponibilidade" value="' + chave + '" ' + checked + '>'
+                    + '<label for="' + sid + '" class="disp-cell-label">✓</label>'
+                    + '</td>';
+            });
+            row += '</tr>';
+            bodyRows += row;
+        });
+
+        let especiais = '<div class="disp-especiais">';
+        ['Manhã','Tarde','Noite','Fins de semana','Integral'].forEach(function(e) {
+            const checked = dispAtual.includes(e) ? 'checked' : '';
+            const sid = 'disp_esp_' + e.replace(/ /g, '_');
+            especiais += '<div class="checkbox-item" style="flex:none">'
+                + '<input type="checkbox" id="' + sid + '" name="disponibilidade" value="' + e + '" ' + checked + '>'
+                + '<label for="' + sid + '" class="checkbox-label">'
+                + '<span class="checkbox-icon"><i class="fa-solid fa-check"></i></span>' + e
+                + '</label></div>';
+        });
+        especiais += '</div>';
+
+        document.getElementById('disponibilidadeGrid').innerHTML =
+            gradeStyle
+            + '<table class="disp-grade"><thead>' + headerRow + '</thead><tbody>' + bodyRows + '</tbody></table>'
+            + especiais;
+
+        // DAWs
+        document.getElementById('dawsGrid').innerHTML = dados.daws.map(d => {
+            const idSafe = d.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'');
+            return `
+            <div class="checkbox-item">
+                <input type="checkbox" id="daw_${idSafe}" name="daws" value="${d}" ${(u.daws||[]).includes(d) ? 'checked' : ''}>
+                <label for="daw_${idSafe}" class="checkbox-label">
+                    <span class="checkbox-icon"><i class="fa-solid fa-check"></i></span>${d}
+                </label>
+            </div>`;
+        }).join('');
+
+        // ── Pontos amarelos nos itens do sidebar ──
+        function atualizarPontos(dados) {
+            const dadosFaltam = !dados.nome_completo || !dados.biografia || !dados.telefone;
+            const navDados = document.getElementById('nav-dados');
+            if (dadosFaltam) {
+                if (!navDados.querySelector('.nav-dot')) navDados.insertAdjacentHTML('beforeend', '<span class="nav-dot"></span>');
+            } else {
+                navDados.querySelector('.nav-dot')?.remove();
+            }
+
+            const locFaltam = !dados.cidade || !dados.estado;
+            const navLoc = document.getElementById('nav-localizacao');
+            if (locFaltam) {
+                if (!navLoc.querySelector('.nav-dot')) navLoc.insertAdjacentHTML('beforeend', '<span class="nav-dot"></span>');
+            } else {
+                navLoc.querySelector('.nav-dot')?.remove();
+            }
+
+            const musicalFaltam = !dados.area_atuacao?.length && !dados.instrumentos?.length && !dados.generos?.length;
+            const navMusical = document.getElementById('nav-musical');
+            if (musicalFaltam) {
+                if (!navMusical.querySelector('.nav-dot')) navMusical.insertAdjacentHTML('beforeend', '<span class="nav-dot"></span>');
+            } else {
+                navMusical.querySelector('.nav-dot')?.remove();
+            }
+
+            const redesObj = dados.redes_sociais || {};
+            const redesFaltam = !Object.values(redesObj).some(v => v);
+            const navRedes = document.getElementById('nav-redes');
+            if (redesFaltam) {
+                if (!navRedes.querySelector('.nav-dot')) navRedes.insertAdjacentHTML('beforeend', '<span class="nav-dot"></span>');
+            } else {
+                navRedes.querySelector('.nav-dot')?.remove();
+            }
+        }
+        atualizarPontos(u);
+
+        // Navegação sidebar
+        const navItems = document.querySelectorAll('.nav-item[data-panel]');
+        const panels = document.querySelectorAll('.edit-panel');
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                navItems.forEach(n => n.classList.remove('active'));
+                panels.forEach(p => p.classList.remove('active'));
+                item.classList.add('active');
+                document.getElementById('panel-' + item.dataset.panel)?.classList.add('active');
+                window.scrollTo(0, 0);
+            });
+        });
+
+        // Salvar perfil
+        window.salvarPerfil = async function() {
+            const btns = document.querySelectorAll('.btn-salvar');
+            const erroMsg = document.getElementById('erroMsg');
+            const sucessoMsg = document.getElementById('sucessoMsg');
+            erroMsg.style.display = 'none';
+            sucessoMsg.style.display = 'none';
+            btns.forEach(b => { b.disabled = true; b.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...'; });
+
+            function coletarCheckboxes(name) {
+                return [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(el => el.value);
+            }
+
+            const redesSociais = {};
+            ['instagram','youtube','spotify','soundcloud','tiktok','twitter','facebook','linkedin','site'].forEach(k => {
+                const v = document.getElementById(`social_${k}`)?.value?.trim();
+                if (v) redesSociais[k] = v;
+            });
+
+            const area = [...document.querySelectorAll('input[name="area_atuacao"]:checked')].map(el => el.value);
+
+            const dadosForm = {
+                nome_completo:    document.getElementById('nome_completo').value.trim(),
+                nome_artistico:   document.getElementById('nome_artistico').value.trim(),
+                email:            document.getElementById('email').value.trim(),
+                telefone:         document.getElementById('telefone').value.trim(),
+                biografia:        document.getElementById('biografia').value.trim(),
+                cidade:           document.getElementById('cidade').value.trim(),
+                estado:           document.getElementById('estado').value,
+                area_atuacao:     area,
+                instrumentos:     coletarCheckboxes('instrumentos'),
+                generos:          coletarCheckboxes('generos'),
+                disponibilidades: coletarCheckboxes('disponibilidade'),
+                daws:             coletarCheckboxes('daws'),
+                redes_sociais:    redesSociais,
+                cadastro_completo: 1,
+            };
+
+            try {
+                const r = await fetch(`/api/usuarios/${usuario.id_usuario}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dadosForm),
+                });
+                if (!r.ok) throw new Error((await r.json()).erro);
+                const atualizado = await r.json();
+                localStorage.setItem('usuarioLogado', JSON.stringify(atualizado));
+                sucessoMsg.style.display = 'flex';
+                window.scrollTo(0, 0);
+                setTimeout(() => { sucessoMsg.style.display = 'none'; }, 3000);
+                atualizarPontos(atualizado);
+            } catch (erro) {
+                hideLoading();
+                erroMsg.textContent = erro.message;
+                erroMsg.style.display = 'block';
+                window.scrollTo(0, 0);
+            } finally {
+                btns.forEach(b => { b.disabled = false; b.innerHTML = '<i class="fas fa-check"></i> Salvar alterações'; });
+            }
+        };
+
+        // Dropdown
+        document.getElementById('profileDropdown')?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.getElementById('profileDropdown').classList.toggle('active');
+        });
+        document.addEventListener('click', () => {
+            document.getElementById('profileDropdown')?.classList.remove('active');
+        });
+
+        document.getElementById('searchBar')?.addEventListener('click', () => {
+            window.location.href = 'pesquisar_usuarios.html?focar=true';
+        });
+
+        document.getElementById('btnSair')?.addEventListener('click', fazerLogout);
+    </script>
+</body>
+</html>

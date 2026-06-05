@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explorar Músicos - Backstage Cena</title>
+    <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Work+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/global.css">
+    <style>
+        
+
+        .btn-filtrar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 0 14px;
+            align-self: stretch;
+            background: rgba(139,92,246,0.10);
+            border: none;
+            border-left: 1px solid rgba(139,92,246,0.25);
+            color: #a78bfa;
+            cursor: pointer;
+            transition: background 0.25s;
+            flex-shrink: 0;
+            font-size: 14px;
+        }
+        .btn-filtrar:hover { background: rgba(139,92,246,0.20); }
+        .btn-filtrar.active { background: rgba(139,92,246,0.3); color: white; }
+
+        .filtrar-count {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: #8b5cf6;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            width: 16px; height: 16px;
+            border-radius: 50%;
+        }
+        .filtrar-count.show { display: flex; }
+
+        .header-search-btn {
+            padding: 11px 18px;
+            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            border: none;
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Work Sans', sans-serif;
+            transition: opacity 0.2s;
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+        .header-search-btn:hover { opacity: 0.85; }
+
+        
+        /* ── FILTROS colapsável ── */
+        .filters-panel {
+            position: relative; z-index: 50;
+            background: rgba(0,0,0,0.82);
+            border-bottom: 1px solid rgba(139,92,246,0.2);
+            backdrop-filter: blur(12px);
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.35s ease, padding 0.35s ease;
+            padding: 0 24px;
+        }
+        .filters-panel.open { max-height: 300px; padding: 20px 24px; }
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 14px;
+        }
+        .filter-group label {
+            display: block; color: #9ca3af; font-size: 11px;
+            font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.8px; margin-bottom: 6px;
+        }
+        .filter-group select {
+            width: 100%; padding: 9px 12px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(139,92,246,0.25);
+            border-radius: 8px; color: white;
+            font-size: 13px; font-family: 'Work Sans', sans-serif;
+            cursor: pointer; transition: border-color 0.2s;
+        }
+        .filter-group select option { background: #1a1a1a; }
+        .filter-group select:focus { outline: none; border-color: #8b5cf6; }
+
+        /* ── CONTAINER ── */
+        .container {
+            position: relative; z-index: 1;
+            width: 100%;
+            max-width: 1280px;
+            margin: 36px auto;
+            padding: 0 24px;
+            flex: 1;
+        }
+
+        /* ── HERO ── */
+        .hero {
+            width: 100%;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 36px;
+            animation: fadeInDown 0.7s ease-out;
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .hero-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 2.8rem; font-weight: 700; margin-bottom: 10px;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899, #f59e0b);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; letter-spacing: -2px; text-transform: uppercase;
+        }
+        .hero-subtitle { font-size: 1rem; color: #d1d5db; font-weight: 300; }
+        .total-count {
+            display: inline-block; margin-top: 14px;
+            padding: 7px 16px;
+            background: rgba(139,92,246,0.18);
+            border: 1px solid rgba(139,92,246,0.4);
+            border-radius: 30px; color: #a78bfa;
+            font-size: 13px; font-weight: 600;
+        }
+
+        /* ── GRID CARDS ── */
+        .musicians-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            align-items: stretch;
+        }
+        .musician-card {
+            background: rgba(0,0,0,0.7);
+            border: 1px solid rgba(139,92,246,0.2);
+            border-radius: 16px; padding: 20px;
+            display: flex; flex-direction: column; gap: 12px;
+            backdrop-filter: blur(10px); transition: all 0.3s;
+            animation: fadeIn 0.5s ease-out both;
+            cursor: pointer;
+            height: 100%;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .musician-card:hover {
+            border-color: rgba(139,92,246,0.5);
+            transform: translateY(-4px);
+            box-shadow: 0 14px 36px rgba(139,92,246,0.18);
+        }
+        .musician-header { display: flex; align-items: flex-start; gap: 12px; }
+        .musician-photo {
+            width: 56px; height: 56px; flex-shrink: 0;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 1.1rem;
+            border: 2px solid rgba(139,92,246,0.4);
+        }
+        .musician-info { flex: 1; min-width: 0; }
+        .musician-name {
+            font-size: 0.95rem; font-weight: 700; margin-bottom: 3px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .musician-location {
+            color: #9ca3af; font-size: 11px; margin-bottom: 5px;
+            display: flex; align-items: center; gap: 3px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .musician-area {
+            display: inline-block; padding: 2px 8px;
+            background: rgba(139,92,246,0.15);
+            border: 1px solid rgba(139,92,246,0.3);
+            border-radius: 10px; font-size: 10px; color: #a78bfa;
+        }
+        .musician-bio {
+            color: #d1d5db; font-size: 12px; line-height: 1.5;
+            display: -webkit-box; -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical; overflow: hidden;
+            flex: 1;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
+        }
+        .musician-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+        .tag {
+            padding: 2px 8px;
+            background: rgba(139,92,246,0.12);
+            border: 1px solid rgba(139,92,246,0.25);
+            border-radius: 10px; font-size: 11px; color: #a78bfa;
+            display: flex; align-items: center; gap: 3px;
+        }
+        .card-spacer { flex: 1; }
+
+        .empty-state {
+            display: none; text-align: center;
+            padding: 80px 20px; color: #6b7280;
+        }
+        .empty-state i { font-size: 3rem; margin-bottom: 20px; color: rgba(139,92,246,0.3); display: block; }
+        .empty-state h3 { font-size: 1.2rem; margin-bottom: 8px; color: #9ca3af; }
+
+       
+        /* ── RESPONSIVO ── */
+        @media (max-width: 1200px) {
+            .musicians-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 900px) {
+            .musicians-grid { grid-template-columns: repeat(2, 1fr); }
+            .filters-grid { grid-template-columns: repeat(3, 1fr); }
+            .hero-title { font-size: 2.2rem; }
+            .filters-panel.open { max-height: 400px; }
+        }
+        @media (max-width: 700px) {
+            .header { padding: 12px 16px; gap: 10px; }
+            .logo-img { height: 38px; }
+            .filters-grid { grid-template-columns: repeat(2, 1fr); }
+            .hero-title { font-size: 1.8rem; }
+            .container { padding: 0 16px; margin: 24px auto; }
+            .filters-panel.open { max-height: 500px; padding: 16px; }
+        }
+        @media (max-width: 540px) {
+            .header {
+                grid-template-columns: 1fr auto;
+                grid-template-rows: auto auto;
+                grid-template-areas:
+                    "logo actions"
+                    "search search";
+                gap: 10px;
+                padding: 12px 16px;
+            }
+            .header-left  { grid-area: logo; }
+            .header-center { grid-area: search; justify-content: stretch; }
+            .header-actions { grid-area: actions; }
+            .header-search { max-width: 100%; width: 100%; }
+            .logo-img { height: 34px; }
+            .musicians-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+            .filters-grid { grid-template-columns: repeat(2, 1fr); }
+            .hero-title { font-size: 1.6rem; letter-spacing: -1px; }
+            .filters-panel.open { max-height: 600px; }
+        }
+        @media (max-width: 380px) {
+            .musicians-grid { grid-template-columns: 1fr; }
+            .filters-grid { grid-template-columns: 1fr; }
+            .hero-title { font-size: 1.3rem; }
+            .logo-img { height: 30px; }
+            .profile-trigger { width: 36px; height: 36px; font-size: 12px; }
+            .header-search-btn { padding: 10px 12px; font-size: 12px; }
+            .filters-panel.open { max-height: 900px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <a href="index.html">
+                <img src="../images/logo.png" alt="Backstage Logo" class="logo-img">
+            </a>
+        </div>
+
+        <div class="header-center">
+            <div class="header-search">
+                <i class="fas fa-search header-search-icon"></i>
+                <input type="text" class="header-search-input" id="searchInput" placeholder="Buscar músicos...">
+                <button class="btn-filtrar" id="btnFiltrar" title="Filtros">
+                    <i class="fas fa-sliders"></i>
+                    <span class="filtrar-count" id="filtrarCount">0</span>
+                </button>
+                <button class="header-search-btn" id="btnBuscar">Buscar</button>
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <div class="profile-dropdown" id="profileDropdown">
+                <div class="profile-trigger" id="profileTrigger"></div>
+                <div class="dropdown-menu">
+                    <a href="perfil.html" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a>
+                    <a href="config.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações</a>
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-item" id="btnSair"><i class="fas fa-sign-out-alt"></i> Sair</div>
+            </div>
+        </div>
+    </header>
+
+    <div class="filters-panel" id="filtersPanel">
+        <div class="filters-grid">
+            <div class="filter-group">
+                <label>Estado</label>
+                <select id="filtroEstado"><option value="">Todos</option></select>
+            </div>
+            <div class="filter-group">
+                <label>Instrumento</label>
+                <select id="filtroInstrumento"><option value="">Todos</option></select>
+            </div>
+            <div class="filter-group">
+                <label>Gênero</label>
+                <select id="filtroGenero"><option value="">Todos</option></select>
+            </div>
+            <div class="filter-group">
+                <label>Disponibilidade</label>
+                <select id="filtroDisponibilidade">
+                    <option value="">Qualquer</option>
+                    <option value="Manhã">Manhã</option>
+                    <option value="Tarde">Tarde</option>
+                    <option value="Noite">Noite</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Área</label>
+                <select id="filtroArea"><option value="">Todos</option></select>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="hero">
+            <h1 class="hero-title">Explorar Músicos</h1>
+            <p class="hero-subtitle">Encontre parceiros para criar e colaborar</p>
+            <span class="total-count" id="totalCount">Carregando...</span>
+        </div>
+
+        <div class="musicians-grid" id="musiciansGrid"></div>
+        <div class="empty-state" id="emptyState">
+            <i class="fas fa-search"></i>
+            <h3>Nenhum músico encontrado</h3>
+            <p>Tente ajustar os filtros ou fazer uma nova busca</p>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <img src="../images/logo.png" alt="Backstage Logo" class="footer-logo-img">
+            <p>A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { showLoading, hideLoading } from '../js/loading.js';
+        import { verificarAutenticacao, fazerLogout } from '../js/auth.js';
+
+        showLoading('Buscando músicos...');
+        const usuario = verificarAutenticacao();
+        if (usuario) {
+            const nome = usuario.nome_artistico || usuario.nome_completo;
+            document.getElementById('profileTrigger').textContent = nome.substring(0, 2).toUpperCase();
+        }
+        document.getElementById('profileDropdown')?.addEventListener('click', () => {
+            document.getElementById('profileDropdown').classList.toggle('active');
+        });
+        document.getElementById('btnSair')?.addEventListener('click', fazerLogout);
+
+        const btnFiltrar = document.getElementById('btnFiltrar');
+        const filtersPanel = document.getElementById('filtersPanel');
+        btnFiltrar.addEventListener('click', () => {
+            filtersPanel.classList.toggle('open');
+            btnFiltrar.classList.toggle('active');
+        });
+
+        function atualizarContadorFiltros() {
+            const ids = ['filtroEstado','filtroInstrumento','filtroGenero','filtroDisponibilidade','filtroArea'];
+            const ativos = ids.filter(id => document.getElementById(id).value !== '').length;
+            const el = document.getElementById('filtrarCount');
+            el.textContent = ativos;
+            el.classList.toggle('show', ativos > 0);
+        }
+
+        let todosMusicoes = [];
+
+        async function popularSelect(url, selectId) {
+            try {
+                const res = await fetch(url);
+                const lista = await res.json();
+                const select = document.getElementById(selectId);
+                lista.forEach(item => {
+                    const opt = document.createElement('option');
+                    opt.value = item; opt.textContent = item;
+                    select.appendChild(opt);
+                });
+            } catch (e) {}
+        }
+
+        async function carregarMusicos() {
+            try {
+                const res = await fetch('/api/usuarios');
+                todosMusicoes = await res.json();
+                renderizar(todosMusicoes);
+                document.getElementById('totalCount').textContent = `${todosMusicoes.length} músicos encontrados`;
+            } catch (err) {
+                document.getElementById('totalCount').textContent = 'Erro ao conectar com a API';
+            }
+        }
+
+        function renderizar(lista) {
+            const grid = document.getElementById('musiciansGrid');
+            const empty = document.getElementById('emptyState');
+            if (lista.length === 0) {
+                grid.innerHTML = ''; empty.style.display = 'block'; return;
+            }
+            empty.style.display = 'none';
+            grid.innerHTML = lista.map(m => {
+                const nome = m.nome_artistico || m.nome_completo;
+                const iniciais = nome.substring(0, 2).toUpperCase();
+                const local = [m.cidade, m.estado].filter(Boolean).join(', ') || 'Localização não informada';
+                const tagsInst = (m.instrumentos || []).slice(0, 2).map(i =>
+                    `<span class="tag"><i class="fas fa-guitar"></i>${i}</span>`).join('');
+                const tagsGen = (m.generos || []).slice(0, 2).map(g =>
+                    `<span class="tag">${g}</span>`).join('');
+                return `
+                <div class="musician-card" onclick="window.location.href='perfil.html?id=${m.id_usuario}'">
+                    <div class="musician-header">
+                        <div class="musician-photo">${iniciais}</div>
+                        <div class="musician-info">
+                            <div class="musician-name">${nome}</div>
+                            <div class="musician-location"><i class="fas fa-map-marker-alt"></i>${local}</div>
+                            ${m.area_atuacao ? `<span class="musician-area">${m.area_atuacao}</span>` : ''}
+                        </div>
+                    </div>
+                    ${m.biografia ? `<p class="musician-bio" title="${m.biografia.replace(/"/g, '&quot;')}">${m.biografia}</p>` : '<div class="card-spacer"></div>'}
+                    ${tagsInst || tagsGen ? `<div class="musician-tags">${tagsInst}${tagsGen}</div>` : ''}
+                </div>`;
+            }).join('');
+        }
+
+        function filtrar() {
+            const busca           = document.getElementById('searchInput').value.toLowerCase();
+            const estado          = document.getElementById('filtroEstado').value;
+            const area            = document.getElementById('filtroArea').value;
+            const instrumento     = document.getElementById('filtroInstrumento').value;
+            const genero          = document.getElementById('filtroGenero').value;
+            const disponibilidade = document.getElementById('filtroDisponibilidade').value;
+            const resultado = todosMusicoes.filter(m => {
+                const nc = (m.nome_completo || '').toLowerCase();
+                const na = (m.nome_artistico || '').toLowerCase();
+                return (
+                    (nc.includes(busca) || na.includes(busca)) &&
+                    (estado          ? m.estado === estado : true) &&
+                    (area            ? m.area_atuacao === area : true) &&
+                    (instrumento     ? (m.instrumentos || []).includes(instrumento) : true) &&
+                    (genero          ? (m.generos || []).includes(genero) : true) &&
+                    (disponibilidade ? (m.disponibilidades || []).includes(disponibilidade) : true)
+                );
+            });
+            renderizar(resultado);
+            document.getElementById('totalCount').textContent = `${resultado.length} músicos encontrados`;
+            atualizarContadorFiltros();
+        }
+
+        document.getElementById('btnBuscar').addEventListener('click', filtrar);
+        document.getElementById('searchInput').addEventListener('keyup', filtrar);
+        ['filtroEstado','filtroInstrumento','filtroGenero','filtroDisponibilidade','filtroArea'].forEach(id => {
+            document.getElementById(id).addEventListener('change', filtrar);
+        });
+
+        await popularSelect('/api/usuarios/estados', 'filtroEstado');
+        await popularSelect('/api/usuarios/instrumentos', 'filtroInstrumento');
+        await popularSelect('/api/usuarios/generos', 'filtroGenero');
+        await popularSelect('/api/usuarios/areas', 'filtroArea');
+        await carregarMusicos();
+        hideLoading();
+
+        // Foca automaticamente no campo de busca ao entrar na página
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.focus();
+            searchInput.select();
+        }
+    </script>
+</body>
+</html>

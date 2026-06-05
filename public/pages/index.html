@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="theme-color" content="#000000">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backstage | Conecte-se com Músicos</title>
+    <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/global.css">
+    <style>
+       
+        .container { 
+            width: 100%; 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 0 15px; 
+            position: relative; 
+            z-index: 1; 
+        }
+        header {
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between;
+            padding: 20px 30px; 
+            background-color: black;
+            box-shadow: 0px 20px 20px black;
+        }
+        
+        .header-menu { 
+            display: flex; 
+            list-style: none; 
+            gap: 25px; 
+            margin: 0; 
+            padding: 0; 
+        }
+        .header-menu a {
+            text-decoration: none; 
+            color: #e5e7eb; 
+            font-weight: 500; 
+            font-size: 15px;
+            transition: all 0.2s; 
+            padding: 8px 16px; 
+            border-radius: 6px; 
+            position: relative;
+        }
+        .header-menu a:hover { 
+            color: #8b5cf6; 
+            background-color: rgba(139, 92, 246, 0.1); 
+        }
+        #registrar{
+            background-color: #6d28d9;
+
+        }
+        #registrar:hover{
+            color:#8b5cf6; 
+            background-color: #ffffff;
+
+        }
+        #login{
+            border: 2px solid #6d28d9; /* Estilo, espessura e cor da borda */
+            border-radius: 8px; /* Cantos arredondados (opcional) */
+  
+        }
+        .main-content { 
+            flex: 1; 
+            display: flex; 
+            align-items: center; 
+            padding: 40px 0; 
+        }
+        .hero { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            width: 100%;
+            gap: 40px; 
+        }
+        .hero-left { 
+            flex: 1; 
+            max-width: 550px; 
+        }
+        .main-title {
+            font-family: 'Poppins', sans-serif; 
+            font-size: 44px; 
+            font-weight: 700;
+            line-height: 1.1; 
+            margin-bottom: 20px; color: #ffffff;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        .main-subtitle { 
+            font-size: 18px; 
+            color: #d1d5db; 
+            margin-bottom: 30px; 
+            font-weight: 400; 
+        }
+        .signup-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 50%, #6d28d9 100%);
+            color: white; font-size: 16px; font-weight: 600;
+            padding: 16px 40px; border-radius: 10px; text-decoration: none;
+            transition: all 0.3s; box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+            border: none; cursor: pointer; letter-spacing: 0.5px;
+        }
+        .signup-button:hover {
+            transform: translateY(-3px); 
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.6); 
+        }
+        .hero-right { 
+            flex: 1; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+        }
+        .bear-image { 
+            width: 360px; 
+            height: auto; 
+            filter: drop-shadow(0 10px 25px rgba(0,0,0,0.5)); 
+            transition: transform 0.3s ease; 
+        }
+        .bear-image:hover { 
+            transform: scale(1.02); 
+        }
+        
+        @keyframes fadeInLeft {
+             from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } 
+            }
+        @keyframes fadeInRight {
+             from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } 
+            }
+        .hero-left > * { 
+            opacity: 0; 
+            animation: fadeInLeft 0.8s ease-out forwards; 
+        }
+        .hero-right > * {
+            opacity: 0; 
+            animation: fadeInRight 0.8s ease-out forwards; 
+        }
+        .main-title { 
+            animation-delay: 0.2s; 
+        }
+        .main-subtitle { 
+            animation-delay: 0.4s; 
+        }
+        .signup-button { 
+            animation-delay: 0.6s; 
+        }
+        .bear-image { 
+            animation-delay: 0.8s; 
+        }
+        @media (max-width: 768px) {
+            .hero { flex-direction: column; gap: 30px; text-align: center; }
+            nav { flex-direction: column; gap: 15px; padding: 15px; }
+            .main-title { font-size: 32px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-left>
+            <a href="index.html"><img src="../images/logo.png" alt="Backstage Logo" class="logo-img"></a>
+        </div>
+        <ul class="header-menu">
+            <li><a href="sobrenos.html">Sobre nós</a></li>
+            <li><a href="https://www.instagram.com/backstagecena/?utm_source=ig_web_button_share_sheet"  target="_blank" >Blog</a></li>
+            <li><a href="login.html" id="login">Login</a></li>
+            <li><a href="cadastro.html" id="registrar">Registrar-se</a></li>
+        </ul>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="hero">
+                <div class="hero-left">
+                    <h1 class="main-title">Conecte-se com músicos, encontre parceiros, crie seus projetos.</h1>
+                    <p class="main-subtitle">A cena musical independente começa aqui.</p>
+                    <a href="cadastro.html" class="signup-button">INSCREVA-SE</a>
+                </div>
+                <div class="hero-right">
+                    <img src="../images/urso.png" alt="Mascote Backstage" class="bear-image">
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <img src="../images/logo.png" alt="Backstage Logo" class="footer-logo-img">
+                <p>A cena musical independente começa aqui. &copy; 2025</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- type="module" habilita import/export ES Modules -->
+    <script type="module">
+        import { verificarAutenticacao } from '../js/auth.js';
+
+        // Evento: clique no botão de inscrição
+        document.querySelector('.signup-button').addEventListener('click', (e) => {
+            e.preventDefault();
+
+            // Se já estiver logado, vai direto pro perfil
+            const usuario = verificarAutenticacao(false);
+            if (usuario) {
+                window.location.href = 'perfil.html';
+            } else {
+                window.location.href = 'cadastro.html';
+            }
+        });
+
+        // Efeito de digitação no título
+        const title = document.querySelector('.main-title');
+        const originalText = title.textContent;
+        title.textContent = '';
+        let charIndex = 0;
+
+        function typeTitle() {
+            if (charIndex < originalText.length) {
+                title.textContent += originalText.charAt(charIndex);
+                charIndex++;
+                setTimeout(typeTitle, 30);
+            }
+        }
+
+        setTimeout(typeTitle, 800);
+    </script>
+</body>
+</html>
