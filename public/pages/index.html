@@ -9,7 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
-        <style>
+    <link rel="stylesheet" href="../css/global.css">
+    <style>
        
         .container { 
             width: 100%; 
@@ -59,8 +60,8 @@
 
         }
         #login{
-            border: 2px solid #6d28d9; /* Estilo, espessura e cor da borda */
-            border-radius: 8px; /* Cantos arredondados (opcional) */
+            border: 2px solid #6d28d9;
+            border-radius: 8px;
   
         }
         .main-content { 
@@ -192,15 +193,11 @@
         </div>
     </footer>
 
-    <!-- type="module" habilita import/export ES Modules -->
     <script type="module">
         import { verificarAutenticacao } from '../js/auth.js';
 
-        // Evento: clique no botão de inscrição
         document.querySelector('.signup-button').addEventListener('click', (e) => {
             e.preventDefault();
-
-            // Se já estiver logado, vai direto pro perfil
             const usuario = verificarAutenticacao(false);
             if (usuario) {
                 window.location.href = 'perfil.html';
@@ -209,7 +206,6 @@
             }
         });
 
-        // Efeito de digitação no título
         const title = document.querySelector('.main-title');
         const originalText = title.textContent;
         title.textContent = '';

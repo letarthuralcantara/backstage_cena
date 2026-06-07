@@ -33,22 +33,22 @@ async function carregarRelacionamentos(db: DbConn, u: Usuario): Promise<void> {
     db.all('SELECT d.descricao FROM disponibilidade d JOIN usuario_disponibilidade ud ON d.id_disponibilidade=ud.id_disponibilidade WHERE ud.id_usuario=?', [u.id_usuario]),
     db.all('SELECT dw.nome FROM daw dw JOIN usuario_daw udw ON dw.id_daw=udw.id_daw WHERE udw.id_usuario=?', [u.id_usuario]),
   ])
-  u.instrumentos    = (insts  as { nome: string }[]).map(r => r.nome)
-  u.generos         = (gens   as { nome: string }[]).map(r => r.nome)
+  u.instrumentos     = (insts as { nome: string }[]).map(r => r.nome)
+  u.generos          = (gens  as { nome: string }[]).map(r => r.nome)
   u.disponibilidades = (disps as { descricao: string }[]).map(r => r.descricao)
-  u.daws            = (daws   as { nome: string }[]).map(r => r.nome)
+  u.daws             = (daws  as { nome: string }[]).map(r => r.nome)
   try { u.redes_sociais = u.redes_sociais ? JSON.parse(u.redes_sociais as unknown as string) : {} }
   catch { u.redes_sociais = {} }
-  u.area_atuacao    = parseArea(u.area_atuacao as string | null)
+  u.area_atuacao      = parseArea(u.area_atuacao as string | null)
   u.cadastro_completo = calcularCompleto(u)
 }
 
 async function inserirRelacionamentos(db: DbConn, id: number, dados: CreateUsuarioInput): Promise<void> {
   const cats = [
-    { lista: dados.instrumentos,     tabela: 'usuario_instrumento',    ref: 'id_instrumento',    busca: 'instrumento',    campo: 'nome' },
-    { lista: dados.generos,          tabela: 'usuario_genero',         ref: 'id_genero',         busca: 'genero',         campo: 'nome' },
-    { lista: dados.disponibilidades, tabela: 'usuario_disponibilidade',ref: 'id_disponibilidade',busca: 'disponibilidade',campo: 'descricao' },
-    { lista: dados.daws,             tabela: 'usuario_daw',            ref: 'id_daw',            busca: 'daw',            campo: 'nome' },
+    { lista: dados.instrumentos,     tabela: 'usuario_instrumento',     ref: 'id_instrumento',     busca: 'instrumento',     campo: 'nome' },
+    { lista: dados.generos,          tabela: 'usuario_genero',          ref: 'id_genero',          busca: 'genero',          campo: 'nome' },
+    { lista: dados.disponibilidades, tabela: 'usuario_disponibilidade', ref: 'id_disponibilidade', busca: 'disponibilidade', campo: 'descricao' },
+    { lista: dados.daws,             tabela: 'usuario_daw',             ref: 'id_daw',             busca: 'daw',             campo: 'nome' },
   ]
   for (const cat of cats) {
     for (const nome of cat.lista ?? []) {
@@ -83,6 +83,15 @@ async function readById(id: number): Promise<Usuario> {
   return row
 }
 
+async function findByEmail(email: string): Promise<Usuario | null> {
+  const db = await Database.connect()
+  const row = await db.get('SELECT * FROM usuario WHERE email=?', [email]) as Usuario | undefined
+  if (!row) { await db.close(); return null }
+  await carregarRelacionamentos(db, row)
+  await db.close()
+  return row
+}
+
 async function create(dados: CreateUsuarioInput): Promise<Usuario> {
   if (!dados.nome_completo || !dados.email || !dados.senha)
     throw new HttpError(400, 'Nome completo, email e senha são obrigatórios.')
@@ -103,9 +112,9 @@ async function create(dados: CreateUsuarioInput): Promise<Usuario> {
       dados.redes_sociais ? JSON.stringify(dados.redes_sociais) : null,
     ]
   )
-await inserirRelacionamentos(db, lastID!, dados)
-await db.close()
-return readById(lastID!)
+  await inserirRelacionamentos(db, lastID!, dados)
+  await db.close()
+  return readById(lastID!)
 }
 
 async function update({ id_usuario, ...dados }: UpdateUsuarioInput): Promise<Usuario> {
@@ -122,10 +131,10 @@ async function update({ id_usuario, ...dados }: UpdateUsuarioInput): Promise<Usu
   )
 
   const cats = [
-    { lista: dados.instrumentos,     tabela: 'usuario_instrumento',    ref: 'id_instrumento',    busca: 'instrumento',    campo: 'nome' },
-    { lista: dados.generos,          tabela: 'usuario_genero',         ref: 'id_genero',         busca: 'genero',         campo: 'nome' },
-    { lista: dados.disponibilidades, tabela: 'usuario_disponibilidade',ref: 'id_disponibilidade',busca: 'disponibilidade',campo: 'descricao' },
-    { lista: dados.daws,             tabela: 'usuario_daw',            ref: 'id_daw',            busca: 'daw',            campo: 'nome' },
+    { lista: dados.instrumentos,     tabela: 'usuario_instrumento',     ref: 'id_instrumento',     busca: 'instrumento',     campo: 'nome' },
+    { lista: dados.generos,          tabela: 'usuario_genero',          ref: 'id_genero',          busca: 'genero',          campo: 'nome' },
+    { lista: dados.disponibilidades, tabela: 'usuario_disponibilidade', ref: 'id_disponibilidade', busca: 'disponibilidade', campo: 'descricao' },
+    { lista: dados.daws,             tabela: 'usuario_daw',             ref: 'id_daw',             busca: 'daw',             campo: 'nome' },
   ]
   for (const cat of cats) {
     if (cat.lista !== undefined) {
@@ -150,9 +159,9 @@ async function remove(id: number): Promise<void> {
 
 // ── Catálogos ─────────────────────────────────────────────────────────────────
 
-async function listarInstrumentos():   Promise<string[]> { const db = await Database.connect(); const r = await db.all('SELECT nome FROM instrumento ORDER BY nome'); await db.close(); return (r as {nome:string}[]).map(x=>x.nome) }
-async function listarGeneros():        Promise<string[]> { const db = await Database.connect(); const r = await db.all('SELECT nome FROM genero ORDER BY nome'); await db.close(); return (r as {nome:string}[]).map(x=>x.nome) }
-async function listarDaws():           Promise<string[]> { const db = await Database.connect(); const r = await db.all('SELECT nome FROM daw ORDER BY nome'); await db.close(); return (r as {nome:string}[]).map(x=>x.nome) }
+async function listarInstrumentos():    Promise<string[]> { const db = await Database.connect(); const r = await db.all('SELECT nome FROM instrumento ORDER BY nome'); await db.close(); return (r as {nome:string}[]).map(x=>x.nome) }
+async function listarGeneros():         Promise<string[]> { const db = await Database.connect(); const r = await db.all('SELECT nome FROM genero ORDER BY nome'); await db.close(); return (r as {nome:string}[]).map(x=>x.nome) }
+async function listarDaws():            Promise<string[]> { const db = await Database.connect(); const r = await db.all('SELECT nome FROM daw ORDER BY nome'); await db.close(); return (r as {nome:string}[]).map(x=>x.nome) }
 async function listarDisponibilidades():Promise<string[]> { const db = await Database.connect(); const r = await db.all('SELECT descricao FROM disponibilidade'); await db.close(); return (r as {descricao:string}[]).map(x=>x.descricao) }
 
-export default { read, readById, create, update, remove, listarInstrumentos, listarGeneros, listarDaws, listarDisponibilidades }
+export default { read, readById, findByEmail, create, update, remove, listarInstrumentos, listarGeneros, listarDaws, listarDisponibilidades }

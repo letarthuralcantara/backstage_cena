@@ -9,7 +9,16 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-        <style>
+    <link rel="stylesheet" href="../css/global.css">
+    <style>
+        body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 40px 20px;
+    min-height: 100vh;
+}
     
         .container {
             position: relative;
@@ -26,8 +35,17 @@
             backdrop-filter: blur(10px);
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
         }
-        .logo-container { text-align: center; margin-bottom: 40px; }
-        .logo-img { width: 200px; height: auto; }
+        .logo-container { 
+    text-align: center; 
+    margin-bottom: 30px; 
+    display: flex;
+    justify-content: center;
+}
+.logo-img { 
+    width: 160px; 
+    height: auto; 
+    display: block;
+}
         .form-title {
             font-family: 'Poppins', sans-serif;
             font-size: 28px;
@@ -207,8 +225,7 @@
         </div>
     </div>
 
-    <!-- type="module" habilita o uso de import/export ES Modules -->
-<script type="module">
+    <script type="module">
     import { showLoading, hideLoading } from '../js/loading.js';
     const form = document.getElementById('loginForm');
     const erroMsg = document.getElementById('erroMsg');
@@ -235,8 +252,8 @@
         localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
         window.location.href = 'perfil.html';
     });
-    showLoading('Carregando...');  // aparece
-hideLoading();                  // some
+    showLoading('Carregando...');
+    hideLoading();
 </script>
 </body>
 </html>

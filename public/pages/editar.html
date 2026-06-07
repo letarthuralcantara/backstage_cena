@@ -692,6 +692,7 @@
             }
         }
         atualizarPontos(u);
+        hideLoading();
 
         // Navegação sidebar
         const navItems = document.querySelectorAll('.nav-item[data-panel]');
@@ -781,6 +782,8 @@
         });
 
         document.getElementById('btnSair')?.addEventListener('click', fazerLogout);
+        hideLoading();
+
     </script>
 </body>
 </html>

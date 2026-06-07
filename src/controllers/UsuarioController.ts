@@ -1,9 +1,8 @@
 import { Request, Response, NextFunction } from 'express'
 import usuarioService from '../models/UsuarioModel.js'
+import { HttpError } from '../errors/HttpError.js'
 
 class UsuarioController {
-  // ── CRUD Principal ──────────────────────────────────────────────────────────
-
   async listar(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { field, value } = req.query
@@ -53,17 +52,17 @@ class UsuarioController {
     }
   }
 
-  // ── Autenticação ────────────────────────────────────────────────────────────
-
   async login(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      res.status(501).json({ message: 'Rota de login em desenvolvimento.' })
+      const { email, senha } = req.body as { email?: string; senha?: string }
+      if (!email || !senha) throw new HttpError(400, 'Email e senha são obrigatórios.')
+      const usuario = await usuarioService.findByEmail(email)
+      if (!usuario || usuario.senha !== senha) throw new HttpError(401, 'Email ou senha incorretos.')
+      res.status(200).json(usuario)
     } catch (error) {
       next(error)
     }
   }
-
-  // ── Catálogos ───────────────────────────────────────────────────────────────
 
   async listarEstados(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
