@@ -103,9 +103,9 @@ async function create(dados: CreateUsuarioInput): Promise<Usuario> {
       dados.redes_sociais ? JSON.stringify(dados.redes_sociais) : null,
     ]
   )
-  await inserirRelacionamentos(db, lastID, dados)
-  await db.close()
-  return readById(lastID)
+await inserirRelacionamentos(db, lastID!, dados)
+await db.close()
+return readById(lastID!)
 }
 
 async function update({ id_usuario, ...dados }: UpdateUsuarioInput): Promise<Usuario> {

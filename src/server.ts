@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { Request, Response } from 'express'
 import morgan from 'morgan'
 import cors from 'cors'
 import usuarioRouter from './routes/usuario.routes.js'
@@ -18,7 +18,7 @@ app.use(requireJson)
 // ── Rotas ─────────────────────────────────────────────────────────────────────
 app.use('/api/usuarios', usuarioRouter)
 
-app.get('/', (_req, res) => {
+app.get('/', (_req: Request, res: Response) => {
   res.json({ mensagem: 'API Backstage Cena rodando' })
 })
 
