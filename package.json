@@ -4,26 +4,28 @@
   "type": "module",
   "description": "Backstage Cena — plataforma para músicos",
   "scripts": {
-    "dev":       "tsx watch src/server.ts",
-    "build":     "tsc --noEmit",
-    "start":     "node dist/server.js",
-    "db:load":   "tsx src/database/load.ts",
-    "db:drop":   "node -e \"const fs=require('fs'); try{fs.unlinkSync('src/database/db.sqlite')}catch(e){}\"",
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc --noEmit",
+    "start": "node dist/server.js",
+    "db:load": "tsx src/database/load.ts",
+    "db:drop": "node -e \"const fs=require('fs'); try{fs.unlinkSync('src/database/db.sqlite')}catch(e){}\"",
     "db:reload": "npm run db:drop && npm run db:load"
   },
   "dependencies": {
-    "cors":    "^2.8.6",
+    "cors": "^2.8.6",
     "express": "^4.22.1",
-    "morgan":  "^1.10.1",
-    "sqlite":  "^5.1.1",
+    "morgan": "^1.10.1",
+    "sqlite": "^5.1.1",
     "sqlite3": "^6.0.1"
   },
   "devDependencies": {
-    "@types/cors":    "^2.8.17",
+    "@prisma/client": "^7.8.0",
+    "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
-    "@types/morgan":  "^1.9.9",
-    "@types/node":    "^22.0.0",
-    "tsx":            "^4.19.0",
-    "typescript":     "^5.5.0"
+    "@types/morgan": "^1.9.9",
+    "@types/node": "^22.0.0",
+    "prisma": "^7.8.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.0"
   }
 }

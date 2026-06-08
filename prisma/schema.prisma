@@ -1,0 +1,112 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Usuario {
+  id_usuario        Int                      @id @default(autoincrement())
+  nome_completo     String
+  nome_artistico    String
+  email             String                   @unique(map: "sqlite_autoindex_usuario_1")
+  senha             String
+  telefone          String?
+  cidade            String?
+  estado            String?
+  bairro            String?
+  area_atuacao      String?
+  anos_experiencia  Int?                     @default(0)
+  biografia         String?
+  cadastro_completo Int?                     @default(0)
+  redes_sociais     String?
+  daws              UsuarioDaw[]             @ignore
+  disponibilidades  UsuarioDisponibilidade[] @ignore
+  generos           UsuarioGenero[]          @ignore
+  instrumentos      UsuarioInstrumento[]     @ignore
+
+  @@map("usuario")
+}
+
+model Instrumento {
+  id_instrumento Int                  @id @default(autoincrement())
+  nome           String               @unique(map: "sqlite_autoindex_instrumento_1")
+  usuarios       UsuarioInstrumento[] @ignore
+
+  @@map("instrumento")
+}
+
+model Genero {
+  id_genero Int             @id @default(autoincrement())
+  nome      String          @unique(map: "sqlite_autoindex_genero_1")
+  usuarios  UsuarioGenero[] @ignore
+
+  @@map("genero")
+}
+
+model Disponibilidade {
+  id_disponibilidade Int                      @id @default(autoincrement())
+  descricao          String                   @unique(map: "sqlite_autoindex_disponibilidade_1")
+  usuarios           UsuarioDisponibilidade[] @ignore
+
+  @@map("disponibilidade")
+}
+
+model Daw {
+  id_daw   Int          @id @default(autoincrement())
+  nome     String       @unique(map: "sqlite_autoindex_daw_1")
+  usuarios UsuarioDaw[] @ignore
+
+  @@map("daw")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model UsuarioInstrumento {
+  id_usuario     Int?
+  id_instrumento Int?
+  principal      Int?         @default(0)
+  instrumento    Instrumento? @relation(fields: [id_instrumento], references: [id_instrumento], onDelete: Cascade, onUpdate: NoAction)
+  usuario        Usuario?     @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([id_usuario, id_instrumento])
+  @@map("usuario_instrumento")
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model UsuarioGenero {
+  id_usuario  Int?
+  id_genero   Int?
+  preferencia Int?     @default(1)
+  genero      Genero?  @relation(fields: [id_genero], references: [id_genero], onDelete: Cascade, onUpdate: NoAction)
+  usuario     Usuario? @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([id_usuario, id_genero])
+  @@map("usuario_genero")
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model UsuarioDisponibilidade {
+  id_usuario         Int?
+  id_disponibilidade Int?
+  disponibilidade    Disponibilidade? @relation(fields: [id_disponibilidade], references: [id_disponibilidade], onDelete: Cascade, onUpdate: NoAction)
+  usuario            Usuario?         @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([id_usuario, id_disponibilidade])
+  @@map("usuario_disponibilidade")
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model UsuarioDaw {
+  id_usuario Int?
+  id_daw     Int?
+  daw        Daw?     @relation(fields: [id_daw], references: [id_daw], onDelete: Cascade, onUpdate: NoAction)
+  usuario    Usuario? @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([id_usuario, id_daw])
+  @@map("usuario_daw")
+  @@ignore
+}
