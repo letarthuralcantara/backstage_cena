@@ -9,117 +9,149 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../css/global.css">
     <style>
-      
-
-        .container { 
-            margin-left: 40px;
-            position: relative; z-index: 1; 
-            max-width: 2100px; 
+        .container {
+            position: relative; z-index: 1;
+            max-width: 1100px;
             margin: 50px auto 50px 40px;
             padding: 0 30px;
-}
-        .profile-layout { display: grid; grid-template-columns: 280px 1fr; gap: 35px; align-items: start; }
+        }
 
+        .profile-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 35px;
+            align-items: start;
+        }
+
+        /* ── CARD LATERAL ── */
         .profile-card {
             background: rgba(0, 0, 0, 0.7);
             border: 1px solid rgba(139, 92, 246, 0.3);
-            border-radius: 20px; padding: 25px;
+            border-radius: 20px;
+            padding: 28px 24px;
             backdrop-filter: blur(10px);
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-            display: flex; flex-direction: column; align-items: stretch;
-            position: sticky; top: 30px;
-            
-        .avatar-container { position: relative; margin-bottom: 20px; align-self: center; }
-        .avatar {
-            width: 160px; height: 160px; border-radius: 50%;
-            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 3rem; font-weight: 700;
-            border: 4px solid rgba(139, 92, 246, 0.5);
-            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            position: sticky;
+            top: 30px;
             overflow: hidden;
         }
+
+        .avatar-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .avatar {
+            width: 120px; height: 120px; border-radius: 50%;
+            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem; font-weight: 700;
+            border: 4px solid rgba(139, 92, 246, 0.5);
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
+            overflow: hidden; flex-shrink: 0;
+        }
+
         .avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .profile-name { font-family: 'Poppins', sans-serif; font-size: 22px; font-weight: 700; text-align: center; margin-bottom: 5px; }
+
+        .profile-name {
+            font-family: 'Poppins', sans-serif;
+            font-size: 20px; font-weight: 700;
+            text-align: center; margin-bottom: 8px;
+            word-break: break-word;
+        }
+
         .area-badge {
-            display: none; align-self: center; margin-bottom: 20px;
-            padding: 6px 16px; background: rgba(139,92,246,0.2);
-            border: 1px solid rgba(139,92,246,0.4); border-radius: 20px;
-            font-size: 13px; color: #a78bfa; font-weight: 500;
+            display: none; align-self: center; margin-bottom: 16px;
+            padding: 5px 14px;
+            background: rgba(139,92,246,0.2);
+            border: 1px solid rgba(139,92,246,0.4);
+            border-radius: 20px; font-size: 12px; color: #a78bfa; font-weight: 500;
         }
         .area-badge:not(.hidden) { display: block; }
         .hidden { display: none !important; }
 
         .incomplete-banner {
-            display: none; align-items: center; gap: 10px;
+            display: none; align-items: flex-start; gap: 10px;
             background: rgba(245, 158, 11, 0.12);
             border: 1px solid rgba(245, 158, 11, 0.4);
-            border-radius: 12px; padding: 12px 16px;
-            margin-bottom: 20px; font-size: 13px; color: #fcd34d;
+            border-radius: 10px; padding: 10px 14px;
+            margin-bottom: 16px; font-size: 12px; color: #fcd34d;
+            line-height: 1.5;
         }
         .incomplete-banner.show { display: flex; }
-        .incomplete-banner i { color: #f59e0b; flex-shrink: 0; }
+        .incomplete-banner i { color: #f59e0b; flex-shrink: 0; margin-top: 2px; }
         .incomplete-banner a { color: #f59e0b; text-decoration: underline; cursor: pointer; }
 
-        .info-list { list-style: none; width: 100%; }
+        .info-list { list-style: none; width: 100%; margin-bottom: 4px; }
         .info-item {
-            display: flex; align-items: center; gap: 10px;
-            padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.07);
-            font-size: 14px; color: #d1d5db;
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+            font-size: 13px; color: #d1d5db; word-break: break-all;
         }
         .info-item:last-child { border-bottom: none; }
-        .info-item i { color: #8b5cf6; width: 16px; text-align: center; }
-        .disp-section { margin-top: 20px; }
-        .disp-title { font-size: 13px; color: #9ca3af; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
-        .disp-tags { display: flex; flex-wrap: wrap; gap: 8px; }
-        .disp-tag { display: flex; align-items: center; gap: 6px; padding: 6px 12px; background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3); border-radius: 20px; font-size: 13px; color: #a78bfa; }
+        .info-item i { color: #8b5cf6; width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px; }
 
-        .social-section { margin-top: 20px; }
-        .social-title { font-size: 13px; color: #9ca3af; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        .disp-section { margin-top: 16px; }
+        .disp-title { font-size: 11px; color: #9ca3af; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+        .disp-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+        .disp-tag { display: flex; align-items: center; gap: 5px; padding: 5px 10px; background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3); border-radius: 20px; font-size: 12px; color: #a78bfa; }
+
+        .social-section { margin-top: 16px; }
+        .social-title { font-size: 11px; color: #9ca3af; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
         .social-links { display: flex; flex-wrap: wrap; gap: 8px; }
         .social-link {
             display: flex; align-items: center; gap: 6px;
-            padding: 7px 12px;
+            padding: 6px 12px;
             background: rgba(255,255,255,0.06);
             border: 1px solid rgba(255,255,255,0.12);
-            border-radius: 20px; font-size: 13px; color: #d1d5db;
+            border-radius: 20px; font-size: 12px; color: #d1d5db;
             text-decoration: none; transition: all 0.2s;
         }
         .social-link:hover { background: rgba(139,92,246,0.2); border-color: rgba(139,92,246,0.4); color: #a78bfa; }
         .social-link i { width: 14px; text-align: center; }
 
+        /* ── CARDS DE CONTEÚDO ── */
         .content-card {
-            background: rgba(0,0,0,0.6); border: 1px solid rgba(139,92,246,0.2);
-            border-radius: 16px; padding: 25px; margin-bottom: 25px;
-            backdrop-filter: blur(8px); box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-            width: 600px;
+            background: rgba(0,0,0,0.6);
+            border: 1px solid rgba(139,92,246,0.2);
+            border-radius: 16px; padding: 25px;
+            margin-bottom: 25px;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+            min-height: 120px;
         }
+
         .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
         .card-header-left { display: flex; align-items: center; gap: 12px; }
         .card-icon { width: 40px; height: 40px; background: rgba(139,92,246,0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #8b5cf6; font-size: 18px; }
         .card-title { font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 600; }
+
         .card-content {
             color: #d1d5db; line-height: 1.7;
-            word-break: break-word;
-            white-space: pre-wrap;
-            max-width: 100%;
+            word-break: break-word; white-space: pre-wrap; max-width: 100%;
         }
         .bio-collapsed { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
         .btn-ler-mais {
             display: inline-block; margin-top: 10px;
             color: #8b5cf6; font-size: 13px; font-weight: 600;
-            cursor: pointer; background: none; border: none;
-            padding: 0; transition: color 0.2s;
+            cursor: pointer; background: none; border: none; padding: 0; transition: color 0.2s;
         }
         .btn-ler-mais:hover { color: #a78bfa; }
+
         .tags-grid { display: flex; flex-wrap: wrap; gap: 10px; }
         .tag { display: flex; align-items: center; gap: 6px; padding: 8px 14px; background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3); border-radius: 20px; font-size: 14px; color: #a78bfa; }
         .empty-state { color: #6b7280; font-style: italic; font-size: 14px; }
+
         .btn-edit-card { display: flex; align-items: center; gap: 6px; padding: 8px 16px; background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.3); border-radius: 8px; color: #a78bfa; text-decoration: none; font-size: 13px; transition: all 0.3s; }
         .btn-edit-card:hover { background: rgba(139,92,246,0.2); }
         .btn-edit-card.hidden { display: none; }
-        
+
         @media (max-width: 768px) {
+            .container { margin: 30px 16px; padding: 0; }
             .profile-layout { grid-template-columns: 1fr; }
             .profile-card { position: static; }
         }
@@ -167,7 +199,7 @@
 
                 <div class="incomplete-banner" id="incompleteBanner">
                     <i class="fas fa-exclamation-triangle"></i>
-                    <span>Seu perfil está incompleto e <strong>não aparece nas buscas</strong>. <a href="editar.html">Complete agora</a> para ser encontrado por outros músicos.</span>
+                    <span>Seu perfil está incompleto e <strong>não aparece nas buscas</strong>. <a href="editar.html">Complete agora</a> para ser encontrado.</span>
                 </div>
 
                 <ul class="info-list">
@@ -268,7 +300,6 @@
             if (idParam) {
                 const res = await fetch(`/api/usuarios/${idParam}`);
                 u = await res.json();
-                // Esconde botão de editar ao ver perfil de outro usuário
                 const usuarioLogado = verificarAutenticacao(false);
                 if (!usuarioLogado || String(usuarioLogado.id_usuario) !== String(idParam)) {
                     document.getElementById('btnEditar')?.classList.add('hidden');
@@ -287,6 +318,7 @@
             document.getElementById('nomeExibir').textContent = nome;
             document.getElementById('emailExibir').textContent = u.email;
             document.getElementById('localExibir').textContent = `${u.cidade || 'Não informado'}, ${u.estado || 'Não informado'}`;
+
             const bioEl = document.getElementById('bioExibir');
             const bioTexto = u.biografia || 'Sem descrição ainda.';
             const BIO_LIMITE = 280;
@@ -316,9 +348,10 @@
                 document.getElementById('incompleteBanner')?.classList.add('show');
             }
 
-            if (u.area_atuacao) {
+            if (u.area_atuacao?.length) {
                 const badge = document.getElementById('areaBadge');
-                badge.textContent = u.area_atuacao;
+                const areas = Array.isArray(u.area_atuacao) ? u.area_atuacao.join(', ') : u.area_atuacao;
+                badge.textContent = areas;
                 badge.classList.remove('hidden');
             }
 
