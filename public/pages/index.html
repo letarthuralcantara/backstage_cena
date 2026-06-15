@@ -8,187 +8,371 @@
     <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../css/global.css">
     <style>
-       
-        .container { 
-            width: 100%; 
-            max-width: 1200px; 
-            margin: 0 auto; 
-            padding: 0 15px; 
-            position: relative; 
-            z-index: 1; 
-        }
-        header {
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between;
-            padding: 20px 30px; 
-            background-color: black;
-            box-shadow: 0px 20px 20px black;
-        }
-        
-        .header-menu { 
-            display: flex; 
-            list-style: none; 
-            gap: 25px; 
-            margin: 0; 
-            padding: 0; 
-        }
-        .header-menu a {
-            text-decoration: none; 
-            color: #e5e7eb; 
-            font-weight: 500; 
-            font-size: 15px;
-            transition: all 0.2s; 
-            padding: 8px 16px; 
-            border-radius: 6px; 
-            position: relative;
-        }
-        .header-menu a:hover { 
-            color: #8b5cf6; 
-            background-color: rgba(139, 92, 246, 0.1); 
-        }
-        #registrar{
-            background-color: #6d28d9;
-
-        }
-        #registrar:hover{
-            color:#8b5cf6; 
-            background-color: #ffffff;
-
-        }
-        #login{
-            border: 2px solid #6d28d9;
-            border-radius: 8px;
-  
-        }
-        .main-content { 
-            flex: 1; 
-            display: flex; 
-            align-items: center; 
-            padding: 40px 0; 
-        }
-        .hero { 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between; 
+        .container {
             width: 100%;
-            gap: 40px; 
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 30px;
+            position: relative;
+            z-index: 1;
         }
-        .hero-left { 
-            flex: 1; 
-            max-width: 550px; 
+
+        /* ── HERO ── */
+        .hero-section {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            padding: 60px 0 80px;
         }
+
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            gap: 60px;
+        }
+
+        .hero-left {
+            flex: 1;
+            max-width: 560px;
+        }
+
         .main-title {
-            font-family: 'Poppins', sans-serif; 
-            font-size: 44px; 
-            font-weight: 700;
-            line-height: 1.1; 
-            margin-bottom: 20px; color: #ffffff;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            font-family: 'Poppins', sans-serif;
+            font-size: 52px;
+            font-weight: 800;
+            line-height: 1.08;
+            margin-bottom: 22px;
+            color: #ffffff;
+            letter-spacing: -1px;
         }
-        .main-subtitle { 
-            font-size: 18px; 
-            color: #d1d5db; 
-            margin-bottom: 30px; 
-            font-weight: 400; 
+
+        .main-title .highlight {
+            background: linear-gradient(135deg, #c4b5fd, #8b5cf6, #6d28d9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
+
+        .main-subtitle {
+            font-size: 17px;
+            color: #9ca3af;
+            margin-bottom: 40px;
+            font-weight: 400;
+            line-height: 1.75;
+            max-width: 460px;
+        }
+
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
         .signup-button {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
             background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 50%, #6d28d9 100%);
-            color: white; font-size: 16px; font-weight: 600;
-            padding: 16px 40px; border-radius: 10px; text-decoration: none;
-            transition: all 0.3s; box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
-            border: none; cursor: pointer; letter-spacing: 0.5px;
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            padding: 16px 36px;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: all 0.3s;
+            box-shadow: 0 6px 24px rgba(139, 92, 246, 0.45);
+            border: none;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
         }
+
         .signup-button:hover {
-            transform: translateY(-3px); 
-            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.6); 
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(139, 92, 246, 0.65);
         }
-        .hero-right { 
-            flex: 1; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #9ca3af;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            padding: 16px 20px;
+            border-radius: 12px;
+            transition: all 0.2s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .bear-image { 
-            width: 360px; 
-            height: auto; 
-            filter: drop-shadow(0 10px 25px rgba(0,0,0,0.5)); 
-            transition: transform 0.3s ease; 
+
+        .btn-secondary:hover {
+            color: #e5e7eb;
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.2);
         }
-        .bear-image:hover { 
-            transform: scale(1.02); 
+
+        /* ── HERO RIGHT ── */
+        .hero-right {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-        
-        @keyframes fadeInLeft {
-             from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } 
-            }
-        @keyframes fadeInRight {
-             from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } 
-            }
-        .hero-left > * { 
-            opacity: 0; 
-            animation: fadeInLeft 0.8s ease-out forwards; 
+
+        .hero-visual {
+            position: relative;
+            width: 420px;
+            height: 420px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .hero-right > * {
-            opacity: 0; 
-            animation: fadeInRight 0.8s ease-out forwards; 
+
+        .hero-glow {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: glowPulse 4s ease-in-out infinite;
         }
-        .main-title { 
-            animation-delay: 0.2s; 
+
+        .hero-ring {
+            position: absolute;
+            width: 380px;
+            height: 380px;
+            border-radius: 50%;
+            border: 1px solid rgba(139, 92, 246, 0.15);
+            animation: ringRotate 20s linear infinite;
         }
-        .main-subtitle { 
-            animation-delay: 0.4s; 
+
+        .hero-ring::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: 50%;
+            width: 8px;
+            height: 8px;
+            background: #8b5cf6;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(139, 92, 246, 0.8);
         }
-        .signup-button { 
-            animation-delay: 0.6s; 
+
+        .bear-image {
+            width: 320px;
+            height: auto;
+            position: relative;
+            z-index: 1;
+            filter: drop-shadow(0 20px 40px rgba(139, 92, 246, 0.35));
+            animation: bearFloat 6s ease-in-out infinite;
         }
-        .bear-image { 
-            animation-delay: 0.8s; 
+
+        /* ── FEATURES ── */
+        .features-section {
+            padding: 80px 0;
+            position: relative;
+            z-index: 1;
         }
-        @media (max-width: 768px) {
-            .hero { flex-direction: column; gap: 30px; text-align: center; }
-            nav { flex-direction: column; gap: 15px; padding: 15px; }
-            .main-title { font-size: 32px; }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .feature-card {
+            background: rgba(0, 0, 0, 0.45);
+            border: 1px solid rgba(139, 92, 246, 0.15);
+            border-radius: 18px;
+            padding: 30px 26px;
+            transition: all 0.35s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.5), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .feature-card:hover {
+            border-color: rgba(139, 92, 246, 0.35);
+            background: rgba(139, 92, 246, 0.06);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-card:hover::before { opacity: 1; }
+
+        .feature-icon {
+            width: 50px; height: 50px;
+            background: rgba(139, 92, 246, 0.12);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 13px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; color: #8b5cf6;
+            margin-bottom: 18px;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover .feature-icon {
+            background: rgba(139, 92, 246, 0.2);
+            border-color: rgba(139, 92, 246, 0.4);
+            transform: scale(1.1);
+        }
+
+        .feature-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .feature-desc {
+            font-size: 13px;
+            color: #6b7280;
+            line-height: 1.75;
+        }
+
+        /* ── ANIMAÇÕES ── */
+        @keyframes glowPulse {
+            0%, 100% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.15); opacity: 1; }
+        }
+
+        @keyframes ringRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes bearFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-14px); }
+        }
+
+        .fade-up {
+            opacity: 0;
+            transform: translateY(28px);
+            animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .d1 { animation-delay: 0.1s; }
+        .d2 { animation-delay: 0.25s; }
+        .d3 { animation-delay: 0.4s; }
+        .d4 { animation-delay: 0.55s; }
+
+        /* ── RESPONSIVO ── */
+        @media (max-width: 900px) {
+            .hero { flex-direction: column; text-align: center; gap: 40px; }
+            .main-title { font-size: 36px; }
+            .hero-left { max-width: 100%; }
+            .main-subtitle { max-width: 100%; margin-left: auto; margin-right: auto; }
+            .hero-actions { justify-content: center; }
+            .hero-visual { width: 280px; height: 280px; }
+            .bear-image { width: 220px; }
+            .hero-ring { width: 260px; height: 260px; }
+            .features-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
     <header class="header">
-        <div class="header-left>
+        <div class="header-left">
             <a href="index.html"><img src="../images/logo.png" alt="Backstage Logo" class="logo-img"></a>
         </div>
-        <ul class="header-menu">
-            <li><a href="sobrenos.html">Sobre nós</a></li>
-            <li><a href="https://www.instagram.com/backstagecena/?utm_source=ig_web_button_share_sheet"  target="_blank" >Blog</a></li>
-            <li><a href="login.html" id="login">Login</a></li>
-            <li><a href="cadastro.html" id="registrar">Registrar-se</a></li>
-        </ul>
+        <div class="header-center">
+            <div class="header-search" id="searchBar">
+                <i class="fas fa-search header-search-icon"></i>
+                <input type="text" class="header-search-input" placeholder="Buscar músicos..." readonly>
+                <button class="btn-filtrar" style="pointer-events:none; opacity:0.5;">
+                    <i class="fas fa-sliders"></i>
+                </button>
+                <button class="header-search-btn">Buscar</button>
+            </div>
+        </div>
+        <div class="header-actions">
+            <a href="login.html" style="color:#a78bfa; font-size:14px; font-weight:600; text-decoration:none; padding:8px 16px; border:1.5px solid rgba(139,92,246,0.4); border-radius:8px; transition:all 0.2s;" onmouseover="this.style.background='rgba(139,92,246,0.12)'" onmouseout="this.style.background='transparent'">Login</a>
+            <a href="cadastro.html" style="color:white; font-size:14px; font-weight:600; text-decoration:none; padding:9px 18px; background:linear-gradient(135deg,#8b5cf6,#6d28d9); border-radius:8px; box-shadow:0 4px 14px rgba(139,92,246,0.4);">Registrar-se</a>
+        </div>
     </header>
 
-    <main class="main-content">
+    <main class="hero-section">
         <div class="container">
             <div class="hero">
                 <div class="hero-left">
-                    <h1 class="main-title">Conecte-se com músicos, encontre parceiros, crie seus projetos.</h1>
-                    <p class="main-subtitle">A cena musical independente começa aqui.</p>
-                    <a href="cadastro.html" class="signup-button">INSCREVA-SE</a>
+                    <h1 class="main-title fade-up d1">
+                        Conecte-se com<br>
+                        <span class="highlight">músicos</span> e crie<br>
+                        projetos incríveis.
+                    </h1>
+                    <p class="main-subtitle fade-up d2">
+                        Encontre parceiros, colabore em projetos e faça parte da cena musical independente do Brasil.
+                    </p>
+                    <div class="hero-actions fade-up d3">
+                        <button class="signup-button">
+                            Começar agora
+                        </button>
+                        <a href="sobrenos.html" class="btn-secondary">
+                            Saiba mais <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
                 </div>
-                <div class="hero-right">
-                    <img src="../images/urso.png" alt="Mascote Backstage" class="bear-image">
+
+                <div class="hero-right fade-up d4">
+                    <div class="hero-visual">
+                        <div class="hero-glow"></div>
+                        <div class="hero-ring"></div>
+                        <img src="../images/urso.png" alt="Mascote Backstage" class="bear-image">
+                    </div>
                 </div>
             </div>
         </div>
     </main>
 
+    <section class="features-section">
+        <div class="container">
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-search"></i></div>
+                    <h3 class="feature-title">Encontre músicos</h3>
+                    <p class="feature-desc">Busque por instrumento, gênero, localização e disponibilidade para achar o parceiro ideal.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-user-circle"></i></div>
+                    <h3 class="feature-title">Seu perfil musical</h3>
+                    <p class="feature-desc">Mostre seus talentos, gêneros favoritos, DAWs e redes sociais para ser encontrado.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-handshake"></i></div>
+                    <h3 class="feature-title">Colabore e crie</h3>
+                    <p class="feature-desc">Conecte-se com produtores, vocalistas e compositores da cena independente brasileira.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <footer>
         <div class="container">
             <div class="footer-content">
                 <img src="../images/logo.png" alt="Backstage Logo" class="footer-logo-img">
-                <p>A cena musical independente começa aqui. &copy; 2025</p>
+                <p>A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
             </div>
         </div>
     </footer>
@@ -196,30 +380,14 @@
     <script type="module">
         import { verificarAutenticacao } from '../js/auth.js';
 
-        document.querySelector('.signup-button').addEventListener('click', (e) => {
-            e.preventDefault();
-            const usuario = verificarAutenticacao(false);
-            if (usuario) {
-                window.location.href = 'perfil.html';
-            } else {
-                window.location.href = 'cadastro.html';
-            }
+        document.getElementById('searchBar').addEventListener('click', () => {
+            window.location.href = 'pesquisar_usuarios.html?focar=true';
         });
 
-        const title = document.querySelector('.main-title');
-        const originalText = title.textContent;
-        title.textContent = '';
-        let charIndex = 0;
-
-        function typeTitle() {
-            if (charIndex < originalText.length) {
-                title.textContent += originalText.charAt(charIndex);
-                charIndex++;
-                setTimeout(typeTitle, 30);
-            }
-        }
-
-        setTimeout(typeTitle, 800);
+        document.querySelector('.signup-button').addEventListener('click', () => {
+            const usuario = verificarAutenticacao(false);
+            window.location.href = usuario ? 'perfil.html' : 'cadastro.html';
+        });
     </script>
 </body>
 </html>
