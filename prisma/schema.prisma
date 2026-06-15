@@ -22,6 +22,7 @@ model Usuario {
   biografia         String?
   cadastro_completo Int      @default(0)
   redes_sociais     String?
+  status            String   @default("online") // online, ausente, nao_perturbe, invisivel
 
   instrumentos     UsuarioInstrumento[]
   generos          UsuarioGenero[]
@@ -29,6 +30,15 @@ model Usuario {
   daws             UsuarioDaw[]
 
   @@map("usuario")
+}
+
+enum UserStatus {
+  online
+  ausente
+  nao_perturbe
+  invisivel
+  offline
+
 }
 
 model Instrumento {
