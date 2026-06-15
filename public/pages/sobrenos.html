@@ -1,218 +1,531 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Sobre Nós | Backstage Cena - Experiência Imersiva</title>
+    <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/global.css">
     <style>
-        .about-section {
-            position: relative;
-            z-index: 1;
-            padding: 60px 0;
+        :root {
+            --primary: #8b5cf6;
+            --primary-glow: rgba(139, 92, 246, 0.6);
+            --secondary: #d946ef;
+            --bg-dark: #050505;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
         }
 
-        .about-hero {
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: #fff;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 10%, rgba(139, 92, 246, 0.15), transparent 50%),
+                radial-gradient(circle at 90% 90%, rgba(217, 70, 239, 0.1), transparent 50%);
+            background-attachment: fixed;
+        }
+
+        #bg-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1;
+            opacity: 0.4;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
+
+       
+        .header.scrolled { padding: 15px 0; background: rgba(5, 5, 5, 0.9); }
+
+
+        .btn-cta {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-weight: 800;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 13px;
+            box-shadow: 0 0 20px var(--primary-glow);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255,255,255,0.2);
+            cursor: pointer;
+        }
+        .btn-cta:hover { transform: scale(1.1); box-shadow: 0 0 40px var(--primary-glow); }
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
-            margin-bottom: 60px;
+            position: relative;
         }
 
-        .about-hero h1 {
+        .hero-title {
             font-family: 'Poppins', sans-serif;
-            font-size: 3rem;
-            margin-bottom: 20px;
-        }
-
-        .about-hero span {
-            background: linear-gradient(135deg, #c4b5fd, #8b5cf6);
+            font-size: clamp(50px, 10vw, 100px);
+            font-weight: 900;
+            line-height: 0.9;
+            margin-bottom: 30px;
+            background: linear-gradient(to bottom, #fff, #888);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            position: relative;
         }
 
-        .about-hero p {
-            max-width: 700px;
-            margin: 0 auto;
-            color: #d1d5db;
-            line-height: 1.8;
+        .hero-title span {
+            display: block;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 30px var(--primary-glow));
         }
 
-        .about-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 25px;
-            margin-bottom: 60px;
+        .hero-subtitle {
+            font-size: 20px;
+            color: #aaa;
+            max-width: 600px;
+            margin-bottom: 50px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
-        .about-card,
-        .team-card,
-        .about-story {
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(139, 92, 246, 0.25);
-            border-radius: 18px;
-            padding: 30px;
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            width: 30px;
+            height: 50px;
+            border: 2px solid #555;
+            border-radius: 20px;
+        }
+        .scroll-indicator::after {
+            content: '';
+            position: absolute;
+            top: 10px; left: 50%;
+            width: 6px; height: 6px;
+            background: var(--primary);
+            border-radius: 50%;
+            transform: translateX(-50%);
+            animation: scrollDown 2s infinite;
+        }
+        @keyframes scrollDown {
+            0% { top: 10px; opacity: 1; }
+            100% { top: 30px; opacity: 0; }
+        }
+
+        .section { padding: 150px 0; position: relative; }
+
+        .reveal { opacity: 0; transform: translateY(60px); transition: all 1s cubic-bezier(0.2, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 100px; align-items: center; }
+
+        .section-label { color: var(--primary); font-weight: 800; text-transform: uppercase; letter-spacing: 4px; font-size: 14px; margin-bottom: 20px; display: block; }
+        .section-title { font-family: 'Poppins', sans-serif; font-size: 48px; margin-bottom: 30px; line-height: 1.2; }
+
+        .content-p { font-size: 18px; color: #ccc; line-height: 1.8; margin-bottom: 30px; }
+
+        .glass-card {
+            background: var(--glass);
             backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 40px;
+            padding: 60px;
+            position: relative;
+            transition: all 0.5s;
+        }
+        .glass-card:hover { border-color: var(--primary); transform: perspective(1000px) rotateX(5deg) rotateY(-5deg); }
+
+        .icon-circle {
+            width: 100px; height: 100px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 30px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 40px; margin-bottom: 30px;
+            box-shadow: 0 10px 30px var(--primary-glow);
         }
 
-        .about-icon {
-            width: 60px;
-            height: 60px;
-            margin-bottom: 20px;
-            border-radius: 15px;
-            background: rgba(139, 92, 246, 0.15);
-            color: #8b5cf6;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-        }
-
-        .about-card h2,
-        .about-story h2,
-        .team-section h2 {
-            margin-bottom: 15px;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .about-card p,
-        .about-story p,
-        .team-card p {
-            color: #d1d5db;
-            line-height: 1.8;
-        }
-
-        .about-story {
-            margin-bottom: 60px;
-        }
-
-        .team-section {
+        .mvv-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; }
+        .mvv-item {
             text-align: center;
+            padding: 40px;
+            border-radius: 30px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid transparent;
+            transition: all 0.4s;
+        }
+        .mvv-item:hover { background: rgba(139, 92, 246, 0.1); border-color: var(--primary); transform: translateY(-20px); }
+        .mvv-item i { font-size: 40px; color: var(--primary); margin-bottom: 20px; }
+
+        .creators-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 50px; margin-top: 80px; }
+        .creator-card {
+            position: relative;
+            height: 500px;
+            border-radius: 40px;
+            overflow: hidden;
+            background: #111;
+            cursor: pointer;
+        }
+        .creator-img-box {
+            width: 100%; height: 100%;
+            background: linear-gradient(to bottom, transparent, #000);
+            position: absolute;
+            z-index: 1;
+        }
+        .creator-photo {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%) contrast(1.2);
+            transition: all 0.6s;
+        }
+        .creator-card:hover .creator-photo { filter: grayscale(0%); transform: scale(1.1); }
+
+        .creator-info {
+            position: absolute;
+            bottom: 40px; left: 40px; right: 40px;
+            z-index: 2;
+            transform: translateY(20px);
+            opacity: 0.8;
+            transition: all 0.4s;
+        }
+        .creator-card:hover .creator-info { transform: translateY(0); opacity: 1; }
+        .creator-name { font-family: 'Poppins', sans-serif; font-size: 32px; font-weight: 800; }
+        .creator-role { color: var(--primary); font-weight: 700; text-transform: uppercase; font-size: 14px; }
+
+        /* ── CONTATO ── */
+        .contact-section { padding: 120px 0; position: relative; }
+        .contact-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--glass-border);
+            border-radius: 40px;
+            padding: 60px;
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .contact-container.form-sent {
+            transform: scale(0.9) translateY(-50px);
+            opacity: 0;
+            pointer-events: none;
+        }
+        .success-message {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.5);
+            text-align: center;
+            opacity: 0;
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 100%;
+            pointer-events: none;
+        }
+        .success-message.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            pointer-events: all;
+        }
+        .success-icon {
+            font-size: 80px;
+            color: var(--primary);
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 20px var(--primary-glow));
         }
 
-        .team-grid {
-            margin-top: 30px;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 25px;
+        .form-group { margin-bottom: 30px; position: relative; }
+        .form-input {
+            width: 100%;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 18px 25px;
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s;
+            outline: none;
+        }
+        .form-input:focus {
+            background: rgba(139, 92, 246, 0.05);
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
+        }
+        .form-label {
+            position: absolute;
+            left: 25px; top: 18px;
+            color: #666;
+            pointer-events: none;
+            transition: all 0.3s;
+        }
+        .form-input:focus ~ .form-label,
+        .form-input:not(:placeholder-shown) ~ .form-label {
+            top: -25px;
+            left: 10px;
+            font-size: 12px;
+            color: var(--primary);
+            font-weight: 700;
+            text-transform: uppercase;
         }
 
-        .team-card h3 {
-            color: #ffffff;
-            margin-bottom: 10px;
+        .footer { padding: 100px 0 50px; text-align: center; border-top: 1px solid var(--glass-border); }
+        .footer-logo { width: 150px; margin-bottom: 30px; opacity: 0.5; transition: 0.3s; }
+        .footer-logo:hover { opacity: 1; }
+
+        @media (max-width: 900px) {
+            .grid-2 { grid-template-columns: 1fr; gap: 50px; }
+            .mvv-grid { grid-template-columns: 1fr; }
+            .hero-title { font-size: 60px; }
         }
-
-        @media (max-width: 768px) {
-            .about-grid,
-            .team-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .about-hero h1 {
-                font-size: 2.2rem;
-            }
-        }
-
-
     </style>
 </head>
 <body>
-<section class="about-section">
-    <div class="container">
 
-        <div class="about-hero">
-            <h1>Sobre o <span>Backstage Cena</span></h1>
+    <canvas id="bg-canvas"></canvas>
 
-            <p>
-                O Backstage Cena nasceu com a missão de conectar músicos,
-                produtores e profissionais da música independente em um único
-                espaço colaborativo.
-            </p>
+    <header class="header">
+        <div class="header-left">
+            <a href="index.html"><img src="../images/logo.png" alt="Backstage Logo" class="logo-img"></a>
         </div>
-
-        <div class="about-grid">
-
-            <div class="about-card">
-                <div class="about-icon">
-                    <i class="fas fa-music"></i>
-                </div>
-
-                <h2>Nossa Missão</h2>
-
-                <p>
-                    Facilitar conexões entre artistas, incentivando a criação
-                    de projetos musicais e fortalecendo a cena independente
-                    brasileira.
-                </p>
+        <div class="header-center">
+            <div class="header-search" id="searchBar">
+                <i class="fas fa-search header-search-icon"></i>
+                <input type="text" class="header-search-input" placeholder="Buscar músicos..." readonly>
+                <button class="btn-filtrar" style="pointer-events:none; opacity:0.5;">
+                    <i class="fas fa-sliders"></i>
+                </button>
+                <button class="header-search-btn">Buscar</button>
             </div>
-
-            <div class="about-card">
-                <div class="about-icon">
-                    <i class="fas fa-users"></i>
-                </div>
-
-                <h2>Nossa Visão</h2>
-
-                <p>
-                    Ser a principal plataforma de networking musical do Brasil,
-                    aproximando talentos e criando oportunidades reais de
-                    colaboração.
-                </p>
-            </div>
-
-            <div class="about-card">
-                <div class="about-icon">
-                    <i class="fas fa-heart"></i>
-                </div>
-
-                <h2>Nossos Valores</h2>
-
-                <p>
-                    Criatividade, colaboração, respeito à diversidade musical
-                    e incentivo ao crescimento de artistas independentes.
-                </p>
-            </div>
-
         </div>
-
-        <div class="about-story">
-
-            <h2>Por que criamos o Backstage Cena?</h2>
-
-            <p>
-                Encontrar músicos com interesses semelhantes nem sempre é fácil.
-                Muitos artistas possuem talento e vontade de criar, mas não têm
-                acesso a uma rede de contatos que facilite novas parcerias.
-            </p>
-
-            <p>
-                Pensando nisso, desenvolvemos o Backstage Cena: uma plataforma
-                que permite encontrar músicos por instrumento, gênero musical,
-                localização e disponibilidade, tornando a colaboração mais
-                simples e acessível.
-            </p>
-
+        <div class="header-actions">
+            <a href="login.html" style="color:#a78bfa; font-size:14px; font-weight:600; text-decoration:none; padding:8px 16px; border:1.5px solid rgba(139,92,246,0.4); border-radius:8px; transition:all 0.2s;" onmouseover="this.style.background='rgba(139,92,246,0.12)'" onmouseout="this.style.background='transparent'">Login</a>
+            <a href="cadastro.html" style="color:white; font-size:14px; font-weight:600; text-decoration:none; padding:9px 18px; background:linear-gradient(135deg,#8b5cf6,#6d28d9); border-radius:8px; box-shadow:0 4px 14px rgba(139,92,246,0.4);">Registrar-se</a>
         </div>
+    </header>
 
-        <div class="team-section">
+    <main>
+        <section class="hero">
+            <h1 class="hero-title reveal">O FUTURO DA <br><span>MÚSICA</span></h1>
+            <p class="hero-subtitle reveal">Conectando talentos, criando história.</p>
+            <div class="scroll-indicator"></div>
+        </section>
 
-            <h2>Equipe de Desenvolvimento</h2>
-
-            <div class="team-grid">
-
-                <div class="team-card">
-                    <h3>Arthur Alcântara de Medeiros França</h3>
-                    <p>Desenvolvedor Full Stack</p>
+        <section class="section">
+            <div class="container">
+                <div class="grid-2">
+                    <div class="reveal">
+                        <span class="section-label">A Origem</span>
+                        <h2 class="section-title">Nascidos na <br><span style="color:var(--primary)">Batida</span> do Coração</h2>
+                        <p class="content-p">O Backstage Cena não é apenas código. É a resposta para noites em claro de produtores sem voz e músicos sem palco. Nossa missão é ser a ponte invisível que transforma um "talvez" em um hit global.</p>
+                        <p class="content-p">Acreditamos que a próxima revolução musical não virá de uma gravadora, mas de uma conexão inesperada entre dois artistas independentes.</p>
+                    </div>
+                    <div class="glass-card reveal">
+                        <div class="icon-circle"><i class="fa-solid fa-bolt-lightning"></i></div>
+                        <h3>Poder da Conexão</h3>
+                        <p style="color:#aaa; margin-top:20px;">Eliminamos o ruído. Aqui, você encontra o talento exato para a sua frequência sonora.</p>
+                    </div>
                 </div>
-
-                <div class="team-card">
-                    <h3>Ronaldo de Albuquerque Duarte Filho</h3>
-                    <p>Desenvolvedor Full Stack</p>
-                </div>
-
             </div>
+        </section>
 
+        <section class="section">
+            <div class="container">
+                <div class="mvv-grid">
+                    <div class="mvv-item reveal" style="transition-delay: 0.1s;">
+                        <i class="fa-solid fa-microchip"></i>
+                        <h3>Inovação</h3>
+                        <p>Tecnologia a serviço da arte.</p>
+                    </div>
+                    <div class="mvv-item reveal" style="transition-delay: 0.2s;">
+                        <i class="fa-solid fa-earth-americas"></i>
+                        <h3>União</h3>
+                        <p>Uma rede sem fronteiras.</p>
+                    </div>
+                    <div class="mvv-item reveal" style="transition-delay: 0.3s;">
+                        <i class="fa-solid fa-fire-flame-curved"></i>
+                        <h3>Paixão</h3>
+                        <p>Música correndo nas veias.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div style="text-align: center; margin-bottom: 80px;">
+                    <span class="section-label">Mentes Criativas</span>
+                    <h2 class="section-title">Quem deu vida ao <span style="color:var(--primary)">Projeto</span></h2>
+                </div>
+
+                <div class="creators-grid">
+                    <div class="creator-card reveal">
+                        <div class="creator-img-box"></div>
+                        <img src="https://avatars.githubusercontent.com/u/126333648?v=4" class="creator-photo">
+                        <div class="creator-info">
+                            <p class="creator-role">Full-stack developer and Founder</p>
+                            <h3 class="creator-name">Arthur Alcântara</h3>
+                         
+                        </div>
+                    </div>
+
+                    <div class="creator-card reveal" style="transition-delay: 0.2s;">
+                        <div class="creator-img-box"></div>
+                        <img src="https://www.deficienciavisual.pt/IMAGENS/r-A_toupeira_cometa.jpg" class="creator-photo">
+                        <div class="creator-info">
+                            <p class="creator-role">Database director and Manager</p>
+                            <h3 class="creator-name">Ronaldo Duarte</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="contact-section">
+            <div class="container">
+                <div style="text-align: center; margin-bottom: 60px;">
+                    <span class="section-label">Fale Conosco</span>
+                    <h2 class="section-title reveal">Deixe sua <span style="color:var(--primary)">Marca</span></h2>
+                </div>
+
+                <div style="position: relative;">
+                    <div class="contact-container reveal" id="contactFormBox">
+                        <form id="contactForm">
+                            <div class="form-group">
+                                <input type="text" class="form-input" id="name" placeholder=" " required>
+                                <label class="form-label">Seu Nome</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="email" class="form-input" id="email" placeholder=" " required>
+                                <label class="form-label">Seu E-mail</label>
+                            </div>
+                            <div class="form-group">
+                                <textarea class="form-input" id="message" rows="5" placeholder=" " required></textarea>
+                                <label class="form-label">Sua Mensagem</label>
+                            </div>
+                            <button type="submit" class="btn-cta" style="width: 100%; padding: 20px;">Enviar Mensagem</button>
+                        </form>
+                    </div>
+
+                    <div class="success-message" id="successMsg">
+                        <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
+                        <h2 class="section-title">Mensagem <span style="color:var(--primary)">Enviada!</span></h2>
+                        <p style="color: #aaa; margin-bottom: 30px;">Obrigado por entrar em contato. Responderemos em breve na sua frequência.</p>
+                        <button class="btn-cta" onclick="resetForm()">Enviar outra</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" style="text-align: center;">
+            <div class="container reveal">
+                <h2 class="section-title" style="font-size: clamp(40px, 8vw, 80px);">VOCÊ ESTÁ <br><span style="color:var(--primary)">PRONTO?</span></h2>
+                <a href="cadastro.html" class="btn-cta" style="padding: 25px 60px; font-size: 20px;">Começar minha jornada</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <img src="../images/logo.png" alt="Backstage Logo" class="footer-logo-img">
+                <p>A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
+            </div>
         </div>
+    </footer>
 
-    </div>
-</section>
+    <script>
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) nav.classList.add('scrolled');
+            else nav.classList.remove('scrolled');
+        });
 
+        function reveal() {
+            const reveals = document.querySelectorAll(".reveal");
+            reveals.forEach(el => {
+                const windowHeight = window.innerHeight;
+                const elementTop = el.getBoundingClientRect().top;
+                if (elementTop < windowHeight - 100) el.classList.add("active");
+            });
+        }
+        window.addEventListener("scroll", reveal);
+        reveal();
+
+        const contactForm = document.getElementById('contactForm');
+        const formBox = document.getElementById('contactFormBox');
+        const successMsg = document.getElementById('successMsg');
+
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            formBox.classList.add('form-sent');
+            setTimeout(() => { successMsg.classList.add('show'); }, 600);
+        });
+
+        window.resetForm = function() {
+            successMsg.classList.remove('show');
+            setTimeout(() => {
+                contactForm.reset();
+                formBox.classList.remove('form-sent');
+            }, 600);
+        }
+
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function initCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2;
+                this.speedX = Math.random() * 0.5 - 0.25;
+                this.speedY = Math.random() * 0.5 - 0.25;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.x < 0) this.x = canvas.width;
+                if (this.y > canvas.height) this.y = 0;
+                if (this.y < 0) this.y = canvas.height;
+            }
+            draw() {
+                ctx.fillStyle = 'rgba(139, 92, 246, 0.5)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function createParticles() {
+            for (let i = 0; i < 100; i++) particles.push(new Particle());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', initCanvas);
+        initCanvas();
+        createParticles();
+        animate();
+    </script>
 </body>
 </html>

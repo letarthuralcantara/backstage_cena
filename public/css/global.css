@@ -8,18 +8,35 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 /* ── BODY BASE ── */
+:root {
+    --primary: #8b5cf6;
+    --secondary: #d946ef;
+    --primary-glow: rgba(139, 92, 246, 0.5);
+}
+
 body {
+    color: whitesmoke;
     font-family: 'Inter', sans-serif;
     min-height: 100vh;
-    background-image: url('../images/background.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    color: #ffffff;
-    position: relative;
-    display: flex;
-    flex-direction: column;
+    overflow-x: hidden;
+
+    background:
+        radial-gradient(circle at 10% 10%,
+            rgba(139, 92, 246, 0.12),
+            transparent 40%),
+
+        radial-gradient(circle at 90% 90%,
+            rgba(217, 70, 239, 0.08),
+            transparent 40%),
+
+        #050505;
+}
+
+#bg-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    opacity: .35;
 }
 body::before {
     content: '';

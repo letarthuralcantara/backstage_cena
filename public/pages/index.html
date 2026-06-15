@@ -43,21 +43,37 @@
         }
 
         .main-title {
-            font-family: 'Poppins', sans-serif;
-            font-size: 52px;
-            font-weight: 800;
-            line-height: 1.08;
-            margin-bottom: 22px;
-            color: #ffffff;
-            letter-spacing: -1px;
-        }
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(30px, 8vw, 45px);
+    font-weight: 900;
+    line-height: .95;
+    margin-bottom: 30px;
+
+    background: linear-gradient(to bottom,
+        #ffffff,
+        #8b8b8b);
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
 
         .main-title .highlight {
-            background: linear-gradient(135deg, #c4b5fd, #8b5cf6, #6d28d9);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
+    display: inline-block;
+
+    background: linear-gradient(
+        90deg,
+        var(--primary),
+        var(--secondary)
+    );
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    filter: drop-shadow(
+        0 0 20px
+        var(--primary-glow)
+    );
+}
 
         .main-subtitle {
             font-size: 17px;
@@ -76,27 +92,28 @@
         }
 
         .signup-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 50%, #6d28d9 100%);
-            color: white;
-            font-size: 15px;
-            font-weight: 700;
-            padding: 16px 36px;
-            border-radius: 12px;
-            text-decoration: none;
-            transition: all 0.3s;
-            box-shadow: 0 6px 24px rgba(139, 92, 246, 0.45);
-            border: none;
-            cursor: pointer;
-            font-family: 'Inter', sans-serif;
-        }
+    border-radius: 50px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 1px;
+
+    box-shadow:
+        0 0 25px
+        var(--primary-glow);
+
+    transition: .35s;
+}
 
         .signup-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 32px rgba(139, 92, 246, 0.65);
-        }
+    transform:
+        translateY(-5px)
+        scale(1.05);
+
+    box-shadow:
+        0 0 45px
+        var(--primary-glow);
+}
 
         .btn-secondary {
             display: inline-flex;
@@ -188,15 +205,18 @@
         }
 
         .feature-card {
-            background: rgba(0, 0, 0, 0.45);
-            border: 1px solid rgba(139, 92, 246, 0.15);
-            border-radius: 18px;
-            padding: 30px 26px;
-            transition: all 0.35s;
-            position: relative;
-            overflow: hidden;
-        }
+    background: rgba(255,255,255,.03);
 
+    backdrop-filter: blur(15px);
+
+    border: 1px solid rgba(255,255,255,.08);
+
+    border-radius: 28px;
+
+    padding: 40px;
+
+    transition: .4s;
+}
         .feature-card::before {
             content: '';
             position: absolute;
@@ -208,12 +228,16 @@
         }
 
         .feature-card:hover {
-            border-color: rgba(139, 92, 246, 0.35);
-            background: rgba(139, 92, 246, 0.06);
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
+    transform:
+        translateY(-15px)
+        scale(1.02);
 
+    border-color: var(--primary);
+
+    box-shadow:
+        0 20px 40px
+        rgba(0,0,0,.35);
+}
         .feature-card:hover::before { opacity: 1; }
 
         .feature-icon {
@@ -388,6 +412,89 @@
             const usuario = verificarAutenticacao(false);
             window.location.href = usuario ? 'perfil.html' : 'cadastro.html';
         });
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let particles = [];
+
+        function initCanvas() {
+            canvas.width = innerWidth;
+            canvas.height = innerHeight;
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+
+                this.size = Math.random() * 2;
+
+                this.speedX = Math.random() * 0.5 - 0.25;
+                this.speedY = Math.random() * 0.5 - 0.25;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x > canvas.width) this.x = 0;
+                if (this.x < 0) this.x = canvas.width;
+
+                if (this.y > canvas.height) this.y = 0;
+                if (this.y < 0) this.y = canvas.height;
+            }
+
+            draw() {
+                ctx.fillStyle =
+                    'rgba(139,92,246,.45)';
+
+                ctx.beginPath();
+
+                ctx.arc(
+                    this.x,
+                    this.y,
+                    this.size,
+                    0,
+                    Math.PI * 2
+                );
+
+                ctx.fill();
+            }
+        }
+
+        function createParticles() {
+            particles = [];
+
+            for (let i = 0; i < 100; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(
+                0,
+                0,
+                canvas.width,
+                canvas.height
+            );
+
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', () => {
+            initCanvas();
+            createParticles();
+        });
+
+        initCanvas();
+        createParticles();
+        animate();
     </script>
+
 </body>
 </html>
