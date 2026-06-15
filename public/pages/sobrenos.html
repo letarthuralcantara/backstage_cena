@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .about-section {
+            position: relative;
+            z-index: 1;
+            padding: 60px 0;
+        }
+
+        .about-hero {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .about-hero h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .about-hero span {
+            background: linear-gradient(135deg, #c4b5fd, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .about-hero p {
+            max-width: 700px;
+            margin: 0 auto;
+            color: #d1d5db;
+            line-height: 1.8;
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-bottom: 60px;
+        }
+
+        .about-card,
+        .team-card,
+        .about-story {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(139, 92, 246, 0.25);
+            border-radius: 18px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .about-icon {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            background: rgba(139, 92, 246, 0.15);
+            color: #8b5cf6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .about-card h2,
+        .about-story h2,
+        .team-section h2 {
+            margin-bottom: 15px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .about-card p,
+        .about-story p,
+        .team-card p {
+            color: #d1d5db;
+            line-height: 1.8;
+        }
+
+        .about-story {
+            margin-bottom: 60px;
+        }
+
+        .team-section {
+            text-align: center;
+        }
+
+        .team-grid {
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+
+        .team-card h3 {
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .about-grid,
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .about-hero h1 {
+                font-size: 2.2rem;
+            }
+        }
+
+
+    </style>
+</head>
+<body>
+<section class="about-section">
+    <div class="container">
+
+        <div class="about-hero">
+            <h1>Sobre o <span>Backstage Cena</span></h1>
+
+            <p>
+                O Backstage Cena nasceu com a missão de conectar músicos,
+                produtores e profissionais da música independente em um único
+                espaço colaborativo.
+            </p>
+        </div>
+
+        <div class="about-grid">
+
+            <div class="about-card">
+                <div class="about-icon">
+                    <i class="fas fa-music"></i>
+                </div>
+
+                <h2>Nossa Missão</h2>
+
+                <p>
+                    Facilitar conexões entre artistas, incentivando a criação
+                    de projetos musicais e fortalecendo a cena independente
+                    brasileira.
+                </p>
+            </div>
+
+            <div class="about-card">
+                <div class="about-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+
+                <h2>Nossa Visão</h2>
+
+                <p>
+                    Ser a principal plataforma de networking musical do Brasil,
+                    aproximando talentos e criando oportunidades reais de
+                    colaboração.
+                </p>
+            </div>
+
+            <div class="about-card">
+                <div class="about-icon">
+                    <i class="fas fa-heart"></i>
+                </div>
+
+                <h2>Nossos Valores</h2>
+
+                <p>
+                    Criatividade, colaboração, respeito à diversidade musical
+                    e incentivo ao crescimento de artistas independentes.
+                </p>
+            </div>
+
+        </div>
+
+        <div class="about-story">
+
+            <h2>Por que criamos o Backstage Cena?</h2>
+
+            <p>
+                Encontrar músicos com interesses semelhantes nem sempre é fácil.
+                Muitos artistas possuem talento e vontade de criar, mas não têm
+                acesso a uma rede de contatos que facilite novas parcerias.
+            </p>
+
+            <p>
+                Pensando nisso, desenvolvemos o Backstage Cena: uma plataforma
+                que permite encontrar músicos por instrumento, gênero musical,
+                localização e disponibilidade, tornando a colaboração mais
+                simples e acessível.
+            </p>
+
+        </div>
+
+        <div class="team-section">
+
+            <h2>Equipe de Desenvolvimento</h2>
+
+            <div class="team-grid">
+
+                <div class="team-card">
+                    <h3>Arthur Alcântara de Medeiros França</h3>
+                    <p>Desenvolvedor Full Stack</p>
+                </div>
+
+                <div class="team-card">
+                    <h3>Ronaldo de Albuquerque Duarte Filho</h3>
+                    <p>Desenvolvedor Full Stack</p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+</body>
+</html>
