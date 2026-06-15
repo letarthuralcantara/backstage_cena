@@ -5,245 +5,262 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Explorar Músicos - Backstage Cena</title>
     <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Work+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../css/global.css">
     <style>
-            .header-center {
-            justify-content: center;
-        }
-        .header-search {
-            max-width: 580px;
-            width: 100%;
+        :root {
+            --primary: #8b5cf6;
+            --primary-glow: rgba(139, 92, 246, 0.6);
+            --secondary: #d946ef;
+            --bg-dark: #050505;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
         }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image:
+                radial-gradient(circle at 10% 10%, rgba(139, 92, 246, 0.15), transparent 50%),
+                radial-gradient(circle at 90% 90%, rgba(217, 70, 239, 0.1), transparent 50%);
+            background-attachment: fixed;
+        }
+
+        #bg-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1;
+            opacity: 0.4;
+        }
+
+        .header-center { justify-content: center; }
+        .header-search { max-width: 580px; width: 100%; }
+
         .btn-filtrar {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            padding: 0 14px;
-            align-self: stretch;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+            padding: 0 14px; align-self: stretch;
             background: rgba(139,92,246,0.10);
-            border: none;
-            border-left: 1px solid rgba(139,92,246,0.25);
-            color: #a78bfa;
-            cursor: pointer;
-            transition: background 0.25s;
-            flex-shrink: 0;
-            font-size: 14px;
+            border: none; border-left: 1px solid rgba(139,92,246,0.25);
+            color: #a78bfa; cursor: pointer; transition: background 0.25s; flex-shrink: 0; font-size: 14px;
         }
         .btn-filtrar:hover { background: rgba(139,92,246,0.20); }
         .btn-filtrar.active { background: rgba(139,92,246,0.3); color: white; }
 
         .filtrar-count {
-            display: none;
-            align-items: center;
-            justify-content: center;
-            background: #8b5cf6;
-            color: white;
-            font-size: 10px;
-            font-weight: 700;
-            width: 16px; height: 16px;
-            border-radius: 50%;
+            display: none; align-items: center; justify-content: center;
+            background: #8b5cf6; color: white; font-size: 10px; font-weight: 700;
+            width: 16px; height: 16px; border-radius: 50%;
         }
         .filtrar-count.show { display: flex; }
 
         .header-search-btn {
             padding: 11px 18px;
             background: linear-gradient(135deg, #8b5cf6, #6d28d9);
-            border: none;
-            color: white;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            font-family: 'Work Sans', sans-serif;
-            transition: opacity 0.2s;
-            flex-shrink: 0;
-            white-space: nowrap;
+            border: none; color: white; font-size: 13px; font-weight: 600;
+            cursor: pointer; font-family: 'Inter', sans-serif;
+            transition: opacity 0.2s; flex-shrink: 0; white-space: nowrap;
         }
         .header-search-btn:hover { opacity: 0.85; }
 
-        
-        /* ── FILTROS colapsável ── */
+        /* ── FILTROS ── */
         .filters-panel {
             position: relative; z-index: 50;
-            background: rgba(0,0,0,0.82);
-            border-bottom: 1px solid rgba(139,92,246,0.2);
-            backdrop-filter: blur(12px);
+            background: rgba(5, 5, 5, 0.92);
+            border-bottom: 1px solid var(--glass-border);
+            backdrop-filter: blur(20px);
             overflow: hidden;
             max-height: 0;
-            transition: max-height 0.35s ease, padding 0.35s ease;
+            transition: max-height 0.4s ease, padding 0.4s ease;
             padding: 0 24px;
         }
-        .filters-panel.open { max-height: 300px; padding: 20px 24px; }
+        .filters-panel.open { max-height: 300px; padding: 24px; }
         .filters-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 14px;
+            gap: 16px;
         }
         .filter-group label {
-            display: block; color: #9ca3af; font-size: 11px;
-            font-weight: 600; text-transform: uppercase;
-            letter-spacing: 0.8px; margin-bottom: 6px;
+            display: block; color: var(--primary); font-size: 11px;
+            font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1px; margin-bottom: 8px;
         }
         .filter-group select {
-            width: 100%; padding: 9px 12px;
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(139,92,246,0.25);
-            border-radius: 8px; color: white;
-            font-size: 13px; font-family: 'Work Sans', sans-serif;
-            cursor: pointer; transition: border-color 0.2s;
+            width: 100%; padding: 10px 14px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px; color: white;
+            font-size: 13px; font-family: 'Inter', sans-serif;
+            cursor: pointer; transition: all 0.3s; outline: none;
         }
         .filter-group select option { background: #1a1a1a; }
-        .filter-group select:focus { outline: none; border-color: #8b5cf6; }
+        .filter-group select:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(139,92,246,0.15); }
 
         /* ── CONTAINER ── */
         .container {
             position: relative; z-index: 1;
-            width: 100%;
-            max-width: 1280px;
-            margin: 36px auto;
-            padding: 0 24px;
-            flex: 1;
+            width: 100%; max-width: 1280px;
+            margin: 0 auto;
+            padding: 60px 40px 80px;
         }
 
         /* ── HERO ── */
         .hero {
-            width: 100%;
             text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 36px;
-            animation: fadeInDown 0.7s ease-out;
+            display: flex; flex-direction: column; align-items: center;
+            margin-bottom: 60px;
         }
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-16px); }
-            to { opacity: 1; transform: translateY(0); }
+        .section-label {
+            color: var(--primary); font-weight: 800; text-transform: uppercase;
+            letter-spacing: 4px; font-size: 14px; margin-bottom: 16px; display: block;
         }
         .hero-title {
-            font-family: 'Space Mono', monospace;
-            font-size: 2.8rem; font-weight: 700; margin-bottom: 10px;
-            background: linear-gradient(135deg, #8b5cf6, #ec4899, #f59e0b);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-clip: text; letter-spacing: -2px; text-transform: uppercase;
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(40px, 7vw, 72px);
+            font-weight: 900; margin-bottom: 16px;
+            background: linear-gradient(to bottom, #fff, #888);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
         }
-        .hero-subtitle { font-size: 1rem; color: #d1d5db; font-weight: 300; }
+        .hero-title span {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 20px var(--primary-glow));
+        }
+        .hero-subtitle { font-size: 18px; color: #888; margin-bottom: 24px; letter-spacing: 1px; }
         .total-count {
-            display: inline-block; margin-top: 14px;
-            padding: 7px 16px;
-            background: rgba(139,92,246,0.18);
-            border: 1px solid rgba(139,92,246,0.4);
+            display: inline-block; margin-top: 4px;
+            padding: 8px 20px;
+            background: rgba(139,92,246,0.1);
+            border: 1px solid rgba(139,92,246,0.3);
             border-radius: 30px; color: #a78bfa;
-            font-size: 13px; font-weight: 600;
+            font-size: 13px; font-weight: 700;
+            letter-spacing: 0.5px;
         }
 
         /* ── GRID CARDS ── */
         .musicians-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
+            gap: 24px;
             align-items: stretch;
         }
+
         .musician-card {
-            background: rgba(0,0,0,0.7);
-            border: 1px solid rgba(139,92,246,0.2);
-            border-radius: 16px; padding: 20px;
-            display: flex; flex-direction: column; gap: 12px;
-            backdrop-filter: blur(10px); transition: all 0.3s;
-            animation: fadeIn 0.5s ease-out both;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px; padding: 28px 24px;
+            display: flex; flex-direction: column; gap: 14px;
+            backdrop-filter: blur(10px);
+            transition: all 0.5s cubic-bezier(0.2, 1, 0.3, 1);
+            animation: cardFadeIn 0.6s ease-out both;
             cursor: pointer;
             height: 100%;
+            position: relative;
+            overflow: hidden;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+        .musician-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.6), transparent);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+        @keyframes cardFadeIn {
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
         .musician-card:hover {
-            border-color: rgba(139,92,246,0.5);
-            transform: translateY(-4px);
-            box-shadow: 0 14px 36px rgba(139,92,246,0.18);
+            border-color: var(--primary);
+            transform: perspective(1000px) rotateX(3deg) rotateY(-3deg) translateY(-8px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4), 0 0 30px rgba(139,92,246,0.15);
         }
-        .musician-header { display: flex; align-items: flex-start; gap: 12px; }
+        .musician-card:hover::before { opacity: 1; }
+
+        .musician-header { display: flex; align-items: flex-start; gap: 14px; }
         .musician-photo {
-            width: 56px; height: 56px; flex-shrink: 0;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            width: 60px; height: 60px; flex-shrink: 0;
+            border-radius: 18px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             display: flex; align-items: center; justify-content: center;
-            font-weight: 700; font-size: 1.1rem;
-            border: 2px solid rgba(139,92,246,0.4);
+            font-weight: 800; font-size: 1.1rem;
+            box-shadow: 0 8px 20px var(--primary-glow);
+            transition: transform 0.3s;
         }
+        .musician-card:hover .musician-photo { transform: scale(1.08) rotate(-3deg); }
         .musician-info { flex: 1; min-width: 0; }
         .musician-name {
-            font-size: 0.95rem; font-weight: 700; margin-bottom: 3px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem; font-weight: 700; margin-bottom: 4px;
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
         .musician-location {
-            color: #9ca3af; font-size: 11px; margin-bottom: 5px;
-            display: flex; align-items: center; gap: 3px;
+            color: #777; font-size: 11px; margin-bottom: 6px;
+            display: flex; align-items: center; gap: 4px;
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
         .musician-area {
-            display: inline-block; padding: 2px 8px;
-            background: rgba(139,92,246,0.15);
+            display: inline-block; padding: 3px 10px;
+            background: rgba(139,92,246,0.12);
             border: 1px solid rgba(139,92,246,0.3);
             border-radius: 10px; font-size: 10px; color: #a78bfa;
+            font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
         }
         .musician-bio {
-            color: #d1d5db; font-size: 12px; line-height: 1.5;
+            color: #aaa; font-size: 13px; line-height: 1.6;
             display: -webkit-box; -webkit-line-clamp: 2;
             -webkit-box-orient: vertical; overflow: hidden;
-            flex: 1;
-            word-break: break-word;
-            overflow-wrap: break-word;
-            white-space: normal;
+            flex: 1; word-break: break-word; overflow-wrap: break-word;
         }
-        .musician-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+        .musician-tags { display: flex; flex-wrap: wrap; gap: 6px; }
         .tag {
-            padding: 2px 8px;
-            background: rgba(139,92,246,0.12);
-            border: 1px solid rgba(139,92,246,0.25);
+            padding: 3px 10px;
+            background: rgba(139,92,246,0.1);
+            border: 1px solid rgba(139,92,246,0.2);
             border-radius: 10px; font-size: 11px; color: #a78bfa;
-            display: flex; align-items: center; gap: 3px;
+            display: flex; align-items: center; gap: 4px;
+            transition: all 0.2s;
         }
+        .tag:hover { background: rgba(139,92,246,0.2); border-color: var(--primary); }
         .card-spacer { flex: 1; }
 
         .empty-state {
             display: none; text-align: center;
-            padding: 80px 20px; color: #6b7280;
+            padding: 100px 20px; color: #555;
         }
-        .empty-state i { font-size: 3rem; margin-bottom: 20px; color: rgba(139,92,246,0.3); display: block; }
-        .empty-state h3 { font-size: 1.2rem; margin-bottom: 8px; color: #9ca3af; }
+        .empty-state i { font-size: 4rem; margin-bottom: 24px; color: rgba(139,92,246,0.2); display: block; }
+        .empty-state h3 { font-size: 1.4rem; margin-bottom: 10px; color: #777; font-family: 'Poppins', sans-serif; }
 
-       
         /* ── RESPONSIVO ── */
-        @media (max-width: 1200px) {
-            .musicians-grid { grid-template-columns: repeat(3, 1fr); }
-        }
+        @media (max-width: 1200px) { .musicians-grid { grid-template-columns: repeat(3, 1fr); } }
         @media (max-width: 900px) {
             .musicians-grid { grid-template-columns: repeat(2, 1fr); }
             .filters-grid { grid-template-columns: repeat(3, 1fr); }
             .hero-title { font-size: 2.2rem; }
             .filters-panel.open { max-height: 400px; }
+            .container { padding: 40px 24px 60px; }
         }
         @media (max-width: 700px) {
-            .header { padding: 12px 16px; gap: 10px; }
-            .logo-img { height: 38px; }
             .filters-grid { grid-template-columns: repeat(2, 1fr); }
             .hero-title { font-size: 1.8rem; }
-            .container { padding: 0 16px; margin: 24px auto; }
             .filters-panel.open { max-height: 500px; padding: 16px; }
         }
         @media (max-width: 540px) {
             .header {
                 grid-template-columns: 1fr auto;
                 grid-template-rows: auto auto;
-                grid-template-areas:
-                    "logo actions"
-                    "search search";
-                gap: 10px;
-                padding: 12px 16px;
+                grid-template-areas: "logo actions" "search search";
+                gap: 10px; padding: 12px 16px;
             }
             .header-left  { grid-area: logo; }
             .header-center { grid-area: search; justify-content: stretch; }
@@ -252,21 +269,19 @@
             .logo-img { height: 34px; }
             .musicians-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
             .filters-grid { grid-template-columns: repeat(2, 1fr); }
-            .hero-title { font-size: 1.6rem; letter-spacing: -1px; }
+            .hero-title { font-size: 1.6rem; }
             .filters-panel.open { max-height: 600px; }
         }
         @media (max-width: 380px) {
             .musicians-grid { grid-template-columns: 1fr; }
             .filters-grid { grid-template-columns: 1fr; }
             .hero-title { font-size: 1.3rem; }
-            .logo-img { height: 30px; }
-            .profile-trigger { width: 36px; height: 36px; font-size: 12px; }
-            .header-search-btn { padding: 10px 12px; font-size: 12px; }
-            .filters-panel.open { max-height: 900px; }
         }
     </style>
 </head>
 <body>
+    <canvas id="bg-canvas"></canvas>
+
     <header class="header">
         <div class="header-left">
             <a href="index.html">
@@ -294,6 +309,7 @@
                     <a href="config.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações</a>
                     <div class="dropdown-divider"></div>
                     <div class="dropdown-item" id="btnSair"><i class="fas fa-sign-out-alt"></i> Sair</div>
+                </div>
             </div>
         </div>
     </header>
@@ -330,7 +346,8 @@
 
     <div class="container">
         <div class="hero">
-            <h1 class="hero-title">Explorar Músicos</h1>
+            <span class="section-label">Descubra talentos</span>
+            <h1 class="hero-title">Explorar <span>Músicos</span></h1>
             <p class="hero-subtitle">Encontre parceiros para criar e colaborar</p>
             <span class="total-count" id="totalCount">Carregando...</span>
         </div>
@@ -367,119 +384,201 @@
 
         const btnFiltrar = document.getElementById('btnFiltrar');
         const filtersPanel = document.getElementById('filtersPanel');
+        const filtrarCount = document.getElementById('filtrarCount');
+
         btnFiltrar.addEventListener('click', () => {
             filtersPanel.classList.toggle('open');
             btnFiltrar.classList.toggle('active');
         });
 
-        function atualizarContadorFiltros() {
-            const ids = ['filtroEstado','filtroInstrumento','filtroGenero','filtroDisponibilidade','filtroArea'];
-            const ativos = ids.filter(id => document.getElementById(id).value !== '').length;
-            const el = document.getElementById('filtrarCount');
-            el.textContent = ativos;
-            el.classList.toggle('show', ativos > 0);
-        }
+        const searchInput = document.getElementById('searchInput');
+        const btnBuscar = document.getElementById('btnBuscar');
 
-        let todosMusicoes = [];
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('focar') === 'true') searchInput.focus();
 
-        async function popularSelect(url, selectId) {
-            try {
-                const res = await fetch(url);
-                const lista = await res.json();
-                const select = document.getElementById(selectId);
-                lista.forEach(item => {
-                    const opt = document.createElement('option');
-                    opt.value = item; opt.textContent = item;
-                    select.appendChild(opt);
-                });
-            } catch (e) {}
-        }
+        let todosMusicos = [];
 
         async function carregarMusicos() {
             try {
                 const res = await fetch('/api/usuarios');
-                todosMusicoes = await res.json();
-                renderizar(todosMusicoes);
-                document.getElementById('totalCount').textContent = `${todosMusicoes.length} músicos encontrados`;
-            } catch (err) {
-                document.getElementById('totalCount').textContent = 'Erro ao conectar com a API';
+                todosMusicos = await res.json();
+                popularFiltros(todosMusicos);
+                renderizarMusicos(todosMusicos);
+            } catch (e) {
+                console.error(e);
+            } finally {
+                hideLoading();
             }
         }
 
-        function renderizar(lista) {
+        function popularFiltros(musicos) {
+            const estados = [...new Set(musicos.map(m => m.estado).filter(Boolean))].sort();
+            const instrumentos = [...new Set(musicos.flatMap(m => {
+                try { return JSON.parse(m.instrumentos || '[]'); } catch { return []; }
+            }))].sort();
+            const generos = [...new Set(musicos.flatMap(m => {
+                try { return JSON.parse(m.generos || '[]'); } catch { return []; }
+            }))].sort();
+            const areas = [...new Set(musicos.map(m => m.areas_atuacao).filter(Boolean))].sort();
+
+            const addOptions = (id, items) => {
+                const sel = document.getElementById(id);
+                items.forEach(item => {
+                    const opt = document.createElement('option');
+                    opt.value = opt.textContent = item;
+                    sel.appendChild(opt);
+                });
+            };
+
+            addOptions('filtroEstado', estados);
+            addOptions('filtroInstrumento', instrumentos);
+            addOptions('filtroGenero', generos);
+            addOptions('filtroArea', areas);
+        }
+
+        function renderizarMusicos(lista) {
             const grid = document.getElementById('musiciansGrid');
             const empty = document.getElementById('emptyState');
-            if (lista.length === 0) {
-                grid.innerHTML = ''; empty.style.display = 'block'; return;
+            const total = document.getElementById('totalCount');
+
+            const visiveis = lista.filter(m => m.cadastro_completo == 1);
+            total.textContent = `${visiveis.length} músico${visiveis.length !== 1 ? 's' : ''} encontrado${visiveis.length !== 1 ? 's' : ''}`;
+
+            if (visiveis.length === 0) {
+                grid.innerHTML = '';
+                empty.style.display = 'block';
+                return;
             }
             empty.style.display = 'none';
-            grid.innerHTML = lista.map(m => {
+
+            grid.innerHTML = visiveis.map((m, idx) => {
                 const nome = m.nome_artistico || m.nome_completo;
                 const iniciais = nome.substring(0, 2).toUpperCase();
+                let instrumentos = [];
+                try { instrumentos = JSON.parse(m.instrumentos || '[]'); } catch {}
+                const tags = instrumentos.slice(0, 3).map(i => `<span class="tag"><i class="fas fa-music"></i>${i}</span>`).join('');
                 const local = [m.cidade, m.estado].filter(Boolean).join(', ') || 'Localização não informada';
-                const tagsInst = (m.instrumentos || []).slice(0, 2).map(i =>
-                    `<span class="tag"><i class="fas fa-guitar"></i>${i}</span>`).join('');
-                const tagsGen = (m.generos || []).slice(0, 2).map(g =>
-                    `<span class="tag">${g}</span>`).join('');
+
                 return `
-                <div class="musician-card" onclick="window.location.href='perfil.html?id=${m.id_usuario}'">
+                <div class="musician-card" onclick="window.location.href='perfil.html?id=${m.id_usuario}'" style="animation-delay:${idx * 0.05}s">
                     <div class="musician-header">
                         <div class="musician-photo">${iniciais}</div>
                         <div class="musician-info">
                             <div class="musician-name">${nome}</div>
                             <div class="musician-location"><i class="fas fa-map-marker-alt"></i>${local}</div>
-                            ${m.area_atuacao ? `<span class="musician-area">${m.area_atuacao}</span>` : ''}
+                            ${m.areas_atuacao ? `<span class="musician-area">${m.areas_atuacao}</span>` : ''}
                         </div>
                     </div>
-                    ${m.biografia ? `<p class="musician-bio" title="${m.biografia.replace(/"/g, '&quot;')}">${m.biografia}</p>` : '<div class="card-spacer"></div>'}
-                    ${tagsInst || tagsGen ? `<div class="musician-tags">${tagsInst}${tagsGen}</div>` : ''}
+                    ${m.biografia ? `<p class="musician-bio">${m.biografia}</p>` : ''}
+                    ${tags ? `<div class="musician-tags">${tags}</div>` : ''}
                 </div>`;
             }).join('');
         }
 
         function filtrar() {
-            const busca           = document.getElementById('searchInput').value.toLowerCase();
-            const estado          = document.getElementById('filtroEstado').value;
-            const area            = document.getElementById('filtroArea').value;
-            const instrumento     = document.getElementById('filtroInstrumento').value;
-            const genero          = document.getElementById('filtroGenero').value;
+            const q = searchInput.value.toLowerCase().trim();
+            const estado = document.getElementById('filtroEstado').value;
+            const instrumento = document.getElementById('filtroInstrumento').value;
+            const genero = document.getElementById('filtroGenero').value;
             const disponibilidade = document.getElementById('filtroDisponibilidade').value;
-            const resultado = todosMusicoes.filter(m => {
-                const nc = (m.nome_completo || '').toLowerCase();
-                const na = (m.nome_artistico || '').toLowerCase();
-                return (
-                    (nc.includes(busca) || na.includes(busca)) &&
-                    (estado          ? m.estado === estado : true) &&
-                    (area            ? m.area_atuacao === area : true) &&
-                    (instrumento     ? (m.instrumentos || []).includes(instrumento) : true) &&
-                    (genero          ? (m.generos || []).includes(genero) : true) &&
-                    (disponibilidade ? (m.disponibilidades || []).includes(disponibilidade) : true)
-                );
+            const area = document.getElementById('filtroArea').value;
+
+            let ativos = 0;
+            if (estado) ativos++;
+            if (instrumento) ativos++;
+            if (genero) ativos++;
+            if (disponibilidade) ativos++;
+            if (area) ativos++;
+
+            filtrarCount.textContent = ativos;
+            filtrarCount.classList.toggle('show', ativos > 0);
+
+            const resultado = todosMusicos.filter(m => {
+                if (m.cadastro_completo != 1) return false;
+                const nome = (m.nome_artistico || m.nome_completo || '').toLowerCase();
+                const bio = (m.biografia || '').toLowerCase();
+                if (q && !nome.includes(q) && !bio.includes(q)) return false;
+                if (estado && m.estado !== estado) return false;
+                if (area && m.areas_atuacao !== area) return false;
+
+                let insts = [];
+                try { insts = JSON.parse(m.instrumentos || '[]'); } catch {}
+                if (instrumento && !insts.includes(instrumento)) return false;
+
+                let gens = [];
+                try { gens = JSON.parse(m.generos || '[]'); } catch {}
+                if (genero && !gens.includes(genero)) return false;
+
+                let disps = [];
+                try { disps = JSON.parse(m.disponibilidade || '[]'); } catch {}
+                if (disponibilidade && !disps.some(d => d.includes(disponibilidade))) return false;
+
+                return true;
             });
-            renderizar(resultado);
-            document.getElementById('totalCount').textContent = `${resultado.length} músicos encontrados`;
-            atualizarContadorFiltros();
+
+            renderizarMusicos(resultado);
         }
 
-        document.getElementById('btnBuscar').addEventListener('click', filtrar);
-        document.getElementById('searchInput').addEventListener('keyup', filtrar);
+        btnBuscar.addEventListener('click', filtrar);
+        searchInput.addEventListener('keydown', e => { if (e.key === 'Enter') filtrar(); });
         ['filtroEstado','filtroInstrumento','filtroGenero','filtroDisponibilidade','filtroArea'].forEach(id => {
             document.getElementById(id).addEventListener('change', filtrar);
         });
 
-        await popularSelect('/api/usuarios/estados', 'filtroEstado');
-        await popularSelect('/api/usuarios/instrumentos', 'filtroInstrumento');
-        await popularSelect('/api/usuarios/generos', 'filtroGenero');
-        await popularSelect('/api/usuarios/areas', 'filtroArea');
-        await carregarMusicos();
-        hideLoading();
+        carregarMusicos();
+    </script>
 
-        // Foca automaticamente no campo de busca ao entrar na página
-        const searchInput = document.getElementById('searchInput');
-        if (searchInput) {
-            searchInput.focus();
-            searchInput.select();
+    <script>
+        /* ── CANVAS PARTÍCULAS ── */
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function initCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
         }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2;
+                this.speedX = Math.random() * 0.5 - 0.25;
+                this.speedY = Math.random() * 0.5 - 0.25;
+                this.opacity = Math.random() * 0.5 + 0.1;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.x < 0) this.x = canvas.width;
+                if (this.y > canvas.height) this.y = 0;
+                if (this.y < 0) this.y = canvas.height;
+            }
+            draw() {
+                ctx.fillStyle = `rgba(139, 92, 246, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function createParticles() {
+            for (let i = 0; i < 100; i++) particles.push(new Particle());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', initCanvas);
+        initCanvas();
+        createParticles();
+        animate();
     </script>
 </body>
 </html>

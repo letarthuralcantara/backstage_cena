@@ -35,7 +35,8 @@ class UsuarioController {
   async atualizar(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const id_usuario = Number(req.params.id)
-      const usuarioAtualizado = await usuarioService.update({ id_usuario, ...req.body })
+      const { status, ...rest } = req.body;
+      const usuarioAtualizado = await usuarioService.update({ id_usuario, status, ...rest });
       res.json(usuarioAtualizado)
     } catch (error) {
       next(error)

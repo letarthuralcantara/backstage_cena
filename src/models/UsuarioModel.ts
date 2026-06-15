@@ -1,6 +1,6 @@
 import prisma from '../database/prisma.js'
 import { HttpError } from '../errors/HttpError.js'
-import type { Usuario, CreateUsuarioInput, UpdateUsuarioInput } from '../types/index.js'
+import type { Usuario, CreateUsuarioInput, UpdateUsuarioInput, UserStatus } from '../types/index.js'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -31,7 +31,7 @@ function mapUsuario(u: any): Usuario {
 
   const area_atuacao = parseArea(u.area_atuacao)
 
-  const mapped = { ...u, instrumentos, generos, disponibilidades, daws, redes_sociais, area_atuacao }
+  const mapped = { ...u, instrumentos, generos, disponibilidades, daws, redes_sociais, area_atuacao, status: u.status as UserStatus }
   mapped.cadastro_completo = calcularCompleto(mapped)
   return mapped
 }
@@ -88,6 +88,7 @@ async function create(dados: CreateUsuarioInput): Promise<Usuario> {
       biografia:        dados.biografia ?? null,
       cadastro_completo: 0,
       redes_sociais:    dados.redes_sociais ? JSON.stringify(dados.redes_sociais) : null,
+      status:           dados.status ?? 'online',
       instrumentos: dados.instrumentos?.length ? {
         create: await resolverInstrumentos(dados.instrumentos)
       } : undefined,
@@ -130,6 +131,7 @@ async function update({ id_usuario, ...dados }: UpdateUsuarioInput): Promise<Usu
       anos_experiencia: dados.anos_experiencia ?? 0,
       biografia:        dados.biografia,
       redes_sociais:    dados.redes_sociais ? JSON.stringify(dados.redes_sociais) : null,
+      status:           dados.status,
       instrumentos: dados.instrumentos?.length ? {
         create: await resolverInstrumentos(dados.instrumentos)
       } : undefined,
@@ -213,6 +215,3 @@ async function resolverDaws(nomes: string[]) {
     return { id_daw: daw.id_daw }
   }))
 }
-
-
-export default { read, readById, findByEmail, create, update, remove, listarInstrumentos, listarGeneros, listarDaws, listarDisponibilidades }

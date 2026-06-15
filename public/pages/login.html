@@ -7,173 +7,250 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../css/global.css">
     <style>
+        :root {
+            --primary: #8b5cf6;
+            --primary-glow: rgba(139, 92, 246, 0.6);
+            --secondary: #d946ef;
+            --bg-dark: #050505;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 40px 20px;
-    min-height: 100vh;
-}
-    
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            overflow-x: hidden;
+            background-image:
+                radial-gradient(circle at 10% 10%, rgba(139, 92, 246, 0.15), transparent 50%),
+                radial-gradient(circle at 90% 90%, rgba(217, 70, 239, 0.1), transparent 50%);
+            background-attachment: fixed;
+        }
+
+        #bg-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1;
+            opacity: 0.4;
+        }
+
         .container {
             position: relative;
             z-index: 1;
             width: 100%;
-            max-width: 450px;
-            padding: 20px;
+            max-width: 480px;
         }
+
+        /* ── CARD ── */
         .login-card {
-            background: rgba(0, 0, 0, 0.85);
-            border: 1px solid rgba(139, 92, 246, 0.3);
-            border-radius: 20px;
-            padding: 50px 40px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 40px;
+            padding: 60px 50px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+            transition: border-color 0.4s;
+            animation: cardIn 0.8s cubic-bezier(0.2, 1, 0.3, 1) both;
         }
-        .logo-container { 
-    text-align: center; 
-    margin-bottom: 30px; 
-    display: flex;
-    justify-content: center;
-}
-.logo-img { 
-    width: 160px; 
-    height: auto; 
-    display: block;
-}
+        .login-card:hover { border-color: rgba(139, 92, 246, 0.3); }
+
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateY(40px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 36px;
+            display: flex;
+            justify-content: center;
+        }
+        .logo-img {
+            width: 160px;
+            height: auto;
+            display: block;
+            filter: drop-shadow(0 0 20px var(--primary-glow));
+            transition: filter 0.3s;
+        }
+        .logo-img:hover { filter: drop-shadow(0 0 35px var(--primary-glow)); }
+
         .form-title {
             font-family: 'Poppins', sans-serif;
-            font-size: 28px;
-            font-weight: 700;
-            color: #ffffff;
+            font-size: 30px;
+            font-weight: 800;
             text-align: center;
+            margin-bottom: 8px;
+            background: linear-gradient(to bottom, #fff, #bbb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .form-subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 36px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* ── FORM INPUTS ── */
+        .form-group { margin-bottom: 28px; position: relative; }
+        .form-group label {
+            display: block;
+            color: #ccc;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             margin-bottom: 10px;
         }
-        .form-subtitle { text-align: center; color: #9ca3af; font-size: 14px; margin-bottom: 30px; }
-        .form-group { margin-bottom: 25px; }
-        .form-group label { display: block; color: #d1d5db; font-size: 14px; font-weight: 500; margin-bottom: 8px; }
         .input-wrapper { position: relative; }
-        .input-wrapper i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #8b5cf6; font-size: 18px; }
+        .input-wrapper i {
+            position: absolute;
+            left: 18px; top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            font-size: 16px;
+            transition: color 0.3s;
+        }
         input[type="email"], input[type="password"] {
             width: 100%;
-            padding: 15px 15px 15px 50px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid rgba(139, 92, 246, 0.3);
-            border-radius: 10px;
-            color: white;
+            padding: 16px 16px 16px 50px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            color: #fff;
             font-size: 15px;
             font-family: 'Inter', sans-serif;
             transition: all 0.3s;
+            outline: none;
         }
         input[type="email"]:focus, input[type="password"]:focus {
-            outline: none;
-            border-color: #8b5cf6;
-            background: rgba(139, 92, 246, 0.1);
-            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.2);
+            background: rgba(139, 92, 246, 0.06);
+            border-color: var(--primary);
+            box-shadow: 0 0 25px rgba(139, 92, 246, 0.2);
         }
-        .checkbox-group { display: flex; align-items: center; gap: 8px; margin-bottom: 25px; }
-        input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
-        .checkbox-group label { color: #d1d5db; font-size: 14px; cursor: pointer; }
+        input[type="email"]:focus ~ i,
+        input[type="password"]:focus ~ i { color: var(--secondary); }
+
+        .checkbox-group {
+            display: flex; align-items: center; gap: 10px; margin-bottom: 28px;
+        }
+        input[type="checkbox"] {
+            width: 18px; height: 18px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+        .checkbox-group label { color: #aaa; font-size: 14px; cursor: pointer; }
+
+        /* ── BOTÃO ── */
         .btn-login {
             font-family: 'Inter', sans-serif;
             width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            padding: 18px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             border: none;
-            border-radius: 10px;
+            border-radius: 50px;
             color: white;
-            font-size: 16px;
-            font-weight: 600;
+            font-size: 15px;
+            font-weight: 800;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             text-transform: uppercase;
             letter-spacing: 1px;
+            box-shadow: 0 0 25px var(--primary-glow);
         }
-        .btn-login:hover { 
-            transform: translateY(-2px); 
-            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.5); 
+        .btn-login:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 50px var(--primary-glow);
         }
+
+        /* ── ERRO ── */
         .erro-msg {
-            background: rgba(239, 68, 68, 0.15);
-            border: 1px solid rgba(239, 68, 68, 0.4);
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
             color: #f87171;
-            padding: 12px 16px;
-            border-radius: 8px;
+            padding: 14px 18px;
+            border-radius: 15px;
             font-size: 14px;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             display: none;
         }
-        .divider { 
-            text-align: center; 
-            margin: 30px 0; 
-            position: relative; 
+
+        /* ── DIVIDER ── */
+        .divider {
+            text-align: center;
+            margin: 32px 0;
+            position: relative;
         }
-        .divider::before { 
-            content: ''; 
-            position: absolute; 
-            left: 0; 
-            top: 50%; 
-            width: 100%; 
-            height: 1px; 
-            background: rgba(139, 92, 246, 0.3); 
+        .divider::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 50%;
+            width: 100%; height: 1px;
+            background: var(--glass-border);
         }
-        .divider span { 
-            background: rgba(0, 0, 0, 0.85); 
-            padding: 0 15px; 
-            color: #9ca3af; 
-            font-size: 13px; 
-            position: relative; 
-            z-index: 1; 
+        .divider span {
+            background: #050505;
+            padding: 0 16px;
+            color: #555;
+            font-size: 12px;
+            position: relative;
+            z-index: 1;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
-        .signup-link { 
-            text-align: center; 
-            color: #9ca3af; 
-            font-size: 14px; 
+
+        .signup-link {
+            text-align: center;
+            color: #777;
+            font-size: 14px;
         }
-        .signup-link a { 
-            color: #8b5cf6; 
-            text-decoration: none; 
-            font-weight: 600; 
-            transition: color 0.3s; 
+        .signup-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 700;
+            transition: color 0.3s;
         }
-        .signup-link a:hover { 
-            color: #a78bfa; 
+        .signup-link a:hover { color: #a78bfa; }
+
+        .back-home {
+            text-align: center;
+            margin-top: 20px;
         }
-        .back-home { 
-            text-align: center; 
-            margin-top: 20px; 
+        .back-home a {
+            color: #555;
+            text-decoration: none;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.3s;
         }
-        .back-home a { 
-            color: #9ca3af; 
-            text-decoration: none; 
-            font-size: 13px; 
-            display: inline-flex; 
-            align-items: center; 
-            gap: 5px; 
-            transition: color 0.3s; 
-        }
-        .back-home a:hover { 
-            color: #8b5cf6; 
-        }
+        .back-home a:hover { color: var(--primary); }
+
         @media (max-width: 480px) {
-            .login-card { 
-                padding: 40px 30px; 
-            }
-            .logo-img { 
-                width: 160px; 
-            }
-            .form-title { 
-                font-size: 24px; 
-            }
+            .login-card { padding: 40px 28px; border-radius: 28px; }
+            .form-title { font-size: 24px; }
         }
     </style>
 </head>
 <body>
+    <canvas id="bg-canvas"></canvas>
+
     <div class="container">
         <div class="login-card">
             <div class="logo-container">
@@ -181,24 +258,24 @@
             </div>
 
             <h1 class="form-title">Bem-vindo de volta!</h1>
-            <p class="form-subtitle">Entre para continuar sua jornada musical</p>
+            <p class="form-subtitle">Entre para continuar sua jornada</p>
 
             <div class="erro-msg" id="erroMsg"></div>
 
             <form id="loginForm">
                 <div class="form-group">
-                    <label for="email">Email</label>
+                    <label for="email">E-mail</label>
                     <div class="input-wrapper">
-                        <i class="fas fa-envelope"></i>
                         <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+                        <i class="fas fa-envelope"></i>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="senha">Senha</label>
                     <div class="input-wrapper">
-                        <i class="fas fa-lock"></i>
                         <input type="password" id="senha" name="senha" placeholder="••••••••" required>
+                        <i class="fas fa-lock"></i>
                     </div>
                 </div>
 
@@ -210,7 +287,7 @@
                 <button type="submit" class="btn-login">Entrar</button>
             </form>
 
-            <div class="divider"><span>OU</span></div>
+            <div class="divider"><span>ou</span></div>
 
             <div class="signup-link">
                 Não tem uma conta? <a href="cadastro.html">Cadastre-se</a>
@@ -226,34 +303,86 @@
     </div>
 
     <script type="module">
-    import { showLoading, hideLoading } from '../js/loading.js';
-    const form = document.getElementById('loginForm');
-    const erroMsg = document.getElementById('erroMsg');
+        import { showLoading, hideLoading } from '../js/loading.js';
+        const form = document.getElementById('loginForm');
+        const erroMsg = document.getElementById('erroMsg');
 
-    form.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        const email = document.getElementById('email').value.trim();
-        const senha = document.getElementById('senha').value;
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const email = document.getElementById('email').value.trim();
+            const senha = document.getElementById('senha').value;
 
-        const res = await fetch('/api/usuarios/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, senha }),
+            const res = await fetch('/api/usuarios/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, senha }),
+            });
+
+            if (!res.ok) {
+                const erro = await res.json();
+                erroMsg.textContent = erro.erro;
+                erroMsg.style.display = 'block';
+                return;
+            }
+
+            const usuario = await res.json();
+            localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
+            window.location.href = 'perfil.html';
         });
+        showLoading('Carregando...');
+        hideLoading();
+    </script>
 
-        if (!res.ok) {
-        const erro = await res.json();
-        erroMsg.textContent = erro.erro;
-        erroMsg.style.display = 'block';
-        return;
+    <script>
+        /* ── CANVAS PARTÍCULAS ── */
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function initCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
         }
 
-        const usuario = await res.json();
-        localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
-        window.location.href = 'perfil.html';
-    });
-    showLoading('Carregando...');
-    hideLoading();
-</script>
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2;
+                this.speedX = Math.random() * 0.5 - 0.25;
+                this.speedY = Math.random() * 0.5 - 0.25;
+                this.opacity = Math.random() * 0.5 + 0.1;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.x < 0) this.x = canvas.width;
+                if (this.y > canvas.height) this.y = 0;
+                if (this.y < 0) this.y = canvas.height;
+            }
+            draw() {
+                ctx.fillStyle = `rgba(139, 92, 246, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function createParticles() {
+            for (let i = 0; i < 100; i++) particles.push(new Particle());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', initCanvas);
+        initCanvas();
+        createParticles();
+        animate();
+    </script>
 </body>
 </html>
