@@ -22,22 +22,47 @@ model Usuario {
   biografia         String?
   cadastro_completo Int      @default(0)
   redes_sociais     String?
-  status            String   @default("online") // online, ausente, nao_perturbe, invisivel
+  status            String   @default("disponivel") // disponivel, ocupado, nao_perturbe, invisivel
 
   instrumentos     UsuarioInstrumento[]
   generos          UsuarioGenero[]
   daws             UsuarioDaw[]
+  disponibilidades UsuarioDisponibilidade[]
+  configuracoes    ConfiguracaoUsuario?
 
   @@map("usuario")
 }
 
-enum UserStatus {
-  online
-  ausente
-  nao_perturbe
-  invisivel
-  offline
+model Disponibilidade {
+  id_disponibilidade Int                      @id @default(autoincrement())
+  descricao          String                   @unique
+  usuarios           UsuarioDisponibilidade[]
 
+  @@map("disponibilidade")
+}
+
+model UsuarioDisponibilidade {
+  id_usuario         Int
+  id_disponibilidade Int
+
+  usuario         Usuario         @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
+  disponibilidade Disponibilidade @relation(fields: [id_disponibilidade], references: [id_disponibilidade], onDelete: Cascade)
+
+  @@id([id_usuario, id_disponibilidade])
+  @@map("usuario_disponibilidade")
+}
+
+model ConfiguracaoUsuario {
+  id_config             Int     @id @default(autoincrement())
+  id_usuario            Int     @unique
+  mostrar_email         Int     @default(1)
+  mostrar_telefone      Int     @default(0)
+  mostrar_redes_sociais Int     @default(1)
+  perfil_publico        Int     @default(1)
+
+  usuario Usuario @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
+
+  @@map("configuracoes_usuario")
 }
 
 model Instrumento {
