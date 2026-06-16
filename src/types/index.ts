@@ -1,5 +1,7 @@
 // ── Entidades retornadas pela API ──────────────────────────────────────────
 
+export type UserStatus = 'online' | 'ausente' | 'ocupado' | 'nao_perturbe'
+
 export interface Usuario {
   id_usuario: number
   nome_completo: string
@@ -16,10 +18,8 @@ export interface Usuario {
   cadastro_completo: number
   redes_sociais: Record<string, string> | null
   status: UserStatus
-  // Relacionamentos (populados pelos JOINs no model)
   instrumentos?: string[]
   generos?: string[]
-  disponibilidades?: string[]
   daws?: string[]
 }
 
@@ -41,14 +41,12 @@ export interface CreateUsuarioInput {
   redes_sociais?: Record<string, string> | null
   instrumentos?: string[]
   generos?: string[]
-  disponibilidades?: string[]
   daws?: string[]
   status?: UserStatus
 }
 
 export interface UpdateUsuarioInput extends Partial<CreateUsuarioInput> {
   id_usuario: number
-  status?: UserStatus
 }
 
-export type UserStatus = 'online' | 'ausente' | 'nao_perturbe' | 'invisivel' | 'offline'
+

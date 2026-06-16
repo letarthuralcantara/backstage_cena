@@ -84,7 +84,6 @@
     }
     .logo-img:hover { filter: drop-shadow(0 0 35px var(--primary-glow)); }
 
-    /* ── STEPPER ── */
     .stepper { display: flex; align-items: center; justify-content: center; margin-bottom: 48px; }
     .step { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; }
     .step-circle {
@@ -109,7 +108,6 @@
     .step-line { flex: 1; height: 2px; background: rgba(255,255,255,0.08); max-width: 80px; margin: 0 8px 20px; transition: background 0.4s; }
     .step-line.done { background: var(--primary); }
 
-    /* ── BADGES E TÍTULOS ── */
     .etapa-badge {
       display: inline-block;
       background: rgba(139,92,246,0.1);
@@ -130,7 +128,6 @@
     }
     .cadastro-subtitle { color: #777; font-size: 14px; text-align: center; margin-bottom: 36px; letter-spacing: 0.5px; }
 
-    /* ── FORM SECTIONS ── */
     .form-section { margin-bottom: 32px; padding-bottom: 32px; border-bottom: 1px solid var(--glass-border); }
     .form-section:last-of-type { border-bottom: none; margin-bottom: 20px; }
     .section-title {
@@ -167,7 +164,6 @@
     }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
-    /* ── FOTO UPLOAD ── */
     .foto-upload {
       display: flex; align-items: center; gap: 20px;
       padding: 24px; border: 1px dashed rgba(139,92,246,0.2);
@@ -184,7 +180,6 @@
     .foto-info p { color: #888; font-size: 14px; margin-bottom: 6px; }
     .foto-badge { display: inline-block; background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3); color: #a78bfa; font-size: 11px; padding: 3px 10px; border-radius: 10px; }
 
-    /* ── ESCOLHA CARDS ── */
     .escolha-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 10px; }
     .escolha-card {
       padding: 32px 24px; border: 1px solid var(--glass-border);
@@ -199,7 +194,6 @@
     .escolha-titulo { font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 700; color: #e5e7eb; }
     .escolha-desc { font-size: 13px; color: #888; line-height: 1.6; }
 
-    /* ── ÁREAS GRID ── */
     .areas-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
     .area-card input[type="radio"] { display: none; }
     .area-label {
@@ -213,9 +207,9 @@
     .area-icon { font-size: 26px; color: var(--primary); }
     .area-name { font-weight: 700; font-size: 12px; color: #e5e7eb; text-align: center; text-transform: uppercase; letter-spacing: 0.5px; }
 
-    /* ── CHECKBOXES ── */
     .checkbox-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-    .checkbox-item input[type="checkbox"] { display: none; }
+    .checkbox-item input[type="checkbox"],
+    .checkbox-item input[type="radio"] { display: none; }
     .checkbox-label {
       display: flex; align-items: center; gap: 8px;
       padding: 12px 14px; border: 1px solid var(--glass-border);
@@ -229,7 +223,16 @@
     .generos-grid { display: flex; flex-wrap: wrap; gap: 10px; }
     .generos-grid .checkbox-label { padding: 8px 16px; border-radius: 20px; font-size: 13px; }
 
-    /* ── BOTÕES ── */
+    /* Status estilo Discord */
+    .status-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .status-dot {
+      width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; display: inline-block;
+    }
+    .status-dot.online { background: #22c55e; box-shadow: 0 0 8px rgba(34,197,94,0.6); }
+    .status-dot.ocupado { background: #f59e0b; box-shadow: 0 0 8px rgba(245,158,11,0.6); }
+    .status-dot.ausente { background: #f97316; box-shadow: 0 0 8px rgba(249,115,22,0.6); }
+    .status-dot.nao_perturbe { background: #ef4444; box-shadow: 0 0 8px rgba(239,68,68,0.6); }
+
     .btn-row { display: flex; gap: 14px; margin-top: 12px; }
     .btn-voltar {
       padding: 16px 24px; background: transparent;
@@ -252,7 +255,6 @@
     }
     .btn-avancar:hover { transform: scale(1.04); box-shadow: 0 0 40px var(--primary-glow); }
 
-    /* ── ERRO ── */
     .erro-msg {
       background: rgba(239,68,68,0.1);
       border: 1px solid rgba(239,68,68,0.3);
@@ -275,6 +277,7 @@
       .form-row { grid-template-columns: 1fr; }
       .areas-grid { grid-template-columns: repeat(2, 1fr); }
       .checkbox-grid { grid-template-columns: repeat(2, 1fr); }
+      .status-grid { grid-template-columns: 1fr; }
       .escolha-grid { grid-template-columns: 1fr; }
     }
   </style>
@@ -390,7 +393,7 @@
               <div class="escolha-card agora" onclick="mostrarFormEtapa3()">
                 <div class="escolha-icon"><i class="fa-solid fa-guitar"></i></div>
                 <div class="escolha-titulo">Completar agora</div>
-                <div class="escolha-desc">Adicione instrumentos, gêneros, localização e disponibilidade</div>
+                <div class="escolha-desc">Adicione instrumentos, gêneros, localização e status</div>
               </div>
               <div class="escolha-card" onclick="window.location.href='perfil.html'">
                 <div class="escolha-icon muted"><i class="fa-solid fa-clock"></i></div>
@@ -432,26 +435,57 @@
                 <input type="tel" id="telefone" placeholder="(00) 00000-0000" maxlength="15" oninput="mascaraTelefone(this)">
               </div>
             </div>
+
             <div class="form-section">
               <h2 class="section-title"><i class="fa-solid fa-star"></i> Área de Atuação</h2>
               <div class="areas-grid" id="areas-grid"></div>
             </div>
+
             <div class="form-section">
               <h2 class="section-title"><i class="fa-solid fa-guitar"></i> Instrumentos</h2>
               <div class="checkbox-grid" id="instrumentos-grid"></div>
             </div>
+
             <div class="form-section">
               <h2 class="section-title"><i class="fa-solid fa-music"></i> Gêneros Musicais</h2>
               <div class="generos-grid" id="generos-grid"></div>
             </div>
+
             <div class="form-section">
-              <h2 class="section-title"><i class="fa-solid fa-clock"></i> Disponibilidade</h2>
-              <div id="disponibilidade-grid"></div>
+              <h2 class="section-title"><i class="fa-solid fa-circle-dot"></i> Status</h2>
+              <div class="status-grid">
+                <div class="checkbox-item">
+                  <input type="radio" id="status_online" name="status" value="online" checked>
+                  <label for="status_online" class="checkbox-label">
+                    <span class="status-dot online"></span> Online
+                  </label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="radio" id="status_ocupado" name="status" value="ocupado">
+                  <label for="status_ocupado" class="checkbox-label">
+                    <span class="status-dot ocupado"></span> Ocupado
+                  </label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="radio" id="status_ausente" name="status" value="ausente">
+                  <label for="status_ausente" class="checkbox-label">
+                    <span class="status-dot ausente"></span> Ausente
+                  </label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="radio" id="status_nao_perturbe" name="status" value="nao_perturbe">
+                  <label for="status_nao_perturbe" class="checkbox-label">
+                    <span class="status-dot nao_perturbe"></span> Não perturbe
+                  </label>
+                </div>
+              </div>
             </div>
+
             <div class="form-section">
               <h2 class="section-title"><i class="fa-solid fa-sliders"></i> DAWs que usa</h2>
               <div class="checkbox-grid" id="daws-grid"></div>
             </div>
+
             <div class="btn-row">
               <button type="button" class="btn-voltar" onclick="esconderFormEtapa3()">
                 <i class="fa-solid fa-arrow-left"></i> Voltar
@@ -474,19 +508,15 @@
   </div>
 
   <script type="module">
-
     function mascaraTelefone(el) {
-        let v = el.value.replace(/\D/g, '').substring(0, 11);
-        if (v.length <= 10) {
-            v = v.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
-        } else {
-            v = v.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
-        }
-        el.value = v;
+      let v = el.value.replace(/\D/g, '').substring(0, 11);
+      if (v.length <= 10) v = v.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+      else v = v.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+      el.value = v;
     }
     function validarTelefone(val) {
-        const digits = val.replace(/\D/g, '');
-        return digits.length === 10 || digits.length === 11;
+      const digits = val.replace(/\D/g, '');
+      return digits.length === 10 || digits.length === 11;
     }
 
     import { salvarCadastro, completarCadastro, verificarAutenticacao } from '../js/auth.js';
@@ -525,24 +555,19 @@
           document.getElementById(`circle${n}`).textContent = n;
         }
       });
-
       document.getElementById(`etapa${numero}`).style.display = 'block';
       const stepAtivo = document.getElementById(`step${numero}`);
       stepAtivo.classList.add('active');
       stepAtivo.classList.remove('done');
       document.getElementById(`circle${numero}`).textContent = numero;
-
       document.getElementById('line1').classList.toggle('done', numero >= 2);
       document.getElementById('line2').classList.toggle('done', numero >= 3);
-
       etapaAtual = numero;
       window.scrollTo(0, 0);
     }
 
     const usuarioLogado = verificarAutenticacao(false);
-    if (usuarioLogado?.cadastro_completo == 1) {
-      window.location.href = 'perfil.html';
-    }
+    if (usuarioLogado?.cadastro_completo == 1) window.location.href = 'perfil.html';
     if (usuarioLogado && usuarioLogado.cadastro_completo == 0) {
       etapasCompletas.add(1);
       mostrarEtapa(2);
@@ -577,43 +602,6 @@
         </label>
       </div>`).join('');
 
-    const _dias = ['Segunda','Terça','Quarta','Quinta','Sexta','Sábado','Domingo'];
-    const _per  = ['Manhã','Tarde','Noite'];
-    document.getElementById('disponibilidade-grid').innerHTML = `
-      <style>
-        .disp-grade{width:100%;border-collapse:collapse;font-size:12px}
-        .disp-grade th{padding:8px 6px;color:#9ca3af;font-weight:600;text-align:center}
-        .disp-grade td{padding:4px;text-align:center}
-        .disp-cell{display:none}
-        .disp-cell+.disp-cell-label{display:inline-flex;align-items:center;justify-content:center;width:100%;padding:7px 4px;border-radius:8px;cursor:pointer;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.02);color:#6b7280;font-size:11px;transition:all 0.2s}
-        .disp-cell:checked+.disp-cell-label{background:rgba(139,92,246,0.25);border-color:#8b5cf6;color:white;font-weight:600}
-        .disp-cell-label:hover{border-color:rgba(139,92,246,0.4);color:#e5e7eb}
-        .disp-dia-label{color:#e5e7eb;font-size:12px;font-weight:500;padding-right:8px;text-align:right;white-space:nowrap}
-        .disp-especiais{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
-      </style>
-      <table class="disp-grade">
-        <thead><tr>
-          <th></th>
-          ${_per.map(p => `<th>${p}</th>`).join('')}
-        </tr></thead>
-        <tbody>
-          ${_dias.map(dia => `<tr>
-            <td class="disp-dia-label">${dia}</td>
-            ${_per.map(p => {
-              const chave = dia + ' - ' + p;
-              return '<td><input type="checkbox" class="disp-cell" id="disp_' + dia + '_' + p + '" name="disponibilidade" value="' + chave + '"><label for="disp_' + dia + '_' + p + '" class="disp-cell-label">✓</label></td>';
-            }).join('')}
-          </tr>`).join('')}
-        </tbody>
-      </table>
-      <div class="disp-especiais">
-        ${['Manhã','Tarde','Noite','Fins de semana','Integral'].map(e => {
-          const safe = e.replace(/ /g,'_');
-          return '<div class="checkbox-item" style="flex:none"><input type="checkbox" id="disp_esp_' + safe + '" name="disponibilidade" value="' + e + '"><label for="disp_esp_' + safe + '" class="checkbox-label"><span class="checkbox-icon"><i class="fa-solid fa-check"></i></span>' + e + '</label></div>';
-        }).join('')}
-      </div>
-    `;
-
     document.getElementById('daws-grid').innerHTML = dados.daws.map(d => `
       <div class="checkbox-item">
         <input type="checkbox" id="daw_${d}" name="daws" value="${d}">
@@ -635,20 +623,13 @@
         const nome = document.getElementById('nome_completo').value.trim();
         const email = document.getElementById('email').value.trim();
         const senha = document.getElementById('senha').value;
-
         if (!nome || !email || !senha) {
           erroMsg.textContent = 'Preencha todos os campos obrigatórios.';
           erroMsg.style.display = 'block';
           return;
         }
-
         const jaLogado = verificarAutenticacao(false);
-        if (jaLogado) {
-          etapasCompletas.add(1);
-          mostrarEtapa(2);
-          return;
-        }
-
+        if (jaLogado) { etapasCompletas.add(1); mostrarEtapa(2); return; }
         try {
           await salvarCadastro({ nome_completo: nome, email, senha, cadastro_completo: 0 });
           etapasCompletas.add(1);
@@ -662,7 +643,7 @@
         const dadosForm = {
           nome_artistico: document.getElementById('nome_artistico').value.trim(),
           biografia: document.getElementById('biografia').value.trim(),
-          instrumentos: [], generos: [], disponibilidade: [], daws: [], areas_atuacao: [],
+          instrumentos: [], generos: [], daws: [], areas_atuacao: [],
           cadastro_completo: 0,
         };
         try {
@@ -677,7 +658,7 @@
       } else if (etapaAtual === 3) {
         const telefone_val = document.getElementById('telefone').value.trim();
         if (telefone_val && !validarTelefone(telefone_val)) {
-          erroMsg.textContent = 'Telefone inválido. Use (00) 00000-0000 ou (00) 0000-0000.';
+          erroMsg.textContent = 'Telefone inválido.';
           erroMsg.style.display = 'block'; return;
         }
         const dadosForm = {
@@ -689,8 +670,8 @@
           areas_atuacao: coletarCheckboxes('areas_atuacao'),
           instrumentos: coletarCheckboxes('instrumentos'),
           generos: coletarCheckboxes('generos'),
-          disponibilidade: coletarCheckboxes('disponibilidade'),
           daws: coletarCheckboxes('daws'),
+          status: document.querySelector('input[name="status"]:checked')?.value ?? 'online',
           cadastro_completo: 1,
         };
         try {
@@ -705,7 +686,6 @@
   </script>
 
   <script>
-    /* ── CANVAS PARTÍCULAS ── */
     const canvas = document.getElementById('bg-canvas');
     const ctx = canvas.getContext('2d');
     let particles = [];

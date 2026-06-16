@@ -7,9 +7,11 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsc --noEmit",
     "start": "node dist/server.js",
+    "seed": "tsx prisma/seed.ts",
     "db:load": "tsx src/database/load.ts",
     "db:drop": "node -e \"const fs=require('fs'); try{fs.unlinkSync('src/database/db.sqlite')}catch(e){}\"",
     "db:reload": "npm run db:drop && npm run db:load"
+    
   },
   "dependencies": {
     "@libsql/client": "^0.17.3",

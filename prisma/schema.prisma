@@ -26,7 +26,6 @@ model Usuario {
 
   instrumentos     UsuarioInstrumento[]
   generos          UsuarioGenero[]
-  disponibilidades UsuarioDisponibilidade[]
   daws             UsuarioDaw[]
 
   @@map("usuario")
@@ -55,14 +54,6 @@ model Genero {
   usuarios  UsuarioGenero[]
 
   @@map("genero")
-}
-
-model Disponibilidade {
-  id_disponibilidade Int                      @id @default(autoincrement())
-  descricao          String                   @unique
-  usuarios           UsuarioDisponibilidade[]
-
-  @@map("disponibilidade")
 }
 
 model Daw {
@@ -95,17 +86,6 @@ model UsuarioGenero {
 
   @@id([id_usuario, id_genero])
   @@map("usuario_genero")
-}
-
-model UsuarioDisponibilidade {
-  id_usuario         Int
-  id_disponibilidade Int
-
-  usuario         Usuario         @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
-  disponibilidade Disponibilidade @relation(fields: [id_disponibilidade], references: [id_disponibilidade], onDelete: Cascade)
-
-  @@id([id_usuario, id_disponibilidade])
-  @@map("usuario_disponibilidade")
 }
 
 model UsuarioDaw {

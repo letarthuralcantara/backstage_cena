@@ -21,17 +21,16 @@ function calcularCompleto(u: any): number {
 }
 
 function mapUsuario(u: any): Usuario {
-  const instrumentos   = u.instrumentos?.map((r: any) => r.instrumento.nome) ?? []
-  const generos        = u.generos?.map((r: any) => r.genero.nome) ?? []
-  const disponibilidades = u.disponibilidades?.map((r: any) => r.disponibilidade.descricao) ?? []
-  const daws           = u.daws?.map((r: any) => r.daw.nome) ?? []
+  const instrumentos = u.instrumentos?.map((r: any) => r.instrumento.nome) ?? []
+  const generos      = u.generos?.map((r: any) => r.genero.nome) ?? []
+  const daws         = u.daws?.map((r: any) => r.daw.nome) ?? []
 
   let redes_sociais: Record<string, string> | null = null
   try { redes_sociais = u.redes_sociais ? JSON.parse(u.redes_sociais) : null } catch { redes_sociais = null }
 
   const area_atuacao = parseArea(u.area_atuacao)
 
-  const mapped = { ...u, instrumentos, generos, disponibilidades, daws, redes_sociais, area_atuacao, status: u.status as UserStatus }
+  const mapped = { ...u, instrumentos, generos, daws, redes_sociais, area_atuacao }
   mapped.cadastro_completo = calcularCompleto(mapped)
   return mapped
 }
@@ -39,7 +38,6 @@ function mapUsuario(u: any): Usuario {
 const include = {
   instrumentos:     { include: { instrumento: true } },
   generos:          { include: { genero: true } },
-  disponibilidades: { include: { disponibilidade: true } },
   daws:             { include: { daw: true } },
 }
 
@@ -95,9 +93,7 @@ async function create(dados: CreateUsuarioInput): Promise<Usuario> {
       generos: dados.generos?.length ? {
         create: await resolverGeneros(dados.generos)
       } : undefined,
-      disponibilidades: dados.disponibilidades?.length ? {
-        create: await resolverDisponibilidades(dados.disponibilidades)
-      } : undefined,
+     
       daws: dados.daws?.length ? {
         create: await resolverDaws(dados.daws)
       } : undefined,
@@ -114,7 +110,6 @@ async function update({ id_usuario, ...dados }: UpdateUsuarioInput): Promise<Usu
   // Limpa relacionamentos antes de recriar
   await prisma.usuarioInstrumento.deleteMany({ where: { id_usuario } })
   await prisma.usuarioGenero.deleteMany({ where: { id_usuario } })
-  await prisma.usuarioDisponibilidade.deleteMany({ where: { id_usuario } })
   await prisma.usuarioDaw.deleteMany({ where: { id_usuario } })
 
   const atualizado = await prisma.usuario.update({
@@ -138,9 +133,7 @@ async function update({ id_usuario, ...dados }: UpdateUsuarioInput): Promise<Usu
       generos: dados.generos?.length ? {
         create: await resolverGeneros(dados.generos)
       } : undefined,
-      disponibilidades: dados.disponibilidades?.length ? {
-        create: await resolverDisponibilidades(dados.disponibilidades)
-      } : undefined,
+    
       daws: dados.daws?.length ? {
         create: await resolverDaws(dados.daws)
       } : undefined,
@@ -173,11 +166,6 @@ async function listarDaws(): Promise<string[]> {
   return r.map(x => x.nome)
 }
 
-async function listarDisponibilidades(): Promise<string[]> {
-  const r = await prisma.disponibilidade.findMany()
-  return r.map(x => x.descricao)
-}
-
 // ── Resolvers de relacionamento ───────────────────────────────────────────────
 
 async function resolverInstrumentos(nomes: string[]) {
@@ -198,14 +186,6 @@ async function resolverGeneros(nomes: string[]) {
   }))
 }
 
-async function resolverDisponibilidades(descricoes: string[]) {
-  return Promise.all(descricoes.map(async descricao => {
-    const disp = await prisma.disponibilidade.upsert({
-      where: { descricao }, update: {}, create: { descricao }
-    })
-    return { id_disponibilidade: disp.id_disponibilidade }
-  }))
-}
 
 async function resolverDaws(nomes: string[]) {
   return Promise.all(nomes.map(async nome => {
@@ -215,3 +195,5 @@ async function resolverDaws(nomes: string[]) {
     return { id_daw: daw.id_daw }
   }))
 }
+
+export default { read, readById, findByEmail, create, update, remove, listarInstrumentos, listarGeneros, listarDaws }

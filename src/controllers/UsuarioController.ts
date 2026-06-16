@@ -110,8 +110,7 @@ class UsuarioController {
 
   async listarDisponibilidades(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const disponibilidades = await usuarioService.listarDisponibilidades()
-      res.json(disponibilidades)
+      res.json([])
     } catch (error) {
       next(error)
     }
