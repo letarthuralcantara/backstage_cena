@@ -460,10 +460,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label>Disponibilidade</label>
-                    <div id="disponibilidadeGrid"></div>
-                </div>
+               
                 <div class="action-bar">
                     <a href="perfil.html" class="btn-cancelar">Cancelar</a>
                     <button type="button" class="btn-salvar" onclick="salvarPerfil()"><i class="fas fa-check"></i> Salvar alterações</button>
@@ -660,66 +657,13 @@
                 </label>
             </div>`).join('');
 
-        document.getElementById('generosGrid').innerHTML = dados.generos.map(g => `
+                document.getElementById('generosGrid').innerHTML = dados.generos.map(g => `
             <div class="checkbox-item">
                 <input type="checkbox" id="gen_${g.id}" name="generos" value="${g.nome}" ${(u.generos||[]).includes(g.nome) ? 'checked' : ''}>
                 <label for="gen_${g.id}" class="checkbox-label">
                     <span class="checkbox-icon"><i class="fa-solid fa-check"></i></span>${g.nome}
                 </label>
             </div>`).join('');
-
-        const dias = ['Segunda','Terça','Quarta','Quinta','Sexta','Sábado','Domingo'];
-        const periodos = ['Manhã','Tarde','Noite'];
-        const dispAtual = u.disponibilidades || [];
-
-        const gradeStyle = '<style>'
-            + '.disp-grade{width:100%;border-collapse:collapse;font-size:12px}'
-            + '.disp-grade th{padding:8px 6px;color:#9ca3af;font-weight:600;text-align:center}'
-            + '.disp-grade td{padding:4px;text-align:center}'
-            + '.disp-cell{display:none}'
-            + '.disp-cell+.disp-cell-label{display:inline-flex;align-items:center;justify-content:center;width:100%;padding:7px 4px;border-radius:8px;cursor:pointer;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.02);color:#6b7280;font-size:11px;transition:all 0.2s}'
-            + '.disp-cell:checked+.disp-cell-label{background:rgba(139,92,246,0.25);border-color:#8b5cf6;color:white;font-weight:600}'
-            + '.disp-cell-label:hover{border-color:rgba(139,92,246,0.4);color:#e5e7eb}'
-            + '.disp-dia-label{color:#e5e7eb;font-size:12px;font-weight:500;padding-right:8px;text-align:right;white-space:nowrap}'
-            + '.disp-especiais{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}'
-            + '</style>';
-
-        let headerRow = '<tr><th></th>';
-        periodos.forEach(function(p) { headerRow += '<th>' + p + '</th>'; });
-        headerRow += '</tr>';
-
-        let bodyRows = '';
-        dias.forEach(function(dia) {
-            let row = '<tr><td class="disp-dia-label">' + dia + '</td>';
-            periodos.forEach(function(p) {
-                const chave = dia + ' - ' + p;
-                const checked = dispAtual.includes(chave) ? 'checked' : '';
-                const sid = 'disp_' + dia + '_' + p;
-                row += '<td>'
-                    + '<input type="checkbox" class="disp-cell" id="' + sid + '" name="disponibilidade" value="' + chave + '" ' + checked + '>'
-                    + '<label for="' + sid + '" class="disp-cell-label">✓</label>'
-                    + '</td>';
-            });
-            row += '</tr>';
-            bodyRows += row;
-        });
-
-        let especiais = '<div class="disp-especiais">';
-        ['Manhã','Tarde','Noite','Fins de semana','Integral'].forEach(function(e) {
-            const checked = dispAtual.includes(e) ? 'checked' : '';
-            const sid = 'disp_esp_' + e.replace(/ /g, '_');
-            especiais += '<div class="checkbox-item" style="flex:none">'
-                + '<input type="checkbox" id="' + sid + '" name="disponibilidade" value="' + e + '" ' + checked + '>'
-                + '<label for="' + sid + '" class="checkbox-label">'
-                + '<span class="checkbox-icon"><i class="fa-solid fa-check"></i></span>' + e
-                + '</label></div>';
-        });
-        especiais += '</div>';
-
-        document.getElementById('disponibilidadeGrid').innerHTML =
-            gradeStyle
-            + '<table class="disp-grade"><thead>' + headerRow + '</thead><tbody>' + bodyRows + '</tbody></table>'
-            + especiais;
 
         document.getElementById('dawsGrid').innerHTML = dados.daws.map(d => {
             const idSafe = d.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'');
@@ -812,7 +756,6 @@
                 area_atuacao:     area,
                 instrumentos:     coletarCheckboxes('instrumentos'),
                 generos:          coletarCheckboxes('generos'),
-                disponibilidades: coletarCheckboxes('disponibilidade'),
                 daws:             coletarCheckboxes('daws'),
                 redes_sociais:    redesSociais,
                 cadastro_completo: 1,

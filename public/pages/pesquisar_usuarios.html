@@ -315,7 +315,7 @@
     </header>
 
     <div class="filters-panel" id="filtersPanel">
-        <div class="filters-grid">
+        <div class="filters-grid" style="grid-template-columns: repeat(6, 1fr);">
             <div class="filter-group">
                 <label>Estado</label>
                 <select id="filtroEstado"><option value="">Todos</option></select>
@@ -329,13 +329,17 @@
                 <select id="filtroGenero"><option value="">Todos</option></select>
             </div>
             <div class="filter-group">
-                <label>Disponibilidade</label>
-                <select id="filtroDisponibilidade">
+                <label>Status</label>
+                <select id="filtroStatus">
                     <option value="">Qualquer</option>
-                    <option value="Manhã">Manhã</option>
-                    <option value="Tarde">Tarde</option>
-                    <option value="Noite">Noite</option>
+                    <option value="disponivel">🟢 Disponível</option>
+                    <option value="ocupado">🟡 Ocupado</option>
+                    <option value="nao_perturbe">🔴 Não perturbe</option>
                 </select>
+            </div>
+            <div class="filter-group">
+                <label>Agenda</label>
+                <select id="filtroDisponibilidade"><option value="">Qualquer</option></select>
             </div>
             <div class="filter-group">
                 <label>Área</label>
@@ -368,10 +372,8 @@
     </footer>
 
     <script type="module">
-        import { showLoading, hideLoading } from '../js/loading.js';
         import { verificarAutenticacao, fazerLogout } from '../js/auth.js';
 
-        showLoading('Buscando músicos...');
         const usuario = verificarAutenticacao();
         if (usuario) {
             const nome = usuario.nome_artistico || usuario.nome_completo;
@@ -407,20 +409,38 @@
                 renderizarMusicos(todosMusicos);
             } catch (e) {
                 console.error(e);
-            } finally {
-                hideLoading();
             }
         }
 
+        const STATUS_CORES = {
+            disponivel:   '#22c55e',
+            ocupado:      '#eab308',
+            nao_perturbe: '#ef4444',
+            invisivel:    '#6b7280',
+        };
+        const STATUS_LABELS = {
+            disponivel:   'Disponível',
+            ocupado:      'Ocupado',
+            nao_perturbe: 'Não perturbe',
+            invisivel:    'Invisível',
+        };
+
         function popularFiltros(musicos) {
             const estados = [...new Set(musicos.map(m => m.estado).filter(Boolean))].sort();
+            // A API já retorna arrays, não strings JSON
             const instrumentos = [...new Set(musicos.flatMap(m => {
+                if (Array.isArray(m.instrumentos)) return m.instrumentos;
                 try { return JSON.parse(m.instrumentos || '[]'); } catch { return []; }
             }))].sort();
             const generos = [...new Set(musicos.flatMap(m => {
+                if (Array.isArray(m.generos)) return m.generos;
                 try { return JSON.parse(m.generos || '[]'); } catch { return []; }
             }))].sort();
-            const areas = [...new Set(musicos.map(m => m.areas_atuacao).filter(Boolean))].sort();
+            const areas = [...new Set(musicos.flatMap(m => {
+                if (Array.isArray(m.area_atuacao)) return m.area_atuacao;
+                if (m.area_atuacao) return [m.area_atuacao];
+                return [];
+            }))].sort();
 
             const addOptions = (id, items) => {
                 const sel = document.getElementById(id);
@@ -431,10 +451,16 @@
                 });
             };
 
+            const disponibilidades = [...new Set(musicos.flatMap(m => {
+                if (Array.isArray(m.disponibilidades)) return m.disponibilidades;
+                return [];
+            }))].sort();
+
             addOptions('filtroEstado', estados);
             addOptions('filtroInstrumento', instrumentos);
             addOptions('filtroGenero', generos);
             addOptions('filtroArea', areas);
+            addOptions('filtroDisponibilidade', disponibilidades);
         }
 
         function renderizarMusicos(lista) {
@@ -442,7 +468,8 @@
             const empty = document.getElementById('emptyState');
             const total = document.getElementById('totalCount');
 
-            const visiveis = lista.filter(m => m.cadastro_completo == 1);
+            // A API já filtra cadastros incompletos e invisíveis
+            const visiveis = lista;
             total.textContent = `${visiveis.length} músico${visiveis.length !== 1 ? 's' : ''} encontrado${visiveis.length !== 1 ? 's' : ''}`;
 
             if (visiveis.length === 0) {
@@ -455,19 +482,34 @@
             grid.innerHTML = visiveis.map((m, idx) => {
                 const nome = m.nome_artistico || m.nome_completo;
                 const iniciais = nome.substring(0, 2).toUpperCase();
-                let instrumentos = [];
-                try { instrumentos = JSON.parse(m.instrumentos || '[]'); } catch {}
+                // A API retorna arrays diretamente
+                const instrumentos = Array.isArray(m.instrumentos) ? m.instrumentos : [];
                 const tags = instrumentos.slice(0, 3).map(i => `<span class="tag"><i class="fas fa-music"></i>${i}</span>`).join('');
                 const local = [m.cidade, m.estado].filter(Boolean).join(', ') || 'Localização não informada';
+                const areas = Array.isArray(m.area_atuacao) ? m.area_atuacao : (m.area_atuacao ? [m.area_atuacao] : []);
+                const areaLabel = areas.length > 0 ? areas[0] : '';
+                // Status
+                const status = m.status || 'disponivel';
+                const statusCor = STATUS_CORES[status] || '#22c55e';
+                const statusLabel = STATUS_LABELS[status] || 'Disponível';
 
                 return `
                 <div class="musician-card" onclick="window.location.href='perfil.html?id=${m.id_usuario}'" style="animation-delay:${idx * 0.05}s">
                     <div class="musician-header">
-                        <div class="musician-photo">${iniciais}</div>
+                        <div style="position:relative; flex-shrink:0;">
+                            <div class="musician-photo">${iniciais}</div>
+                            <span title="${statusLabel}" style="
+                                position:absolute; bottom:-2px; right:-2px;
+                                width:14px; height:14px; border-radius:50%;
+                                background:${statusCor};
+                                border:2px solid #0f0f0f;
+                                display:block;
+                            "></span>
+                        </div>
                         <div class="musician-info">
                             <div class="musician-name">${nome}</div>
                             <div class="musician-location"><i class="fas fa-map-marker-alt"></i>${local}</div>
-                            ${m.areas_atuacao ? `<span class="musician-area">${m.areas_atuacao}</span>` : ''}
+                            ${areaLabel ? `<span class="musician-area">${areaLabel}</span>` : ''}
                         </div>
                     </div>
                     ${m.biografia ? `<p class="musician-bio">${m.biografia}</p>` : ''}
@@ -481,38 +523,42 @@
             const estado = document.getElementById('filtroEstado').value;
             const instrumento = document.getElementById('filtroInstrumento').value;
             const genero = document.getElementById('filtroGenero').value;
-            const disponibilidade = document.getElementById('filtroDisponibilidade').value;
+            const status = document.getElementById('filtroStatus').value;
+            const agenda = document.getElementById('filtroDisponibilidade').value;
             const area = document.getElementById('filtroArea').value;
 
             let ativos = 0;
             if (estado) ativos++;
             if (instrumento) ativos++;
             if (genero) ativos++;
-            if (disponibilidade) ativos++;
+            if (status) ativos++;
+            if (agenda) ativos++;
             if (area) ativos++;
 
             filtrarCount.textContent = ativos;
             filtrarCount.classList.toggle('show', ativos > 0);
 
             const resultado = todosMusicos.filter(m => {
-                if (m.cadastro_completo != 1) return false;
                 const nome = (m.nome_artistico || m.nome_completo || '').toLowerCase();
                 const bio = (m.biografia || '').toLowerCase();
                 if (q && !nome.includes(q) && !bio.includes(q)) return false;
                 if (estado && m.estado !== estado) return false;
-                if (area && m.areas_atuacao !== area) return false;
 
-                let insts = [];
-                try { insts = JSON.parse(m.instrumentos || '[]'); } catch {}
+                const areas = Array.isArray(m.area_atuacao) ? m.area_atuacao : (m.area_atuacao ? [m.area_atuacao] : []);
+                if (area && !areas.includes(area)) return false;
+
+                const insts = Array.isArray(m.instrumentos) ? m.instrumentos : [];
                 if (instrumento && !insts.includes(instrumento)) return false;
 
-                let gens = [];
-                try { gens = JSON.parse(m.generos || '[]'); } catch {}
+                const gens = Array.isArray(m.generos) ? m.generos : [];
                 if (genero && !gens.includes(genero)) return false;
 
-                let disps = [];
-                try { disps = JSON.parse(m.disponibilidade || '[]'); } catch {}
-                if (disponibilidade && !disps.some(d => d.includes(disponibilidade))) return false;
+                // Status Discord
+                if (status && m.status !== status) return false;
+
+                // Agenda/Disponibilidade por horário
+                const disps = Array.isArray(m.disponibilidades) ? m.disponibilidades : [];
+                if (agenda && !disps.includes(agenda)) return false;
 
                 return true;
             });
@@ -522,7 +568,7 @@
 
         btnBuscar.addEventListener('click', filtrar);
         searchInput.addEventListener('keydown', e => { if (e.key === 'Enter') filtrar(); });
-        ['filtroEstado','filtroInstrumento','filtroGenero','filtroDisponibilidade','filtroArea'].forEach(id => {
+        ['filtroEstado','filtroInstrumento','filtroGenero','filtroStatus','filtroDisponibilidade','filtroArea'].forEach(id => {
             document.getElementById(id).addEventListener('change', filtrar);
         });
 

@@ -17,268 +17,201 @@
             --glass: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.08);
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-dark);
-            color: #fff;
-            min-height: 100vh;
-            overflow-x: hidden;
+            color: #fff; min-height: 100vh; overflow-x: hidden;
             background-image:
-                radial-gradient(circle at 10% 10%, rgba(139, 92, 246, 0.15), transparent 50%),
-                radial-gradient(circle at 90% 90%, rgba(217, 70, 239, 0.1), transparent 50%);
+                radial-gradient(circle at 10% 10%, rgba(139,92,246,0.15), transparent 50%),
+                radial-gradient(circle at 90% 90%, rgba(217,70,239,0.1), transparent 50%);
             background-attachment: fixed;
         }
-
-        #bg-canvas {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: -1;
-            opacity: 0.4;
-        }
-
-        .container {
-            position: relative; z-index: 1;
-            max-width: 1100px;
-            margin: 50px auto;
-            padding: 0 40px;
-        }
-
-        /* ── REVEAL ── */
-        .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.2, 1, 0.3, 1); }
-        .reveal.active { opacity: 1; transform: translateY(0); }
-
-        .profile-layout {
-            display: grid;
-            grid-template-columns: 320px 1fr;
-            gap: 40px;
-            align-items: start;
-        }
+        #bg-canvas { position: fixed; top:0; left:0; width:100%; height:100%; z-index:-1; opacity:0.4; }
+        .container { position:relative; z-index:1; max-width:1100px; margin:50px auto; padding:0 40px; }
+        .reveal { opacity:0; transform:translateY(40px); transition:all 0.8s cubic-bezier(0.2,1,0.3,1); }
+        .reveal.active { opacity:1; transform:translateY(0); }
+        .profile-layout { display:grid; grid-template-columns:320px 1fr; gap:40px; align-items:start; }
 
         /* ── CARD LATERAL ── */
         .profile-card {
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            border-radius: 40px;
-            padding: 36px 28px;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            display: flex;
-            flex-direction: column;
-            align-items: stretch;
-            position: sticky;
-            top: 30px;
-            overflow: hidden;
-            transition: border-color 0.4s;
+            background:var(--glass); border:1px solid var(--glass-border);
+            border-radius:40px; padding:36px 28px;
+            backdrop-filter:blur(20px); box-shadow:0 20px 60px rgba(0,0,0,0.5);
+            display:flex; flex-direction:column; align-items:stretch;
+            position:sticky; top:30px; overflow:hidden; transition:border-color 0.4s;
         }
-        .profile-card:hover { border-color: rgba(139, 92, 246, 0.3); }
-
-        .avatar-container {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-
+        .profile-card:hover { border-color:rgba(139,92,246,0.3); }
+        .avatar-container { display:flex; justify-content:center; margin-bottom:16px; position:relative; }
         .avatar {
-            width: 130px; height: 130px; border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            display: flex; align-items: center; justify-content: center;
-            font-size: 2.8rem; font-weight: 800;
-            border: 3px solid rgba(139, 92, 246, 0.4);
-            box-shadow: 0 0 40px var(--primary-glow);
-            overflow: hidden; flex-shrink: 0;
-            transition: box-shadow 0.3s;
+            width:130px; height:130px; border-radius:50%;
+            background:linear-gradient(135deg,var(--primary),var(--secondary));
+            display:flex; align-items:center; justify-content:center;
+            font-size:2.8rem; font-weight:800;
+            border:3px solid rgba(139,92,246,0.4);
+            box-shadow:0 0 40px var(--primary-glow);
+            overflow:hidden; flex-shrink:0; transition:box-shadow 0.3s;
         }
-        .avatar:hover { box-shadow: 0 0 60px var(--primary-glow); }
-        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .avatar:hover { box-shadow:0 0 60px var(--primary-glow); }
+        .avatar img { width:100%; height:100%; object-fit:cover; }
+
+        /* ── STATUS ── */
+        .status-badge {
+            display:flex; align-items:center; justify-content:center;
+            gap:7px; margin-bottom:16px;
+        }
+        .status-dot {
+            width:10px; height:10px; border-radius:50%; flex-shrink:0;
+        }
+        .status-dot.disponivel   { background:#22c55e; box-shadow:0 0 8px #22c55e; }
+        .status-dot.ocupado      { background:#f59e0b; box-shadow:0 0 8px #f59e0b; }
+        .status-dot.nao_perturbe { background:#ef4444; box-shadow:0 0 8px #ef4444; }
+        .status-dot.invisivel    { background:#6b7280; box-shadow:0 0 8px #6b7280; }
+        .status-label { font-size:13px; color:#9ca3af; font-weight:500; }
+
+        /* Seletor dropdown (só perfil próprio) */
+        .status-selector { position:relative; display:none; justify-content:center; margin-bottom:16px; }
+        .status-selector.show { display:flex; }
+        .status-btn {
+            display:flex; align-items:center; gap:8px; padding:7px 16px;
+            background:var(--glass); border:1px solid var(--glass-border);
+            border-radius:20px; cursor:pointer; font-size:13px; color:#9ca3af;
+            transition:all 0.2s; font-family:'Inter',sans-serif;
+        }
+        .status-btn:hover { border-color:var(--primary); color:#e5e7eb; }
+        .status-btn .dot { width:9px; height:9px; border-radius:50%; flex-shrink:0; }
+        .status-dropdown {
+            position:absolute; top:calc(100% + 8px); left:50%; transform:translateX(-50%);
+            background:rgba(10,10,10,0.97); backdrop-filter:blur(20px);
+            border:1px solid var(--glass-border); border-radius:16px;
+            padding:8px; min-width:200px; z-index:200;
+            display:none; flex-direction:column; gap:2px;
+            box-shadow:0 20px 40px rgba(0,0,0,0.7);
+        }
+        .status-dropdown.open { display:flex; }
+        .status-option {
+            display:flex; align-items:center; gap:10px;
+            padding:10px 14px; border-radius:10px; cursor:pointer;
+            font-size:13px; color:#ccc; transition:background 0.2s;
+            border:none; background:transparent; font-family:'Inter',sans-serif;
+            width:100%; text-align:left;
+        }
+        .status-option:hover { background:rgba(139,92,246,0.12); color:white; }
+        .dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+        .dot-disponivel   { background:#22c55e; }
+        .dot-ocupado      { background:#f59e0b; }
+        .dot-nao_perturbe { background:#ef4444; }
+        .dot-invisivel    { background:#6b7280; }
 
         .profile-name {
-            font-family: 'Poppins', sans-serif;
-            font-size: 22px; font-weight: 800;
-            text-align: center; margin-bottom: 10px;
-            word-break: break-word;
-            background: linear-gradient(to bottom, #fff, #ccc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-family:'Poppins',sans-serif; font-size:22px; font-weight:800;
+            text-align:center; margin-bottom:10px; word-break:break-word;
+            background:linear-gradient(to bottom,#fff,#ccc);
+            -webkit-background-clip:text; -webkit-text-fill-color:transparent;
         }
-
         .area-badge {
-            display: none; align-self: center; margin-bottom: 20px;
-            padding: 6px 18px;
-            background: rgba(139,92,246,0.12);
-            border: 1px solid rgba(139,92,246,0.3);
-            border-radius: 20px; font-size: 12px; color: #a78bfa;
-            font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+            display:none; align-self:center; margin-bottom:16px;
+            padding:6px 18px; background:rgba(139,92,246,0.12);
+            border:1px solid rgba(139,92,246,0.3); border-radius:20px;
+            font-size:12px; color:#a78bfa; font-weight:700;
+            text-transform:uppercase; letter-spacing:1px;
         }
-        .area-badge:not(.hidden) { display: block; }
-        .hidden { display: none !important; }
+        .area-badge:not(.hidden) { display:block; }
+        .hidden { display:none !important; }
 
         .incomplete-banner {
-            display: none; align-items: flex-start; gap: 10px;
-            background: rgba(245, 158, 11, 0.08);
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            border-radius: 15px; padding: 14px 16px;
-            margin-bottom: 20px; font-size: 12px; color: #fcd34d;
-            line-height: 1.5;
+            display:none; align-items:flex-start; gap:10px;
+            background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.3);
+            border-radius:15px; padding:14px 16px; margin-bottom:16px;
+            font-size:12px; color:#fcd34d; line-height:1.5;
         }
-        .incomplete-banner.show { display: flex; }
-        .incomplete-banner i { color: #f59e0b; flex-shrink: 0; margin-top: 2px; }
-        .incomplete-banner a { color: #f59e0b; text-decoration: underline; cursor: pointer; }
+        .incomplete-banner.show { display:flex; }
+        .incomplete-banner i { color:#f59e0b; flex-shrink:0; margin-top:2px; }
+        .incomplete-banner a { color:#f59e0b; text-decoration:underline; cursor:pointer; }
 
-        .info-list { list-style: none; width: 100%; margin-bottom: 6px; }
+        .info-list { list-style:none; width:100%; margin-bottom:6px; }
         .info-item {
-            display: flex; align-items: flex-start; gap: 12px;
-            padding: 10px 0; border-bottom: 1px solid var(--glass-border);
-            font-size: 13px; color: #ccc; word-break: break-all;
-            transition: color 0.2s;
+            display:flex; align-items:flex-start; gap:12px;
+            padding:10px 0; border-bottom:1px solid var(--glass-border);
+            font-size:13px; color:#ccc; word-break:break-all; transition:color 0.2s;
         }
-        .info-item:hover { color: #fff; }
-        .info-item:last-child { border-bottom: none; }
-        .info-item i { color: var(--primary); width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px; }
+        .info-item:hover { color:#fff; }
+        .info-item:last-child { border-bottom:none; }
+        .info-item i { color:var(--primary); width:16px; text-align:center; flex-shrink:0; margin-top:2px; }
 
-        .disp-section { margin-top: 20px; }
-        .disp-title {
-            font-size: 11px; color: var(--primary); margin-bottom: 10px;
-            text-transform: uppercase; letter-spacing: 2px; font-weight: 700;
-        }
-        .disp-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-        .disp-tag {
-            display: flex; align-items: center; gap: 5px;
-            padding: 5px 12px;
-            background: rgba(139,92,246,0.1);
-            border: 1px solid rgba(139,92,246,0.25);
-            border-radius: 20px; font-size: 12px; color: #a78bfa;
-            transition: all 0.2s;
-        }
-        .disp-tag:hover { background: rgba(139,92,246,0.2); border-color: var(--primary); }
-
-        .social-section { margin-top: 20px; }
-        .social-title {
-            font-size: 11px; color: var(--primary); margin-bottom: 10px;
-            text-transform: uppercase; letter-spacing: 2px; font-weight: 700;
-        }
-        .social-links { display: flex; flex-wrap: wrap; gap: 8px; }
+        .social-section { margin-top:20px; }
+        .social-title { font-size:11px; color:var(--primary); margin-bottom:10px; text-transform:uppercase; letter-spacing:2px; font-weight:700; }
+        .social-links { display:flex; flex-wrap:wrap; gap:8px; }
         .social-link {
-            display: flex; align-items: center; gap: 6px;
-            padding: 7px 14px;
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px; font-size: 12px; color: #aaa;
-            text-decoration: none; transition: all 0.3s;
+            display:flex; align-items:center; gap:6px; padding:7px 14px;
+            background:var(--glass); border:1px solid var(--glass-border);
+            border-radius:20px; font-size:12px; color:#aaa;
+            text-decoration:none; transition:all 0.3s;
         }
-        .social-link:hover { background: rgba(139,92,246,0.15); border-color: var(--primary); color: #a78bfa; }
-        .social-link i { width: 14px; text-align: center; }
+        .social-link:hover { background:rgba(139,92,246,0.15); border-color:var(--primary); color:#a78bfa; }
+        .social-link i { width:14px; text-align:center; }
 
         /* ── CONTENT CARDS ── */
         .content-card {
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            border-radius: 30px; padding: 32px;
-            margin-bottom: 28px;
-            backdrop-filter: blur(15px);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-            min-height: 120px;
-            transition: all 0.5s;
-            position: relative;
-            overflow: hidden;
+            background:var(--glass); border:1px solid var(--glass-border);
+            border-radius:30px; padding:32px; margin-bottom:28px;
+            backdrop-filter:blur(15px); box-shadow:0 10px 40px rgba(0,0,0,0.3);
+            min-height:120px; transition:all 0.5s; position:relative; overflow:hidden;
         }
         .content-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.5), transparent);
-            opacity: 0;
-            transition: opacity 0.4s;
+            content:''; position:absolute; top:0; left:0; right:0; height:2px;
+            background:linear-gradient(90deg,transparent,rgba(139,92,246,0.5),transparent);
+            opacity:0; transition:opacity 0.4s;
         }
-        .content-card:hover {
-            border-color: rgba(139, 92, 246, 0.3);
-            transform: translateY(-4px);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
-        }
-        .content-card:hover::before { opacity: 1; }
-
-        .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
-        .card-header-left { display: flex; align-items: center; gap: 14px; }
+        .content-card:hover { border-color:rgba(139,92,246,0.3); transform:translateY(-4px); box-shadow:0 20px 50px rgba(0,0,0,0.4); }
+        .content-card:hover::before { opacity:1; }
+        .card-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; }
+        .card-header-left { display:flex; align-items:center; gap:14px; }
         .card-icon {
-            width: 46px; height: 46px;
-            background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(217,70,239,0.1));
-            border: 1px solid rgba(139,92,246,0.25);
-            border-radius: 14px;
-            display: flex; align-items: center; justify-content: center;
-            color: var(--primary); font-size: 20px;
-            transition: transform 0.3s;
+            width:46px; height:46px;
+            background:linear-gradient(135deg,rgba(139,92,246,0.2),rgba(217,70,239,0.1));
+            border:1px solid rgba(139,92,246,0.25); border-radius:14px;
+            display:flex; align-items:center; justify-content:center;
+            color:var(--primary); font-size:20px; transition:transform 0.3s;
         }
-        .content-card:hover .card-icon { transform: scale(1.1) rotate(-5deg); }
-        .card-title {
-            font-family: 'Poppins', sans-serif;
-            font-size: 18px; font-weight: 700;
-        }
-
-        .card-content {
-            color: #ccc; line-height: 1.8;
-            word-break: break-word; white-space: pre-wrap; max-width: 100%;
-            font-size: 15px;
-        }
-        .bio-collapsed { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
-        .btn-ler-mais {
-            display: inline-block; margin-top: 12px;
-            color: var(--primary); font-size: 13px; font-weight: 700;
-            cursor: pointer; background: none; border: none; padding: 0;
-            transition: color 0.2s; text-transform: uppercase; letter-spacing: 1px;
-        }
-        .btn-ler-mais:hover { color: #a78bfa; }
-
-        .tags-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+        .content-card:hover .card-icon { transform:scale(1.1) rotate(-5deg); }
+        .card-title { font-family:'Poppins',sans-serif; font-size:18px; font-weight:700; }
+        .card-content { color:#ccc; line-height:1.8; word-break:break-word; white-space:pre-wrap; max-width:100%; font-size:15px; }
+        .tags-grid { display:flex; flex-wrap:wrap; gap:10px; }
         .tag {
-            display: flex; align-items: center; gap: 6px;
-            padding: 8px 16px;
-            background: rgba(139,92,246,0.1);
-            border: 1px solid rgba(139,92,246,0.25);
-            border-radius: 20px; font-size: 14px; color: #a78bfa;
-            transition: all 0.2s;
+            display:flex; align-items:center; gap:6px; padding:8px 16px;
+            background:rgba(139,92,246,0.1); border:1px solid rgba(139,92,246,0.25);
+            border-radius:20px; font-size:14px; color:#a78bfa; transition:all 0.2s;
         }
-        .tag:hover { background: rgba(139,92,246,0.2); border-color: var(--primary); }
-        .empty-state { color: #555; font-style: italic; font-size: 14px; }
-
+        .tag:hover { background:rgba(139,92,246,0.2); border-color:var(--primary); }
+        .empty-state { color:#555; font-style:italic; font-size:14px; }
         .btn-edit-card {
-            display: flex; align-items: center; gap: 6px;
-            padding: 8px 18px;
-            background: rgba(139,92,246,0.08);
-            border: 1px solid rgba(139,92,246,0.25);
-            border-radius: 20px; color: #a78bfa;
-            text-decoration: none; font-size: 13px; font-weight: 600;
-            transition: all 0.3s;
+            display:flex; align-items:center; gap:6px; padding:8px 18px;
+            background:rgba(139,92,246,0.08); border:1px solid rgba(139,92,246,0.25);
+            border-radius:20px; color:#a78bfa; text-decoration:none;
+            font-size:13px; font-weight:600; transition:all 0.3s;
         }
-        .btn-edit-card:hover { background: rgba(139,92,246,0.2); border-color: var(--primary); }
-        .btn-edit-card.hidden { display: none; }
+        .btn-edit-card:hover { background:rgba(139,92,246,0.2); border-color:var(--primary); }
+        .btn-edit-card.hidden { display:none; }
 
-        @media (max-width: 768px) {
-            .container { margin: 30px 16px; padding: 0; }
-            .profile-layout { grid-template-columns: 1fr; }
-            .profile-card { position: static; }
+        @media (max-width:768px) {
+            .container { margin:30px 16px; padding:0; }
+            .profile-layout { grid-template-columns:1fr; }
+            .profile-card { position:static; }
         }
     </style>
 </head>
 <body>
     <canvas id="bg-canvas"></canvas>
-
     <header class="header">
         <div class="header-left">
-            <a href="index.html">
-                <img src="../images/logo.png" alt="Backstage Logo" class="logo-img">
-            </a>
+            <a href="index.html"><img src="../images/logo.png" alt="Backstage Logo" class="logo-img"></a>
         </div>
         <div class="header-center">
             <div class="header-search" id="searchBar">
                 <i class="fas fa-search header-search-icon"></i>
                 <input type="text" class="header-search-input" placeholder="Buscar músicos..." readonly>
-                <button class="btn-filtrar" style="pointer-events:none; opacity:0.5;">
-                    <i class="fas fa-sliders"></i>
-                </button>
+                <button class="btn-filtrar" style="pointer-events:none;opacity:0.5;"><i class="fas fa-sliders"></i></button>
                 <button class="header-search-btn" id="btnBuscar">Buscar</button>
             </div>
         </div>
@@ -288,10 +221,7 @@
                 <div class="profile-incomplete-badge" id="incompleteBadge">!</div>
                 <div class="dropdown-menu">
                     <a href="perfil.html" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a>
-                    <a href="config.html" class="dropdown-item">
-                        <i class="fas fa-cog"></i> Configurações
-                        <span class="pending-dot" id="configPendingDot"></span>
-                    </a>
+                    <a href="config.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações<span class="pending-dot" id="configPendingDot"></span></a>
                     <div class="dropdown-divider"></div>
                     <div class="dropdown-item" id="btnSair"><i class="fas fa-sign-out-alt"></i> Sair</div>
                 </div>
@@ -308,6 +238,27 @@
                 <h1 class="profile-name" id="nomeExibir"></h1>
                 <span class="area-badge hidden" id="areaBadge"></span>
 
+                <!-- STATUS (visível para todos) -->
+                <div class="status-badge" id="statusBadge">
+                    <span class="status-dot" id="statusDot"></span>
+                    <span class="status-label" id="statusLabel"></span>
+                </div>
+
+                <!-- SELETOR (só para o próprio perfil) -->
+                <div class="status-selector" id="statusSelector">
+                    <button class="status-btn" id="statusBtn">
+                        <span class="dot" id="statusBtnDot"></span>
+                        <span id="statusBtnLabel"></span>
+                        <i class="fas fa-chevron-down" style="font-size:10px;margin-left:2px;"></i>
+                    </button>
+                    <div class="status-dropdown" id="statusDropdown">
+                        <button class="status-option" data-status="disponivel"><span class="dot dot-disponivel"></span>Disponível</button>
+                        <button class="status-option" data-status="ocupado"><span class="dot dot-ocupado"></span>Ocupado</button>
+                        <button class="status-option" data-status="nao_perturbe"><span class="dot dot-nao_perturbe"></span>Não perturbe</button>
+                        <button class="status-option" data-status="invisivel"><span class="dot dot-invisivel"></span>Invisível</button>
+                    </div>
+                </div>
+
                 <div class="incomplete-banner" id="incompleteBanner">
                     <i class="fas fa-exclamation-triangle"></i>
                     <span>Seu perfil está incompleto e <strong>não aparece nas buscas</strong>. <a href="editar.html">Complete agora</a> para ser encontrado.</span>
@@ -317,14 +268,8 @@
                     <li class="info-item"><i class="fas fa-envelope"></i><span id="emailExibir"></span></li>
                     <li class="info-item"><i class="fas fa-map-marker-alt"></i><span id="localExibir"></span></li>
                     <li class="info-item hidden" id="telefoneRow"><i class="fas fa-phone"></i><span id="telefoneExibir"></span></li>
-                    <li class="info-item hidden" id="bairroRow"><i class="fas fa-home"></i><span id="bairroExibir"></span></li>
                     <li class="info-item hidden" id="expRow"><i class="fas fa-star"></i><span id="expExibir"></span></li>
                 </ul>
-
-                <div class="disp-section hidden" id="dispSection">
-                    <p class="disp-title">Disponibilidade</p>
-                    <div class="disp-tags" id="dispTags"></div>
-                </div>
 
                 <div class="social-section hidden" id="socialSection">
                     <p class="social-title">Redes Sociais</p>
@@ -358,7 +303,7 @@
                     <div class="card-header">
                         <div class="card-header-left">
                             <div class="card-icon"><i class="fas fa-compact-disc"></i></div>
-                            <h2 class="card-title">Gêneros Favoritos</h2>
+                            <h2 class="card-title">Gêneros</h2>
                         </div>
                     </div>
                     <div id="generosCont"></div>
@@ -389,117 +334,120 @@
         import { verificarAutenticacao, fazerLogout } from '../js/auth.js';
 
         const SOCIAL_ICONS = {
-            instagram: 'fa-brands fa-instagram',
-            youtube: 'fa-brands fa-youtube',
-            spotify: 'fa-brands fa-spotify',
-            soundcloud: 'fa-brands fa-soundcloud',
-            tiktok: 'fa-brands fa-tiktok',
-            twitter: 'fa-brands fa-x-twitter',
-            facebook: 'fa-brands fa-facebook',
-            linkedin: 'fa-brands fa-linkedin',
-            github: 'fa-brands fa-github',
-            site: 'fa-solid fa-globe',
+            instagram:'fa-brands fa-instagram', youtube:'fa-brands fa-youtube',
+            spotify:'fa-brands fa-spotify', soundcloud:'fa-brands fa-soundcloud',
+            tiktok:'fa-brands fa-tiktok', twitter:'fa-brands fa-x-twitter',
+            facebook:'fa-brands fa-facebook', linkedin:'fa-brands fa-linkedin',
+            github:'fa-brands fa-github', site:'fa-solid fa-globe',
         };
+
+        const STATUS_MAP = {
+            disponivel:   { label:'Disponível',   cls:'disponivel' },
+            ocupado:      { label:'Ocupado',      cls:'ocupado' },
+            nao_perturbe: { label:'Não perturbe', cls:'nao_perturbe' },
+            invisivel:    { label:'Invisível',    cls:'invisivel' },
+        };
+
+        function aplicarStatus(status) {
+            const s = STATUS_MAP[status] || STATUS_MAP['disponivel'];
+            document.getElementById('statusDot').className = 'status-dot ' + s.cls;
+            document.getElementById('statusLabel').textContent = s.label;
+            const btnDot = document.getElementById('statusBtnDot');
+            const btnLbl = document.getElementById('statusBtnLabel');
+            if (btnDot) btnDot.className = 'dot dot-' + s.cls;
+            if (btnLbl) btnLbl.textContent = s.label;
+        }
 
         async function iniciarPerfil() {
             const params = new URLSearchParams(window.location.search);
             const idParam = params.get('id');
+            const usuarioLogado = verificarAutenticacao(false);
 
             let u;
             if (idParam) {
                 const res = await fetch(`/api/usuarios/${idParam}`);
                 u = await res.json();
-                const usuarioLogado = verificarAutenticacao(false);
                 if (!usuarioLogado || String(usuarioLogado.id_usuario) !== String(idParam)) {
                     document.getElementById('btnEditar')?.classList.add('hidden');
                 }
             } else {
-                const usuarioLocal = verificarAutenticacao();
-                if (!usuarioLocal) return;
-                const res = await fetch(`/api/usuarios/${usuarioLocal.id_usuario}`);
+                if (!usuarioLogado) { window.location.href = 'login.html'; return; }
+                const res = await fetch(`/api/usuarios/${usuarioLogado.id_usuario}`);
                 u = await res.json();
             }
 
+            const ehProprio = !idParam || String(usuarioLogado?.id_usuario) === String(u.id_usuario);
+
+            // Avatar e nome
             const nome = u.nome_artistico || u.nome_completo;
-            const iniciais = nome.substring(0, 2).toUpperCase();
-
-            document.getElementById('avatar').textContent = iniciais;
+            document.getElementById('avatar').textContent = nome.substring(0,2).toUpperCase();
             document.getElementById('nomeExibir').textContent = nome;
-            document.getElementById('emailExibir').textContent = u.email;
-            document.getElementById('localExibir').textContent = `${u.cidade || 'Não informado'}, ${u.estado || 'Não informado'}`;
 
-            if (u.areas_atuacao) {
+            // Área
+            const areas = Array.isArray(u.area_atuacao) ? u.area_atuacao : [];
+            if (areas.length) {
                 const badge = document.getElementById('areaBadge');
-                badge.textContent = u.areas_atuacao;
+                badge.textContent = areas.join(', ');
                 badge.classList.remove('hidden');
             }
 
+            // Status
+            aplicarStatus(u.status || 'disponivel');
+            if (ehProprio) {
+                document.getElementById('statusSelector').classList.add('show');
+            }
+
+            // Info
+            document.getElementById('emailExibir').textContent = u.email;
+            document.getElementById('localExibir').textContent =
+                [u.cidade, u.estado].filter(Boolean).join(', ') || 'Não informado';
             if (u.telefone) {
                 document.getElementById('telefoneExibir').textContent = u.telefone;
                 document.getElementById('telefoneRow').classList.remove('hidden');
             }
-            if (u.bairro) {
-                document.getElementById('bairroExibir').textContent = u.bairro;
-                document.getElementById('bairroRow').classList.remove('hidden');
-            }
-            if (u.experiencia) {
-                document.getElementById('expExibir').textContent = u.experiencia;
+            if (u.anos_experiencia) {
+                document.getElementById('expExibir').textContent = u.anos_experiencia + ' anos de experiência';
                 document.getElementById('expRow').classList.remove('hidden');
             }
 
-            const bio = u.biografia || 'Nenhuma descrição adicionada ainda.';
-            const bioEl = document.getElementById('bioExibir');
-            bioEl.textContent = bio;
+            // Bio
+            document.getElementById('bioExibir').textContent = u.biografia || 'Nenhuma descrição adicionada ainda.';
 
-            let disps = [];
-            try { disps = JSON.parse(u.disponibilidade || '[]'); } catch {}
-            if (disps.length > 0) {
-                const dispSection = document.getElementById('dispSection');
-                const dispTags = document.getElementById('dispTags');
-                dispSection.classList.remove('hidden');
-                dispTags.innerHTML = disps.map(d => `<span class="disp-tag"><i class="fas fa-clock"></i>${d}</span>`).join('');
+            // Instrumentos
+            const insts = u.instrumentos || [];
+            const talEl = document.getElementById('talentosCont');
+            talEl.innerHTML = insts.length
+                ? `<div class="tags-grid">${insts.map(i=>`<span class="tag"><i class="fas fa-music"></i>${i}</span>`).join('')}</div>`
+                : '<p class="empty-state">Nenhum instrumento adicionado.</p>';
+
+            // Gêneros
+            const gens = u.generos || [];
+            const genEl = document.getElementById('generosCont');
+            genEl.innerHTML = gens.length
+                ? `<div class="tags-grid">${gens.map(g=>`<span class="tag"><i class="fas fa-compact-disc"></i>${g}</span>`).join('')}</div>`
+                : '<p class="empty-state">Nenhum gênero adicionado.</p>';
+
+            // DAWs
+            const daws = u.daws || [];
+            if (daws.length) {
+                document.getElementById('dawsCard').classList.remove('hidden');
+                document.getElementById('dawsCont').innerHTML =
+                    `<div class="tags-grid">${daws.map(d=>`<span class="tag"><i class="fas fa-sliders"></i>${d}</span>`).join('')}</div>`;
             }
 
-            let insts = [];
-            try { insts = JSON.parse(u.instrumentos || '[]'); } catch {}
-            const talentosEl = document.getElementById('talentosCont');
-            if (insts.length > 0) {
-                talentosEl.innerHTML = `<div class="tags-grid">${insts.map(i => `<span class="tag"><i class="fas fa-music"></i>${i}</span>`).join('')}</div>`;
-            } else {
-                talentosEl.innerHTML = '<p class="empty-state">Nenhum instrumento adicionado.</p>';
-            }
-
-            let gens = [];
-            try { gens = JSON.parse(u.generos || '[]'); } catch {}
-            const generosEl = document.getElementById('generosCont');
-            if (gens.length > 0) {
-                generosEl.innerHTML = `<div class="tags-grid">${gens.map(g => `<span class="tag"><i class="fas fa-compact-disc"></i>${g}</span>`).join('')}</div>`;
-            } else {
-                generosEl.innerHTML = '<p class="empty-state">Nenhum gênero adicionado.</p>';
-            }
-
-            let daws = [];
-            try { daws = JSON.parse(u.daws || '[]'); } catch {}
-            if (daws.length > 0) {
-                const dawsCard = document.getElementById('dawsCard');
-                dawsCard.classList.remove('hidden');
-                document.getElementById('dawsCont').innerHTML = `<div class="tags-grid">${daws.map(d => `<span class="tag"><i class="fas fa-sliders"></i>${d}</span>`).join('')}</div>`;
-            }
-
-            let sociais = {};
-            try { sociais = JSON.parse(u.redes_sociais || '{}'); } catch {}
-            const socialSection = document.getElementById('socialSection');
-            const socialLinks = document.getElementById('socialLinks');
-            const linksHtml = Object.entries(sociais).filter(([,v]) => v).map(([k, v]) => {
+            // Redes sociais
+            const sociais = u.redes_sociais || {};
+            const linksHtml = Object.entries(sociais).filter(([,v])=>v).map(([k,v])=>{
                 const icon = SOCIAL_ICONS[k] || 'fa-solid fa-link';
                 return `<a href="${v}" target="_blank" class="social-link"><i class="${icon}"></i>${k}</a>`;
             }).join('');
             if (linksHtml) {
-                socialSection.classList.remove('hidden');
-                socialLinks.innerHTML = linksHtml;
+                document.getElementById('socialSection').classList.remove('hidden');
+                document.getElementById('socialLinks').innerHTML = linksHtml;
             }
 
-            if (u.cadastro_completo == 0) {
+            // Perfil incompleto
+            if (u.cadastro_completo == 0 && ehProprio) {
                 document.getElementById('incompleteBanner').classList.add('show');
                 document.getElementById('incompleteBadge')?.classList.add('show');
                 document.getElementById('configPendingDot')?.classList.add('show');
@@ -511,82 +459,80 @@
         showLoading('Carregando perfil...');
         iniciarPerfil();
 
+        // Seletor de status
+        document.getElementById('statusBtn')?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.getElementById('statusDropdown').classList.toggle('open');
+        });
+        document.addEventListener('click', () => {
+            document.getElementById('statusDropdown')?.classList.remove('open');
+        });
+        document.querySelectorAll('.status-option').forEach(opt => {
+            opt.addEventListener('click', async () => {
+                const novoStatus = opt.dataset.status;
+                document.getElementById('statusDropdown').classList.remove('open');
+                aplicarStatus(novoStatus);
+                const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado') || '{}');
+                await fetch(`/api/usuarios/${usuarioLogado.id_usuario}/status`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: novoStatus })
+                });
+                usuarioLogado.status = novoStatus;
+                localStorage.setItem('usuarioLogado', JSON.stringify(usuarioLogado));
+            });
+        });
+
+        // Header
         document.getElementById('searchBar')?.addEventListener('click', () => {
             window.location.href = 'pesquisar_usuarios.html?focar=true';
         });
-
-        const profileDropdown = document.getElementById('profileDropdown');
-        const profileTrigger = document.getElementById('profileTrigger');
         const usuarioLogado = verificarAutenticacao(false);
         if (usuarioLogado) {
             const nome = usuarioLogado.nome_artistico || usuarioLogado.nome_completo;
-            profileTrigger.textContent = nome.substring(0, 2).toUpperCase();
+            document.getElementById('profileTrigger').textContent = nome.substring(0,2).toUpperCase();
         }
-        profileDropdown?.addEventListener('click', () => profileDropdown.classList.toggle('active'));
+        document.getElementById('profileDropdown')?.addEventListener('click', () =>
+            document.getElementById('profileDropdown').classList.toggle('active'));
         document.getElementById('btnSair')?.addEventListener('click', fazerLogout);
 
-        /* ── REVEAL ── */
         function reveal() {
             document.querySelectorAll('.reveal').forEach(el => {
-                if (el.getBoundingClientRect().top < window.innerHeight - 80) {
-                    el.classList.add('active');
-                }
+                if (el.getBoundingClientRect().top < window.innerHeight - 80) el.classList.add('active');
             });
         }
         window.addEventListener('scroll', reveal);
         reveal();
     </script>
-
     <script>
-        /* ── CANVAS PARTÍCULAS ── */
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
-
-        function initCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-
+        function initCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         class Particle {
             constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 2;
-                this.speedX = Math.random() * 0.5 - 0.25;
-                this.speedY = Math.random() * 0.5 - 0.25;
-                this.opacity = Math.random() * 0.5 + 0.1;
+                this.x = Math.random()*canvas.width; this.y = Math.random()*canvas.height;
+                this.size = Math.random()*2; this.speedX = Math.random()*0.5-0.25;
+                this.speedY = Math.random()*0.5-0.25; this.opacity = Math.random()*0.5+0.1;
             }
             update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-                if (this.x > canvas.width) this.x = 0;
-                if (this.x < 0) this.x = canvas.width;
-                if (this.y > canvas.height) this.y = 0;
-                if (this.y < 0) this.y = canvas.height;
+                this.x+=this.speedX; this.y+=this.speedY;
+                if(this.x>canvas.width)this.x=0; if(this.x<0)this.x=canvas.width;
+                if(this.y>canvas.height)this.y=0; if(this.y<0)this.y=canvas.height;
             }
             draw() {
-                ctx.fillStyle = `rgba(139, 92, 246, ${this.opacity})`;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
+                ctx.fillStyle=`rgba(139,92,246,${this.opacity})`;
+                ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill();
             }
         }
-
-        function createParticles() {
-            for (let i = 0; i < 100; i++) particles.push(new Particle());
-        }
-
+        function createParticles() { for(let i=0;i<100;i++) particles.push(new Particle()); }
         function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => { p.update(); p.draw(); });
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            particles.forEach(p=>{p.update();p.draw()});
             requestAnimationFrame(animate);
         }
-
         window.addEventListener('resize', initCanvas);
-        initCanvas();
-        createParticles();
-        animate();
+        initCanvas(); createParticles(); animate();
     </script>
 </body>
 </html>

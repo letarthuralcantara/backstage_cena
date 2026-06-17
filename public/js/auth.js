@@ -1,20 +1,19 @@
 export async function salvarCadastro(dados) {
   const body = {
-    nome_completo: dados.nome_completo,
-    nome_artistico: dados.nome_artistico || dados.nome_completo,
-    email: dados.email,
-    senha: dados.senha,
-    telefone: dados.telefone || null,
-    cidade: dados.cidade || null,
-    estado: dados.estado || null,
-    bairro: dados.bairro || null,
-    area_atuacao: dados.areas_atuacao?.[0] || null,
+    nome_completo:    dados.nome_completo,
+    nome_artistico:   dados.nome_artistico || dados.nome_completo,
+    email:            dados.email,
+    senha:            dados.senha,
+    telefone:         dados.telefone || null,
+    cidade:           dados.cidade || null,
+    estado:           dados.estado || null,
+    bairro:           dados.bairro || null,
+    area_atuacao:     dados.area_atuacao || [],
     anos_experiencia: Number(dados.anos_experiencia) || 0,
-    biografia: dados.biografia || null,
-    instrumentos: dados.instrumentos || [],
-    generos: dados.generos || [],
-    disponibilidades: dados.disponibilidade || [],
-    daws: dados.daws || [],
+    biografia:        dados.biografia || null,
+    instrumentos:     dados.instrumentos || [],
+    generos:          dados.generos || [],
+    daws:             dados.daws || [],
     cadastro_completo: dados.cadastro_completo ?? 0,
   };
 
@@ -40,23 +39,30 @@ export async function completarCadastro(dados) {
 
   const id = Number(usuarioLocal.id_usuario);
 
+  // area_atuacao: aceita tanto array direto quanto o campo antigo
+  const areaAtual = Array.isArray(usuarioLocal.area_atuacao)
+    ? usuarioLocal.area_atuacao
+    : (usuarioLocal.area_atuacao ? [usuarioLocal.area_atuacao] : []);
+
   const body = {
-    id_usuario: id,
-    nome_completo:  usuarioLocal.nome_completo,
-    nome_artistico: dados.nome_artistico || usuarioLocal.nome_artistico || usuarioLocal.nome_completo,
-    email:          usuarioLocal.email,
-    senha:          usuarioLocal.senha,
-    telefone:       dados.telefone || usuarioLocal.telefone || null,
-    cidade:         dados.cidade   || usuarioLocal.cidade   || null,
-    estado:         dados.estado   || usuarioLocal.estado   || null,
-    bairro:         dados.bairro   || usuarioLocal.bairro   || null,
-    area_atuacao:   dados.areas_atuacao?.[0] || usuarioLocal.area_atuacao || null,
-    biografia:      dados.biografia || usuarioLocal.biografia || null,
-    instrumentos:   dados.instrumentos   || [],
-    generos:        dados.generos        || [],
-    disponibilidades: dados.disponibilidade || dados.disponibilidades || [],
-    daws:           dados.daws           || [],
-    cadastro_completo: 1,
+    id_usuario:       id,
+    nome_completo:    usuarioLocal.nome_completo,
+    nome_artistico:   dados.nome_artistico || usuarioLocal.nome_artistico || usuarioLocal.nome_completo,
+    email:            usuarioLocal.email,
+    senha:            usuarioLocal.senha,
+    telefone:         dados.telefone  || usuarioLocal.telefone || null,
+    cidade:           dados.cidade    || usuarioLocal.cidade   || null,
+    estado:           dados.estado    || usuarioLocal.estado   || null,
+    bairro:           dados.bairro    || usuarioLocal.bairro   || null,
+    area_atuacao:     dados.area_atuacao?.length
+                        ? dados.area_atuacao
+                        : areaAtual,
+    biografia:        dados.biografia || usuarioLocal.biografia || null,
+    instrumentos:     dados.instrumentos  || [],
+    generos:          dados.generos       || [],
+    daws:             dados.daws          || [],
+    status:           dados.status        || usuarioLocal.status || 'disponivel',
+    cadastro_completo: dados.cadastro_completo ?? 1,
   };
 
   const res = await fetch(`/api/usuarios/${id}`, {
@@ -97,8 +103,6 @@ export function fazerLogout() {
   window.location.href = 'login.html';
 }
 
-// redirecionar=true: redireciona para login se não autenticado
-// redirecionar=false: só retorna null, sem redirecionar (usado no cadastro)
 export function verificarAutenticacao(redirecionar = true) {
   const usuario = localStorage.getItem('usuarioLogado');
   if (!usuario) {
