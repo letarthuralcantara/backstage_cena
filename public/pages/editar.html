@@ -17,311 +17,121 @@
             --glass: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.08);
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-dark);
-            color: #fff;
-            min-height: 100vh;
-            overflow-x: hidden;
+            color: #fff; min-height: 100vh; overflow-x: hidden;
             background-image:
-                radial-gradient(circle at 10% 10%, rgba(139, 92, 246, 0.15), transparent 50%),
-                radial-gradient(circle at 90% 90%, rgba(217, 70, 239, 0.1), transparent 50%);
+                radial-gradient(circle at 10% 10%, rgba(139,92,246,0.15), transparent 50%),
+                radial-gradient(circle at 90% 90%, rgba(217,70,239,0.1), transparent 50%);
             background-attachment: fixed;
         }
+        #bg-canvas { position:fixed; top:0; left:0; width:100%; height:100%; z-index:-1; opacity:0.4; }
+        .app-layout { position:relative; z-index:1; display:flex; min-height:100vh; padding-top:56px; }
 
-        #bg-canvas {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: -1;
-            opacity: 0.4;
-        }
-
-        /* ── LAYOUT ── */
-        .app-layout {
-            position: relative; z-index: 1;
-            display: flex; min-height: 100vh;
-            padding-top: 56px;
-        }
-
-        /* ── SIDEBAR ── */
+        /* SIDEBAR */
         .edit-sidebar {
-            width: 280px; flex-shrink: 0;
-            position: fixed; top: 56px; left: 0; bottom: 0;
-            background: rgba(5, 5, 5, 0.9);
-            backdrop-filter: blur(20px);
-            border-right: 1px solid var(--glass-border);
-            overflow-y: auto; display: flex; flex-direction: column;
+            width:280px; flex-shrink:0;
+            position:fixed; top:56px; left:0; bottom:0;
+            background:rgba(5,5,5,0.9); backdrop-filter:blur(20px);
+            border-right:1px solid var(--glass-border);
+            overflow-y:auto; display:flex; flex-direction:column;
         }
+        .sidebar-user { padding:32px 24px 24px; border-bottom:1px solid var(--glass-border); display:flex; flex-direction:column; align-items:center; gap:12px; }
+        .sidebar-avatar { width:80px; height:80px; border-radius:50%; background:linear-gradient(135deg,var(--primary),var(--secondary)); display:flex; align-items:center; justify-content:center; font-size:1.8rem; font-weight:800; border:3px solid rgba(139,92,246,0.4); box-shadow:0 0 30px var(--primary-glow); overflow:hidden; transition:box-shadow 0.3s; }
+        .sidebar-avatar:hover { box-shadow:0 0 50px var(--primary-glow); }
+        .sidebar-name { font-family:'Poppins',sans-serif; font-size:15px; font-weight:700; text-align:center; background:linear-gradient(to bottom,#fff,#ccc); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .sidebar-nav { padding:16px 12px; flex:1; }
+        .nav-section-title { font-size:10px; color:var(--primary); text-transform:uppercase; letter-spacing:2px; padding:12px 12px 6px; font-weight:800; }
+        .nav-item { display:flex; align-items:center; gap:12px; padding:11px 16px; border-radius:14px; color:#888; font-size:13px; cursor:pointer; transition:all 0.3s; border:1px solid transparent; background:transparent; width:100%; text-align:left; font-family:'Inter',sans-serif; font-weight:500; }
+        .nav-item:hover { background:rgba(139,92,246,0.08); color:#e5e7eb; border-color:rgba(139,92,246,0.15); }
+        .nav-item.active { background:rgba(139,92,246,0.12); color:white; font-weight:700; border-color:rgba(139,92,246,0.3); box-shadow:0 4px 15px rgba(0,0,0,0.2); }
+        .nav-item i { width:18px; text-align:center; color:var(--primary); font-size:14px; flex-shrink:0; }
+        .nav-divider { height:1px; background:var(--glass-border); margin:8px 12px; }
+        .nav-dot { width:8px; height:8px; border-radius:50%; background:#f59e0b; margin-left:auto; flex-shrink:0; box-shadow:0 0 8px rgba(245,158,11,0.7); }
 
-        .sidebar-user {
-            padding: 32px 24px 24px;
-            border-bottom: 1px solid var(--glass-border);
-            display: flex; flex-direction: column; align-items: center; gap: 12px;
-        }
-        .sidebar-avatar {
-            width: 80px; height: 80px; border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.8rem; font-weight: 800;
-            border: 3px solid rgba(139,92,246,0.4);
-            box-shadow: 0 0 30px var(--primary-glow);
-            overflow: hidden;
-            transition: box-shadow 0.3s;
-        }
-        .sidebar-avatar:hover { box-shadow: 0 0 50px var(--primary-glow); }
-        .sidebar-name {
-            font-family: 'Poppins', sans-serif;
-            font-size: 15px; font-weight: 700; text-align: center;
-            background: linear-gradient(to bottom, #fff, #ccc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .sidebar-nav { padding: 16px 12px; flex: 1; }
-        .nav-section-title {
-            font-size: 10px; color: var(--primary);
-            text-transform: uppercase; letter-spacing: 2px;
-            padding: 12px 12px 6px; font-weight: 800;
-        }
-        .nav-item {
-            display: flex; align-items: center; gap: 12px;
-            padding: 11px 16px; border-radius: 14px;
-            color: #888; font-size: 13px; cursor: pointer;
-            transition: all 0.3s; border: none; background: transparent;
-            width: 100%; text-align: left; font-family: 'Inter', sans-serif;
-            font-weight: 500; border: 1px solid transparent;
-        }
-        .nav-item:hover { background: rgba(139,92,246,0.08); color: #e5e7eb; border-color: rgba(139,92,246,0.15); }
-        .nav-item.active {
-            background: rgba(139,92,246,0.12);
-            color: white; font-weight: 700;
-            border-color: rgba(139,92,246,0.3);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-        .nav-item i { width: 18px; text-align: center; color: var(--primary); font-size: 14px; flex-shrink: 0; }
-        .nav-divider { height: 1px; background: var(--glass-border); margin: 8px 12px; }
-        .nav-dot {
-            width: 8px; height: 8px; border-radius: 50%;
-            background: #f59e0b; margin-left: auto; flex-shrink: 0;
-            box-shadow: 0 0 8px rgba(245,158,11,0.7);
-        }
-
-        /* ── MAIN CONTENT ── */
-        .edit-main {
-            flex: 1; margin-left: 280px;
-            max-width: 720px;
-            padding: 50px 56px 80px;
-        }
-
-        /* Mensagens globais */
-        .sucesso-msg {
-            background: rgba(16,185,129,0.08);
-            border: 1px solid rgba(16,185,129,0.25);
-            color: #6ee7b7; padding: 16px 20px; border-radius: 20px;
-            font-size: 14px; margin-bottom: 28px; display: none;
-            align-items: center; gap: 12px;
-        }
-        .erro-msg {
-            background: rgba(239,68,68,0.08);
-            border: 1px solid rgba(239,68,68,0.25);
-            color: #f87171; padding: 16px 20px; border-radius: 20px;
-            font-size: 14px; margin-bottom: 28px; display: none;
-        }
-
-        /* ── PANELS ── */
-        .edit-panel { display: none; animation: panelIn 0.5s cubic-bezier(0.2, 1, 0.3, 1); }
-        .edit-panel.active { display: block; }
-
-        @keyframes panelIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        .panel-header {
-            margin-bottom: 36px;
-            padding-bottom: 24px;
-            border-bottom: 1px solid var(--glass-border);
-        }
-        .panel-title {
-            font-family: 'Poppins', sans-serif;
-            font-size: 28px; font-weight: 800; margin-bottom: 6px;
-            background: linear-gradient(to bottom, #fff, #ccc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .panel-subtitle { color: #666; font-size: 14px; letter-spacing: 0.5px; }
+        /* MAIN */
+        .edit-main { flex:1; margin-left:280px; max-width:720px; padding:50px 56px 80px; }
+        .sucesso-msg { background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.25); color:#6ee7b7; padding:16px 20px; border-radius:20px; font-size:14px; margin-bottom:28px; display:none; align-items:center; gap:12px; }
+        .erro-msg { background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.25); color:#f87171; padding:16px 20px; border-radius:20px; font-size:14px; margin-bottom:28px; display:none; }
+        .edit-panel { display:none; animation:panelIn 0.5s cubic-bezier(0.2,1,0.3,1); }
+        .edit-panel.active { display:block; }
+        @keyframes panelIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+        .panel-header { margin-bottom:36px; padding-bottom:24px; border-bottom:1px solid var(--glass-border); }
+        .panel-title { font-family:'Poppins',sans-serif; font-size:28px; font-weight:800; margin-bottom:6px; background:linear-gradient(to bottom,#fff,#ccc); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .panel-subtitle { color:#666; font-size:14px; letter-spacing:0.5px; }
 
         /* Foto */
-        .foto-section {
-            display: flex; align-items: center; gap: 24px;
-            padding: 28px;
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            backdrop-filter: blur(10px);
-        }
-        .foto-avatar-big {
-            width: 96px; height: 96px; border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border: 3px solid rgba(139,92,246,0.4);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 2.2rem; color: white; font-weight: 800; flex-shrink: 0; overflow: hidden;
-            box-shadow: 0 0 30px var(--primary-glow);
-        }
-        .foto-info p { color: #e5e7eb; font-size: 15px; margin-bottom: 6px; font-weight: 600; }
-        .foto-info small { color: #666; font-size: 13px; line-height: 1.6; display: block; }
-        .em-breve {
-            display: inline-block; background: rgba(139,92,246,0.12);
-            border: 1px solid rgba(139,92,246,0.3); color: #a78bfa;
-            font-size: 10px; padding: 3px 10px; border-radius: 10px; margin-left: 8px;
-            font-weight: 700; letter-spacing: 0.5px;
-        }
-        .btn-upload {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 9px 18px;
-            background: rgba(255,255,255,0.04);
-            border: 1px solid var(--glass-border); border-radius: 20px;
-            color: #555; font-size: 13px; cursor: not-allowed; margin-top: 12px; opacity: 0.5;
-        }
+        .foto-section { display:flex; align-items:center; gap:24px; padding:28px; background:var(--glass); border:1px solid var(--glass-border); border-radius:24px; backdrop-filter:blur(10px); }
+        .foto-avatar-big { width:96px; height:96px; border-radius:50%; background:linear-gradient(135deg,var(--primary),var(--secondary)); border:3px solid rgba(139,92,246,0.4); display:flex; align-items:center; justify-content:center; font-size:2.2rem; color:white; font-weight:800; flex-shrink:0; overflow:hidden; box-shadow:0 0 30px var(--primary-glow); }
+        .foto-info p { color:#e5e7eb; font-size:15px; margin-bottom:6px; font-weight:600; }
+        .foto-info small { color:#666; font-size:13px; line-height:1.6; display:block; }
+        .em-breve { display:inline-block; background:rgba(139,92,246,0.12); border:1px solid rgba(139,92,246,0.3); color:#a78bfa; font-size:10px; padding:3px 10px; border-radius:10px; margin-left:8px; font-weight:700; letter-spacing:0.5px; }
+        .btn-upload { display:inline-flex; align-items:center; gap:8px; padding:9px 18px; background:rgba(255,255,255,0.04); border:1px solid var(--glass-border); border-radius:20px; color:#555; font-size:13px; cursor:not-allowed; margin-top:12px; opacity:0.5; }
 
-        /* Formulários */
-        .form-section { margin-bottom: 28px; }
-        .form-section-title {
-            font-size: 11px; font-weight: 800; color: var(--primary);
-            text-transform: uppercase; letter-spacing: 2px;
-            margin-bottom: 14px;
-        }
-        .form-group { margin-bottom: 18px; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        label { display: block; color: #aaa; font-weight: 600; margin-bottom: 8px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.8px; }
-        input, select, textarea {
-            width: 100%; padding: 13px 16px;
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            border-radius: 14px; font-size: 14px;
-            font-family: 'Inter', sans-serif; color: white; transition: all 0.3s;
-        }
-        textarea { min-height: 100px; resize: vertical; }
-        select option { background: #1a1a1a; }
-        input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.2); }
-        .bio-wrap { position: relative; }
-        .bio-counter { position: absolute; bottom: 10px; right: 14px; font-size: 11px; color: #555; pointer-events: none; }
-        .bio-counter.warning { color: #f59e0b; }
-        .bio-counter.limit { color: #ef4444; }
-        input:focus, select:focus, textarea:focus {
-            outline: none; border-color: var(--primary);
-            background: rgba(139,92,246,0.06);
-            box-shadow: 0 0 20px rgba(139,92,246,0.15);
-        }
+        /* Forms */
+        .form-section { margin-bottom:28px; }
+        .form-section-title { font-size:11px; font-weight:800; color:var(--primary); text-transform:uppercase; letter-spacing:2px; margin-bottom:14px; }
+        .form-group { margin-bottom:18px; }
+        .form-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+        label { display:block; color:#aaa; font-weight:600; margin-bottom:8px; font-size:12px; text-transform:uppercase; letter-spacing:0.8px; }
+        input, select, textarea { width:100%; padding:13px 16px; background:var(--glass); border:1px solid var(--glass-border); border-radius:14px; font-size:14px; font-family:'Inter',sans-serif; color:white; transition:all 0.3s; }
+        textarea { min-height:100px; resize:vertical; }
+        select option { background:#1a1a1a; }
+        input::placeholder, textarea::placeholder { color:rgba(255,255,255,0.2); }
+        .bio-wrap { position:relative; }
+        .bio-counter { position:absolute; bottom:10px; right:14px; font-size:11px; color:#555; pointer-events:none; }
+        .bio-counter.warning { color:#f59e0b; }
+        .bio-counter.limit { color:#ef4444; }
+        input:focus, select:focus, textarea:focus { outline:none; border-color:var(--primary); background:rgba(139,92,246,0.06); box-shadow:0 0 20px rgba(139,92,246,0.15); }
 
-        /* Checkboxes e radios */
-        .checkbox-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .checkbox-item input[type="checkbox"] { display: none; }
-        .checkbox-label {
-            display: flex; align-items: center; gap: 8px;
-            padding: 11px 14px; border: 1px solid var(--glass-border);
-            border-radius: 12px; cursor: pointer; font-size: 13px;
-            color: #888; transition: all 0.3s; background: var(--glass);
-        }
-        .checkbox-label:hover { border-color: var(--primary); color: #e5e7eb; background: rgba(139,92,246,0.08); }
-        .checkbox-item input:checked + .checkbox-label {
-            border-color: var(--primary); background: rgba(139,92,246,0.15); color: white;
-        }
-        .checkbox-icon {
-            width: 16px; height: 16px; background: transparent; border-radius: 4px;
-            display: none; align-items: center; justify-content: center;
-            font-size: 9px; flex-shrink: 0; color: white;
-        }
-        .checkbox-item input:checked + .checkbox-label .checkbox-icon { display: flex; background: var(--primary); }
-        .generos-grid { display: flex; flex-wrap: wrap; gap: 10px; }
-        .generos-grid .checkbox-label { border-radius: 20px; font-size: 13px; padding: 8px 16px; }
+        /* Checkboxes */
+        .checkbox-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+        .checkbox-item input[type="checkbox"] { display:none; }
+        .checkbox-label { display:flex; align-items:center; gap:8px; padding:11px 14px; border:1px solid var(--glass-border); border-radius:12px; cursor:pointer; font-size:13px; color:#888; transition:all 0.3s; background:var(--glass); }
+        .checkbox-label:hover { border-color:var(--primary); color:#e5e7eb; background:rgba(139,92,246,0.08); }
+        .checkbox-item input:checked + .checkbox-label { border-color:var(--primary); background:rgba(139,92,246,0.15); color:white; }
+        .checkbox-icon { width:16px; height:16px; background:transparent; border-radius:4px; display:none; align-items:center; justify-content:center; font-size:9px; flex-shrink:0; color:white; }
+        .checkbox-item input:checked + .checkbox-label .checkbox-icon { display:flex; background:var(--primary); }
+        .generos-grid { display:flex; flex-wrap:wrap; gap:10px; }
+        .generos-grid .checkbox-label { border-radius:20px; font-size:13px; padding:8px 16px; }
 
         /* Areas */
-        .areas-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-        .area-card input { display: none; }
-        .area-label {
-            display: flex; flex-direction: column; align-items: center; gap: 10px;
-            padding: 22px 14px; border: 1px solid var(--glass-border);
-            border-radius: 20px; cursor: pointer; transition: all 0.3s;
-            background: var(--glass);
-        }
-        .area-label:hover { border-color: var(--primary); background: rgba(139,92,246,0.08); transform: translateY(-4px); }
-        .area-card input:checked + .area-label { border-color: var(--primary); background: rgba(139,92,246,0.15); box-shadow: 0 0 20px rgba(139,92,246,0.2); }
-        .area-icon { font-size: 26px; color: var(--primary); }
-        .area-name { font-size: 12px; font-weight: 700; color: #e5e7eb; text-align: center; text-transform: uppercase; letter-spacing: 0.5px; }
+        .areas-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+        .area-card input { display:none; }
+        .area-label { display:flex; flex-direction:column; align-items:center; gap:10px; padding:22px 14px; border:1px solid var(--glass-border); border-radius:20px; cursor:pointer; transition:all 0.3s; background:var(--glass); }
+        .area-label:hover { border-color:var(--primary); background:rgba(139,92,246,0.08); transform:translateY(-4px); }
+        .area-card input:checked + .area-label { border-color:var(--primary); background:rgba(139,92,246,0.15); box-shadow:0 0 20px rgba(139,92,246,0.2); }
+        .area-icon { font-size:26px; color:var(--primary); }
+        .area-name { font-size:12px; font-weight:700; color:#e5e7eb; text-align:center; text-transform:uppercase; letter-spacing:0.5px; }
 
         /* Redes sociais */
-        .social-card {
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            overflow: hidden;
-            backdrop-filter: blur(10px);
-        }
-        .social-row {
-            display: flex; align-items: center; gap: 14px;
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--glass-border);
-            transition: background 0.2s;
-        }
-        .social-row:last-child { border-bottom: none; }
-        .social-row:hover { background: rgba(139,92,246,0.04); }
-        .social-icon-wrap {
-            width: 38px; height: 38px; border-radius: 12px;
-            background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.2);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 16px; color: var(--primary); flex-shrink: 0;
-            transition: all 0.3s;
-        }
-        .social-row:hover .social-icon-wrap { background: rgba(139,92,246,0.2); border-color: var(--primary); }
-        .social-name { width: 90px; font-size: 13px; color: #888; flex-shrink: 0; font-weight: 600; }
-        .social-row input {
-            flex: 1; margin: 0; padding: 10px 14px;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px; font-size: 13px;
-        }
+        .social-card { background:var(--glass); border:1px solid var(--glass-border); border-radius:24px; overflow:hidden; backdrop-filter:blur(10px); }
+        .social-row { display:flex; align-items:center; gap:14px; padding:16px 20px; border-bottom:1px solid var(--glass-border); transition:background 0.2s; }
+        .social-row:last-child { border-bottom:none; }
+        .social-row:hover { background:rgba(139,92,246,0.04); }
+        .social-icon-wrap { width:38px; height:38px; border-radius:12px; background:rgba(139,92,246,0.1); border:1px solid rgba(139,92,246,0.2); display:flex; align-items:center; justify-content:center; font-size:16px; color:var(--primary); flex-shrink:0; transition:all 0.3s; }
+        .social-row:hover .social-icon-wrap { background:rgba(139,92,246,0.2); border-color:var(--primary); }
+        .social-name { width:90px; font-size:13px; color:#888; flex-shrink:0; font-weight:600; }
+        .social-row input { flex:1; margin:0; padding:10px 14px; background:rgba(255,255,255,0.03); border:1px solid var(--glass-border); border-radius:12px; font-size:13px; }
 
         /* Action bar */
-        .action-bar {
-            display: flex; gap: 12px; margin-top: 32px;
-            padding-top: 24px; border-top: 1px solid var(--glass-border);
-        }
-        .btn-salvar {
-            flex: 1; padding: 15px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border: none; border-radius: 50px; color: white;
-            font-size: 14px; font-weight: 800; cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            font-family: 'Inter', sans-serif;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-            box-shadow: 0 0 20px var(--primary-glow);
-            text-transform: uppercase; letter-spacing: 1px;
-        }
-        .btn-salvar:hover { transform: scale(1.04); box-shadow: 0 0 40px var(--primary-glow); }
-        .btn-salvar:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-        .btn-cancelar {
-            padding: 15px 28px; background: transparent;
-            border: 1px solid var(--glass-border); border-radius: 50px;
-            color: #888; font-size: 14px; font-weight: 700;
-            cursor: pointer; transition: all 0.3s; font-family: 'Inter', sans-serif;
-            text-decoration: none; display: flex; align-items: center;
-        }
-        .btn-cancelar:hover { border-color: var(--primary); color: #a78bfa; }
+        .action-bar { display:flex; gap:12px; margin-top:32px; padding-top:24px; border-top:1px solid var(--glass-border); }
+        .btn-salvar { flex:1; padding:15px; background:linear-gradient(135deg,var(--primary),var(--secondary)); border:none; border-radius:50px; color:white; font-size:14px; font-weight:800; cursor:pointer; transition:all 0.4s cubic-bezier(0.175,0.885,0.32,1.275); font-family:'Inter',sans-serif; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 0 20px var(--primary-glow); text-transform:uppercase; letter-spacing:1px; }
+        .btn-salvar:hover { transform:scale(1.04); box-shadow:0 0 40px var(--primary-glow); }
+        .btn-salvar:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+        .btn-cancelar { padding:15px 28px; background:transparent; border:1px solid var(--glass-border); border-radius:50px; color:#888; font-size:14px; font-weight:700; cursor:pointer; transition:all 0.3s; font-family:'Inter',sans-serif; text-decoration:none; display:flex; align-items:center; }
+        .btn-cancelar:hover { border-color:var(--primary); color:#a78bfa; }
 
-        @media (max-width: 768px) {
-            .edit-sidebar { position: static; width: 100%; border-right: none; border-bottom: 1px solid var(--glass-border); }
-            .app-layout { flex-direction: column; }
-            .edit-main { margin-left: 0; padding: 28px 20px 60px; max-width: 100%; }
-            footer { margin-left: 0; }
-            .header-center { display: none; }
-            .form-row { grid-template-columns: 1fr; }
-            .checkbox-grid { grid-template-columns: repeat(2, 1fr); }
-            .areas-grid { grid-template-columns: repeat(2, 1fr); }
+        @media (max-width:768px) {
+            .edit-sidebar { position:static; width:100%; border-right:none; border-bottom:1px solid var(--glass-border); }
+            .app-layout { flex-direction:column; }
+            .edit-main { margin-left:0; padding:28px 20px 60px; max-width:100%; }
+            .header-center { display:none; }
+            .form-row { grid-template-columns:1fr; }
+            .checkbox-grid { grid-template-columns:repeat(2,1fr); }
+            .areas-grid { grid-template-columns:repeat(2,1fr); }
         }
     </style>
 </head>
@@ -336,9 +146,7 @@
             <div class="header-search" id="searchBar">
                 <i class="fas fa-search header-search-icon"></i>
                 <input type="text" class="header-search-input" placeholder="Buscar músicos..." readonly>
-                <button class="btn-filtrar" style="pointer-events:none; opacity:0.5;">
-                    <i class="fas fa-sliders"></i>
-                </button>
+                <button class="btn-filtrar" style="pointer-events:none;opacity:0.5;"><i class="fas fa-sliders"></i></button>
                 <button class="header-search-btn">Buscar</button>
             </div>
         </div>
@@ -356,7 +164,6 @@
     </header>
 
     <div class="app-layout">
-        <!-- SIDEBAR -->
         <aside class="edit-sidebar">
             <div class="sidebar-user">
                 <div class="sidebar-avatar" id="sidebarAvatar"></div>
@@ -375,7 +182,6 @@
             </nav>
         </aside>
 
-        <!-- MAIN -->
         <main class="edit-main">
             <div class="sucesso-msg" id="sucessoMsg"><i class="fas fa-check-circle"></i> Perfil atualizado com sucesso!</div>
             <div class="erro-msg" id="erroMsg"></div>
@@ -439,7 +245,7 @@
             <div class="edit-panel" id="panel-localizacao">
                 <div class="panel-header">
                     <h1 class="panel-title">Localização</h1>
-                    <p class="panel-subtitle">Onde você está e quando pode tocar</p>
+                    <p class="panel-subtitle">Onde você está</p>
                 </div>
                 <div class="form-row" style="margin-bottom:20px;">
                     <div class="form-group">
@@ -460,7 +266,6 @@
                         </select>
                     </div>
                 </div>
-               
                 <div class="action-bar">
                     <a href="perfil.html" class="btn-cancelar">Cancelar</a>
                     <button type="button" class="btn-salvar" onclick="salvarPerfil()"><i class="fas fa-check"></i> Salvar alterações</button>
@@ -473,27 +278,22 @@
                     <h1 class="panel-title">Área e Habilidades</h1>
                     <p class="panel-subtitle">Área de atuação, instrumentos, gêneros e DAWs</p>
                 </div>
-
                 <div class="form-section">
                     <div class="form-section-title">Área de Atuação</div>
                     <div class="areas-grid" id="areasGrid"></div>
                 </div>
-
                 <div class="form-section">
                     <div class="form-section-title">Instrumentos</div>
                     <div class="checkbox-grid" id="instrumentosGrid"></div>
                 </div>
-
                 <div class="form-section">
                     <div class="form-section-title">Gêneros Musicais</div>
                     <div class="generos-grid" id="generosGrid"></div>
                 </div>
-
                 <div class="form-section">
                     <div class="form-section-title">DAWs que usa</div>
                     <div class="checkbox-grid" id="dawsGrid"></div>
                 </div>
-
                 <div class="action-bar">
                     <a href="perfil.html" class="btn-cancelar">Cancelar</a>
                     <button type="button" class="btn-salvar" onclick="salvarPerfil()"><i class="fas fa-check"></i> Salvar alterações</button>
@@ -507,58 +307,21 @@
                     <p class="panel-subtitle">Seus links aparecerão no seu perfil público</p>
                 </div>
                 <div class="social-card">
-                    <div class="social-row">
-                        <div class="social-icon-wrap"><i class="fa-brands fa-instagram"></i></div>
-                        <span class="social-name">Instagram</span>
-                        <input type="url" id="social_instagram" placeholder="https://instagram.com/seunome">
-                    </div>
-                    <div class="social-row">
-                        <div class="social-icon-wrap"><i class="fa-brands fa-youtube"></i></div>
-                        <span class="social-name">YouTube</span>
-                        <input type="url" id="social_youtube" placeholder="https://youtube.com/@seunome">
-                    </div>
-                    <div class="social-row">
-                        <div class="social-icon-wrap"><i class="fa-brands fa-spotify"></i></div>
-                        <span class="social-name">Spotify</span>
-                        <input type="url" id="social_spotify" placeholder="https://open.spotify.com/artist/...">
-                    </div>
-                    <div class="social-row">
-                        <div class="social-icon-wrap"><i class="fa-brands fa-soundcloud"></i></div>
-                        <span class="social-name">SoundCloud</span>
-                        <input type="url" id="social_soundcloud" placeholder="https://soundcloud.com/seunome">
-                    </div>
-                    <div class="social-row">
-                        <div class="social-icon-wrap"><i class="fa-brands fa-tiktok"></i></div>
-                        <span class="social-name">TikTok</span>
-                        <input type="url" id="social_tiktok" placeholder="https://tiktok.com/@seunome">
-                    </div>
-                    <div class="social-row">
-                        <div class="social-icon-wrap"><i class="fa-brands fa-x-twitter"></i></div>
-                        <span class="social-name">X / Twitter</span>
-                        <input type="url" id="social_twitter" placeholder="https://twitter.com/seunome">
-                    </div>
-                    <div class="social-row">
-                        <div class="social-icon-wrap"><i class="fa-brands fa-facebook"></i></div>
-                        <span class="social-name">Facebook</span>
-                        <input type="url" id="social_facebook" placeholder="https://facebook.com/seunome">
-                    </div>
-                    <div class="social-row">
-                        <div class="social-icon-wrap"><i class="fa-brands fa-linkedin"></i></div>
-                        <span class="social-name">LinkedIn</span>
-                        <input type="url" id="social_linkedin" placeholder="https://linkedin.com/in/seunome">
-                    </div>
-                    <div class="social-row">
-                        <div class="social-icon-wrap"><i class="fa-solid fa-globe"></i></div>
-                        <span class="social-name">Site</span>
-                        <input type="url" id="social_site" placeholder="https://seusite.com">
-                    </div>
+                    <div class="social-row"><div class="social-icon-wrap"><i class="fa-brands fa-instagram"></i></div><span class="social-name">Instagram</span><input type="url" id="social_instagram" placeholder="https://instagram.com/seunome"></div>
+                    <div class="social-row"><div class="social-icon-wrap"><i class="fa-brands fa-youtube"></i></div><span class="social-name">YouTube</span><input type="url" id="social_youtube" placeholder="https://youtube.com/@seunome"></div>
+                    <div class="social-row"><div class="social-icon-wrap"><i class="fa-brands fa-spotify"></i></div><span class="social-name">Spotify</span><input type="url" id="social_spotify" placeholder="https://open.spotify.com/artist/..."></div>
+                    <div class="social-row"><div class="social-icon-wrap"><i class="fa-brands fa-soundcloud"></i></div><span class="social-name">SoundCloud</span><input type="url" id="social_soundcloud" placeholder="https://soundcloud.com/seunome"></div>
+                    <div class="social-row"><div class="social-icon-wrap"><i class="fa-brands fa-tiktok"></i></div><span class="social-name">TikTok</span><input type="url" id="social_tiktok" placeholder="https://tiktok.com/@seunome"></div>
+                    <div class="social-row"><div class="social-icon-wrap"><i class="fa-brands fa-x-twitter"></i></div><span class="social-name">X / Twitter</span><input type="url" id="social_twitter" placeholder="https://twitter.com/seunome"></div>
+                    <div class="social-row"><div class="social-icon-wrap"><i class="fa-brands fa-facebook"></i></div><span class="social-name">Facebook</span><input type="url" id="social_facebook" placeholder="https://facebook.com/seunome"></div>
+                    <div class="social-row"><div class="social-icon-wrap"><i class="fa-brands fa-linkedin"></i></div><span class="social-name">LinkedIn</span><input type="url" id="social_linkedin" placeholder="https://linkedin.com/in/seunome"></div>
+                    <div class="social-row"><div class="social-icon-wrap"><i class="fa-solid fa-globe"></i></div><span class="social-name">Site</span><input type="url" id="social_site" placeholder="https://seusite.com"></div>
                 </div>
                 <div class="action-bar">
                     <a href="perfil.html" class="btn-cancelar">Cancelar</a>
                     <button type="button" class="btn-salvar" onclick="salvarPerfil()"><i class="fas fa-check"></i> Salvar alterações</button>
                 </div>
             </div>
-
         </main>
     </div>
 
@@ -579,28 +342,24 @@
         if (!usuario) { window.location.href = 'login.html'; }
 
         function mascaraTelefone(el) {
-            let v = el.value.replace(/\D/g, '').substring(0, 11);
-            if (v.length <= 10) {
-                v = v.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
-            } else {
-                v = v.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
-            }
+            let v = el.value.replace(/\D/g,'').substring(0,11);
+            if (v.length <= 10) v = v.replace(/(\d{2})(\d{4})(\d{0,4})/,'($1) $2-$3');
+            else v = v.replace(/(\d{2})(\d{5})(\d{0,4})/,'($1) $2-$3');
             el.value = v;
         }
         function formatarTelefone(val) {
-            let v = (val || '').replace(/\D/g, '').substring(0, 11);
+            let v = (val||'').replace(/\D/g,'').substring(0,11);
             if (!v) return '';
-            if (v.length <= 10) return v.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
-            return v.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+            if (v.length <= 10) return v.replace(/(\d{2})(\d{4})(\d{0,4})/,'($1) $2-$3');
+            return v.replace(/(\d{2})(\d{5})(\d{0,4})/,'($1) $2-$3');
         }
-        document.getElementById('telefone')?.addEventListener('input', function() { mascaraTelefone(this); });
+        document.getElementById('telefone')?.addEventListener('input', function(){ mascaraTelefone(this); });
 
         const res = await fetch(`/api/usuarios/${usuario.id_usuario}`);
         const u = await res.json();
 
         const nome = u.nome_artistico || u.nome_completo;
-        const iniciais = nome.substring(0, 2).toUpperCase();
-
+        const iniciais = nome.substring(0,2).toUpperCase();
         document.getElementById('sidebarAvatar').textContent = iniciais;
         document.getElementById('sidebarNome').textContent = nome;
         document.getElementById('profileTrigger').textContent = iniciais;
@@ -610,19 +369,18 @@
         document.getElementById('nome_artistico').value = u.nome_artistico || '';
         document.getElementById('email').value          = u.email || '';
         document.getElementById('telefone').value = formatarTelefone(u.telefone || '');
+
         const _bioEl = document.getElementById('biografia');
         const _bioCounter = document.getElementById('bioCounter');
         _bioEl.value = u.biografia || '';
-        if (_bioCounter) {
-            const _len = _bioEl.value.length;
-            _bioCounter.textContent = _len + ' / 500';
-            _bioCounter.className = 'bio-counter' + (_len >= 500 ? ' limit' : _len >= 400 ? ' warning' : '');
-            _bioEl.addEventListener('input', () => {
-                const len = _bioEl.value.length;
-                _bioCounter.textContent = len + ' / 500';
-                _bioCounter.className = 'bio-counter' + (len >= 500 ? ' limit' : len >= 400 ? ' warning' : '');
-            });
-        }
+        const _updateCounter = () => {
+            const len = _bioEl.value.length;
+            _bioCounter.textContent = len + ' / 500';
+            _bioCounter.className = 'bio-counter' + (len >= 500 ? ' limit' : len >= 400 ? ' warning' : '');
+        };
+        _updateCounter();
+        _bioEl.addEventListener('input', _updateCounter);
+
         document.getElementById('cidade').value = u.cidade || '';
         if (u.estado) document.getElementById('estado').value = u.estado;
 
@@ -639,10 +397,11 @@
             'Compositor':'fa-pen-nib','DJ':'fa-headphones','Beatmaker':'fa-drum'
         };
         const areasUsuario = Array.isArray(u.area_atuacao) ? u.area_atuacao : (u.area_atuacao ? [u.area_atuacao] : []);
+
         document.getElementById('areasGrid').innerHTML =
             ['Vocalista','Instrumentista','Produtor','Compositor','DJ','Beatmaker'].map(a => `
                 <div class="area-card">
-                    <input type="checkbox" name="area_atuacao" id="area_${a}" value="${a}" ${areasUsuario.includes(a) ? 'checked' : ''}>
+                    <input type="checkbox" name="area_atuacao" id="area_${a}" value="${a}" ${areasUsuario.includes(a)?'checked':''}>
                     <label for="area_${a}" class="area-label">
                         <i class="fas ${areaIcones[a]} area-icon"></i>
                         <span class="area-name">${a}</span>
@@ -651,27 +410,28 @@
 
         document.getElementById('instrumentosGrid').innerHTML = dados.instrumentos.map(i => `
             <div class="checkbox-item">
-                <input type="checkbox" id="inst_${i.id}" name="instrumentos" value="${i.nome}" ${(u.instrumentos||[]).includes(i.nome) ? 'checked' : ''}>
-                <label for="inst_${i.id}" class="checkbox-label">
-                    <span class="checkbox-icon"><i class="fa-solid fa-check"></i></span>${i.nome}
+                <input type="checkbox" id="inst_${i.id||i}" name="instrumentos" value="${i.nome||i}" ${(u.instrumentos||[]).includes(i.nome||i)?'checked':''}>
+                <label for="inst_${i.id||i}" class="checkbox-label">
+                    <span class="checkbox-icon"><i class="fa-solid fa-check"></i></span>${i.nome||i}
                 </label>
             </div>`).join('');
 
-                document.getElementById('generosGrid').innerHTML = dados.generos.map(g => `
+        document.getElementById('generosGrid').innerHTML = dados.generos.map(g => `
             <div class="checkbox-item">
-                <input type="checkbox" id="gen_${g.id}" name="generos" value="${g.nome}" ${(u.generos||[]).includes(g.nome) ? 'checked' : ''}>
-                <label for="gen_${g.id}" class="checkbox-label">
-                    <span class="checkbox-icon"><i class="fa-solid fa-check"></i></span>${g.nome}
+                <input type="checkbox" id="gen_${g.id||g}" name="generos" value="${g.nome||g}" ${(u.generos||[]).includes(g.nome||g)?'checked':''}>
+                <label for="gen_${g.id||g}" class="checkbox-label">
+                    <span class="checkbox-icon"><i class="fa-solid fa-check"></i></span>${g.nome||g}
                 </label>
             </div>`).join('');
 
         document.getElementById('dawsGrid').innerHTML = dados.daws.map(d => {
-            const idSafe = d.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'');
+            const nome = d.nome || d;
+            const idSafe = nome.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'');
             return `
             <div class="checkbox-item">
-                <input type="checkbox" id="daw_${idSafe}" name="daws" value="${d}" ${(u.daws||[]).includes(d) ? 'checked' : ''}>
+                <input type="checkbox" id="daw_${idSafe}" name="daws" value="${nome}" ${(u.daws||[]).includes(nome)?'checked':''}>
                 <label for="daw_${idSafe}" class="checkbox-label">
-                    <span class="checkbox-icon"><i class="fa-solid fa-check"></i></span>${d}
+                    <span class="checkbox-icon"><i class="fa-solid fa-check"></i></span>${nome}
                 </label>
             </div>`;
         }).join('');
@@ -679,49 +439,35 @@
         function atualizarPontos(dados) {
             const dadosFaltam = !dados.nome_completo || !dados.biografia || !dados.telefone;
             const navDados = document.getElementById('nav-dados');
-            if (dadosFaltam) {
-                if (!navDados.querySelector('.nav-dot')) navDados.insertAdjacentHTML('beforeend', '<span class="nav-dot"></span>');
-            } else {
-                navDados.querySelector('.nav-dot')?.remove();
-            }
+            if (dadosFaltam) { if (!navDados.querySelector('.nav-dot')) navDados.insertAdjacentHTML('beforeend','<span class="nav-dot"></span>'); }
+            else { navDados.querySelector('.nav-dot')?.remove(); }
 
             const locFaltam = !dados.cidade || !dados.estado;
             const navLoc = document.getElementById('nav-localizacao');
-            if (locFaltam) {
-                if (!navLoc.querySelector('.nav-dot')) navLoc.insertAdjacentHTML('beforeend', '<span class="nav-dot"></span>');
-            } else {
-                navLoc.querySelector('.nav-dot')?.remove();
-            }
+            if (locFaltam) { if (!navLoc.querySelector('.nav-dot')) navLoc.insertAdjacentHTML('beforeend','<span class="nav-dot"></span>'); }
+            else { navLoc.querySelector('.nav-dot')?.remove(); }
 
             const musicalFaltam = !dados.area_atuacao?.length && !dados.instrumentos?.length && !dados.generos?.length;
             const navMusical = document.getElementById('nav-musical');
-            if (musicalFaltam) {
-                if (!navMusical.querySelector('.nav-dot')) navMusical.insertAdjacentHTML('beforeend', '<span class="nav-dot"></span>');
-            } else {
-                navMusical.querySelector('.nav-dot')?.remove();
-            }
+            if (musicalFaltam) { if (!navMusical.querySelector('.nav-dot')) navMusical.insertAdjacentHTML('beforeend','<span class="nav-dot"></span>'); }
+            else { navMusical.querySelector('.nav-dot')?.remove(); }
 
             const redesObj = dados.redes_sociais || {};
             const redesFaltam = !Object.values(redesObj).some(v => v);
             const navRedes = document.getElementById('nav-redes');
-            if (redesFaltam) {
-                if (!navRedes.querySelector('.nav-dot')) navRedes.insertAdjacentHTML('beforeend', '<span class="nav-dot"></span>');
-            } else {
-                navRedes.querySelector('.nav-dot')?.remove();
-            }
+            if (redesFaltam) { if (!navRedes.querySelector('.nav-dot')) navRedes.insertAdjacentHTML('beforeend','<span class="nav-dot"></span>'); }
+            else { navRedes.querySelector('.nav-dot')?.remove(); }
         }
         atualizarPontos(u);
         hideLoading();
 
-        const navItems = document.querySelectorAll('.nav-item[data-panel]');
-        const panels = document.querySelectorAll('.edit-panel');
-        navItems.forEach(item => {
+        document.querySelectorAll('.nav-item[data-panel]').forEach(item => {
             item.addEventListener('click', () => {
-                navItems.forEach(n => n.classList.remove('active'));
-                panels.forEach(p => p.classList.remove('active'));
+                document.querySelectorAll('.nav-item[data-panel]').forEach(n => n.classList.remove('active'));
+                document.querySelectorAll('.edit-panel').forEach(p => p.classList.remove('active'));
                 item.classList.add('active');
                 document.getElementById('panel-' + item.dataset.panel)?.classList.add('active');
-                window.scrollTo(0, 0);
+                window.scrollTo(0,0);
             });
         });
 
@@ -731,7 +477,7 @@
             const sucessoMsg = document.getElementById('sucessoMsg');
             erroMsg.style.display = 'none';
             sucessoMsg.style.display = 'none';
-            btns.forEach(b => { b.disabled = true; b.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...'; });
+            btns.forEach(b => { b.disabled=true; b.innerHTML='<i class="fas fa-spinner fa-spin"></i> Salvando...'; });
 
             function coletarCheckboxes(name) {
                 return [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(el => el.value);
@@ -743,21 +489,19 @@
                 if (v) redesSociais[k] = v;
             });
 
-            const area = [...document.querySelectorAll('input[name="area_atuacao"]:checked')].map(el => el.value);
-
             const dadosForm = {
-                nome_completo:    document.getElementById('nome_completo').value.trim(),
-                nome_artistico:   document.getElementById('nome_artistico').value.trim(),
-                email:            document.getElementById('email').value.trim(),
-                telefone:         document.getElementById('telefone').value.trim(),
-                biografia:        document.getElementById('biografia').value.trim(),
-                cidade:           document.getElementById('cidade').value.trim(),
-                estado:           document.getElementById('estado').value,
-                area_atuacao:     area,
-                instrumentos:     coletarCheckboxes('instrumentos'),
-                generos:          coletarCheckboxes('generos'),
-                daws:             coletarCheckboxes('daws'),
-                redes_sociais:    redesSociais,
+                nome_completo:  document.getElementById('nome_completo').value.trim(),
+                nome_artistico: document.getElementById('nome_artistico').value.trim(),
+                email:          document.getElementById('email').value.trim(),
+                telefone:       document.getElementById('telefone').value.trim(),
+                biografia:      document.getElementById('biografia').value.trim(),
+                cidade:         document.getElementById('cidade').value.trim(),
+                estado:         document.getElementById('estado').value,
+                area_atuacao:   coletarCheckboxes('area_atuacao'),
+                instrumentos:   coletarCheckboxes('instrumentos'),
+                generos:        coletarCheckboxes('generos'),
+                daws:           coletarCheckboxes('daws'),
+                redes_sociais:  redesSociais,
                 cadastro_completo: 1,
             };
 
@@ -771,16 +515,15 @@
                 const atualizado = await r.json();
                 localStorage.setItem('usuarioLogado', JSON.stringify(atualizado));
                 sucessoMsg.style.display = 'flex';
-                window.scrollTo(0, 0);
-                setTimeout(() => { sucessoMsg.style.display = 'none'; }, 3000);
+                window.scrollTo(0,0);
+                setTimeout(() => { sucessoMsg.style.display='none'; }, 3000);
                 atualizarPontos(atualizado);
             } catch (erro) {
-                hideLoading();
                 erroMsg.textContent = erro.message;
                 erroMsg.style.display = 'block';
-                window.scrollTo(0, 0);
+                window.scrollTo(0,0);
             } finally {
-                btns.forEach(b => { b.disabled = false; b.innerHTML = '<i class="fas fa-check"></i> Salvar alterações'; });
+                btns.forEach(b => { b.disabled=false; b.innerHTML='<i class="fas fa-check"></i> Salvar alterações'; });
             }
         };
 
@@ -791,65 +534,26 @@
         document.addEventListener('click', () => {
             document.getElementById('profileDropdown')?.classList.remove('active');
         });
-
         document.getElementById('searchBar')?.addEventListener('click', () => {
             window.location.href = 'pesquisar_usuarios.html?focar=true';
         });
-
         document.getElementById('btnSair')?.addEventListener('click', fazerLogout);
-        hideLoading();
     </script>
 
     <script>
-        /* ── CANVAS PARTÍCULAS ── */
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
-
-        function initCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-
+        function initCanvas() { canvas.width=window.innerWidth; canvas.height=window.innerHeight; }
         class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 2;
-                this.speedX = Math.random() * 0.5 - 0.25;
-                this.speedY = Math.random() * 0.5 - 0.25;
-                this.opacity = Math.random() * 0.5 + 0.1;
-            }
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-                if (this.x > canvas.width) this.x = 0;
-                if (this.x < 0) this.x = canvas.width;
-                if (this.y > canvas.height) this.y = 0;
-                if (this.y < 0) this.y = canvas.height;
-            }
-            draw() {
-                ctx.fillStyle = `rgba(139, 92, 246, ${this.opacity})`;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
+            constructor() { this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.size=Math.random()*2; this.speedX=Math.random()*0.5-0.25; this.speedY=Math.random()*0.5-0.25; this.opacity=Math.random()*0.5+0.1; }
+            update() { this.x+=this.speedX; this.y+=this.speedY; if(this.x>canvas.width)this.x=0; if(this.x<0)this.x=canvas.width; if(this.y>canvas.height)this.y=0; if(this.y<0)this.y=canvas.height; }
+            draw() { ctx.fillStyle=`rgba(139,92,246,${this.opacity})`; ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill(); }
         }
-
-        function createParticles() {
-            for (let i = 0; i < 100; i++) particles.push(new Particle());
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => { p.update(); p.draw(); });
-            requestAnimationFrame(animate);
-        }
-
+        function createParticles() { for(let i=0;i<100;i++) particles.push(new Particle()); }
+        function animate() { ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{p.update();p.draw()}); requestAnimationFrame(animate); }
         window.addEventListener('resize', initCanvas);
-        initCanvas();
-        createParticles();
-        animate();
+        initCanvas(); createParticles(); animate();
     </script>
 </body>
 </html>
