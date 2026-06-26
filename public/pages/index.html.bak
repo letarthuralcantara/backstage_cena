@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="theme-color" content="#000000">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backstage | Conecte-se com Músicos</title>
+    <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/global.css">
+    <style>
+        :root {
+            --primary: #8b5cf6;
+            --primary-glow: rgba(139, 92, 246, 0.6);
+            --secondary: #d946ef;
+            --bg-dark: #050505;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: #fff;
+            overflow-x: hidden;
+            background-image:
+                radial-gradient(circle at 10% 10%, rgba(139, 92, 246, 0.15), transparent 50%),
+                radial-gradient(circle at 90% 90%, rgba(217, 70, 239, 0.1), transparent 50%);
+            background-attachment: fixed;
+        }
+
+        #bg-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1;
+            opacity: 0.4;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
+
+        /* ── REVEAL ── */
+        .reveal { opacity: 0; transform: translateY(60px); transition: all 1s cubic-bezier(0.2, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* ── HERO ── */
+        .hero-section {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-eyebrow {
+            color: var(--primary);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            display: block;
+            animation: eyebrowSlide 0.8s cubic-bezier(0.2, 1, 0.3, 1);
+        }
+
+        @keyframes eyebrowSlide {
+            from { opacity: 0; transform: translateX(-40px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .main-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(50px, 10vw, 100px);
+            font-weight: 900;
+            line-height: 0.9;
+            margin-bottom: 30px;
+            background: linear-gradient(to bottom, #fff, #888);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: titleBounce 1s cubic-bezier(0.2, 1, 0.3, 1) 0.2s both;
+        }
+
+        @keyframes titleBounce {
+            from { opacity: 0; transform: scale(0.9) translateY(40px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .main-title .highlight {
+            display: block;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 30px var(--primary-glow));
+            animation: highlightGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes highlightGlow {
+            0%, 100% { filter: drop-shadow(0 0 30px var(--primary-glow)); }
+            50% { filter: drop-shadow(0 0 60px var(--primary-glow)); }
+        }
+
+        .main-subtitle {
+            font-size: 20px;
+            color: #aaa;
+            max-width: 600px;
+            margin-bottom: 50px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            animation: subtitleFade 1s cubic-bezier(0.2, 1, 0.3, 1) 0.4s both;
+        }
+
+        @keyframes subtitleFade {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            animation: actionsFade 1s cubic-bezier(0.2, 1, 0.3, 1) 0.6s both;
+        }
+
+        @keyframes actionsFade {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn-cta {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 18px 40px;
+            border-radius: 50px;
+            font-weight: 800;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 14px;
+            box-shadow: 0 0 25px var(--primary-glow);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255,255,255,0.2);
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+        .btn-cta:hover { 
+            transform: scale(1.1) translateY(-4px);
+            box-shadow: 0 0 50px var(--primary-glow);
+        }
+        .btn-cta:active { transform: scale(0.98); }
+
+        .btn-ghost {
+            color: #aaa;
+            padding: 18px 40px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 14px;
+            border: 1px solid rgba(255,255,255,0.15);
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-ghost:hover { color: #fff; border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.05); }
+
+        /* ── SCROLL INDICATOR ── */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            width: 30px;
+            height: 50px;
+            border: 2px solid #555;
+            border-radius: 20px;
+            animation: scrollPulse 2s ease-in-out infinite;
+        }
+        .scroll-indicator::after {
+            content: '';
+            position: absolute;
+            top: 10px; left: 50%;
+            width: 6px; height: 6px;
+            background: var(--primary);
+            border-radius: 50%;
+            transform: translateX(-50%);
+            animation: scrollDown 2s infinite;
+        }
+        @keyframes scrollDown {
+            0% { top: 10px; opacity: 1; }
+            100% { top: 30px; opacity: 0; }
+        }
+        @keyframes scrollPulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        /* ── HERO VISUAL ── */
+        .hero-visual-wrap {
+            position: relative;
+            width: 380px;
+            height: 380px;
+            margin: 60px auto 0;
+            animation: visualFade 1s cubic-bezier(0.2, 1, 0.3, 1) 0.8s both;
+        }
+
+        @keyframes visualFade {
+            from { opacity: 0; transform: scale(0.8) translateY(40px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .hero-glow {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.35) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: glowPulse 4s ease-in-out infinite;
+        }
+
+        .hero-ring {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            animation: ringRotate 20s linear infinite;
+        }
+
+        .hero-ring::before {
+            content: '';
+            position: absolute;
+            top: -4px; left: 50%;
+            width: 8px; height: 8px;
+            background: #8b5cf6;
+            border-radius: 50%;
+            box-shadow: 0 0 12px rgba(139, 92, 246, 0.9);
+        }
+
+        .bear-image {
+            width: 300px;
+            height: auto;
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            filter: drop-shadow(0 20px 40px rgba(139, 92, 246, 0.4));
+            animation: bearFloat 6s ease-in-out infinite, bearWave 4s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse { 
+            0%,100%{transform:scale(1);opacity:.6} 
+            50%{transform:scale(1.15);opacity:1} 
+        }
+
+        @keyframes ringRotate { 
+            from{transform:rotate(0deg)} 
+            to{transform:rotate(360deg)} 
+        }
+
+        @keyframes bearFloat { 
+            0%,100%{transform:translate(-50%,-50%) translateY(0)} 
+            50%{transform:translate(-50%,-50%) translateY(-20px)} 
+        }
+
+        @keyframes bearWave {
+            0%, 100% { transform: translate(-50%, -50%) translateY(0) rotateZ(0deg); }
+            25% { transform: translate(-50%, -50%) translateY(-20px) rotateZ(-2deg); }
+            75% { transform: translate(-50%, -50%) translateY(-20px) rotateZ(2deg); }
+        }
+
+        /* ── BEAR PARTICLES ── */
+        .bear-particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: particleFloat 8s infinite;
+            opacity: 0.6;
+            box-shadow: 0 0 8px var(--primary-glow);
+        }
+
+        @keyframes particleFloat {
+            0% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(-400px) translateX(100px); opacity: 0; }
+        }
+
+        /* ── FEATURES SECTION ── */
+        .section { padding: 150px 0; position: relative; }
+        .section-label { color: var(--primary); font-weight: 800; text-transform: uppercase; letter-spacing: 4px; font-size: 14px; margin-bottom: 20px; display: block; text-align: center; }
+        .section-title { font-family: 'Poppins', sans-serif; font-size: 48px; margin-bottom: 30px; line-height: 1.2; text-align: center; }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            margin-top: 80px;
+        }
+
+        .feature-card {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 40px;
+            padding: 50px 40px;
+            position: relative;
+            transition: all 0.5s;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.6), transparent);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .feature-card:hover {
+            border-color: var(--primary);
+            transform: perspective(1000px) rotateX(5deg) rotateY(-5deg) translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+        }
+
+        .feature-card:hover::before { opacity: 1; }
+
+        .feature-icon-circle {
+            width: 80px; height: 80px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 24px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 32px; margin-bottom: 24px;
+            box-shadow: 0 10px 30px var(--primary-glow);
+            transition: transform 0.3s;
+            animation: iconFloat 3s ease-in-out infinite;
+        }
+
+        .feature-card:nth-child(2) .feature-icon-circle { animation-delay: 0.3s; }
+        .feature-card:nth-child(3) .feature-icon-circle { animation-delay: 0.6s; }
+
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(5deg); }
+        }
+
+        .feature-card:hover .feature-icon-circle { transform: scale(1.1) rotate(-5deg); }
+
+        .feature-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 14px;
+        }
+
+        .feature-desc {
+            font-size: 16px;
+            color: #aaa;
+            line-height: 1.8;
+        }
+
+        /* ── STATS SECTION ── */
+        .stats-section {
+            padding: 100px 0;
+            position: relative;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .stat-card {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: all 0.5s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.1), transparent);
+            animation: statShine 3s ease-in-out infinite;
+        }
+
+        @keyframes statShine {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(50%, 50%); }
+        }
+
+        .stat-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(139, 92, 246, 0.2);
+        }
+
+        .stat-number {
+            font-family: 'Poppins', sans-serif;
+            font-size: 42px;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+            animation: countUp 2s ease-out;
+        }
+
+        @keyframes countUp {
+            from { opacity: 0; transform: scale(0.5); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .stat-label {
+            color: #aaa;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── CTA FINAL ── */
+        .cta-section {
+            padding: 150px 0;
+            text-align: center;
+        }
+
+        .cta-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(40px, 8vw, 80px);
+            font-weight: 900;
+            margin-bottom: 50px;
+            line-height: 1;
+            animation: ctaTitlePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes ctaTitlePulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.9; }
+        }
+
+        /* ── FOOTER ── */
+        .footer { padding: 60px 0 40px; text-align: center; border-top: 1px solid var(--glass-border); }
+        .footer-logo-img { height: 36px; width: auto; opacity: 0.5; transition: 0.3s; margin-bottom: 16px; }
+        .footer-logo-img:hover { opacity: 1; }
+
+        @media (max-width: 900px) {
+            .features-grid { grid-template-columns: 1fr; gap: 24px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .main-title { font-size: 60px; }
+            .section-title { font-size: 34px; }
+            .hero-visual-wrap { width: 280px; height: 280px; }
+            .bear-image { width: 220px; }
+        }
+
+        @media (max-width: 600px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .hero-visual-wrap { width: 200px; height: 200px; }
+            .bear-image { width: 160px; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="bg-canvas"></canvas>
+
+    <header class="header">
+        <div class="header-left">
+            <a href="index.html"><img src="../images/logo.png" alt="Backstage Logo" class="logo-img"></a>
+        </div>
+        <div class="header-center">
+            <div class="header-search" id="searchBar">
+                <i class="fas fa-search header-search-icon"></i>
+                <input type="text" class="header-search-input" placeholder="Buscar músicos..." readonly>
+                <button class="btn-filtrar" style="pointer-events:none; opacity:0.5;">
+                    <i class="fas fa-sliders"></i>
+                </button>
+                <button class="header-search-btn">Buscar</button>
+            </div>
+        </div>
+        <div class="header-actions">
+            <a href="login.html" style="color:#a78bfa; font-size:14px; font-weight:600; text-decoration:none; padding:8px 16px; border:1.5px solid rgba(139,92,246,0.4); border-radius:8px; transition:all 0.2s;" onmouseover="this.style.background='rgba(139,92,246,0.12)'" onmouseout="this.style.background='transparent'">Login</a>
+            <a href="cadastro.html" style="color:white; font-size:14px; font-weight:600; text-decoration:none; padding:9px 18px; background:linear-gradient(135deg,#8b5cf6,#6d28d9); border-radius:8px; box-shadow:0 4px 14px rgba(139,92,246,0.4);">Registrar-se</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- HERO -->
+        <section class="hero-section">
+            <span class="hero-eyebrow reveal">Plataforma Musical Independente</span>
+            <h1 class="main-title reveal">
+                CONECTE-SE<br>
+                <span class="highlight">COM MÚSICOS</span>
+            </h1>
+            <p class="main-subtitle reveal">Encontre parceiros. Crie projetos. Faça história.</p>
+            <div class="hero-actions reveal">
+                <button class="btn-cta" id="btnComecar">Começar agora</button>
+                <a href="sobrenos.html" class="btn-ghost">Saiba mais <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="hero-visual-wrap reveal">
+                <div class="bear-particles" id="bearParticles"></div>
+                <div class="hero-glow"></div>
+                <div class="hero-ring"></div>
+                <img src="../images/urso.png" alt="Mascote Backstage" class="bear-image">
+            </div>
+        </section>
+
+        <!-- FEATURES -->
+        <section class="section">
+            <div class="container">
+                <span class="section-label reveal">O que oferecemos</span>
+                <h2 class="section-title reveal">Tudo que você precisa para <span style="color:var(--primary)">decolar</span></h2>
+                <div class="features-grid">
+                    <div class="feature-card reveal" style="transition-delay:0.1s">
+                        <div class="feature-icon-circle"><i class="fas fa-search"></i></div>
+                        <h3 class="feature-title">Encontre Músicos</h3>
+                        <p class="feature-desc">Busque por instrumento, gênero, localização e disponibilidade para achar o parceiro ideal para seu projeto.</p>
+                    </div>
+                    <div class="feature-card reveal" style="transition-delay:0.2s">
+                        <div class="feature-icon-circle"><i class="fas fa-user-circle"></i></div>
+                        <h3 class="feature-title">Seu Perfil Musical</h3>
+                        <p class="feature-desc">Mostre seus talentos, gêneros favoritos, DAWs e redes sociais para ser encontrado pela cena certa.</p>
+                    </div>
+                    <div class="feature-card reveal" style="transition-delay:0.3s">
+                        <div class="feature-icon-circle"><i class="fas fa-handshake"></i></div>
+                        <h3 class="feature-title">Colabore e Crie</h3>
+                        <p class="feature-desc">Conecte-se com produtores, vocalistas e compositores da cena independente brasileira.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STATS -->
+        <section class="stats-section">
+            <div class="container">
+                <span class="section-label reveal">Faça acontecer </span>
+                <div class="stats-grid">
+                    <div class="stat-card reveal" style="transition-delay:0.1s">
+                        <div class="stat-number">1</div>
+                        <div class="stat-label">Crie seu perfil e linke suas redes</div>
+                    </div>
+                    <div class="stat-card reveal" style="transition-delay:0.2s">
+                        <div class="stat-number">2</div>
+                        <div class="stat-label">Faça conexões com pessoas do mundo todo</div>
+                    </div>
+                    <div class="stat-card reveal" style="transition-delay:0.3s">
+                        <div class="stat-number">3</div>
+                        <div class="stat-label">Solte o som e faça acontecer</div>
+                    </div>
+                    <div class="stat-card reveal" style="transition-delay:0.4s">
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">Gratuito</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA FINAL -->
+        <section class="cta-section">
+            <div class="container reveal">
+                <h2 class="cta-title">VOCÊ ESTÁ <br><span style="color:var(--primary)">PRONTO?</span></h2>
+                <button class="btn-cta" id="btnComecar2" style="padding: 22px 60px; font-size: 18px;">Criar minha conta</button>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <img src="../images/logo.png" alt="Backstage Logo" class="footer-logo-img">
+                <p style="color:rgba(255,255,255,0.4); font-size:13px;">A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { verificarAutenticacao } from '../js/auth.js';
+
+        document.getElementById('searchBar').addEventListener('click', () => {
+            window.location.href = 'pesquisar_usuarios.html?focar=true';
+        });
+
+        function irParaCadastro() {
+            const usuario = verificarAutenticacao(false);
+            window.location.href = usuario ? 'perfil.html' : 'cadastro.html';
+        }
+        document.getElementById('btnComecar').addEventListener('click', irParaCadastro);
+        document.getElementById('btnComecar2').addEventListener('click', irParaCadastro);
+
+        /* ── REVEAL AO SCROLL ── */
+        function reveal() {
+            document.querySelectorAll('.reveal').forEach(el => {
+                if (el.getBoundingClientRect().top < window.innerHeight - 100) {
+                    el.classList.add('active');
+                }
+            });
+        }
+        window.addEventListener('scroll', reveal);
+        reveal();
+
+        /* ── CANVAS PARTÍCULAS ── */
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function initCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2;
+                this.speedX = Math.random() * 0.5 - 0.25;
+                this.speedY = Math.random() * 0.5 - 0.25;
+                this.opacity = Math.random() * 0.5 + 0.1;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.x < 0) this.x = canvas.width;
+                if (this.y > canvas.height) this.y = 0;
+                if (this.y < 0) this.y = canvas.height;
+            }
+            draw() {
+                ctx.fillStyle = `rgba(139, 92, 246, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function createParticles() {
+            for (let i = 0; i < 120; i++) particles.push(new Particle());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', initCanvas);
+        initCanvas();
+        createParticles();
+        animate();
+
+        /* ── BEAR PARTICLES ── */
+        function createBearParticles() {
+            const container = document.getElementById('bearParticles');
+            for (let i = 0; i < 15; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 3 + 's';
+                particle.style.animationDuration = (7 + Math.random() * 5) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        createBearParticles();
+    </script>
+</body>
+</html>

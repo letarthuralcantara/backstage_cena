@@ -2,7 +2,7 @@ export async function salvarCadastro(dados) {
   const body = {
     nome_completo:    dados.nome_completo,
     nome_artistico:   dados.nome_artistico || dados.nome_completo,
-    email:            dados.email.toLowerCase().trim(),
+    email:            dados.email,
     senha:            dados.senha,
     telefone:         dados.telefone || null,
     cidade:           dados.cidade || null,
@@ -39,6 +39,7 @@ export async function completarCadastro(dados) {
 
   const id = Number(usuarioLocal.id_usuario);
 
+  // area_atuacao: aceita tanto array direto quanto o campo antigo
   const areaAtual = Array.isArray(usuarioLocal.area_atuacao)
     ? usuarioLocal.area_atuacao
     : (usuarioLocal.area_atuacao ? [usuarioLocal.area_atuacao] : []);
@@ -47,13 +48,15 @@ export async function completarCadastro(dados) {
     id_usuario:       id,
     nome_completo:    usuarioLocal.nome_completo,
     nome_artistico:   dados.nome_artistico || usuarioLocal.nome_artistico || usuarioLocal.nome_completo,
-    email:            usuarioLocal.email.toLowerCase().trim(),
+    email:            usuarioLocal.email,
     senha:            usuarioLocal.senha,
     telefone:         dados.telefone  || usuarioLocal.telefone || null,
     cidade:           dados.cidade    || usuarioLocal.cidade   || null,
     estado:           dados.estado    || usuarioLocal.estado   || null,
     bairro:           dados.bairro    || usuarioLocal.bairro   || null,
-    area_atuacao:     dados.area_atuacao?.length ? dados.area_atuacao : areaAtual,
+    area_atuacao:     dados.area_atuacao?.length
+                        ? dados.area_atuacao
+                        : areaAtual,
     biografia:        dados.biografia || usuarioLocal.biografia || null,
     instrumentos:     dados.instrumentos  || [],
     generos:          dados.generos       || [],
@@ -82,7 +85,7 @@ export async function fazerLogin(email, senha) {
   const res = await fetch('/api/usuarios/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email: email.toLowerCase().trim(), senha }),
+    body: JSON.stringify({ email, senha }),
   });
 
   if (!res.ok) {
