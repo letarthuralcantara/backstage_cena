@@ -7,7 +7,17 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsc --noEmit",
     "start": "node dist/server.js",
+
+    "prisma:generate": "prisma generate",
+    "prisma:push": "prisma db push",
+    "prisma:studio": "prisma studio",
+
     "seed": "tsx prisma/seed.ts",
+
+    "setup": "npm run prisma:generate && npm run prisma:push",
+
+    "reset": "npm run prisma:push && npm run seed",
+
     "db:load": "tsx src/database/load.ts",
     "db:drop": "node -e \"const fs=require('fs'); try{fs.unlinkSync('src/database/db.sqlite')}catch(e){}\"",
     "db:reload": "npm run db:drop && npm run db:load"

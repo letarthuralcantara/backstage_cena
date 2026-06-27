@@ -35,19 +35,27 @@ export async function fetchMusicos() {
 
 export async function fetchDados() {
 
-    const [
-        instrumentos,
-        generos,
-        daws,
-        disponibilidades,
-        areas
-    ] = await Promise.all([
-        buscar("instrumentos"),
-        buscar("generos"),
-        buscar("daws"),
-        buscar("disponibilidades"),
-        buscar("areas")
-    ]);
+          const [
+          instrumentos,
+          generos,
+          daws,
+          disponibilidades,
+          areas
+      ] = await Promise.all([
+          buscar("instrumentos"),
+          buscar("generos"),
+          buscar("daws"),
+          buscar("disponibilidades"),
+          buscar("areas")
+      ]);
+
+      console.log({
+          instrumentos,
+          generos,
+          daws,
+          disponibilidades,
+          areas
+      });
 
     return {
         instrumentos: instrumentos.map(nome => ({

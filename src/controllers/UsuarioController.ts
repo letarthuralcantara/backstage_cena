@@ -21,11 +21,18 @@ class UsuarioController {
   }
 
   async criar(req: Request, res: Response, next: NextFunction): Promise<void> {
-    try {
-      const novoUsuario = await usuarioService.create(req.body)
-      res.status(201).json(novoUsuario)
-    } catch (error) { next(error) }
+  try {
+    console.log("BODY RECEBIDO:", req.body);
+
+    const novoUsuario = await usuarioService.create(req.body);
+
+    console.log("USUÁRIO CRIADO:", novoUsuario);
+
+    res.status(201).json(novoUsuario);
+  } catch (error) {
+    next(error);
   }
+}
 
   async atualizar(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
