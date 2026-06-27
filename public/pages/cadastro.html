@@ -9,73 +9,73 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="../css/global.css">
   <style>
-    :root {
-      --primary: #8b5cf6;
-      --primary-glow: rgba(139, 92, 246, 0.6);
-      --secondary: #d946ef;
-      --bg-dark: #050505;
-      --glass: rgba(255, 255, 255, 0.03);
-      --glass-border: rgba(255, 255, 255, 0.08);
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: var(--bg-dark);
-      color: #fff; min-height: 100vh;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: flex-start;
-      padding: 40px 20px 60px; overflow-x: hidden;
-      background-image:
-        radial-gradient(circle at 10% 10%, rgba(139,92,246,0.15), transparent 50%),
-        radial-gradient(circle at 90% 90%, rgba(217,70,239,0.1), transparent 50%);
-      background-attachment: fixed;
-    }
+    :root { --primary:#8b5cf6; --primary-glow:rgba(139,92,246,0.6); --secondary:#d946ef; --bg-dark:#050505; --glass:rgba(255,255,255,0.03); --glass-border:rgba(255,255,255,0.08); }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Inter',sans-serif; background-color:var(--bg-dark); color:#fff; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding:40px 20px 60px; overflow-x:hidden; background-image:radial-gradient(circle at 10% 10%,rgba(139,92,246,0.15),transparent 50%),radial-gradient(circle at 90% 90%,rgba(217,70,239,0.1),transparent 50%); background-attachment:fixed; }
     #bg-canvas { position:fixed; top:0; left:0; width:100%; height:100%; z-index:-1; opacity:0.4; }
     .cadastro-container { position:relative; z-index:1; width:100%; max-width:780px; animation:cardIn 0.8s cubic-bezier(0.2,1,0.3,1) both; }
     @keyframes cardIn { from{opacity:0;transform:translateY(40px)} to{opacity:1;transform:translateY(0)} }
-    .cadastro-box {
-      background:var(--glass); backdrop-filter:blur(20px);
-      border:1px solid var(--glass-border); border-radius:40px;
-      padding:60px 50px; box-shadow:0 30px 80px rgba(0,0,0,0.6); transition:border-color 0.4s;
-    }
-    .cadastro-box:hover { border-color:rgba(139,92,246,0.2); }
+    .cadastro-box { background:var(--glass); backdrop-filter:blur(20px); border:1px solid var(--glass-border); border-radius:40px; padding:60px 50px; box-shadow:0 30px 80px rgba(0,0,0,0.6); }
     .logo-container { text-align:center; margin-bottom:36px; display:flex; justify-content:center; }
-    .logo-img { width:160px; height:auto; display:block; filter:drop-shadow(0 0 20px var(--primary-glow)); transition:filter 0.3s; }
-    .logo-img:hover { filter:drop-shadow(0 0 35px var(--primary-glow)); }
+    .logo-img { width:160px; height:auto; display:block; filter:drop-shadow(0 0 20px var(--primary-glow)); }
     .stepper { display:flex; align-items:center; justify-content:center; margin-bottom:48px; }
     .step { display:flex; flex-direction:column; align-items:center; gap:8px; cursor:pointer; }
-    .step-circle {
-      width:46px; height:46px; border-radius:50%;
-      background:rgba(255,255,255,0.04); border:2px solid rgba(255,255,255,0.12);
-      display:flex; align-items:center; justify-content:center;
-      font-weight:700; font-size:15px; color:#555;
-      transition:all 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
-    }
+    .step-circle { width:46px; height:46px; border-radius:50%; background:rgba(255,255,255,0.04); border:2px solid rgba(255,255,255,0.12); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:15px; color:#555; transition:all 0.4s cubic-bezier(0.175,0.885,0.32,1.275); }
     .step.active .step-circle { background:linear-gradient(135deg,var(--primary),var(--secondary)); border-color:transparent; color:white; box-shadow:0 0 20px var(--primary-glow); transform:scale(1.1); }
     .step.done .step-circle { background:transparent; border-color:var(--primary); color:var(--primary); }
-    .step:hover:not(.active) .step-circle { border-color:var(--primary); color:var(--primary); }
     .step-label { font-size:11px; color:#555; font-weight:600; text-align:center; white-space:nowrap; text-transform:uppercase; letter-spacing:1px; }
     .step.active .step-label, .step.done .step-label { color:var(--primary); }
     .step-line { flex:1; height:2px; background:rgba(255,255,255,0.08); max-width:80px; margin:0 8px 20px; transition:background 0.4s; }
     .step-line.done { background:var(--primary); }
     .etapa-badge { display:inline-block; background:rgba(139,92,246,0.1); border:1px solid rgba(139,92,246,0.25); color:#a78bfa; font-size:11px; font-weight:700; padding:4px 14px; border-radius:20px; margin-bottom:14px; letter-spacing:1px; text-transform:uppercase; }
     .cadastro-title { font-family:'Poppins',sans-serif; font-size:28px; font-weight:800; text-align:center; margin-bottom:8px; background:linear-gradient(to bottom,#fff,#bbb); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-    .cadastro-subtitle { color:#777; font-size:14px; text-align:center; margin-bottom:36px; letter-spacing:0.5px; }
+    .cadastro-subtitle { color:#777; font-size:14px; text-align:center; margin-bottom:36px; }
     .form-section { margin-bottom:32px; padding-bottom:32px; border-bottom:1px solid var(--glass-border); }
     .form-section:last-of-type { border-bottom:none; margin-bottom:20px; }
     .section-title { font-family:'Poppins',sans-serif; font-size:15px; color:var(--primary); margin-bottom:18px; display:flex; align-items:center; gap:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; }
     .form-group { margin-bottom:20px; }
     label { display:block; color:#ccc; font-weight:600; margin-bottom:8px; font-size:13px; text-transform:uppercase; letter-spacing:0.8px; }
     .required { color:#f87171; }
-    input, select, textarea { width:100%; padding:15px 18px; border:1px solid var(--glass-border); border-radius:15px; font-size:15px; font-family:'Inter',sans-serif; background:rgba(255,255,255,0.04); color:white; transition:all 0.3s; outline:none; }
+
+    /* Input wrapper com ícone */
+    .input-wrap { position:relative; }
+    .input-wrap input { width:100%; padding:15px 48px 15px 18px; border:1px solid var(--glass-border); border-radius:15px; font-size:15px; font-family:'Inter',sans-serif; background:rgba(255,255,255,0.04); color:white; transition:all 0.3s; outline:none; }
+    .input-wrap input::placeholder { color:rgba(255,255,255,0.25); }
+    .input-wrap input:focus { border-color:var(--primary); background:rgba(139,92,246,0.06); box-shadow:0 0 25px rgba(139,92,246,0.15); }
+    .input-wrap input.erro { border-color:#ef4444; background:rgba(239,68,68,0.06); }
+    .input-wrap input.ok { border-color:#22c55e; }
+    .input-wrap .toggle-senha { position:absolute; right:14px; top:50%; transform:translateY(-50%); color:#555; cursor:pointer; font-size:15px; transition:color 0.2s; }
+    .input-wrap .toggle-senha:hover { color:#a78bfa; }
+    .campo-erro { color:#f87171; font-size:12px; margin-top:6px; display:none; }
+    .campo-erro.show { display:block; }
+
+    /* Força da senha */
+    .senha-forca { margin-top:10px; }
+    .forca-barra { display:flex; gap:4px; margin-bottom:6px; }
+    .forca-seg { flex:1; height:4px; border-radius:2px; background:rgba(255,255,255,0.08); transition:background 0.3s; }
+    .forca-seg.fraca { background:#ef4444; }
+    .forca-seg.media { background:#f59e0b; }
+    .forca-seg.forte { background:#22c55e; }
+    .forca-texto { font-size:12px; color:#555; }
+    .forca-texto.fraca { color:#ef4444; }
+    .forca-texto.media { color:#f59e0b; }
+    .forca-texto.forte { color:#22c55e; }
+
+    /* Confirmar senha match */
+    .senha-match { font-size:12px; margin-top:6px; display:none; }
+    .senha-match.show { display:block; }
+    .senha-match.ok { color:#22c55e; }
+    .senha-match.erro { color:#f87171; }
+
+    select, textarea { width:100%; padding:15px 18px; border:1px solid var(--glass-border); border-radius:15px; font-size:15px; font-family:'Inter',sans-serif; background:rgba(255,255,255,0.04); color:white; transition:all 0.3s; outline:none; }
     textarea { min-height:90px; resize:vertical; }
-    select option { background:#1a1a1a; color:white; }
-    input::placeholder, textarea::placeholder { color:rgba(255,255,255,0.25); }
+    select option { background:#1a1a1a; }
+    textarea::placeholder { color:rgba(255,255,255,0.25); }
+    select:focus, textarea:focus { border-color:var(--primary); background:rgba(139,92,246,0.06); box-shadow:0 0 25px rgba(139,92,246,0.15); }
     .bio-wrap { position:relative; }
     .bio-counter { position:absolute; bottom:10px; right:14px; font-size:11px; color:#555; pointer-events:none; }
     .bio-counter.warning { color:#f59e0b; }
     .bio-counter.limit { color:#ef4444; }
-    input:focus, select:focus, textarea:focus { border-color:var(--primary); background:rgba(139,92,246,0.06); box-shadow:0 0 25px rgba(139,92,246,0.15); }
     .form-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
     .foto-upload { display:flex; align-items:center; gap:20px; padding:24px; border:1px dashed rgba(139,92,246,0.2); border-radius:20px; background:rgba(139,92,246,0.03); opacity:0.6; cursor:not-allowed; }
     .foto-avatar { width:72px; height:72px; border-radius:50%; background:linear-gradient(135deg,var(--primary),var(--secondary)); display:flex; align-items:center; justify-content:center; font-size:26px; color:white; flex-shrink:0; box-shadow:0 8px 20px var(--primary-glow); }
@@ -108,9 +108,9 @@
     .status-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
     .status-dot { width:12px; height:12px; border-radius:50%; flex-shrink:0; display:inline-block; }
     .status-dot.disponivel { background:#22c55e; box-shadow:0 0 8px rgba(34,197,94,0.6); }
-    .status-dot.ocupado    { background:#f59e0b; box-shadow:0 0 8px rgba(245,158,11,0.6); }
+    .status-dot.ocupado { background:#f59e0b; box-shadow:0 0 8px rgba(245,158,11,0.6); }
     .status-dot.nao_perturbe { background:#ef4444; box-shadow:0 0 8px rgba(239,68,68,0.6); }
-    .status-dot.invisivel  { background:#6b7280; box-shadow:0 0 8px rgba(107,114,128,0.6); }
+    .status-dot.invisivel { background:#6b7280; box-shadow:0 0 8px rgba(107,114,128,0.6); }
     .btn-row { display:flex; gap:14px; margin-top:12px; }
     .btn-voltar { padding:16px 24px; background:transparent; border:1px solid var(--glass-border); border-radius:50px; color:#888; font-size:14px; font-weight:600; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; gap:8px; font-family:'Inter',sans-serif; }
     .btn-voltar:hover { border-color:var(--primary); color:var(--primary); }
@@ -125,16 +125,8 @@
     .back-home a:hover { color:var(--primary); }
     #etapa3-form { display:none; }
     .btn-pular-link { text-align:center; margin-top:14px; }
-    .btn-pular-link a { color:#555; font-size:13px; text-decoration:underline; cursor:pointer; transition:color 0.3s; }
-    .btn-pular-link a:hover { color:#888; }
-    @media (max-width:640px) {
-      .cadastro-box { padding:40px 24px; border-radius:28px; }
-      .form-row { grid-template-columns:1fr; }
-      .areas-grid { grid-template-columns:repeat(2,1fr); }
-      .checkbox-grid { grid-template-columns:repeat(2,1fr); }
-      .status-grid { grid-template-columns:1fr; }
-      .escolha-grid { grid-template-columns:1fr; }
-    }
+    .btn-pular-link a { color:#555; font-size:13px; text-decoration:underline; cursor:pointer; }
+    @media (max-width:640px) { .cadastro-box{padding:40px 24px;border-radius:28px} .form-row{grid-template-columns:1fr} .areas-grid{grid-template-columns:repeat(2,1fr)} .checkbox-grid{grid-template-columns:repeat(2,1fr)} .status-grid{grid-template-columns:1fr} .escolha-grid{grid-template-columns:1fr} }
   </style>
 </head>
 <body>
@@ -147,20 +139,11 @@
       </div>
 
       <div class="stepper">
-        <div class="step active" id="step1" onclick="navegarEtapa(1)">
-          <div class="step-circle" id="circle1">1</div>
-          <div class="step-label">Conta</div>
-        </div>
+        <div class="step active" id="step1" onclick="navegarEtapa(1)"><div class="step-circle" id="circle1">1</div><div class="step-label">Conta</div></div>
         <div class="step-line" id="line1"></div>
-        <div class="step" id="step2" onclick="navegarEtapa(2)">
-          <div class="step-circle" id="circle2">2</div>
-          <div class="step-label">Perfil</div>
-        </div>
+        <div class="step" id="step2" onclick="navegarEtapa(2)"><div class="step-circle" id="circle2">2</div><div class="step-label">Perfil</div></div>
         <div class="step-line" id="line2"></div>
-        <div class="step" id="step3" onclick="navegarEtapa(3)">
-          <div class="step-circle" id="circle3">3</div>
-          <div class="step-label">Detalhes</div>
-        </div>
+        <div class="step" id="step3" onclick="navegarEtapa(3)"><div class="step-circle" id="circle3">3</div><div class="step-label">Detalhes</div></div>
       </div>
 
       <div class="erro-msg" id="erroMsg"></div>
@@ -176,120 +159,104 @@
             <h2 class="section-title"><i class="fa-solid fa-user"></i> Dados de Acesso</h2>
             <div class="form-group">
               <label for="nome_completo">Nome Completo <span class="required">*</span></label>
-              <input type="text" id="nome_completo" placeholder="Seu nome completo">
+              <div class="input-wrap">
+                <input type="text" id="nome_completo" placeholder="Seu nome completo" autocomplete="name">
+              </div>
+              <div class="campo-erro" id="erro-nome">Informe seu nome completo.</div>
             </div>
             <div class="form-group">
               <label for="email">E-mail <span class="required">*</span></label>
-              <input type="email" id="email" placeholder="seu@email.com">
+              <div class="input-wrap">
+                <input type="email" id="email" placeholder="seu@email.com" autocomplete="email">
+              </div>
+              <div class="campo-erro" id="erro-email">Informe um e-mail válido.</div>
             </div>
             <div class="form-group">
               <label for="senha">Senha <span class="required">*</span></label>
-              <input type="password" id="senha" placeholder="Mínimo 6 caracteres" minlength="6">
+              <div class="input-wrap">
+                <input type="password" id="senha" placeholder="Mínimo 6 caracteres" autocomplete="new-password">
+                <i class="fas fa-eye toggle-senha" id="toggleSenha"></i>
+              </div>
+              <div class="campo-erro" id="erro-senha">Mínimo 6 caracteres.</div>
+              <div class="senha-forca" id="senhaForca" style="display:none;">
+                <div class="forca-barra">
+                  <div class="forca-seg" id="seg1"></div>
+                  <div class="forca-seg" id="seg2"></div>
+                  <div class="forca-seg" id="seg3"></div>
+                </div>
+                <div class="forca-texto" id="forcaTexto">Senha fraca</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="confirmarSenha">Confirmar Senha <span class="required">*</span></label>
+              <div class="input-wrap">
+                <input type="password" id="confirmarSenha" placeholder="Confirme a senha" autocomplete="new-password">
+                <i class="fas fa-eye toggle-senha" id="toggleConfirmar"></i>
+              </div>
+              <div class="campo-erro" id="erro-confirmar">As senhas não coincidem.</div>
+              <div class="senha-match" id="senhaMatch"></div>
             </div>
           </div>
           <div class="btn-row">
-            <button type="submit" class="btn-avancar">
-              Continuar <i class="fa-solid fa-arrow-right"></i>
-            </button>
+            <button type="button" class="btn-voltar" onclick="window.location.href='index.html'"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+            <button type="submit" class="btn-avancar"><i class="fa-solid fa-arrow-right"></i> Avançar</button>
           </div>
-          <div class="login-link">Já tem uma conta? <a href="login.html">Faça login</a></div>
         </div>
 
         <!-- ETAPA 2 -->
         <div id="etapa2" style="display:none;">
           <div class="etapa-badge">Etapa 2 de 3</div>
-          <h1 class="cadastro-title">Sobre você</h1>
-          <p class="cadastro-subtitle">Conte um pouco sobre sua trajetória musical</p>
+          <h1 class="cadastro-title">Seu Perfil</h1>
+          <p class="cadastro-subtitle">Conte-nos mais sobre você</p>
           <div class="form-section">
-            <h2 class="section-title"><i class="fa-solid fa-camera"></i> Foto de Perfil</h2>
-            <div class="foto-upload">
-              <div class="foto-avatar"><i class="fa-solid fa-user"></i></div>
-              <div class="foto-info">
-                <p>Upload de foto ainda não disponível</p>
-                <span class="foto-badge">Em breve</span>
+            <h2 class="section-title"><i class="fa-solid fa-star"></i> Informações Artísticas</h2>
+            <div class="form-group">
+              <label for="nome_artistico">Nome Artístico <span class="required">*</span></label>
+              <div class="input-wrap">
+                <input type="text" id="nome_artistico" placeholder="Seu nome artístico" autocomplete="off">
               </div>
             </div>
-          </div>
-          <div class="form-section">
-            <h2 class="section-title"><i class="fa-solid fa-id-card"></i> Perfil Musical</h2>
             <div class="form-group">
-              <label for="nome_artistico">Nome Artístico</label>
-              <input type="text" id="nome_artistico" placeholder="Como é conhecido na cena">
-            </div>
-            <div class="form-group">
-              <label for="biografia">Biografia</label>
+              <label for="biografia">Biografia <span class="required">*</span></label>
               <div class="bio-wrap">
-                <textarea id="biografia" placeholder="Fale sobre você, sua trajetória musical..." maxlength="500"></textarea>
-                <span class="bio-counter" id="bioCounter">0 / 500</span>
+                <textarea id="biografia" placeholder="Fale um pouco sobre você, seu estilo e experiência..." maxlength="500"></textarea>
+                <div class="bio-counter" id="bioCounter">0 / 500</div>
               </div>
             </div>
           </div>
           <div class="btn-row">
-            <button type="button" class="btn-voltar" onclick="navegarEtapa(1)">
-              <i class="fa-solid fa-arrow-left"></i> Voltar
-            </button>
-            <button type="submit" class="btn-avancar">
-              Salvar e continuar <i class="fa-solid fa-arrow-right"></i>
-            </button>
+            <button type="button" class="btn-voltar" onclick="navegarEtapa(1)"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+            <button type="submit" class="btn-avancar"><i class="fa-solid fa-arrow-right"></i> Avançar</button>
           </div>
         </div>
 
         <!-- ETAPA 3 -->
         <div id="etapa3" style="display:none;">
-          <div class="etapa-badge">Etapa 3 de 3 — Opcional</div>
-          <h1 class="cadastro-title">Quase lá!</h1>
-          <p class="cadastro-subtitle">Quer completar seu perfil agora ou deixar para depois?</p>
+          <div class="etapa-badge">Etapa 3 de 3</div>
+          <h1 class="cadastro-title">Detalhes Finais</h1>
+          <p class="cadastro-subtitle">Personalize seu perfil</p>
 
           <div id="etapa3-escolha">
-            <div class="escolha-grid">
-              <div class="escolha-card agora" onclick="mostrarFormEtapa3()">
-                <div class="escolha-icon"><i class="fa-solid fa-guitar"></i></div>
-                <div class="escolha-titulo">Completar agora</div>
-                <div class="escolha-desc">Adicione instrumentos, gêneros, localização e status</div>
+            <div class="form-section">
+              <h2 class="section-title"><i class="fa-solid fa-question"></i> Deseja completar seu perfil agora?</h2>
+              <div class="escolha-grid">
+                <div class="escolha-card" onclick="mostrarFormEtapa3()">
+                  <div class="escolha-icon"><i class="fa-solid fa-check-circle"></i></div>
+                  <div class="escolha-titulo">Sim, completar agora</div>
+                  <div class="escolha-desc">Adicione instrumentos, gêneros e outras informações</div>
+                </div>
+                <div class="escolha-card" onclick="window.location.href='perfil.html'">
+                  <div class="escolha-icon muted"><i class="fa-solid fa-clock"></i></div>
+                  <div class="escolha-titulo">Depois</div>
+                  <div class="escolha-desc">Complete seu perfil mais tarde</div>
+                </div>
               </div>
-              <div class="escolha-card" onclick="window.location.href='perfil.html'">
-                <div class="escolha-icon muted"><i class="fa-solid fa-clock"></i></div>
-                <div class="escolha-titulo">Deixar para depois</div>
-                <div class="escolha-desc">Vá para o perfil e complete quando quiser</div>
-              </div>
-            </div>
-            <div class="btn-row" style="margin-top:24px;">
-              <button type="button" class="btn-voltar" onclick="navegarEtapa(2)">
-                <i class="fa-solid fa-arrow-left"></i> Voltar
-              </button>
             </div>
           </div>
 
           <div id="etapa3-form">
             <div class="form-section">
-              <h2 class="section-title"><i class="fa-solid fa-location-dot"></i> Localização</h2>
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="cidade">Cidade</label>
-                  <input type="text" id="cidade" placeholder="Sua cidade">
-                </div>
-                <div class="form-group">
-                  <label for="estado">Estado</label>
-                  <select id="estado">
-                    <option value="">Selecione</option>
-                    <option>AC</option><option>AL</option><option>AM</option><option>AP</option>
-                    <option>BA</option><option>CE</option><option>DF</option><option>ES</option>
-                    <option>GO</option><option>MA</option><option>MG</option><option>MS</option>
-                    <option>MT</option><option>PA</option><option>PB</option><option>PE</option>
-                    <option>PI</option><option>PR</option><option>RJ</option><option>RN</option>
-                    <option>RO</option><option>RR</option><option>RS</option><option>SC</option>
-                    <option>SE</option><option>SP</option><option>TO</option>
-                  </select>
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="telefone">Telefone / WhatsApp</label>
-                <input type="tel" id="telefone" placeholder="(00) 00000-0000" maxlength="15">
-              </div>
-            </div>
-
-            <div class="form-section">
-              <h2 class="section-title"><i class="fa-solid fa-star"></i> Área de Atuação</h2>
+              <h2 class="section-title"><i class="fa-solid fa-briefcase"></i> Área de Atuação</h2>
               <div class="areas-grid" id="areas-grid"></div>
             </div>
 
@@ -304,54 +271,76 @@
             </div>
 
             <div class="form-section">
-              <h2 class="section-title"><i class="fa-solid fa-circle-dot"></i> Status</h2>
-              <div class="status-grid">
-                <div class="checkbox-item">
-                  <input type="radio" id="status_disponivel" name="status" value="disponivel" checked>
-                  <label for="status_disponivel" class="checkbox-label">
-                    <span class="status-dot disponivel"></span> Disponível
-                  </label>
+              <h2 class="section-title"><i class="fa-solid fa-sliders"></i> DAWs</h2>
+              <div class="checkbox-grid" id="daws-grid"></div>
+            </div>
+
+            <div class="form-section">
+              <h2 class="section-title"><i class="fa-solid fa-signal"></i> Status</h2>
+              <div class="status-grid" id="status-grid"></div>
+            </div>
+
+            <div class="form-section">
+              <h2 class="section-title"><i class="fa-solid fa-map-pin"></i> Localização</h2>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="cidade">Cidade</label>
+                  <div class="input-wrap">
+                    <input type="text" id="cidade" placeholder="Sua cidade" autocomplete="address-level2">
+                  </div>
                 </div>
-                <div class="checkbox-item">
-                  <input type="radio" id="status_ocupado" name="status" value="ocupado">
-                  <label for="status_ocupado" class="checkbox-label">
-                    <span class="status-dot ocupado"></span> Ocupado
-                  </label>
-                </div>
-                <div class="checkbox-item">
-                  <input type="radio" id="status_nao_perturbe" name="status" value="nao_perturbe">
-                  <label for="status_nao_perturbe" class="checkbox-label">
-                    <span class="status-dot nao_perturbe"></span> Não perturbe
-                  </label>
-                </div>
-                <div class="checkbox-item">
-                  <input type="radio" id="status_invisivel" name="status" value="invisivel">
-                  <label for="status_invisivel" class="checkbox-label">
-                    <span class="status-dot invisivel"></span> Invisível
-                  </label>
+                <div class="form-group">
+                  <label for="estado">Estado</label>
+                  <select id="estado">
+                    <option value="">Selecione...</option>
+                    <option value="AC">Acre</option>
+                    <option value="AL">Alagoas</option>
+                    <option value="AP">Amapá</option>
+                    <option value="AM">Amazonas</option>
+                    <option value="BA">Bahia</option>
+                    <option value="CE">Ceará</option>
+                    <option value="DF">Distrito Federal</option>
+                    <option value="ES">Espírito Santo</option>
+                    <option value="GO">Goiás</option>
+                    <option value="MA">Maranhão</option>
+                    <option value="MT">Mato Grosso</option>
+                    <option value="MS">Mato Grosso do Sul</option>
+                    <option value="MG">Minas Gerais</option>
+                    <option value="PA">Pará</option>
+                    <option value="PB">Paraíba</option>
+                    <option value="PR">Paraná</option>
+                    <option value="PE">Pernambuco</option>
+                    <option value="PI">Piauí</option>
+                    <option value="RJ">Rio de Janeiro</option>
+                    <option value="RN">Rio Grande do Norte</option>
+                    <option value="RS">Rio Grande do Sul</option>
+                    <option value="RO">Rondônia</option>
+                    <option value="RR">Roraima</option>
+                    <option value="SC">Santa Catarina</option>
+                    <option value="SP">São Paulo</option>
+                    <option value="SE">Sergipe</option>
+                    <option value="TO">Tocantins</option>
+                  </select>
                 </div>
               </div>
             </div>
 
             <div class="form-section">
-              <h2 class="section-title"><i class="fa-solid fa-sliders"></i> DAWs que usa</h2>
-              <div class="checkbox-grid" id="daws-grid"></div>
+              <h2 class="section-title"><i class="fa-solid fa-phone"></i> Telefone</h2>
+              <div class="form-group">
+                <label for="telefone">Telefone (Opcional)</label>
+                <div class="input-wrap">
+                  <input type="tel" id="telefone" placeholder="(XX) XXXXX-XXXX" autocomplete="tel">
+                </div>
+              </div>
             </div>
 
             <div class="btn-row">
-              <button type="button" class="btn-voltar" onclick="esconderFormEtapa3()">
-                <i class="fa-solid fa-arrow-left"></i> Voltar
-              </button>
-              <button type="submit" class="btn-avancar">
-                <i class="fa-solid fa-check"></i> Concluir cadastro
-              </button>
-            </div>
-            <div class="btn-pular-link">
-              <a onclick="window.location.href='perfil.html'">Pular e ir para o perfil</a>
+              <button type="button" class="btn-voltar" onclick="esconderFormEtapa3()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+              <button type="submit" class="btn-avancar"><i class="fa-solid fa-check"></i> Finalizar</button>
             </div>
           </div>
         </div>
-
       </form>
     </div>
     <div class="back-home">
@@ -363,232 +352,307 @@
     import { salvarCadastro, completarCadastro, verificarAutenticacao } from '../js/auth.js';
     import { fetchDados } from '../js/dados.js';
 
-    function mascaraTelefone(el) {
-      let v = el.value.replace(/\D/g, '').substring(0, 11);
-      if (v.length <= 10) v = v.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
-      else v = v.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
-      el.value = v;
-    }
-    function validarTelefone(val) {
-      const digits = val.replace(/\D/g, '');
-      return digits.length === 10 || digits.length === 11;
-    }
-    document.getElementById('telefone')?.addEventListener('input', function() { mascaraTelefone(this); });
+    // ── MÁSCARA TELEFONE ──
+    document.getElementById('telefone')?.addEventListener('input', function() {
+      let v = this.value.replace(/\D/g,'').substring(0,11);
+      if(v.length<=10) v=v.replace(/(\d{2})(\d{4})(\d{0,4})/,'($1) $2-$3');
+      else v=v.replace(/(\d{2})(\d{5})(\d{0,4})/,'($1) $2-$3');
+      this.value=v;
+    });
 
-    // Bio counter
+    // ── TOGGLE SENHA ──
+    function toggleSenhaVisivel(inputId, iconId) {
+      const input = document.getElementById(inputId);
+      const icon = document.getElementById(iconId);
+      if (!input || !icon) return;
+      icon.addEventListener('click', () => {
+        const visivel = input.type === 'text';
+        input.type = visivel ? 'password' : 'text';
+        icon.className = `fas fa-${visivel ? 'eye' : 'eye-slash'} toggle-senha`;
+      });
+    }
+    toggleSenhaVisivel('senha', 'toggleSenha');
+    toggleSenhaVisivel('confirmarSenha', 'toggleConfirmar');
+
+    // ── FORÇA DA SENHA ──
+    function calcularForca(senha) {
+      let pts = 0;
+      if (senha.length >= 6) pts++;
+      if (senha.length >= 10) pts++;
+      if (/[A-Z]/.test(senha)) pts++;
+      if (/[0-9]/.test(senha)) pts++;
+      if (/[^A-Za-z0-9]/.test(senha)) pts++;
+      if (pts <= 1) return 'fraca';
+      if (pts <= 3) return 'media';
+      return 'forte';
+    }
+
+    const senhaInput = document.getElementById('senha');
+    const senhaForca = document.getElementById('senhaForca');
+    const forcaTexto = document.getElementById('forcaTexto');
+    const segs = [document.getElementById('seg1'), document.getElementById('seg2'), document.getElementById('seg3')];
+
+    senhaInput?.addEventListener('input', () => {
+      const val = senhaInput.value;
+      if (!val) { senhaForca.style.display='none'; return; }
+      senhaForca.style.display='block';
+      const forca = calcularForca(val);
+      segs.forEach(s => s.className='forca-seg');
+      if (forca==='fraca') { segs[0].classList.add('fraca'); forcaTexto.textContent='Senha fraca'; forcaTexto.className='forca-texto fraca'; }
+      else if (forca==='media') { segs[0].classList.add('media'); segs[1].classList.add('media'); forcaTexto.textContent='Senha média'; forcaTexto.className='forca-texto media'; }
+      else { segs.forEach(s=>s.classList.add('forte')); forcaTexto.textContent='Senha forte'; forcaTexto.className='forca-texto forte'; }
+      checarMatch();
+    });
+
+    // ── CONFIRMAR SENHA ──
+    const confirmarInput = document.getElementById('confirmarSenha');
+    const senhaMatch = document.getElementById('senhaMatch');
+
+    function checarMatch() {
+      const s1 = senhaInput.value;
+      const s2 = confirmarInput.value;
+      if (!s2) { senhaMatch.className='senha-match'; return; }
+      if (s1===s2) {
+        senhaMatch.textContent='✓ Senhas coincidem';
+        senhaMatch.className='senha-match show ok';
+        confirmarInput.classList.remove('erro'); confirmarInput.classList.add('ok');
+      } else {
+        senhaMatch.textContent='✗ Senhas não coincidem';
+        senhaMatch.className='senha-match show erro';
+        confirmarInput.classList.remove('ok'); confirmarInput.classList.add('erro');
+      }
+    }
+    confirmarInput?.addEventListener('input', checarMatch);
+
+    // ── BIO COUNTER ──
     const bioEl = document.getElementById('biografia');
     const bioCounter = document.getElementById('bioCounter');
     bioEl?.addEventListener('input', () => {
       const len = bioEl.value.length;
-      bioCounter.textContent = len + ' / 500';
-      bioCounter.className = 'bio-counter' + (len >= 500 ? ' limit' : len >= 400 ? ' warning' : '');
+      bioCounter.textContent = len+' / 500';
+      bioCounter.className = 'bio-counter'+(len>=500?' limit':len>=400?' warning':'');
     });
 
+    // ── NAVEGAÇÃO ──
     let etapaAtual = 1;
     const etapasCompletas = new Set();
 
     window.navegarEtapa = function(numero) {
-      if (numero > etapaAtual && !etapasCompletas.has(etapaAtual)) return;
+      if(numero>etapaAtual && !etapasCompletas.has(etapaAtual)) return;
       mostrarEtapa(numero);
     };
-
     window.mostrarFormEtapa3 = function() {
-      document.getElementById('etapa3-escolha').style.display = 'none';
-      document.getElementById('etapa3-form').style.display = 'block';
-      window.scrollTo(0, 0);
+      document.getElementById('etapa3-escolha').style.display='none';
+      document.getElementById('etapa3-form').style.display='block';
+      window.scrollTo(0,0);
     };
-
     window.esconderFormEtapa3 = function() {
-      document.getElementById('etapa3-form').style.display = 'none';
-      document.getElementById('etapa3-escolha').style.display = 'block';
-      window.scrollTo(0, 0);
+      document.getElementById('etapa3-form').style.display='none';
+      document.getElementById('etapa3-escolha').style.display='block';
+      window.scrollTo(0,0);
     };
 
     function mostrarEtapa(numero) {
-      [1, 2, 3].forEach(n => {
-        document.getElementById(`etapa${n}`).style.display = 'none';
+      [1,2,3].forEach(n => {
+        document.getElementById(`etapa${n}`).style.display='none';
         const step = document.getElementById(`step${n}`);
         step.classList.remove('active');
-        if (etapasCompletas.has(n)) {
+        if(etapasCompletas.has(n)) {
           step.classList.add('done');
-          document.getElementById(`circle${n}`).innerHTML = '<i class="fa-solid fa-check" style="font-size:11px"></i>';
+          document.getElementById(`circle${n}`).innerHTML='<i class="fa-solid fa-check" style="font-size:11px"></i>';
         } else {
           step.classList.remove('done');
-          document.getElementById(`circle${n}`).textContent = n;
+          document.getElementById(`circle${n}`).textContent=n;
         }
       });
-      document.getElementById(`etapa${numero}`).style.display = 'block';
-      const stepAtivo = document.getElementById(`step${numero}`);
-      stepAtivo.classList.add('active');
-      stepAtivo.classList.remove('done');
-      document.getElementById(`circle${numero}`).textContent = numero;
-      document.getElementById('line1').classList.toggle('done', numero >= 2);
-      document.getElementById('line2').classList.toggle('done', numero >= 3);
-      etapaAtual = numero;
-      window.scrollTo(0, 0);
+      document.getElementById(`etapa${numero}`).style.display='block';
+      document.getElementById(`step${numero}`).classList.add('active');
+      document.getElementById(`step${numero}`).classList.remove('done');
+      document.getElementById(`circle${numero}`).textContent=numero;
+      document.getElementById('line1').classList.toggle('done',numero>=2);
+      document.getElementById('line2').classList.toggle('done',numero>=3);
+      etapaAtual=numero;
+      window.scrollTo(0,0);
     }
 
-    // Se já logado com cadastro completo, vai direto pro perfil
+    // Se já logado
     const usuarioLogado = verificarAutenticacao(false);
-    if (usuarioLogado?.cadastro_completo == 1) window.location.href = 'perfil.html';
-    if (usuarioLogado && usuarioLogado.cadastro_completo == 0) {
-      etapasCompletas.add(1);
-      mostrarEtapa(2);
-    }
+    if(usuarioLogado?.cadastro_completo==1) window.location.href='perfil.html';
+    if(usuarioLogado && usuarioLogado.cadastro_completo==0) { etapasCompletas.add(1); mostrarEtapa(2); }
 
-    const dados = await fetchDados();
-    const areaIcones = {
-      'Vocalista':'fa-microphone','Instrumentista':'fa-guitar','Produtor':'fa-sliders',
-      'Compositor':'fa-pen-nib','DJ':'fa-headphones','Beatmaker':'fa-drum'
-    };
+    // ── CATÁLOGOS ──
+    // CORREÇÃO: Envolver o fetchDados em uma IIFE async para permitir await fora de async
+    (async () => {
+      try {
+        const dados = await fetchDados();
+        console.log('Dados recebidos:', dados);
+        
+        // Validar e garantir estrutura correta dos dados
+        const instrumentos = Array.isArray(dados?.instrumentos) ? dados.instrumentos : [];
+        const generos = Array.isArray(dados?.generos) ? dados.generos : [];
+        const daws = Array.isArray(dados?.daws) ? dados.daws : [];
+        
+        const areaIcones = { 'Vocalista':'fa-microphone','Instrumentista':'fa-guitar','Produtor':'fa-sliders','Compositor':'fa-pen-nib','DJ':'fa-headphones','Beatmaker':'fa-drum' };
 
-    document.getElementById('areas-grid').innerHTML =
-      ['Vocalista','Instrumentista','Produtor','Compositor','DJ','Beatmaker'].map(a => `
-        <div class="area-card">
-          <input type="radio" name="areas_atuacao" id="area_${a}" value="${a}">
-          <label for="area_${a}" class="area-label">
-            <i class="fas ${areaIcones[a]} area-icon"></i>
-            <span class="area-name">${a}</span>
-          </label>
-        </div>`).join('');
+        document.getElementById('areas-grid').innerHTML =
+          ['Vocalista','Instrumentista','Produtor','Compositor','DJ','Beatmaker'].map(a=>`
+            <div class="area-card">
+              <input type="radio" name="areas_atuacao" id="area_${a}" value="${a}">
+              <label for="area_${a}" class="area-label">
+                <i class="fas ${areaIcones[a]} area-icon"></i>
+                <span class="area-name">${a}</span>
+              </label>
+            </div>`).join('');
 
-    document.getElementById('instrumentos-grid').innerHTML = dados.instrumentos.map(i => `
-      <div class="checkbox-item">
-        <input type="checkbox" id="inst_${i.id || i}" name="instrumentos" value="${i.nome || i}">
-        <label for="inst_${i.id || i}" class="checkbox-label">
-          <span class="checkbox-icon"><i class="fa-solid fa-check"></i></span>${i.nome || i}
-        </label>
-      </div>`).join('');
+        document.getElementById('instrumentos-grid').innerHTML = instrumentos.length > 0 
+          ? instrumentos.map(i=>{
+              const id = typeof i === 'object' ? (i.id || i.nome) : i;
+              const nome = typeof i === 'object' ? i.nome : i;
+              return `
+              <div class="checkbox-item">
+                <input type="checkbox" id="inst_${id}" name="instrumentos" value="${nome}">
+                <label for="inst_${id}" class="checkbox-label">
+                  <span class="checkbox-icon"><i class="fa-solid fa-check"></i></span>${nome}
+                </label>
+              </div>`;
+            }).join('')
+          : '<p style="color: #888; grid-column: 1/-1; text-align: center;">Nenhum instrumento disponível</p>';
 
-    document.getElementById('generos-grid').innerHTML = dados.generos.map(g => `
-      <div class="checkbox-item">
-        <input type="checkbox" id="gen_${g.id || g}" name="generos" value="${g.nome || g}">
-        <label for="gen_${g.id || g}" class="checkbox-label">
-          <span class="checkbox-icon"><i class="fa-solid fa-check"></i></span>${g.nome || g}
-        </label>
-      </div>`).join('');
+        document.getElementById('generos-grid').innerHTML = generos.length > 0
+          ? generos.map(g=>{
+              const id = typeof g === 'object' ? (g.id || g.nome) : g;
+              const nome = typeof g === 'object' ? g.nome : g;
+              return `
+              <div class="checkbox-item">
+                <input type="checkbox" id="gen_${id}" name="generos" value="${nome}">
+                <label for="gen_${id}" class="checkbox-label">
+                  <span class="checkbox-icon"><i class="fa-solid fa-check"></i></span>${nome}
+                </label>
+              </div>`;
+            }).join('')
+          : '<p style="color: #888; grid-column: 1/-1; text-align: center;">Nenhum gênero disponível</p>';
 
-    document.getElementById('daws-grid').innerHTML = dados.daws.map(d => `
-      <div class="checkbox-item">
-        <input type="checkbox" id="daw_${(d.nome||d).replace(/\s+/g,'_')}" name="daws" value="${d.nome || d}">
-        <label for="daw_${(d.nome||d).replace(/\s+/g,'_')}" class="checkbox-label">
-          <span class="checkbox-icon"><i class="fa-solid fa-check"></i></span>${d.nome || d}
-        </label>
-      </div>`).join('');
+        document.getElementById('daws-grid').innerHTML = daws.length > 0
+          ? daws.map(d=>{
+              const id = (typeof d === 'object' ? d.nome : d).replace(/\s+/g,'_');
+              const nome = typeof d === 'object' ? d.nome : d;
+              return `
+              <div class="checkbox-item">
+                <input type="checkbox" id="daw_${id}" name="daws" value="${nome}">
+                <label for="daw_${id}" class="checkbox-label">
+                  <span class="checkbox-icon"><i class="fa-solid fa-check"></i></span>${nome}
+                </label>
+              </div>`;
+            }).join('')
+          : '<p style="color: #888; grid-column: 1/-1; text-align: center;">Nenhuma DAW disponível</p>';
+
+        document.getElementById('status-grid').innerHTML = [
+          {id:'disponivel',label:'Disponível',icon:'check-circle'},
+          {id:'ocupado',label:'Ocupado',icon:'hourglass-end'},
+          {id:'nao_perturbe',label:'Não Perturbe',icon:'ban'},
+          {id:'invisivel',label:'Invisível',icon:'eye-slash'}
+        ].map(s=>`
+          <div class="checkbox-item">
+            <input type="radio" name="status" id="status_${s.id}" value="${s.id}">
+            <label for="status_${s.id}" class="checkbox-label">
+              <span class="status-dot ${s.id}"></span>${s.label}
+            </label>
+          </div>`).join('');
+      } catch(erro) {
+        console.error('Erro ao carregar dados:', erro);
+        document.getElementById('erroMsg').textContent = 'Erro ao carregar dados do catálogo. Tente recarregar a página.';
+        document.getElementById('erroMsg').style.display = 'block';
+        
+        // Preencher com dados vazios para não quebrar a página
+        ['instrumentos-grid', 'generos-grid', 'daws-grid'].forEach(id => {
+          document.getElementById(id).innerHTML = '<p style="color: #888; grid-column: 1/-1; text-align: center;">Dados indisponíveis</p>';
+        });
+      }
+    })();
 
     function coletarCheckboxes(name) {
-      return [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(el => el.value);
+      return [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(el=>el.value);
     }
 
+    // ── SUBMIT ──
     document.getElementById('cadastroForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const erroMsg = document.getElementById('erroMsg');
-      erroMsg.style.display = 'none';
-      const btn = e.submitter || document.querySelector('.btn-avancar');
-      if (btn) { btn.disabled = true; }
+      erroMsg.style.display='none';
+      const btn = document.querySelector(`#etapa${etapaAtual} .btn-avancar`);
+      if(btn) btn.disabled=true;
 
       try {
-        if (etapaAtual === 1) {
+        if(etapaAtual===1) {
           const nome  = document.getElementById('nome_completo').value.trim();
-          const email = document.getElementById('email').value.trim();
+          const email = document.getElementById('email').value.trim().toLowerCase();
           const senha = document.getElementById('senha').value;
+          const confirmar = document.getElementById('confirmarSenha').value;
 
-          if (!nome || !email || !senha) {
-            erroMsg.textContent = 'Preencha todos os campos obrigatórios.';
-            erroMsg.style.display = 'block'; return;
-          }
+          // Validações
+          let temErro = false;
+          if(!nome) { document.getElementById('erro-nome').classList.add('show'); temErro=true; } else { document.getElementById('erro-nome').classList.remove('show'); }
+          if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { document.getElementById('erro-email').classList.add('show'); temErro=true; } else { document.getElementById('erro-email').classList.remove('show'); }
+          if(senha.length<6) { document.getElementById('erro-senha').classList.add('show'); temErro=true; } else { document.getElementById('erro-senha').classList.remove('show'); }
+          if(senha!==confirmar) { document.getElementById('erro-confirmar').classList.add('show'); temErro=true; } else { document.getElementById('erro-confirmar').classList.remove('show'); }
+          if(temErro) return;
 
-          // ── FIX 1: verificar se já logado com MESMO email ──
           const jaLogado = verificarAutenticacao(false);
-          if (jaLogado) {
-            if (jaLogado.email === email) {
-              // mesmo usuário avançando
-              etapasCompletas.add(1); mostrarEtapa(2); return;
-            } else {
-              erroMsg.textContent = 'Você já está logado com outro e-mail. Faça logout antes de criar uma nova conta.';
-              erroMsg.style.display = 'block'; return;
-            }
+          if(jaLogado) {
+            if(jaLogado.email===email) { etapasCompletas.add(1); mostrarEtapa(2); return; }
+            else { erroMsg.textContent='Você já está logado com outro e-mail. Faça logout antes.'; erroMsg.style.display='block'; return; }
           }
 
-          await salvarCadastro({ nome_completo: nome, email, senha, cadastro_completo: 0 });
+          await salvarCadastro({ nome_completo:nome, email, senha, cadastro_completo:0 });
           etapasCompletas.add(1);
           mostrarEtapa(2);
 
-        } else if (etapaAtual === 2) {
-          const dadosForm = {
+        } else if(etapaAtual===2) {
+          await completarCadastro({
             nome_artistico: document.getElementById('nome_artistico').value.trim(),
             biografia:      document.getElementById('biografia').value.trim(),
-            instrumentos:   [],
-            generos:        [],
-            daws:           [],
-            area_atuacao:   [],   // ── FIX 4: nome correto do campo ──
-            cadastro_completo: 0,
-          };
-          await completarCadastro(dadosForm);
+            instrumentos:[], generos:[], daws:[], area_atuacao:[],
+            cadastro_completo:0,
+          });
           etapasCompletas.add(2);
           mostrarEtapa(3);
 
-        } else if (etapaAtual === 3) {
-          const telefone_val = document.getElementById('telefone').value.trim();
-          if (telefone_val && !validarTelefone(telefone_val)) {
-            erroMsg.textContent = 'Telefone inválido.';
-            erroMsg.style.display = 'block'; return;
+        } else if(etapaAtual===3) {
+          const tel = document.getElementById('telefone').value.trim();
+          if(tel && !/^\(\d{2}\)\s\d{4,5}-\d{4}$/.test(tel)) {
+            erroMsg.textContent='Telefone inválido.'; erroMsg.style.display='block'; return;
           }
-          const dadosForm = {
+          await completarCadastro({
             nome_artistico: document.getElementById('nome_artistico').value.trim(),
             biografia:      document.getElementById('biografia').value.trim(),
-            telefone:       telefone_val,
+            telefone:       tel,
             cidade:         document.getElementById('cidade').value.trim(),
             estado:         document.getElementById('estado').value,
-            area_atuacao:   coletarCheckboxes('areas_atuacao'),  // ── FIX 2: nome correto ──
+            area_atuacao:   coletarCheckboxes('areas_atuacao'),
             instrumentos:   coletarCheckboxes('instrumentos'),
             generos:        coletarCheckboxes('generos'),
             daws:           coletarCheckboxes('daws'),
-            status:         document.querySelector('input[name="status"]:checked')?.value ?? 'disponivel', // ── FIX 3 ──
-            cadastro_completo: 1,
-          };
-          await completarCadastro(dadosForm);
-          window.location.href = 'perfil.html';
+            status:         document.querySelector('input[name="status"]:checked')?.value ?? 'disponivel',
+            cadastro_completo:1,
+          });
+          window.location.href='perfil.html';
         }
-
-      } catch (erro) {
-        erroMsg.textContent = erro.message || 'Erro inesperado. Tente novamente.';
-        erroMsg.style.display = 'block';
+      } catch(erro) {
+        erroMsg.textContent=erro.message||'Erro inesperado. Tente novamente.';
+        erroMsg.style.display='block';
       } finally {
-        if (btn) btn.disabled = false;
+        if(btn) btn.disabled=false;
       }
     });
   </script>
 
   <script>
-    const canvas = document.getElementById('bg-canvas');
-    const ctx = canvas.getContext('2d');
-    let particles = [];
-    function initCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-    class Particle {
-      constructor() {
-        this.x = Math.random()*canvas.width; this.y = Math.random()*canvas.height;
-        this.size = Math.random()*2; this.speedX = Math.random()*0.5-0.25;
-        this.speedY = Math.random()*0.5-0.25; this.opacity = Math.random()*0.5+0.1;
-      }
-      update() {
-        this.x+=this.speedX; this.y+=this.speedY;
-        if(this.x>canvas.width)this.x=0; if(this.x<0)this.x=canvas.width;
-        if(this.y>canvas.height)this.y=0; if(this.y<0)this.y=canvas.height;
-      }
-      draw() {
-        ctx.fillStyle=`rgba(139,92,246,${this.opacity})`;
-        ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill();
-      }
-    }
-    function createParticles() { for(let i=0;i<100;i++) particles.push(new Particle()); }
-    function animate() {
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      particles.forEach(p=>{p.update();p.draw()});
-      requestAnimationFrame(animate);
-    }
-    window.addEventListener('resize', initCanvas);
-    initCanvas(); createParticles(); animate();
+    const canvas=document.getElementById('bg-canvas'); const ctx=canvas.getContext('2d'); let particles=[];
+    function initCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
+    class Particle{constructor(){this.x=Math.random()*canvas.width;this.y=Math.random()*canvas.height;this.size=Math.random()*2;this.speedX=Math.random()*0.5-0.25;this.speedY=Math.random()*0.5-0.25;this.opacity=Math.random()*0.5+0.1;}update(){this.x+=this.speedX;this.y+=this.speedY;if(this.x>canvas.width)this.x=0;if(this.x<0)this.x=canvas.width;if(this.y>canvas.height)this.y=0;if(this.y<0)this.y=canvas.height;}draw(){ctx.fillStyle=`rgba(139,92,246,${this.opacity})`;ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);ctx.fill();}}
+    function createParticles(){for(let i=0;i<100;i++)particles.push(new Particle());}
+    function animate(){ctx.clearRect(0,0,canvas.width,canvas.height);particles.forEach(p=>{p.update();p.draw()});requestAnimationFrame(animate);}
+    window.addEventListener('resize',initCanvas);initCanvas();createParticles();animate();
   </script>
 </body>
 </html>
