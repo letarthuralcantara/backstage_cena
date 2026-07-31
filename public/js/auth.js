@@ -48,7 +48,9 @@ export async function completarCadastro(dados) {
     nome_completo:    usuarioLocal.nome_completo,
     nome_artistico:   dados.nome_artistico || usuarioLocal.nome_artistico || usuarioLocal.nome_completo,
     email:            usuarioLocal.email.toLowerCase().trim(),
-    senha:            usuarioLocal.senha,
+    // "senha" propositalmente omitida: a API não devolve mais o hash, e este
+    // endpoint não deve alterar a senha do usuário. Se "senha" não vier no
+    // corpo, o back-end mantém a senha atual (ver UsuarioModel.update).
     telefone:         dados.telefone  || usuarioLocal.telefone || null,
     cidade:           dados.cidade    || usuarioLocal.cidade   || null,
     estado:           dados.estado    || usuarioLocal.estado   || null,
