@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import usuarioService from '../models/UsuarioModel.js'
+import usuarioService, { sanitizeUsuario } from '../models/UsuarioModel.js'
 import { HttpError } from '../errors/HttpError.js'
 import bcrypt from 'bcryptjs'
 
@@ -8,7 +8,7 @@ class UsuarioController {
     try {
       const { field, value } = req.query
       const usuarios = await usuarioService.read(field as string, value)
-      res.json(usuarios)
+      res.json(usuarios.map(sanitizeUsuario))
     } catch (error) { next(error) }
   }
 
@@ -16,29 +16,24 @@ class UsuarioController {
     try {
       const id = Number(req.params.id)
       const usuario = await usuarioService.readById(id)
-      res.json(usuario)
+      res.json(sanitizeUsuario(usuario))
     } catch (error) { next(error) }
   }
 
   async criar(req: Request, res: Response, next: NextFunction): Promise<void> {
-  try {
-    console.log("BODY RECEBIDO:", req.body);
-
-    const novoUsuario = await usuarioService.create(req.body);
-
-    console.log("USUÁRIO CRIADO:", novoUsuario);
-
-    res.status(201).json(novoUsuario);
-  } catch (error) {
-    next(error);
+    try {
+      const novoUsuario = await usuarioService.create(req.body)
+      res.status(201).json(sanitizeUsuario(novoUsuario))
+    } catch (error) {
+      next(error)
+    }
   }
-}
 
   async atualizar(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const id_usuario = Number(req.params.id)
       const usuarioAtualizado = await usuarioService.update({ id_usuario, ...req.body })
-      res.json(usuarioAtualizado)
+      res.json(sanitizeUsuario(usuarioAtualizado))
     } catch (error) { next(error) }
   }
 
@@ -58,7 +53,7 @@ class UsuarioController {
       if (!usuario) throw new HttpError(401, 'E-mail ou senha incorretos.')
       const senhaCorreta = await bcrypt.compare(senha, usuario.senha)
       if (!senhaCorreta) throw new HttpError(401, 'E-mail ou senha incorretos.')
-      res.status(200).json(usuario)
+      res.status(200).json(sanitizeUsuario(usuario))
     } catch (error) { next(error) }
   }
 
@@ -69,7 +64,7 @@ class UsuarioController {
       const { status } = req.body as { status?: string }
       if (!status) throw new HttpError(400, 'O campo status é obrigatório.')
       const usuario = await usuarioService.updateStatus(id, status)
-      res.json(usuario)
+      res.json(sanitizeUsuario(usuario))
     } catch (error) { next(error) }
   }
 
