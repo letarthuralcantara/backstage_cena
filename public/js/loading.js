@@ -3,7 +3,7 @@
  * Uso: import { showLoading, hideLoading } from './loading.js';
  */
 
-(function injectLoader() {
+function injectLoader() {
   if (document.getElementById('loading-overlay')) return;
 
   const style = document.createElement('style');
@@ -109,15 +109,15 @@
     <span class="loader-text" id="loader-msg">Carregando...</span>
   `;
   document.body.appendChild(overlay);
-})();
+}
+
+injectLoader();
 
 export function showLoading(msg = 'Carregando...') {
-  let overlay = document.getElementById('loading-overlay');
-  if (!overlay) {
-    // recria se foi removido
-    injectLoader?.();
-    overlay = document.getElementById('loading-overlay');
-  }
+  // injectLoader() é idempotente (sai cedo se já existir), então é seguro
+  // chamar sempre — cobre o caso de hideLoading() ter removido o overlay do DOM.
+  injectLoader();
+  const overlay = document.getElementById('loading-overlay');
   const msgEl = document.getElementById('loader-msg');
   if (overlay) overlay.classList.remove('hidden');
   if (msgEl) msgEl.textContent = msg;
