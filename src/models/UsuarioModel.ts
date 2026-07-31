@@ -39,6 +39,9 @@ export function cadastroCompleto(u: any): boolean {
   )
 }
 
+// mapUsuario mantém TODOS os campos, incluindo o hash da senha — necessário
+// internamente (ex: bcrypt.compare no login). Nunca use o retorno desta função
+// diretamente numa resposta HTTP: use sanitizeUsuario() antes de enviar ao cliente.
 function mapUsuario(u: any): Usuario {
   const instrumentos = u.instrumentos?.map((r: any) => r.instrumento.nome) ?? []
   const generos      = u.generos?.map((r: any) => r.genero.nome) ?? []
@@ -53,6 +56,16 @@ function mapUsuario(u: any): Usuario {
   const mapped = { ...u, instrumentos, generos, daws, disponibilidades, redes_sociais, area_atuacao }
   mapped.cadastro_completo = cadastroCompleto(mapped) ? 1 : 0
   return mapped
+}
+
+/**
+ * Remove o hash da senha antes de enviar o usuário para o cliente.
+ * Use SEMPRE no controller, na resposta HTTP — nunca envie o resultado
+ * "cru" de mapUsuario() diretamente em um res.json().
+ */
+export function sanitizeUsuario<T extends { senha?: string }>(u: T): Omit<T, 'senha'> {
+  const { senha, ...resto } = u
+  return resto
 }
 
 const include = {
@@ -153,13 +166,11 @@ async function update({ id_usuario, ...dados }: UpdateUsuarioInput): Promise<Usu
   const existe = await prisma.usuario.findUnique({ where: { id_usuario }, include })
   if (!existe) throw new HttpError(404, `Usuário com id ${id_usuario} não encontrado.`)
 
+  // O front-end nunca deve mais enviar um hash de volta (ver sanitizeUsuario).
+  // Se "senha" vier no corpo, é sempre senha em texto puro digitada pelo usuário.
   let senhaFinal: string | undefined = undefined
   if (dados.senha) {
-    if (dados.senha.startsWith('$2')) {
-      senhaFinal = dados.senha
-    } else {
-      senhaFinal = await bcrypt.hash(dados.senha, 10)
-    }
+    senhaFinal = await bcrypt.hash(dados.senha, 10)
   }
 
   await prisma.usuarioInstrumento.deleteMany({ where: { id_usuario } })
