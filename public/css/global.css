@@ -347,3 +347,210 @@ footer {
     .header-search { max-width: 100%; }
     .logo-img { height: 34px; }
 }
+
+/* ============================================
+   POSTAGENS (prévias tipo stories) — public/js/postagens.js
+   ============================================ */
+
+.stories-bar {
+    display: flex;
+    gap: 18px;
+    overflow-x: auto;
+    padding: 16px 4px;
+    scrollbar-width: thin;
+}
+
+.feed-loading,
+.feed-vazio {
+    color: rgba(255,255,255,.5);
+    font-size: 14px;
+    padding: 8px 4px;
+}
+
+.story-bolinha {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    flex-shrink: 0;
+    width: 76px;
+}
+
+.story-anel {
+    width: 66px;
+    height: 66px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3px;
+    transition: transform .2s;
+}
+
+.story-bolinha:hover .story-anel { transform: scale(1.06); }
+
+.story-icone {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: #0f0f0f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.onda-svg { display: block; }
+
+.story-nome {
+    font-size: 12px;
+    color: whitesmoke;
+    max-width: 76px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ── Cards do feed dedicado (feed.html) ── */
+.feed-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--glass, rgba(255,255,255,.03));
+    border: 1px solid var(--glass-border, rgba(255,255,255,.08));
+    border-radius: 20px;
+    padding: 20px;
+    cursor: pointer;
+    text-align: left;
+    transition: .25s;
+}
+.feed-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-4px);
+}
+.feed-card-icone {
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.feed-card-texto {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+.feed-card-titulo {
+    color: whitesmoke;
+    font-weight: 700;
+    font-size: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.feed-card-autor {
+    color: rgba(255,255,255,.55);
+    font-size: 13px;
+}
+
+.story-viewer-titulo {
+    color: whitesmoke;
+    font-weight: 600;
+    font-size: 16px;
+    margin-top: 24px;
+    text-align: center;
+}
+
+/* ── Viewer em tela cheia ── */
+.story-viewer-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.92);
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.story-viewer-barra {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    right: 16px;
+    height: 3px;
+    background: rgba(255,255,255,.2);
+    border-radius: 2px;
+    overflow: hidden;
+}
+.story-viewer-progresso {
+    height: 100%;
+    width: 0%;
+    background: var(--primary);
+}
+
+.story-viewer-fechar {
+    position: absolute;
+    top: 24px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: whitesmoke;
+    font-size: 32px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.story-viewer-info {
+    position: absolute;
+    top: 34px;
+    left: 20px;
+    color: whitesmoke;
+    font-size: 14px;
+    opacity: .85;
+}
+
+.story-viewer-area {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.story-viewer-icone-grande {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 56px;
+    color: #0f0f0f;
+    box-shadow: 0 0 60px var(--primary-glow);
+}
+
+.story-viewer-nav {
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.15);
+    color: whitesmoke;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    font-size: 22px;
+    cursor: pointer;
+    transition: .2s;
+}
+.story-viewer-nav:hover { background: rgba(255,255,255,.18); }
+
+@media (max-width: 540px) {
+    .story-anel { width: 58px; height: 58px; }
+    .story-viewer-icone-grande { width: 120px; height: 120px; font-size: 42px; }
+    .story-viewer-area { gap: 14px; }
+}

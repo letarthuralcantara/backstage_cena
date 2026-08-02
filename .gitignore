@@ -2,3 +2,5 @@ node_modules
 src/database/db.sql
 /src/generated/prisma
 .env
+public/uploads/audio/*
+!public/uploads/audio/.gitkeep

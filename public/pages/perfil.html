@@ -221,6 +221,7 @@
                 <div class="profile-incomplete-badge" id="incompleteBadge">!</div>
                 <div class="dropdown-menu">
                     <a href="perfil.html" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a>
+                    <a href="feed.html" class="dropdown-item"><i class="fas fa-music"></i> Feed de Prévias</a>
                     <a href="config.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações<span class="pending-dot" id="configPendingDot"></span></a>
                     <div class="dropdown-divider"></div>
                     <div class="dropdown-item" id="btnSair"><i class="fas fa-sign-out-alt"></i> Sair</div>
@@ -289,6 +290,45 @@
                     <p class="card-content" id="bioExibir"></p>
                 </div>
 
+                <div class="content-card reveal" style="transition-delay:0.15s">
+                    <div class="card-header">
+                        <div class="card-header-left">
+                            <div class="card-icon"><i class="fas fa-music"></i></div>
+                            <h2 class="card-title">Prévias</h2>
+                        </div>
+                    </div>
+
+                    <div id="previasLista" class="stories-bar"></div>
+
+                    <form id="formNovaPrevia" class="hidden" style="margin-top:16px; display:flex; flex-wrap:wrap; gap:12px; align-items:flex-end;">
+                        <div class="filter-group" style="flex:1; min-width:160px;">
+                            <label for="previaNome">Nome da prévia</label>
+                            <input type="text" id="previaNome" maxlength="60" placeholder="Ex: Refrão novo">
+                        </div>
+                        <div class="filter-group" style="flex:1; min-width:180px;">
+                            <label for="previaArquivo">Áudio (mp3, wav, m4a, ogg)</label>
+                            <input type="file" id="previaArquivo" accept="audio/*" required>
+                        </div>
+                        <div class="filter-group" style="width:120px;">
+                            <label for="previaInicio">Início (seg.)</label>
+                            <input type="number" id="previaInicio" min="0" value="0">
+                        </div>
+                        <div class="filter-group" style="width:120px;">
+                            <label for="previaDuracao">Duração</label>
+                            <select id="previaDuracao">
+                                <option value="15">15s</option>
+                                <option value="30" selected>30s</option>
+                                <option value="45">45s</option>
+                                <option value="60">60s</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-edit-card" id="btnPublicarPrevia">
+                            <i class="fas fa-upload"></i> Publicar prévia
+                        </button>
+                    </form>
+                    <p id="previaMsg" class="empty-state hidden"></p>
+                </div>
+
                 <div class="content-card reveal" style="transition-delay:0.2s">
                     <div class="card-header">
                         <div class="card-header-left">
@@ -332,6 +372,7 @@
     <script type="module">
         import { showLoading, hideLoading } from '../js/loading.js';
         import { verificarAutenticacao, fazerLogout } from '../js/auth.js';
+        import { renderizarPostagensDoUsuario, criarPostagem } from '../js/postagens.js';
 
         const SOCIAL_ICONS = {
             instagram:'fa-brands fa-instagram', youtube:'fa-brands fa-youtube',
@@ -377,6 +418,12 @@
             }
 
             const ehProprio = !idParam || String(usuarioLogado?.id_usuario) === String(u.id_usuario);
+
+            // Prévias (postagens tipo stories)
+            renderizarPostagensDoUsuario(u.id_usuario, document.getElementById('previasLista'));
+            if (ehProprio) {
+                document.getElementById('formNovaPrevia')?.classList.remove('hidden');
+            }
 
             // Avatar e nome
             const nome = u.nome_artistico || u.nome_completo;
@@ -458,6 +505,38 @@
 
         showLoading('Carregando perfil...');
         iniciarPerfil();
+
+        // Publicar prévia
+        document.getElementById('formNovaPrevia')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnPublicarPrevia');
+            const msgEl = document.getElementById('previaMsg');
+            const arquivo = document.getElementById('previaArquivo').files[0];
+            const nome = document.getElementById('previaNome').value.trim();
+            const inicio = Number(document.getElementById('previaInicio').value || 0);
+            const duracao = Number(document.getElementById('previaDuracao').value || 30);
+
+            if (!arquivo) return;
+
+            btn.disabled = true;
+            btn.textContent = 'Publicando...';
+            msgEl.classList.add('hidden');
+            try {
+                await criarPostagem(arquivo, nome, inicio, duracao);
+                e.target.reset();
+                const params = new URLSearchParams(window.location.search);
+                const idAtual = params.get('id') || verificarAutenticacao(false)?.id_usuario;
+                renderizarPostagensDoUsuario(idAtual, document.getElementById('previasLista'));
+                msgEl.textContent = 'Prévia publicada! Ela some automaticamente em 24h.';
+                msgEl.classList.remove('hidden');
+            } catch (err) {
+                msgEl.textContent = err.message || 'Erro ao publicar a prévia.';
+                msgEl.classList.remove('hidden');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-upload"></i> Publicar prévia';
+            }
+        });
 
         // Seletor de status
         document.getElementById('statusBtn')?.addEventListener('click', (e) => {

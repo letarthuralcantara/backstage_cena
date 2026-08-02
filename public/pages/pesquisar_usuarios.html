@@ -86,6 +86,9 @@
             grid-template-columns: repeat(5, 1fr);
             gap: 16px;
         }
+        /* Este painel de filtros tem 6 campos; a classe modificadora troca só
+           o desktop, os breakpoints abaixo continuam controlando o resto. */
+        .filters-grid--6 { grid-template-columns: repeat(6, 1fr); }
         .filter-group label {
             display: block; color: var(--primary); font-size: 11px;
             font-weight: 700; text-transform: uppercase;
@@ -306,6 +309,7 @@
                 <div class="profile-trigger" id="profileTrigger"></div>
                 <div class="dropdown-menu">
                     <a href="perfil.html" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a>
+                    <a href="feed.html" class="dropdown-item"><i class="fas fa-music"></i> Feed de Prévias</a>
                     <a href="config.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações</a>
                     <div class="dropdown-divider"></div>
                     <div class="dropdown-item" id="btnSair"><i class="fas fa-sign-out-alt"></i> Sair</div>
@@ -315,7 +319,7 @@
     </header>
 
     <div class="filters-panel" id="filtersPanel">
-        <div class="filters-grid" style="grid-template-columns: repeat(6, 1fr);">
+        <div class="filters-grid filters-grid--6">
             <div class="filter-group">
                 <label>Estado</label>
                 <select id="filtroEstado"><option value="">Todos</option></select>

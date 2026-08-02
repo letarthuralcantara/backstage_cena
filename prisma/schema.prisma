@@ -30,8 +30,24 @@ model Usuario {
   daws             UsuarioDaw[]
   disponibilidades UsuarioDisponibilidade[]
   configuracoes    ConfiguracaoUsuario?
+  postagens        Postagem[]
 
   @@map("usuario")
+}
+
+model Postagem {
+  id_postagem Int      @id @default(autoincrement())
+  id_usuario  Int
+  titulo      String? // nome/título opcional dado pelo usuário à prévia
+  audio_url   String // caminho do arquivo de áudio completo
+  inicio_seg  Int      @default(0) // segundo em que a prévia começa a tocar
+  duracao_seg Int      @default(30) // duração da prévia, em segundos
+  criado_em   DateTime @default(now())
+  expira_em   DateTime // criado_em + 24h, calculado na criação
+
+  usuario Usuario @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
+
+  @@map("postagem")
 }
 
 model Disponibilidade {
