@@ -5,224 +5,401 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Backstage | Meu Perfil</title>
     <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../css/global.css">
     <style>
         :root {
             --primary: #8b5cf6;
-            --primary-glow: rgba(139, 92, 246, 0.6);
+            --primary-glow: rgba(139, 92, 246, 0.4);
             --secondary: #d946ef;
+            --accent-cyan: #06b6d4;
             --bg-dark: #050505;
+            --bg-card: rgba(15, 15, 15, 0.6);
             --glass: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.08);
+            --text-muted: #888;
         }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-dark);
-            color: #fff; min-height: 100vh; overflow-x: hidden;
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
             background-image:
-                radial-gradient(circle at 10% 10%, rgba(139,92,246,0.15), transparent 50%),
-                radial-gradient(circle at 90% 90%, rgba(217,70,239,0.1), transparent 50%);
+                radial-gradient(circle at 10% 10%, rgba(139, 92, 246, 0.1), transparent 50%),
+                radial-gradient(circle at 90% 90%, rgba(217, 70, 239, 0.08), transparent 50%);
             background-attachment: fixed;
         }
-        #bg-canvas { position: fixed; top:0; left:0; width:100%; height:100%; z-index:-1; opacity:0.4; }
-        .container { position:relative; z-index:1; max-width:1100px; margin:50px auto; padding:0 40px; }
-        .reveal { opacity:0; transform:translateY(40px); transition:all 0.8s cubic-bezier(0.2,1,0.3,1); }
-        .reveal.active { opacity:1; transform:translateY(0); }
-        .profile-layout { display:grid; grid-template-columns:320px 1fr; gap:40px; align-items:start; }
 
-        /* ── CARD LATERAL ── */
-        .profile-card {
-            background:var(--glass); border:1px solid var(--glass-border);
-            border-radius:40px; padding:36px 28px;
-            backdrop-filter:blur(20px); box-shadow:0 20px 60px rgba(0,0,0,0.5);
-            display:flex; flex-direction:column; align-items:stretch;
-            position:sticky; top:30px; overflow:hidden; transition:border-color 0.4s;
-        }
-        .profile-card:hover { border-color:rgba(139,92,246,0.3); }
-        .avatar-container { display:flex; justify-content:center; margin-bottom:16px; position:relative; }
-        .avatar {
-            width:130px; height:130px; border-radius:50%;
-            background:linear-gradient(135deg,var(--primary),var(--secondary));
-            display:flex; align-items:center; justify-content:center;
-            font-size:2.8rem; font-weight:800;
-            border:3px solid rgba(139,92,246,0.4);
-            box-shadow:0 0 40px var(--primary-glow);
-            overflow:hidden; flex-shrink:0; transition:box-shadow 0.3s;
-        }
-        .avatar:hover { box-shadow:0 0 60px var(--primary-glow); }
-        .avatar img { width:100%; height:100%; object-fit:cover; }
+        #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.3; }
 
-        /* ── STATUS ── */
-        .status-badge {
-            display:flex; align-items:center; justify-content:center;
-            gap:7px; margin-bottom:16px;
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 24px;
         }
-        .status-dot {
-            width:10px; height:10px; border-radius:50%; flex-shrink:0;
-        }
-        .status-dot.disponivel   { background:#22c55e; box-shadow:0 0 8px #22c55e; }
-        .status-dot.ocupado      { background:#f59e0b; box-shadow:0 0 8px #f59e0b; }
-        .status-dot.nao_perturbe { background:#ef4444; box-shadow:0 0 8px #ef4444; }
-        .status-dot.invisivel    { background:#6b7280; box-shadow:0 0 8px #6b7280; }
-        .status-label { font-size:13px; color:#9ca3af; font-weight:500; }
 
-        /* Seletor dropdown (só perfil próprio) */
-        .status-selector { position:relative; display:none; justify-content:center; margin-bottom:16px; }
-        .status-selector.show { display:flex; }
-        .status-btn {
-            display:flex; align-items:center; gap:8px; padding:7px 16px;
-            background:var(--glass); border:1px solid var(--glass-border);
-            border-radius:20px; cursor:pointer; font-size:13px; color:#9ca3af;
-            transition:all 0.2s; font-family:'Inter',sans-serif;
+        /* ── PROFILE LAYOUT ── */
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 32px;
+            align-items: start;
         }
-        .status-btn:hover { border-color:var(--primary); color:#e5e7eb; }
-        .status-btn .dot { width:9px; height:9px; border-radius:50%; flex-shrink:0; }
-        .status-dropdown {
-            position:absolute; top:calc(100% + 8px); left:50%; transform:translateX(-50%);
-            background:rgba(10,10,10,0.97); backdrop-filter:blur(20px);
-            border:1px solid var(--glass-border); border-radius:16px;
-            padding:8px; min-width:200px; z-index:200;
-            display:none; flex-direction:column; gap:2px;
-            box-shadow:0 20px 40px rgba(0,0,0,0.7);
-        }
-        .status-dropdown.open { display:flex; }
-        .status-option {
-            display:flex; align-items:center; gap:10px;
-            padding:10px 14px; border-radius:10px; cursor:pointer;
-            font-size:13px; color:#ccc; transition:background 0.2s;
-            border:none; background:transparent; font-family:'Inter',sans-serif;
-            width:100%; text-align:left;
-        }
-        .status-option:hover { background:rgba(139,92,246,0.12); color:white; }
-        .dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
-        .dot-disponivel   { background:#22c55e; }
-        .dot-ocupado      { background:#f59e0b; }
-        .dot-nao_perturbe { background:#ef4444; }
-        .dot-invisivel    { background:#6b7280; }
 
-        .profile-name {
-            font-family:'Poppins',sans-serif; font-size:22px; font-weight:800;
-            text-align:center; margin-bottom:10px; word-break:break-word;
-            background:linear-gradient(to bottom,#fff,#ccc);
-            -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+        /* ── SIDEBAR ── */
+        .sidebar {
+            position: sticky;
+            top: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
         }
-        .area-badge {
-            display:none; align-self:center; margin-bottom:16px;
-            padding:6px 18px; background:rgba(139,92,246,0.12);
-            border:1px solid rgba(139,92,246,0.3); border-radius:20px;
-            font-size:12px; color:#a78bfa; font-weight:700;
-            text-transform:uppercase; letter-spacing:1px;
-        }
-        .area-badge:not(.hidden) { display:block; }
-        .hidden { display:none !important; }
 
-        .incomplete-banner {
-            display:none; align-items:flex-start; gap:10px;
-            background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.3);
-            border-radius:15px; padding:14px 16px; margin-bottom:16px;
-            font-size:12px; color:#fcd34d; line-height:1.5;
+        .glass-card {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            backdrop-filter: blur(20px);
+            padding: 24px;
+            transition: all 0.3s ease;
         }
-        .incomplete-banner.show { display:flex; }
-        .incomplete-banner i { color:#f59e0b; flex-shrink:0; margin-top:2px; }
-        .incomplete-banner a { color:#f59e0b; text-decoration:underline; cursor:pointer; }
 
-        .info-list { list-style:none; width:100%; margin-bottom:6px; }
-        .info-item {
-            display:flex; align-items:flex-start; gap:12px;
-            padding:10px 0; border-bottom:1px solid var(--glass-border);
-            font-size:13px; color:#ccc; word-break:break-all; transition:color 0.2s;
+        .glass-card:hover {
+            border-color: rgba(139, 92, 246, 0.3);
         }
-        .info-item:hover { color:#fff; }
-        .info-item:last-child { border-bottom:none; }
-        .info-item i { color:var(--primary); width:16px; text-align:center; flex-shrink:0; margin-top:2px; }
 
-        .social-section { margin-top:20px; }
-        .social-title { font-size:11px; color:var(--primary); margin-bottom:10px; text-transform:uppercase; letter-spacing:2px; font-weight:700; }
-        .social-links { display:flex; flex-wrap:wrap; gap:8px; }
-        .social-link {
-            display:flex; align-items:center; gap:6px; padding:7px 14px;
-            background:var(--glass); border:1px solid var(--glass-border);
-            border-radius:20px; font-size:12px; color:#aaa;
-            text-decoration:none; transition:all 0.3s;
+        .profile-header-card {
+            text-align: center;
+            padding-top: 40px;
         }
-        .social-link:hover { background:rgba(139,92,246,0.15); border-color:var(--primary); color:#a78bfa; }
-        .social-link i { width:14px; text-align:center; }
 
-        /* ── CONTENT CARDS ── */
-        .content-card {
-            background:var(--glass); border:1px solid var(--glass-border);
-            border-radius:30px; padding:32px; margin-bottom:28px;
-            backdrop-filter:blur(15px); box-shadow:0 10px 40px rgba(0,0,0,0.3);
-            min-height:120px; transition:all 0.5s; position:relative; overflow:hidden;
+        .avatar-wrapper {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 20px;
         }
-        .content-card::before {
-            content:''; position:absolute; top:0; left:0; right:0; height:2px;
-            background:linear-gradient(90deg,transparent,rgba(139,92,246,0.5),transparent);
-            opacity:0; transition:opacity 0.4s;
-        }
-        .content-card:hover { border-color:rgba(139,92,246,0.3); transform:translateY(-4px); box-shadow:0 20px 50px rgba(0,0,0,0.4); }
-        .content-card:hover::before { opacity:1; }
-        .card-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; }
-        .card-header-left { display:flex; align-items:center; gap:14px; }
-        .card-icon {
-            width:46px; height:46px;
-            background:linear-gradient(135deg,rgba(139,92,246,0.2),rgba(217,70,239,0.1));
-            border:1px solid rgba(139,92,246,0.25); border-radius:14px;
-            display:flex; align-items:center; justify-content:center;
-            color:var(--primary); font-size:20px; transition:transform 0.3s;
-        }
-        .content-card:hover .card-icon { transform:scale(1.1) rotate(-5deg); }
-        .card-title { font-family:'Poppins',sans-serif; font-size:18px; font-weight:700; }
-        .card-content { color:#ccc; line-height:1.8; word-break:break-word; white-space:pre-wrap; max-width:100%; font-size:15px; }
-        .tags-grid { display:flex; flex-wrap:wrap; gap:10px; }
-        .tag {
-            display:flex; align-items:center; gap:6px; padding:8px 16px;
-            background:rgba(139,92,246,0.1); border:1px solid rgba(139,92,246,0.25);
-            border-radius:20px; font-size:14px; color:#a78bfa; transition:all 0.2s;
-        }
-        .tag:hover { background:rgba(139,92,246,0.2); border-color:var(--primary); }
-        .empty-state { color:#555; font-style:italic; font-size:14px; }
-        .btn-edit-card {
-            display:flex; align-items:center; gap:6px; padding:8px 18px;
-            background:rgba(139,92,246,0.08); border:1px solid rgba(139,92,246,0.25);
-            border-radius:20px; color:#a78bfa; text-decoration:none;
-            font-size:13px; font-weight:600; transition:all 0.3s;
-        }
-        .btn-edit-card:hover { background:rgba(139,92,246,0.2); border-color:var(--primary); }
-        .btn-edit-card.hidden { display:none; }
 
-        @media (max-width:768px) {
-            .container { margin:30px 16px; padding:0; }
-            .profile-layout { grid-template-columns:1fr; }
-            .profile-card { position:static; }
+        .avatar-main {
+            width: 100%;
+            height: 100%;
+            border-radius: 32px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: 800;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 20px var(--primary-glow);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+        }
+
+        .avatar-main img { width: 100%; height: 100%; object-fit: cover; }
+
+        .status-indicator {
+            position: absolute;
+            bottom: -5px;
+            right: -5px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 4px solid #0f0f0f;
+            z-index: 2;
+        }
+        .status-indicator.disponivel { background: #22c55e; box-shadow: 0 0 10px #22c55e; }
+        .status-indicator.ocupado { background: #f59e0b; box-shadow: 0 0 10px #f59e0b; }
+        .status-indicator.nao_perturbe { background: #ef4444; box-shadow: 0 0 10px #ef4444; }
+        .status-indicator.invisivel { background: #6b7280; box-shadow: 0 0 10px #6b7280; }
+
+        .profile-info h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .artist-area {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 8px;
+            font-size: 11px;
+            color: var(--primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+            padding: 16px 0;
+            border-top: 1px solid var(--glass-border);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .stat-value { font-weight: 700; font-size: 16px; }
+        .stat-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+
+        .quick-info {
+            list-style: none;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .quick-info li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            color: #ccc;
+        }
+
+        .quick-info i { color: var(--primary); width: 16px; text-align: center; }
+
+        /* ── MAIN CONTENT ── */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title i { color: var(--primary); }
+
+        /* ── ADD PREVIEW ZONE (BACKSTAGE VIBE) ── */
+        .backstage-panel {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(217, 70, 239, 0.05));
+            border: 1px dashed rgba(139, 92, 246, 0.3);
+            border-radius: 24px;
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .backstage-panel::before {
+            content: 'BACKSTAGE ACCESS';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 40px;
+            font-weight: 900;
+            color: rgba(255,255,255,0.03);
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .upload-zone {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-control {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            background: rgba(139, 92, 246, 0.05);
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            height: 100%;
+            min-height: 100px;
+            border: 2px dashed var(--glass-border);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-input-wrapper:hover {
+            border-color: var(--primary);
+            background: rgba(139, 92, 246, 0.05);
+        }
+
+        .file-input-wrapper i { font-size: 24px; color: var(--text-muted); }
+        .file-input-wrapper span { font-size: 12px; color: var(--text-muted); }
+        .file-input-wrapper input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+
+        .btn-publish {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            color: white;
+            font-weight: 700;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s;
+            box-shadow: 0 10px 20px rgba(139, 92, 246, 0.2);
+        }
+
+        .btn-publish:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(139, 92, 246, 0.4);
+        }
+
+        /* ── PREVIEWS LIST ── */
+        .previews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .story-thumb {
+            aspect-ratio: 9/16;
+            border-radius: 16px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .story-thumb:hover {
+            transform: scale(1.05);
+            border-color: var(--primary);
+        }
+
+        .story-thumb-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.8));
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .story-thumb-title { font-size: 11px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* ── SKILLS TAGS ── */
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .skill-tag {
+            padding: 6px 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            font-size: 13px;
+            color: #eee;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .skill-tag i { font-size: 12px; color: var(--primary); }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 900px) {
+            .profile-grid { grid-template-columns: 1fr; }
+            .sidebar { position: static; }
+        }
+
+        @media (max-width: 600px) {
+            .upload-zone { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
     <canvas id="bg-canvas"></canvas>
+
     <header class="header">
         <div class="header-left">
             <a href="index.html"><img src="../images/logo.png" alt="Backstage Logo" class="logo-img"></a>
         </div>
         <div class="header-center">
-            <div class="header-search" id="searchBar">
+            <div class="header-search" id="searchBar" onclick="window.location.href='pesquisar_usuarios.html?focar=true'">
                 <i class="fas fa-search header-search-icon"></i>
                 <input type="text" class="header-search-input" placeholder="Buscar músicos..." readonly>
-                <button class="btn-filtrar" style="pointer-events:none;opacity:0.5;"><i class="fas fa-sliders"></i></button>
-                <button class="header-search-btn" id="btnBuscar">Buscar</button>
+                <button class="header-search-btn">Buscar</button>
             </div>
         </div>
         <div class="header-actions">
             <div class="profile-dropdown" id="profileDropdown">
                 <div class="profile-trigger" id="profileTrigger"></div>
-                <div class="profile-incomplete-badge" id="incompleteBadge">!</div>
                 <div class="dropdown-menu">
                     <a href="perfil.html" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a>
                     <a href="feed.html" class="dropdown-item"><i class="fas fa-music"></i> Feed de Prévias</a>
-                    <a href="config.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações<span class="pending-dot" id="configPendingDot"></span></a>
+                    <a href="config.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações</a>
                     <div class="dropdown-divider"></div>
                     <div class="dropdown-item" id="btnSair"><i class="fas fa-sign-out-alt"></i> Sair</div>
                 </div>
@@ -231,132 +408,134 @@
     </header>
 
     <div class="container">
-        <div class="profile-layout">
-            <aside class="profile-card reveal">
-                <div class="avatar-container">
-                    <div class="avatar" id="avatar"></div>
-                </div>
-                <h1 class="profile-name" id="nomeExibir"></h1>
-                <span class="area-badge hidden" id="areaBadge"></span>
+        <div class="profile-grid">
+            <!-- SIDEBAR -->
+            <aside class="sidebar">
+                <div class="glass-card profile-header-card">
+                    <div class="avatar-wrapper">
+                        <div class="avatar-main" id="avatar"></div>
+                        <div class="status-indicator" id="statusIndicator"></div>
+                    </div>
+                    <div class="profile-info">
+                        <h1 id="nomeExibir">Carregando...</h1>
+                        <span class="artist-area" id="areaBadge">Músico</span>
+                        
+                        <div class="stats-row">
+                            <div class="stat-item">
+                                <span class="stat-value" id="countPrevias">0</span>
+                                <span class="stat-label">Prévias</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value" id="expValue">0</span>
+                                <span class="stat-label">Anos Exp.</span>
+                            </div>
+                        </div>
 
-                <!-- STATUS (visível para todos) -->
-                <div class="status-badge" id="statusBadge">
-                    <span class="status-dot" id="statusDot"></span>
-                    <span class="status-label" id="statusLabel"></span>
-                </div>
-
-                <!-- SELETOR (só para o próprio perfil) -->
-                <div class="status-selector" id="statusSelector">
-                    <button class="status-btn" id="statusBtn">
-                        <span class="dot" id="statusBtnDot"></span>
-                        <span id="statusBtnLabel"></span>
-                        <i class="fas fa-chevron-down" style="font-size:10px;margin-left:2px;"></i>
-                    </button>
-                    <div class="status-dropdown" id="statusDropdown">
-                        <button class="status-option" data-status="disponivel"><span class="dot dot-disponivel"></span>Disponível</button>
-                        <button class="status-option" data-status="ocupado"><span class="dot dot-ocupado"></span>Ocupado</button>
-                        <button class="status-option" data-status="nao_perturbe"><span class="dot dot-nao_perturbe"></span>Não perturbe</button>
-                        <button class="status-option" data-status="invisivel"><span class="dot dot-invisivel"></span>Invisível</button>
+                        <ul class="quick-info">
+                            <li><i class="fas fa-envelope"></i> <span id="emailExibir">---</span></li>
+                            <li><i class="fas fa-map-marker-alt"></i> <span id="localExibir">---</span></li>
+                            <li id="telefoneRow" class="hidden"><i class="fas fa-phone"></i> <span id="telefoneExibir">---</span></li>
+                        </ul>
                     </div>
                 </div>
 
-                <div class="incomplete-banner" id="incompleteBanner">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <span>Seu perfil está incompleto e <strong>não aparece nas buscas</strong>. <a href="editar.html">Complete agora</a> para ser encontrado.</span>
+                <div class="glass-card">
+                    <h3 class="section-title" style="margin-bottom: 16px;"><i class="fas fa-share-nodes"></i> Redes Sociais</h3>
+                    <div class="tags-container" id="socialLinks">
+                        <!-- Links serão inseridos aqui -->
+                    </div>
                 </div>
 
-                <ul class="info-list">
-                    <li class="info-item"><i class="fas fa-envelope"></i><span id="emailExibir"></span></li>
-                    <li class="info-item"><i class="fas fa-map-marker-alt"></i><span id="localExibir"></span></li>
-                    <li class="info-item hidden" id="telefoneRow"><i class="fas fa-phone"></i><span id="telefoneExibir"></span></li>
-                    <li class="info-item hidden" id="expRow"><i class="fas fa-star"></i><span id="expExibir"></span></li>
-                </ul>
-
-                <div class="social-section hidden" id="socialSection">
-                    <p class="social-title">Redes Sociais</p>
-                    <div class="social-links" id="socialLinks"></div>
-                </div>
+                <button class="btn-publish" style="background: var(--glass); border: 1px solid var(--glass-border); box-shadow: none;" onclick="window.location.href='editar.html'">
+                    <i class="fas fa-pen-to-square"></i> Editar Perfil
+                </button>
             </aside>
 
-            <main>
-                <div class="content-card reveal" style="transition-delay:0.1s">
-                    <div class="card-header">
-                        <div class="card-header-left">
-                            <div class="card-icon"><i class="fas fa-user-circle"></i></div>
-                            <h2 class="card-title">Descrição</h2>
-                        </div>
-                        <a href="editar.html" class="btn-edit-card" id="btnEditar"><i class="fas fa-pen"></i> Editar</a>
+            <!-- MAIN CONTENT -->
+            <main class="main-content">
+                <!-- BIO -->
+                <div class="glass-card">
+                    <div class="section-header">
+                        <h2 class="section-title"><i class="fas fa-quote-left"></i> Sobre</h2>
                     </div>
-                    <p class="card-content" id="bioExibir"></p>
+                    <p id="bioExibir" style="color: #ccc; line-height: 1.6; font-size: 15px;"></p>
                 </div>
 
-                <div class="content-card reveal" style="transition-delay:0.15s">
-                    <div class="card-header">
-                        <div class="card-header-left">
-                            <div class="card-icon"><i class="fas fa-music"></i></div>
-                            <h2 class="card-title">Prévias</h2>
-                        </div>
+                <!-- ADD PREVIEW (OWNER ONLY) -->
+                <div class="backstage-panel hidden" id="addPreviaPanel">
+                    <div class="section-header">
+                        <h2 class="section-title"><i class="fas fa-bolt"></i> Backstage Pass</h2>
+                        <span style="font-size: 10px; color: var(--primary); font-weight: 800; letter-spacing: 2px;">NOVA PRÉVIA</span>
                     </div>
+                    
+                    <form id="formNovaPrevia" class="upload-zone">
+                        <div class="form-group">
+                            <label>Título da Prévia</label>
+                            <input type="text" id="previaNome" class="form-control" placeholder="Ex: Solo de Guitarra - Track 04" maxlength="60">
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px;">
+                                <div class="form-group">
+                                    <label>Início (s)</label>
+                                    <input type="number" id="previaInicio" class="form-control" value="0" min="0">
+                                </div>
+                                <div class="form-group">
+                                    <label>Duração</label>
+                                    <select id="previaDuracao" class="form-control">
+                                        <option value="15">15 segundos</option>
+                                        <option value="30" selected>30 segundos</option>
+                                        <option value="45">45 segundos</option>
+                                        <option value="60">60 segundos</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
 
-                    <div id="previasLista" class="stories-bar"></div>
+                        <div class="form-group">
+                            <label>Arquivo de Áudio</label>
+                            <div class="file-input-wrapper" id="fileWrapper">
+                                <i class="fas fa-cloud-arrow-up"></i>
+                                <span id="fileNameDisplay">Clique ou arraste o áudio</span>
+                                <input type="file" id="previaArquivo" accept="audio/*" required>
+                            </div>
+                        </div>
 
-                    <form id="formNovaPrevia" class="hidden" style="margin-top:16px; display:flex; flex-wrap:wrap; gap:12px; align-items:flex-end;">
-                        <div class="filter-group" style="flex:1; min-width:160px;">
-                            <label for="previaNome">Nome da prévia</label>
-                            <input type="text" id="previaNome" maxlength="60" placeholder="Ex: Refrão novo">
-                        </div>
-                        <div class="filter-group" style="flex:1; min-width:180px;">
-                            <label for="previaArquivo">Áudio (mp3, wav, m4a, ogg)</label>
-                            <input type="file" id="previaArquivo" accept="audio/*" required>
-                        </div>
-                        <div class="filter-group" style="width:120px;">
-                            <label for="previaInicio">Início (seg.)</label>
-                            <input type="number" id="previaInicio" min="0" value="0">
-                        </div>
-                        <div class="filter-group" style="width:120px;">
-                            <label for="previaDuracao">Duração</label>
-                            <select id="previaDuracao">
-                                <option value="15">15s</option>
-                                <option value="30" selected>30s</option>
-                                <option value="45">45s</option>
-                                <option value="60">60s</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn-edit-card" id="btnPublicarPrevia">
-                            <i class="fas fa-upload"></i> Publicar prévia
+                        <button type="submit" class="btn-publish" id="btnPublicarPrevia">
+                            <i class="fas fa-upload"></i> PUBLICAR NA CENA
                         </button>
                     </form>
-                    <p id="previaMsg" class="empty-state hidden"></p>
+                    <p id="previaMsg" class="hidden" style="margin-top: 16px; font-size: 12px; text-align: center; color: var(--accent-cyan);"></p>
                 </div>
 
-                <div class="content-card reveal" style="transition-delay:0.2s">
-                    <div class="card-header">
-                        <div class="card-header-left">
-                            <div class="card-icon"><i class="fas fa-guitar"></i></div>
-                            <h2 class="card-title">Talentos</h2>
-                        </div>
+                <!-- PREVIEWS LIST -->
+                <div class="glass-card">
+                    <div class="section-header">
+                        <h2 class="section-title"><i class="fas fa-music"></i> Prévias Ativas</h2>
                     </div>
-                    <div id="talentosCont"></div>
+                    <div id="previasLista" class="previews-grid">
+                        <!-- Stories aqui -->
+                    </div>
                 </div>
 
-                <div class="content-card reveal" style="transition-delay:0.3s">
-                    <div class="card-header">
-                        <div class="card-header-left">
-                            <div class="card-icon"><i class="fas fa-compact-disc"></i></div>
-                            <h2 class="card-title">Gêneros</h2>
+                <!-- SKILLS & GEAR -->
+                <div class="glass-card">
+                    <h2 class="section-title" style="margin-bottom: 24px;"><i class="fas fa-layer-group"></i> Habilidades & Setup</h2>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 20px;">
+                        <div>
+                            <label style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; display: block; margin-bottom: 12px;">Instrumentos</label>
+                            <div class="tags-container" id="talentosCont"></div>
                         </div>
-                    </div>
-                    <div id="generosCont"></div>
-                </div>
+                        
+                        <div>
+                            <label style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; display: block; margin-bottom: 12px;">Gêneros</label>
+                            <div class="tags-container" id="generosCont"></div>
+                        </div>
 
-                <div class="content-card hidden reveal" id="dawsCard" style="transition-delay:0.4s">
-                    <div class="card-header">
-                        <div class="card-header-left">
-                            <div class="card-icon"><i class="fas fa-sliders"></i></div>
-                            <h2 class="card-title">DAWs</h2>
+                        <div id="dawsSection" class="hidden">
+                            <label style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; display: block; margin-bottom: 12px;">Workstation (DAWs)</label>
+                            <div class="tags-container" id="dawsCont"></div>
                         </div>
                     </div>
-                    <div id="dawsCont"></div>
                 </div>
             </main>
         </div>
@@ -378,26 +557,8 @@
             instagram:'fa-brands fa-instagram', youtube:'fa-brands fa-youtube',
             spotify:'fa-brands fa-spotify', soundcloud:'fa-brands fa-soundcloud',
             tiktok:'fa-brands fa-tiktok', twitter:'fa-brands fa-x-twitter',
-            facebook:'fa-brands fa-facebook', linkedin:'fa-brands fa-linkedin',
-            github:'fa-brands fa-github', site:'fa-solid fa-globe',
+            site:'fa-solid fa-globe',
         };
-
-        const STATUS_MAP = {
-            disponivel:   { label:'Disponível',   cls:'disponivel' },
-            ocupado:      { label:'Ocupado',      cls:'ocupado' },
-            nao_perturbe: { label:'Não perturbe', cls:'nao_perturbe' },
-            invisivel:    { label:'Invisível',    cls:'invisivel' },
-        };
-
-        function aplicarStatus(status) {
-            const s = STATUS_MAP[status] || STATUS_MAP['disponivel'];
-            document.getElementById('statusDot').className = 'status-dot ' + s.cls;
-            document.getElementById('statusLabel').textContent = s.label;
-            const btnDot = document.getElementById('statusBtnDot');
-            const btnLbl = document.getElementById('statusBtnLabel');
-            if (btnDot) btnDot.className = 'dot dot-' + s.cls;
-            if (btnLbl) btnLbl.textContent = s.label;
-        }
 
         async function iniciarPerfil() {
             const params = new URLSearchParams(window.location.search);
@@ -405,108 +566,76 @@
             const usuarioLogado = verificarAutenticacao(false);
 
             let u;
-            if (idParam) {
-                const res = await fetch(`/api/usuarios/${idParam}`);
-                u = await res.json();
-                if (!usuarioLogado || String(usuarioLogado.id_usuario) !== String(idParam)) {
-                    document.getElementById('btnEditar')?.classList.add('hidden');
+            try {
+                if (idParam) {
+                    const res = await fetch(`/api/usuarios/${idParam}`);
+                    u = await res.json();
+                } else {
+                    if (!usuarioLogado) { window.location.href = 'login.html'; return; }
+                    const res = await fetch(`/api/usuarios/${usuarioLogado.id_usuario}`);
+                    u = await res.json();
                 }
-            } else {
-                if (!usuarioLogado) { window.location.href = 'login.html'; return; }
-                const res = await fetch(`/api/usuarios/${usuarioLogado.id_usuario}`);
-                u = await res.json();
-            }
+            } catch (e) { console.error(e); return; }
 
             const ehProprio = !idParam || String(usuarioLogado?.id_usuario) === String(u.id_usuario);
 
-            // Prévias (postagens tipo stories)
-            renderizarPostagensDoUsuario(u.id_usuario, document.getElementById('previasLista'));
-            if (ehProprio) {
-                document.getElementById('formNovaPrevia')?.classList.remove('hidden');
-            }
-
-            // Avatar e nome
+            // Render
             const nome = u.nome_artistico || u.nome_completo;
             document.getElementById('avatar').textContent = nome.substring(0,2).toUpperCase();
             document.getElementById('nomeExibir').textContent = nome;
-
-            // Área
-            const areas = Array.isArray(u.area_atuacao) ? u.area_atuacao : [];
-            if (areas.length) {
-                const badge = document.getElementById('areaBadge');
-                badge.textContent = areas.join(', ');
-                badge.classList.remove('hidden');
-            }
-
-            // Status
-            aplicarStatus(u.status || 'disponivel');
-            if (ehProprio) {
-                document.getElementById('statusSelector').classList.add('show');
-            }
-
-            // Info
             document.getElementById('emailExibir').textContent = u.email;
-            document.getElementById('localExibir').textContent =
-                [u.cidade, u.estado].filter(Boolean).join(', ') || 'Não informado';
-            if (u.telefone) {
-                document.getElementById('telefoneExibir').textContent = u.telefone;
-                document.getElementById('telefoneRow').classList.remove('hidden');
-            }
-            if (u.anos_experiencia) {
-                document.getElementById('expExibir').textContent = u.anos_experiencia + ' anos de experiência';
-                document.getElementById('expRow').classList.remove('hidden');
-            }
+            document.getElementById('localExibir').textContent = [u.cidade, u.estado].filter(Boolean).join(', ') || 'Brasil';
+            document.getElementById('expValue').textContent = u.anos_experiencia || '0';
+            document.getElementById('bioExibir').textContent = u.biografia || 'Este artista ainda não escreveu sua biografia.';
+            
+            // Status
+            const indicator = document.getElementById('statusIndicator');
+            indicator.className = 'status-indicator ' + (u.status || 'disponivel');
 
-            // Bio
-            document.getElementById('bioExibir').textContent = u.biografia || 'Nenhuma descrição adicionada ainda.';
+            // Area
+            const areas = Array.isArray(u.area_atuacao) ? u.area_atuacao : [];
+            if (areas.length) document.getElementById('areaBadge').textContent = areas[0];
 
-            // Instrumentos
-            const insts = u.instrumentos || [];
-            const talEl = document.getElementById('talentosCont');
-            talEl.innerHTML = insts.length
-                ? `<div class="tags-grid">${insts.map(i=>`<span class="tag"><i class="fas fa-music"></i>${i}</span>`).join('')}</div>`
-                : '<p class="empty-state">Nenhum instrumento adicionado.</p>';
-
-            // Gêneros
-            const gens = u.generos || [];
-            const genEl = document.getElementById('generosCont');
-            genEl.innerHTML = gens.length
-                ? `<div class="tags-grid">${gens.map(g=>`<span class="tag"><i class="fas fa-compact-disc"></i>${g}</span>`).join('')}</div>`
-                : '<p class="empty-state">Nenhum gênero adicionado.</p>';
-
-            // DAWs
-            const daws = u.daws || [];
-            if (daws.length) {
-                document.getElementById('dawsCard').classList.remove('hidden');
-                document.getElementById('dawsCont').innerHTML =
-                    `<div class="tags-grid">${daws.map(d=>`<span class="tag"><i class="fas fa-sliders"></i>${d}</span>`).join('')}</div>`;
+            // Tags
+            const renderTags = (arr, containerId, icon) => {
+                const cont = document.getElementById(containerId);
+                cont.innerHTML = arr.length 
+                    ? arr.map(t => `<span class="skill-tag"><i class="${icon}"></i>${t}</span>`).join('')
+                    : '<span style="color:#555; font-size:12px;">Nenhum item adicionado</span>';
+            };
+            renderTags(u.instrumentos || [], 'talentosCont', 'fas fa-music');
+            renderTags(u.generos || [], 'generosCont', 'fas fa-compact-disc');
+            
+            if (u.daws?.length) {
+                document.getElementById('dawsSection').classList.remove('hidden');
+                renderTags(u.daws, 'dawsCont', 'fas fa-sliders');
             }
 
-            // Redes sociais
+            // Social
             const sociais = u.redes_sociais || {};
             const linksHtml = Object.entries(sociais).filter(([,v])=>v).map(([k,v])=>{
                 const icon = SOCIAL_ICONS[k] || 'fa-solid fa-link';
-                return `<a href="${v}" target="_blank" class="social-link"><i class="${icon}"></i>${k}</a>`;
+                return `<a href="${v}" target="_blank" class="skill-tag" style="text-decoration:none;"><i class="${icon}"></i>${k}</a>`;
             }).join('');
-            if (linksHtml) {
-                document.getElementById('socialSection').classList.remove('hidden');
-                document.getElementById('socialLinks').innerHTML = linksHtml;
-            }
+            document.getElementById('socialLinks').innerHTML = linksHtml || '<span style="color:#555; font-size:12px;">Sem redes sociais</span>';
 
-            // Perfil incompleto
-            if (u.cadastro_completo == 0 && ehProprio) {
-                document.getElementById('incompleteBanner').classList.add('show');
-                document.getElementById('incompleteBadge')?.classList.add('show');
-                document.getElementById('configPendingDot')?.classList.add('show');
-            }
+            // Previews
+            if (ehProprio) document.getElementById('addPreviaPanel').classList.remove('hidden');
+            renderizarPostagensDoUsuario(u.id_usuario, document.getElementById('previasLista'), (count) => {
+                document.getElementById('countPrevias').textContent = count;
+            });
 
             hideLoading();
         }
 
-        showLoading('Carregando perfil...');
-        iniciarPerfil();
+        // File input display
+        document.getElementById('previaArquivo')?.addEventListener('change', (e) => {
+            const fileName = e.target.files[0]?.name || 'Clique ou arraste o áudio';
+            document.getElementById('fileNameDisplay').textContent = fileName;
+            document.getElementById('fileWrapper').style.borderColor = 'var(--primary)';
+        });
 
-        // Publicar prévia
+        // Form Submit
         document.getElementById('formNovaPrevia')?.addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btnPublicarPrevia');
@@ -519,71 +648,42 @@
             if (!arquivo) return;
 
             btn.disabled = true;
-            btn.textContent = 'Publicando...';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> PUBLICANDO...';
             msgEl.classList.add('hidden');
+            
             try {
                 await criarPostagem(arquivo, nome, inicio, duracao);
                 e.target.reset();
+                document.getElementById('fileNameDisplay').textContent = 'Clique ou arraste o áudio';
+                document.getElementById('fileWrapper').style.borderColor = 'var(--glass-border)';
+                
                 const params = new URLSearchParams(window.location.search);
                 const idAtual = params.get('id') || verificarAutenticacao(false)?.id_usuario;
-                renderizarPostagensDoUsuario(idAtual, document.getElementById('previasLista'));
-                msgEl.textContent = 'Prévia publicada! Ela some automaticamente em 24h.';
+                renderizarPostagensDoUsuario(idAtual, document.getElementById('previasLista'), (count) => {
+                    document.getElementById('countPrevias').textContent = count;
+                });
+                
+                msgEl.textContent = 'PRÉVIA PUBLICADA COM SUCESSO!';
                 msgEl.classList.remove('hidden');
             } catch (err) {
-                msgEl.textContent = err.message || 'Erro ao publicar a prévia.';
+                msgEl.textContent = 'ERRO AO PUBLICAR PRÉVIA.';
                 msgEl.classList.remove('hidden');
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-upload"></i> Publicar prévia';
+                btn.innerHTML = '<i class="fas fa-upload"></i> PUBLICAR NA CENA';
             }
         });
 
-        // Seletor de status
-        document.getElementById('statusBtn')?.addEventListener('click', (e) => {
-            e.stopPropagation();
-            document.getElementById('statusDropdown').classList.toggle('open');
-        });
-        document.addEventListener('click', () => {
-            document.getElementById('statusDropdown')?.classList.remove('open');
-        });
-        document.querySelectorAll('.status-option').forEach(opt => {
-            opt.addEventListener('click', async () => {
-                const novoStatus = opt.dataset.status;
-                document.getElementById('statusDropdown').classList.remove('open');
-                aplicarStatus(novoStatus);
-                const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado') || '{}');
-                await fetch(`/api/usuarios/${usuarioLogado.id_usuario}/status`, {
-                    method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ status: novoStatus })
-                });
-                usuarioLogado.status = novoStatus;
-                localStorage.setItem('usuarioLogado', JSON.stringify(usuarioLogado));
-            });
-        });
-
-        // Header
-        document.getElementById('searchBar')?.addEventListener('click', () => {
-            window.location.href = 'pesquisar_usuarios.html?focar=true';
-        });
-        const usuarioLogado = verificarAutenticacao(false);
-        if (usuarioLogado) {
-            const nome = usuarioLogado.nome_artistico || usuarioLogado.nome_completo;
-            document.getElementById('profileTrigger').textContent = nome.substring(0,2).toUpperCase();
-        }
-        document.getElementById('profileDropdown')?.addEventListener('click', () =>
-            document.getElementById('profileDropdown').classList.toggle('active'));
         document.getElementById('btnSair')?.addEventListener('click', fazerLogout);
+        document.getElementById('profileDropdown')?.addEventListener('click', () => 
+            document.getElementById('profileDropdown').classList.toggle('active'));
 
-        function reveal() {
-            document.querySelectorAll('.reveal').forEach(el => {
-                if (el.getBoundingClientRect().top < window.innerHeight - 80) el.classList.add('active');
-            });
-        }
-        window.addEventListener('scroll', reveal);
-        reveal();
+        showLoading('Entrando no Backstage...');
+        iniciarPerfil();
     </script>
+
     <script>
+        // Partículas (Consistency)
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
