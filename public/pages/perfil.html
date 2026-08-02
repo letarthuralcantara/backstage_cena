@@ -142,6 +142,43 @@
             margin-bottom: 16px;
         }
 
+        /* ── STATUS (badge + seletor) ── */
+        .status-badge-wrap { position: relative; display: inline-block; margin-bottom: 16px; }
+        .status-badge {
+            display: inline-flex; align-items: center; gap: 7px;
+            padding: 5px 12px; border-radius: 20px;
+            background: var(--glass); border: 1px solid var(--glass-border);
+            font-size: 12px; color: #9ca3af;
+            transition: all .2s; font-family: 'Inter', sans-serif;
+        }
+        .status-badge.is-editable { cursor: pointer; }
+        .status-badge.is-editable:hover { border-color: var(--primary); color: #e5e7eb; }
+        .status-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+        .status-dot.disponivel   { background: #22c55e; box-shadow: 0 0 8px #22c55e; }
+        .status-dot.ocupado      { background: #f59e0b; box-shadow: 0 0 8px #f59e0b; }
+        .status-dot.nao_perturbe { background: #ef4444; box-shadow: 0 0 8px #ef4444; }
+        .status-dot.invisivel    { background: #6b7280; box-shadow: 0 0 8px #6b7280; }
+        .status-chevron { font-size: 9px; margin-left: 2px; color: #666; }
+
+        .status-dropdown {
+            position: absolute; top: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+            background: rgba(10,10,10,0.97); backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border); border-radius: 16px;
+            padding: 8px; min-width: 190px; z-index: 200;
+            display: none; flex-direction: column; gap: 2px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.7);
+        }
+        .status-dropdown.open { display: flex; }
+        .status-option {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 14px; border-radius: 10px; cursor: pointer;
+            font-size: 13px; color: #ccc; transition: background .2s;
+            border: none; background: transparent; font-family: 'Inter', sans-serif;
+            width: 100%; text-align: left;
+        }
+        .status-option:hover { background: rgba(139,92,246,.12); color: white; }
+        .status-option .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
         .stats-row {
             display: flex;
             justify-content: center;
@@ -288,6 +325,95 @@
         .file-input-wrapper span { font-size: 12px; color: var(--text-muted); }
         .file-input-wrapper input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
 
+        /* ── TRIMMER (seletor visual do trecho) ── */
+        .trimmer {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 16px;
+        }
+        .trimmer-hint {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: center;
+            padding: 26px 10px;
+        }
+        .waveform-wrap {
+            position: relative;
+            width: 100%;
+            height: 72px;
+            touch-action: none;
+        }
+        .waveform-wrap canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            border-radius: 8px;
+        }
+        .waveform-selection {
+            position: absolute;
+            top: 0; bottom: 0; left: 0; width: 30%;
+            background: rgba(139, 92, 246, 0.28);
+            border: 2px solid var(--primary);
+            border-radius: 6px;
+            cursor: grab;
+        }
+        .waveform-selection:active { cursor: grabbing; }
+        .waveform-handle {
+            position: absolute;
+            top: 0; bottom: 0; width: 16px;
+            background: var(--primary);
+            border-radius: 4px;
+            cursor: ew-resize;
+        }
+        .waveform-handle::after {
+            content: '';
+            position: absolute; top: 50%; left: 50%;
+            width: 2px; height: 14px;
+            background: rgba(255,255,255,.7);
+            transform: translate(-50%, -50%);
+            border-radius: 2px;
+        }
+        .waveform-handle-left { left: -8px; }
+        .waveform-handle-right { right: -8px; }
+        .trimmer-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 14px;
+            flex-wrap: wrap;
+        }
+        .trimmer-duration-buttons { display: flex; gap: 6px; }
+        .dur-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            color: #aaa;
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all .2s;
+            font-family: 'Inter', sans-serif;
+        }
+        .dur-btn.active, .dur-btn:hover { border-color: var(--primary); color: white; background: rgba(139,92,246,.15); }
+        .btn-preview-trim {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            color: #eee;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Inter', sans-serif;
+            transition: all .2s;
+        }
+        .btn-preview-trim:hover { border-color: var(--primary); }
+        .btn-preview-trim:disabled { opacity: .4; cursor: not-allowed; }
+
         .btn-publish {
             grid-column: 1 / -1;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
@@ -328,11 +454,25 @@
             overflow: hidden;
             cursor: pointer;
             transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
         }
 
         .story-thumb:hover {
             transform: scale(1.05);
             border-color: var(--primary);
+        }
+
+        .story-thumb-icone {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .story-thumb-overlay {
@@ -346,6 +486,7 @@
         }
 
         .story-thumb-title { font-size: 11px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.story-thumb-tempo { font-size: 10px; color: rgba(255,255,255,.55); margin-top: 2px; }
 
         /* ── SKILLS TAGS ── */
         .tags-container {
@@ -376,6 +517,7 @@
 
         @media (max-width: 600px) {
             .upload-zone { grid-template-columns: 1fr; }
+            .trimmer-footer { flex-direction: column; align-items: stretch; }
         }
     </style>
 </head>
@@ -419,7 +561,21 @@
                     <div class="profile-info">
                         <h1 id="nomeExibir">Carregando...</h1>
                         <span class="artist-area" id="areaBadge">Músico</span>
-                        
+
+                        <div class="status-badge-wrap">
+                            <button type="button" class="status-badge" id="statusBadge">
+                                <span class="status-dot" id="statusDot"></span>
+                                <span id="statusLabel">---</span>
+                                <i class="fas fa-chevron-down status-chevron hidden" id="statusChevron"></i>
+                            </button>
+                            <div class="status-dropdown" id="statusDropdown">
+                                <button type="button" class="status-option" data-status="disponivel"><span class="dot" style="background:#22c55e;"></span>Disponível</button>
+                                <button type="button" class="status-option" data-status="ocupado"><span class="dot" style="background:#f59e0b;"></span>Ocupado</button>
+                                <button type="button" class="status-option" data-status="nao_perturbe"><span class="dot" style="background:#ef4444;"></span>Não perturbe</button>
+                                <button type="button" class="status-option" data-status="invisivel"><span class="dot" style="background:#6b7280;"></span>Invisível</button>
+                            </div>
+                        </div>
+
                         <div class="stats-row">
                             <div class="stat-item">
                                 <span class="stat-value" id="countPrevias">0</span>
@@ -467,36 +623,48 @@
                         <h2 class="section-title"><i class="fas fa-bolt"></i> Backstage Pass</h2>
                         <span style="font-size: 10px; color: var(--primary); font-weight: 800; letter-spacing: 2px;">NOVA PRÉVIA</span>
                     </div>
-                    
+
                     <form id="formNovaPrevia" class="upload-zone">
                         <div class="form-group">
                             <label>Título da Prévia</label>
                             <input type="text" id="previaNome" class="form-control" placeholder="Ex: Solo de Guitarra - Track 04" maxlength="60">
-                            
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px;">
-                                <div class="form-group">
-                                    <label>Início (s)</label>
-                                    <input type="number" id="previaInicio" class="form-control" value="0" min="0">
-                                </div>
-                                <div class="form-group">
-                                    <label>Duração</label>
-                                    <select id="previaDuracao" class="form-control">
-                                        <option value="15">15 segundos</option>
-                                        <option value="30" selected>30 segundos</option>
-                                        <option value="45">45 segundos</option>
-                                        <option value="60">60 segundos</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
 
-                        <div class="form-group">
-                            <label>Arquivo de Áudio</label>
+                            <label style="margin-top:8px;">Arquivo de Áudio</label>
                             <div class="file-input-wrapper" id="fileWrapper">
                                 <i class="fas fa-cloud-arrow-up"></i>
                                 <span id="fileNameDisplay">Clique ou arraste o áudio</span>
                                 <input type="file" id="previaArquivo" accept="audio/*" required>
                             </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Trecho da prévia</label>
+                            <div class="trimmer" id="trimmerBox">
+                                <p class="trimmer-hint" id="trimmerHint">Escolha um áudio pra ver a forma de onda e arrastar o trecho que quer usar.</p>
+
+                                <div class="waveform-wrap hidden" id="waveformWrap">
+                                    <canvas id="waveformCanvas"></canvas>
+                                    <div class="waveform-selection" id="waveformSelection">
+                                        <span class="waveform-handle waveform-handle-left" id="handleEsquerda"></span>
+                                        <span class="waveform-handle waveform-handle-right" id="handleDireita"></span>
+                                    </div>
+                                </div>
+
+                                <div class="trimmer-footer hidden" id="trimmerFooter">
+                                    <div class="trimmer-duration-buttons" id="trimmerDuracaoBtns">
+                                        <button type="button" class="dur-btn" data-dur="15">15s</button>
+                                        <button type="button" class="dur-btn active" data-dur="30">30s</button>
+                                        <button type="button" class="dur-btn" data-dur="45">45s</button>
+                                        <button type="button" class="dur-btn" data-dur="60">60s</button>
+                                    </div>
+                                    <button type="button" class="btn-preview-trim" id="btnPreviewTrim">
+                                        <i class="fas fa-play" id="btnPreviewIcon"></i>
+                                        <span id="trimmerTempo">0:00 – 0:30</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <input type="hidden" id="previaInicio" value="0">
+                            <input type="hidden" id="previaDuracao" value="30">
                         </div>
 
                         <button type="submit" class="btn-publish" id="btnPublicarPrevia">
@@ -519,13 +687,13 @@
                 <!-- SKILLS & GEAR -->
                 <div class="glass-card">
                     <h2 class="section-title" style="margin-bottom: 24px;"><i class="fas fa-layer-group"></i> Habilidades & Setup</h2>
-                    
+
                     <div style="display: flex; flex-direction: column; gap: 20px;">
                         <div>
                             <label style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; display: block; margin-bottom: 12px;">Instrumentos</label>
                             <div class="tags-container" id="talentosCont"></div>
                         </div>
-                        
+
                         <div>
                             <label style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; display: block; margin-bottom: 12px;">Gêneros</label>
                             <div class="tags-container" id="generosCont"></div>
@@ -551,7 +719,7 @@
     <script type="module">
         import { showLoading, hideLoading } from '../js/loading.js';
         import { verificarAutenticacao, fazerLogout } from '../js/auth.js';
-        import { renderizarPostagensDoUsuario, criarPostagem } from '../js/postagens.js';
+        import { renderizarGradePreviasDoUsuario, criarPostagem } from '../js/postagens.js';
 
         const SOCIAL_ICONS = {
             instagram:'fa-brands fa-instagram', youtube:'fa-brands fa-youtube',
@@ -559,6 +727,22 @@
             tiktok:'fa-brands fa-tiktok', twitter:'fa-brands fa-x-twitter',
             site:'fa-solid fa-globe',
         };
+
+        const STATUS_MAP = {
+            disponivel:   { label: 'Disponível',   cls: 'disponivel' },
+            ocupado:      { label: 'Ocupado',      cls: 'ocupado' },
+            nao_perturbe: { label: 'Não perturbe', cls: 'nao_perturbe' },
+            invisivel:    { label: 'Invisível',    cls: 'invisivel' },
+        };
+
+        function aplicarStatus(status) {
+            const s = STATUS_MAP[status] || STATUS_MAP['disponivel'];
+            document.getElementById('statusIndicator').className = 'status-indicator ' + s.cls;
+            document.getElementById('statusDot').className = 'status-dot ' + s.cls;
+            document.getElementById('statusLabel').textContent = s.label;
+        }
+
+        let idUsuarioAtual = null;
 
         async function iniciarPerfil() {
             const params = new URLSearchParams(window.location.search);
@@ -577,6 +761,7 @@
                 }
             } catch (e) { console.error(e); return; }
 
+            idUsuarioAtual = u.id_usuario;
             const ehProprio = !idParam || String(usuarioLogado?.id_usuario) === String(u.id_usuario);
 
             // Render
@@ -587,10 +772,13 @@
             document.getElementById('localExibir').textContent = [u.cidade, u.estado].filter(Boolean).join(', ') || 'Brasil';
             document.getElementById('expValue').textContent = u.anos_experiencia || '0';
             document.getElementById('bioExibir').textContent = u.biografia || 'Este artista ainda não escreveu sua biografia.';
-            
+
             // Status
-            const indicator = document.getElementById('statusIndicator');
-            indicator.className = 'status-indicator ' + (u.status || 'disponivel');
+            aplicarStatus(u.status || 'disponivel');
+            if (ehProprio) {
+                document.getElementById('statusBadge').classList.add('is-editable');
+                document.getElementById('statusChevron').classList.remove('hidden');
+            }
 
             // Area
             const areas = Array.isArray(u.area_atuacao) ? u.area_atuacao : [];
@@ -599,13 +787,13 @@
             // Tags
             const renderTags = (arr, containerId, icon) => {
                 const cont = document.getElementById(containerId);
-                cont.innerHTML = arr.length 
+                cont.innerHTML = arr.length
                     ? arr.map(t => `<span class="skill-tag"><i class="${icon}"></i>${t}</span>`).join('')
                     : '<span style="color:#555; font-size:12px;">Nenhum item adicionado</span>';
             };
             renderTags(u.instrumentos || [], 'talentosCont', 'fas fa-music');
             renderTags(u.generos || [], 'generosCont', 'fas fa-compact-disc');
-            
+
             if (u.daws?.length) {
                 document.getElementById('dawsSection').classList.remove('hidden');
                 renderTags(u.daws, 'dawsCont', 'fas fa-sliders');
@@ -621,52 +809,299 @@
 
             // Previews
             if (ehProprio) document.getElementById('addPreviaPanel').classList.remove('hidden');
-            renderizarPostagensDoUsuario(u.id_usuario, document.getElementById('previasLista'), (count) => {
+            renderizarGradePreviasDoUsuario(u.id_usuario, document.getElementById('previasLista'), (count) => {
                 document.getElementById('countPrevias').textContent = count;
             });
 
             hideLoading();
         }
 
-        // File input display
-        document.getElementById('previaArquivo')?.addEventListener('change', (e) => {
-            const fileName = e.target.files[0]?.name || 'Clique ou arraste o áudio';
-            document.getElementById('fileNameDisplay').textContent = fileName;
-            document.getElementById('fileWrapper').style.borderColor = 'var(--primary)';
+        // ── Seletor de status ──────────────────────────────────────────────────
+        document.getElementById('statusBadge')?.addEventListener('click', (e) => {
+            if (!e.currentTarget.classList.contains('is-editable')) return;
+            e.stopPropagation();
+            document.getElementById('statusDropdown').classList.toggle('open');
+        });
+        document.addEventListener('click', () => {
+            document.getElementById('statusDropdown')?.classList.remove('open');
+        });
+        document.querySelectorAll('.status-option').forEach(opt => {
+            opt.addEventListener('click', async () => {
+                const novoStatus = opt.dataset.status;
+                document.getElementById('statusDropdown').classList.remove('open');
+                aplicarStatus(novoStatus);
+                const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado') || '{}');
+                try {
+                    await fetch(`/api/usuarios/${usuarioLogado.id_usuario}/status`, {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ status: novoStatus })
+                    });
+                    usuarioLogado.status = novoStatus;
+                    localStorage.setItem('usuarioLogado', JSON.stringify(usuarioLogado));
+                } catch (err) { console.error(err); }
+            });
         });
 
-        // Form Submit
+        // ── Seletor visual de trecho (waveform trimmer) ─────────────────────────
+        const DURACAO_MAX = 60;
+        const DURACAO_MIN = 5;
+
+        const elWrap = document.getElementById('waveformWrap');
+        const elCanvas = document.getElementById('waveformCanvas');
+        const elSelecao = document.getElementById('waveformSelection');
+        const elFooter = document.getElementById('trimmerFooter');
+        const elHint = document.getElementById('trimmerHint');
+        const elTempo = document.getElementById('trimmerTempo');
+        const inputInicio = document.getElementById('previaInicio');
+        const inputDuracao = document.getElementById('previaDuracao');
+
+        let audioCtx = null;
+        let bufferTotalSeg = 0;
+        let selInicio = 0;
+        let selDuracao = 30;
+        let audioPreview = null;
+        let objectUrlAtual = null;
+
+        function formatarTempo(seg) {
+            const m = Math.floor(seg / 60);
+            const s = Math.floor(seg % 60);
+            return `${m}:${String(s).padStart(2, '0')}`;
+        }
+
+        function atualizarUISelecao() {
+            const pctLeft = (selInicio / bufferTotalSeg) * 100;
+            const pctWidth = (selDuracao / bufferTotalSeg) * 100;
+            elSelecao.style.left = pctLeft + '%';
+            elSelecao.style.width = pctWidth + '%';
+            elTempo.textContent = `${formatarTempo(selInicio)} – ${formatarTempo(selInicio + selDuracao)}`;
+            inputInicio.value = Math.round(selInicio);
+            inputDuracao.value = Math.round(selDuracao);
+        }
+
+        function desenharWaveform(audioBuffer) {
+            const dpr = window.devicePixelRatio || 1;
+            const rect = elWrap.getBoundingClientRect();
+            elCanvas.width = rect.width * dpr;
+            elCanvas.height = rect.height * dpr;
+            const ctx = elCanvas.getContext('2d');
+            ctx.scale(dpr, dpr);
+
+            const dados = audioBuffer.getChannelData(0);
+            const NUM_BARRAS = 140;
+            const tamanhoBloco = Math.floor(dados.length / NUM_BARRAS);
+            const picos = [];
+            for (let i = 0; i < NUM_BARRAS; i++) {
+                let max = 0;
+                const inicioBloco = i * tamanhoBloco;
+                for (let j = 0; j < tamanhoBloco; j++) {
+                    const v = Math.abs(dados[inicioBloco + j] || 0);
+                    if (v > max) max = v;
+                }
+                picos.push(max);
+            }
+            const maiorPico = Math.max(...picos, 0.01);
+
+            const larguraBarra = rect.width / NUM_BARRAS;
+            ctx.clearRect(0, 0, rect.width, rect.height);
+            ctx.fillStyle = 'rgba(255,255,255,0.55)';
+            picos.forEach((p, i) => {
+                const alturaBarra = Math.max(2, (p / maiorPico) * rect.height * 0.9);
+                const x = i * larguraBarra;
+                const y = (rect.height - alturaBarra) / 2;
+                ctx.fillRect(x, y, Math.max(1.5, larguraBarra - 1.5), alturaBarra);
+            });
+        }
+
+        async function carregarAudioParaTrimmer(file) {
+            elHint.textContent = 'Analisando áudio...';
+            try {
+                audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+                const arrayBuffer = await file.arrayBuffer();
+                const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+
+                bufferTotalSeg = audioBuffer.duration;
+                selDuracao = Math.min(30, bufferTotalSeg);
+                selInicio = 0;
+
+                elHint.classList.add('hidden');
+                elWrap.classList.remove('hidden');
+                elFooter.classList.remove('hidden');
+
+                desenharWaveform(audioBuffer);
+                document.querySelectorAll('.dur-btn').forEach(b => b.classList.toggle('active', Number(b.dataset.dur) === 30));
+                atualizarUISelecao();
+
+                if (objectUrlAtual) URL.revokeObjectURL(objectUrlAtual);
+                objectUrlAtual = URL.createObjectURL(file);
+                if (!audioPreview) audioPreview = new Audio();
+                audioPreview.src = objectUrlAtual;
+            } catch (err) {
+                console.error('Não foi possível analisar o áudio:', err);
+                elHint.textContent = 'Não conseguimos gerar a forma de onda deste arquivo, mas ele ainda pode ser publicado (início 0s, duração 30s por padrão).';
+                elHint.classList.remove('hidden');
+                elWrap.classList.add('hidden');
+                elFooter.classList.add('hidden');
+                bufferTotalSeg = 0;
+                selInicio = 0;
+                selDuracao = 30;
+                inputInicio.value = 0;
+                inputDuracao.value = 30;
+            }
+        }
+
+        document.getElementById('previaArquivo')?.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            document.getElementById('fileNameDisplay').textContent = file?.name || 'Clique ou arraste o áudio';
+            document.getElementById('fileWrapper').style.borderColor = file ? 'var(--primary)' : 'var(--glass-border)';
+            pararPreview();
+            if (file) carregarAudioParaTrimmer(file);
+        });
+
+        // Botões de duração rápida
+        document.getElementById('trimmerDuracaoBtns')?.addEventListener('click', (e) => {
+            const btn = e.target.closest('.dur-btn');
+            if (!btn || !bufferTotalSeg) return;
+            document.querySelectorAll('.dur-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            selDuracao = Math.min(Number(btn.dataset.dur), bufferTotalSeg);
+            if (selInicio + selDuracao > bufferTotalSeg) selInicio = bufferTotalSeg - selDuracao;
+            atualizarUISelecao();
+        });
+
+        // Arrastar a janela inteira (move o início, mantém a duração)
+        function iniciarArrastoJanela(evPointerDown) {
+            if (!bufferTotalSeg) return;
+            evPointerDown.preventDefault();
+            const larguraWrap = elWrap.getBoundingClientRect().width;
+            const xInicial = evPointerDown.clientX;
+            const inicioOriginal = selInicio;
+
+            function mover(ev) {
+                const deltaPx = ev.clientX - xInicial;
+                const deltaSeg = (deltaPx / larguraWrap) * bufferTotalSeg;
+                selInicio = Math.min(Math.max(0, inicioOriginal + deltaSeg), bufferTotalSeg - selDuracao);
+                atualizarUISelecao();
+            }
+            function soltar() {
+                document.removeEventListener('pointermove', mover);
+                document.removeEventListener('pointerup', soltar);
+            }
+            document.addEventListener('pointermove', mover);
+            document.addEventListener('pointerup', soltar);
+        }
+        elSelecao?.addEventListener('pointerdown', iniciarArrastoJanela);
+
+        // Arrastar a borda esquerda (ajusta início e duração)
+        document.getElementById('handleEsquerda')?.addEventListener('pointerdown', (evPointerDown) => {
+            if (!bufferTotalSeg) return;
+            evPointerDown.preventDefault();
+            evPointerDown.stopPropagation();
+            const larguraWrap = elWrap.getBoundingClientRect().width;
+            const xInicial = evPointerDown.clientX;
+            const inicioOriginal = selInicio;
+            const duracaoOriginal = selDuracao;
+            const fimFixo = inicioOriginal + duracaoOriginal;
+
+            function mover(ev) {
+                const deltaPx = ev.clientX - xInicial;
+                const deltaSeg = (deltaPx / larguraWrap) * bufferTotalSeg;
+                let novoInicio = inicioOriginal + deltaSeg;
+                novoInicio = Math.max(0, Math.min(novoInicio, fimFixo - DURACAO_MIN));
+                selInicio = novoInicio;
+                selDuracao = Math.min(DURACAO_MAX, fimFixo - novoInicio);
+                document.querySelectorAll('.dur-btn').forEach(b => b.classList.remove('active'));
+                atualizarUISelecao();
+            }
+            function soltar() {
+                document.removeEventListener('pointermove', mover);
+                document.removeEventListener('pointerup', soltar);
+            }
+            document.addEventListener('pointermove', mover);
+            document.addEventListener('pointerup', soltar);
+        });
+
+        // Arrastar a borda direita (ajusta só a duração)
+        document.getElementById('handleDireita')?.addEventListener('pointerdown', (evPointerDown) => {
+            if (!bufferTotalSeg) return;
+            evPointerDown.preventDefault();
+            evPointerDown.stopPropagation();
+            const larguraWrap = elWrap.getBoundingClientRect().width;
+            const xInicial = evPointerDown.clientX;
+            const duracaoOriginal = selDuracao;
+
+            function mover(ev) {
+                const deltaPx = ev.clientX - xInicial;
+                const deltaSeg = (deltaPx / larguraWrap) * bufferTotalSeg;
+                let novaDuracao = duracaoOriginal + deltaSeg;
+                novaDuracao = Math.max(DURACAO_MIN, Math.min(DURACAO_MAX, novaDuracao, bufferTotalSeg - selInicio));
+                selDuracao = novaDuracao;
+                document.querySelectorAll('.dur-btn').forEach(b => b.classList.remove('active'));
+                atualizarUISelecao();
+            }
+            function soltar() {
+                document.removeEventListener('pointermove', mover);
+                document.removeEventListener('pointerup', soltar);
+            }
+            document.addEventListener('pointermove', mover);
+            document.addEventListener('pointerup', soltar);
+        });
+
+        // Ouvir o trecho selecionado antes de publicar
+        let previewTimeoutId = null;
+        function pararPreview() {
+            clearTimeout(previewTimeoutId);
+            audioPreview?.pause();
+            document.getElementById('btnPreviewIcon')?.classList.remove('fa-pause');
+            document.getElementById('btnPreviewIcon')?.classList.add('fa-play');
+        }
+        document.getElementById('btnPreviewTrim')?.addEventListener('click', () => {
+            if (!audioPreview) return;
+            const icon = document.getElementById('btnPreviewIcon');
+            if (!audioPreview.paused) { pararPreview(); return; }
+            audioPreview.currentTime = selInicio;
+            audioPreview.play().catch(() => {});
+            icon.classList.remove('fa-play');
+            icon.classList.add('fa-pause');
+            previewTimeoutId = setTimeout(pararPreview, selDuracao * 1000);
+        });
+
+        // ── Publicar ──────────────────────────────────────────────────────────
         document.getElementById('formNovaPrevia')?.addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btnPublicarPrevia');
             const msgEl = document.getElementById('previaMsg');
             const arquivo = document.getElementById('previaArquivo').files[0];
             const nome = document.getElementById('previaNome').value.trim();
-            const inicio = Number(document.getElementById('previaInicio').value || 0);
-            const duracao = Number(document.getElementById('previaDuracao').value || 30);
+            const inicio = Number(inputInicio.value || 0);
+            const duracao = Number(inputDuracao.value || 30);
 
             if (!arquivo) return;
 
+            pararPreview();
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> PUBLICANDO...';
             msgEl.classList.add('hidden');
-            
+
             try {
                 await criarPostagem(arquivo, nome, inicio, duracao);
                 e.target.reset();
                 document.getElementById('fileNameDisplay').textContent = 'Clique ou arraste o áudio';
                 document.getElementById('fileWrapper').style.borderColor = 'var(--glass-border)';
-                
-                const params = new URLSearchParams(window.location.search);
-                const idAtual = params.get('id') || verificarAutenticacao(false)?.id_usuario;
-                renderizarPostagensDoUsuario(idAtual, document.getElementById('previasLista'), (count) => {
+                elHint.textContent = 'Escolha um áudio pra ver a forma de onda e arrastar o trecho que quer usar.';
+                elHint.classList.remove('hidden');
+                elWrap.classList.add('hidden');
+                elFooter.classList.add('hidden');
+                bufferTotalSeg = 0;
+
+                renderizarGradePreviasDoUsuario(idUsuarioAtual, document.getElementById('previasLista'), (count) => {
                     document.getElementById('countPrevias').textContent = count;
                 });
-                
+
                 msgEl.textContent = 'PRÉVIA PUBLICADA COM SUCESSO!';
                 msgEl.classList.remove('hidden');
             } catch (err) {
-                msgEl.textContent = 'ERRO AO PUBLICAR PRÉVIA.';
+                msgEl.textContent = err.message || 'ERRO AO PUBLICAR PRÉVIA.';
                 msgEl.classList.remove('hidden');
             } finally {
                 btn.disabled = false;
@@ -675,7 +1110,7 @@
         });
 
         document.getElementById('btnSair')?.addEventListener('click', fazerLogout);
-        document.getElementById('profileDropdown')?.addEventListener('click', () => 
+        document.getElementById('profileDropdown')?.addEventListener('click', () =>
             document.getElementById('profileDropdown').classList.toggle('active'));
 
         showLoading('Entrando no Backstage...');

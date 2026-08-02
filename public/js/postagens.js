@@ -15,6 +15,17 @@ function svgOnda(tamanho = 22) {
   `;
 }
 
+// ── Tempo relativo (ex: "agora", "12min", "3h") ─────────────────────────────────
+// Como a prévia expira em 24h, nunca precisa mostrar em dias — só min/h.
+function tempoRelativo(dataISO) {
+  const diffMs = Date.now() - new Date(dataISO).getTime();
+  const diffMin = Math.round(diffMs / 60000);
+  if (diffMin < 1) return 'agora';
+  if (diffMin < 60) return `${diffMin}min`;
+  const diffH = Math.floor(diffMin / 60);
+  return `${diffH}h`;
+}
+
 // ── Feed (barra de "bolinhas" tipo stories) ────────────────────────────────────
 
 /**
@@ -65,7 +76,7 @@ export async function renderizarGradeFeedPostagens(container) {
  * Busca e desenha só as prévias ativas de UM usuário (usado na página de perfil).
  * Clicar na bolinha abre o viewer passando por todas as prévias dele em sequência.
  */
-export async function renderizarPostagensDoUsuario(idUsuario, container) {
+export async function renderizarGradePreviasDoUsuario(idUsuario, container, onContagem) {
   if (!container) return;
   container.innerHTML = '';
 
@@ -76,8 +87,50 @@ export async function renderizarPostagensDoUsuario(idUsuario, container) {
     postagens = await res.json();
   } catch (err) {
     console.error(err);
+    onContagem?.(0);
     return;
   }
+
+  onContagem?.(postagens.length);
+
+  if (postagens.length === 0) {
+    container.innerHTML = '<p class="feed-vazio" style="grid-column:1/-1;">Nenhuma prévia ativa no momento.</p>';
+    return;
+  }
+
+  postagens.forEach((p, indice) => {
+    const thumb = document.createElement('button');
+    thumb.type = 'button';
+    thumb.className = 'story-thumb';
+    thumb.setAttribute('aria-label', `Ouvir prévia: ${p.titulo || 'sem título'}`);
+    thumb.innerHTML = `
+      <div class="story-thumb-icone">${svgOnda(30)}</div>
+      <div class="story-thumb-overlay">
+        <span class="story-thumb-title">${escaparHtml(p.titulo || 'Sem título')}</span>
+        <span class="story-thumb-tempo">${tempoRelativo(p.criado_em)}</span>
+      </div>
+    `;
+    thumb.addEventListener('click', () => abrirViewer(postagens, indice));
+    container.appendChild(thumb);
+  });
+}
+
+export async function renderizarPostagensDoUsuario(idUsuario, container, onContagem) {
+  if (!container) return;
+  container.innerHTML = '';
+
+  let postagens = [];
+  try {
+    const res = await fetch(`/api/postagens/usuario/${idUsuario}`);
+    if (!res.ok) throw new Error('Falha ao buscar prévias do usuário');
+    postagens = await res.json();
+  } catch (err) {
+    console.error(err);
+    onContagem?.(0);
+    return;
+  }
+
+  onContagem?.(postagens.length);
 
   if (postagens.length === 0) {
     container.innerHTML = '<p class="feed-vazio">Nenhuma prévia ativa no momento.</p>';
@@ -140,7 +193,7 @@ function criarCardFeed(postagensDoAutor, onClick) {
     <span class="feed-card-icone">${svgOnda(28)}</span>
     <span class="feed-card-texto">
       <span class="feed-card-titulo">${escaparHtml(titulo)}</span>
-      <span class="feed-card-autor">${escaparHtml(nomeAutor)}${qtd > 1 ? ` · ${qtd} prévias` : ''}</span>
+      <span class="feed-card-autor">${escaparHtml(nomeAutor)}${qtd > 1 ? ` · ${qtd} prévias` : ''} · há ${tempoRelativo(primeira.criado_em)}</span>
     </span>
   `;
   card.addEventListener('click', onClick);
@@ -151,7 +204,54 @@ function criarCardFeed(postagensDoAutor, onClick) {
 
 let viewerAtual = null;
 
-function abrirViewer(postagens) {
+/**
+ * Liga um AnalyserNode no <audio> e faz o círculo "pulsar" (escala) em
+ * tempo real junto com o volume do trecho tocando — reação de verdade ao
+ * áudio, não uma animação decorativa fixa.
+ * Retorna uma função de "parar" pra ser chamada ao fechar o viewer.
+ */
+function iniciarVisualizer(audio, circulo) {
+  let audioCtx, analyser, dataArray, frameId;
+
+  try {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const source = audioCtx.createMediaElementSource(audio);
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 64;
+    analyser.smoothingTimeConstant = 0.75; // suaviza pra não "tremer" demais
+    source.connect(analyser);
+    analyser.connect(audioCtx.destination); // sem isso o som para de tocar
+    dataArray = new Uint8Array(analyser.frequencyBinCount);
+  } catch (err) {
+    // Autoplay bloqueado, navegador sem suporte, etc — sem pulso, sem quebrar nada
+    console.error('Visualizador de áudio indisponível:', err);
+    return () => {};
+  }
+
+  function pulsar() {
+    frameId = requestAnimationFrame(pulsar);
+
+    analyser.getByteFrequencyData(dataArray);
+    let soma = 0;
+    for (let i = 0; i < dataArray.length; i++) soma += dataArray[i] / 255;
+    const volumeMedio = soma / dataArray.length;
+
+    circulo.style.transform = `scale(${1 + volumeMedio * 0.18})`;
+  }
+
+  // Autoplay policies exigem retomar o contexto após o gesto do usuário
+  // (abrir o viewer já é um clique, então isso normalmente resolve na hora)
+  audioCtx.resume().catch(() => {});
+  frameId = requestAnimationFrame(pulsar);
+
+  return function parar() {
+    cancelAnimationFrame(frameId);
+    circulo.style.transform = '';
+    audioCtx.close().catch(() => {});
+  };
+}
+
+function abrirViewer(postagens, indiceInicial = 0) {
   fecharViewer(); // garante que não existam dois viewers abertos
 
   let indice = 0;
@@ -172,7 +272,12 @@ function abrirViewer(postagens) {
   document.body.style.overflow = 'hidden';
 
   const audio = new Audio();
+  audio.crossOrigin = 'anonymous';
   let timeoutId = null;
+
+  // ── Pulso reagindo ao áudio (Web Audio API) ─────────────────────────────────
+  const circulo = overlay.querySelector('.story-viewer-icone-grande');
+  let pararVisualizer = iniciarVisualizer(audio, circulo);
 
   function tocar(i) {
     if (i < 0) { fecharViewer(); return; }
@@ -181,7 +286,7 @@ function abrirViewer(postagens) {
 
     const p = postagens[indice];
     overlay.querySelector('.story-viewer-info').textContent =
-      `${p.autor.nome} · prévia ${indice + 1}/${postagens.length}`;
+      `${p.autor.nome} · prévia ${indice + 1}/${postagens.length} · há ${tempoRelativo(p.criado_em)}`;
     overlay.querySelector('.story-viewer-titulo').textContent = p.titulo || '';
 
     clearTimeout(timeoutId);
@@ -201,8 +306,8 @@ function abrirViewer(postagens) {
     if (e.target === overlay) fecharViewer();
   });
 
-  viewerAtual = { overlay, audio, limpar: () => clearTimeout(timeoutId) };
-  tocar(0);
+  viewerAtual = { overlay, audio, limpar: () => { clearTimeout(timeoutId); pararVisualizer(); } };
+  tocar(indiceInicial);
 }
 
 function fecharViewer() {
