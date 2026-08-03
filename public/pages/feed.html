@@ -17,314 +17,49 @@
             --glass: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.08);
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
-
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-dark);
-            color: #fff;
             min-height: 100vh;
-            overflow-x: hidden;
             background-image:
-                radial-gradient(circle at 10% 10%, rgba(139, 92, 246, 0.15), transparent 50%),
-                radial-gradient(circle at 90% 90%, rgba(217, 70, 239, 0.1), transparent 50%);
+                radial-gradient(circle at 10% 10%, rgba(139,92,246,0.15), transparent 50%),
+                radial-gradient(circle at 90% 90%, rgba(217,70,239,0.1), transparent 50%);
             background-attachment: fixed;
         }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+        .hero { text-align: center; padding: 60px 0 20px; }
+        .hero-title { font-family:'Poppins',sans-serif; font-size: 42px; font-weight: 900; }
+        .hero-title span { background: linear-gradient(135deg,var(--primary),var(--secondary)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .hero-subtitle { color:#aaa; margin-top: 10px; font-size: 16px; }
 
-        #bg-canvas {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: -1;
-            opacity: 0.4;
-        }
-
-        /* ── HEADER & SEARCH BAR (EXACT MATCH) ── */
-        .header-center { justify-content: center; }
-        
-        .header-search { 
-            max-width: 580px; 
-            width: 100%; 
-            display: flex;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            overflow: hidden;
-            transition: all 0.3s;
-        }
-
-        .header-search:focus-within {
-            border-color: var(--primary);
-            background: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 0 20px rgba(139, 92, 246, 0.15);
-        }
-
-        .header-search-icon {
-            padding: 0 15px;
-            color: #666;
-            font-size: 14px;
-        }
-
-        .header-search-input {
-            flex: 1;
-            background: none;
-            border: none;
-            padding: 12px 0;
-            color: white;
-            outline: none;
-            font-size: 14px;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .btn-filtrar {
-            display: flex; align-items: center; justify-content: center; gap: 6px;
-            padding: 0 14px; align-self: stretch;
-            background: rgba(139,92,246,0.10);
-            border: none; border-left: 1px solid rgba(139,92,246,0.25);
-            color: #a78bfa; cursor: pointer; transition: background 0.25s; flex-shrink: 0; font-size: 14px;
-        }
-        .btn-filtrar:hover { background: rgba(139,92,246,0.20); }
-
-        .filtrar-count {
-            display: none; align-items: center; justify-content: center;
-            background: #8b5cf6; color: white; font-size: 10px; font-weight: 700;
-            width: 16px; height: 16px; border-radius: 50%;
-        }
-        .filtrar-count.show { display: flex; }
-
-        .header-search-btn {
-            padding: 11px 18px;
-            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
-            border: none; color: white; font-size: 13px; font-weight: 600;
-            cursor: pointer; font-family: 'Inter', sans-serif;
-            transition: opacity 0.2s; flex-shrink: 0; white-space: nowrap;
-        }
-        .header-search-btn:hover { opacity: 0.85; }
-
-        /* ── CONTAINER ── */
-        .container {
-            position: relative; z-index: 1;
-            width: 100%; max-width: 1280px;
-            margin: 0 auto;
-            padding: 60px 40px 80px;
-        }
-
-        /* ── HERO ── */
-        .hero {
-            text-align: center;
-            display: flex; flex-direction: column; align-items: center;
-            margin-bottom: 60px;
-        }
-        .section-label {
-            color: var(--primary); font-weight: 800; text-transform: uppercase;
-            letter-spacing: 4px; font-size: 14px; margin-bottom: 16px; display: block;
-        }
-        .hero-title {
-            font-family: 'Poppins', sans-serif;
-            font-size: clamp(40px, 7vw, 72px);
-            font-weight: 900; margin-bottom: 16px;
-            background: linear-gradient(to bottom, #fff, #888);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            line-height: 1;
-        }
-        .hero-title span {
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 20px var(--primary-glow));
-        }
-        .hero-subtitle { font-size: 18px; color: #888; margin-bottom: 24px; letter-spacing: 1px; }
-        .total-count {
-            display: inline-block; margin-top: 4px;
-            padding: 8px 20px;
-            background: rgba(139,92,246,0.1);
-            border: 1px solid rgba(139,92,246,0.3);
-            border-radius: 30px; color: #a78bfa;
-            font-size: 13px; font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-
-        /* ── GRID CARDS ── */
-        .previas-grid {
+        .feed-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 24px;
-            align-items: stretch;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            padding: 40px 0 80px;
         }
-
-        .preview-card {
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            backdrop-filter: blur(10px);
-            transition: all 0.5s cubic-bezier(0.2, 1, 0.3, 1);
-            animation: cardFadeIn 0.6s ease-out both;
-            cursor: pointer;
-            height: 100%;
-            position: relative;
-        }
-
-        @keyframes cardFadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .preview-card:hover {
-            border-color: var(--primary);
-            transform: perspective(1000px) rotateX(3deg) rotateY(-3deg) translateY(-8px);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.4), 0 0 30px rgba(139,92,246,0.15);
-        }
-
-        /* PREVIEW MEDIA (STORY VIBE) */
-        .preview-media {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 9/13;
-            background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(217,70,239,0.15));
-            overflow: hidden;
-        }
-
-        .preview-media img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.6s cubic-bezier(0.2, 1, 0.3, 1);
-        }
-
-        .preview-card:hover .preview-media img {
-            transform: scale(1.1);
-        }
-
-        .preview-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, transparent 40%, rgba(0,0,0,0.8) 100%);
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .preview-badge {
-            align-self: flex-end;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            font-size: 10px;
-            font-weight: 700;
-            padding: 6px 12px;
-            border-radius: 8px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .preview-timer {
-            align-self: flex-start;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(8px);
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 11px;
-            font-weight: 600;
-            color: #06b6d4;
-            border: 1px solid rgba(6, 182, 212, 0.2);
-        }
-
-        /* PREVIEW FOOTER */
-        .preview-footer {
-            padding: 16px;
-            background: rgba(15, 15, 15, 0.5);
-            backdrop-filter: blur(10px);
-        }
-
-        .preview-artist {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-
-        .preview-avatar {
-            width: 40px; height: 40px; border-radius: 12px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 800; font-size: 14px; color: white;
-            box-shadow: 0 4px 12px var(--primary-glow);
-        }
-
-        .preview-info-text { flex: 1; min-width: 0; }
-        .preview-artist-name { font-weight: 700; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .preview-song-title { font-size: 12px; color: #aaa; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-        .preview-actions { display: flex; gap: 8px; }
-        .btn-action {
-            flex: 1; padding: 8px; border-radius: 10px;
-            background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
-            color: #a78bfa; font-size: 11px; font-weight: 700; cursor: pointer;
-            transition: all 0.3s; text-transform: uppercase; letter-spacing: 0.5px;
-            display: flex; align-items: center; justify-content: center; gap: 6px;
-        }
-        .btn-action:hover { background: rgba(139,92,246,0.2); border-color: var(--primary); color: white; }
-        .btn-action.primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; }
-
-        .empty-state {
-            display: none; text-align: center;
-            padding: 100px 20px; color: #555; grid-column: 1 / -1;
-        }
-        .empty-state i { font-size: 4rem; margin-bottom: 24px; color: rgba(139,92,246,0.2); display: block; }
-
-        /* RESPONSIVO */
-        @media (max-width: 1100px) { .previas-grid { grid-template-columns: repeat(3, 1fr); } }
-        @media (max-width: 850px) { .previas-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 540px) {
-            .header {
-                grid-template-columns: 1fr auto;
-                grid-template-rows: auto auto;
-                grid-template-areas: "logo actions" "search search";
-                gap: 10px; padding: 12px 16px;
-            }
-            .header-left  { grid-area: logo; }
-            .header-center { grid-area: search; justify-content: stretch; }
-            .header-actions { grid-area: actions; }
-            .previas-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
-            .container { padding: 30px 16px 60px; }
-        }
-        @media (max-width: 400px) { .previas-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 900px) { .feed-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 560px) { .feed-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
-    <canvas id="bg-canvas"></canvas>
-
     <header class="header">
         <div class="header-left">
-            <a href="index.html">
-                <img src="../images/logo.png" alt="Backstage Logo" class="logo-img">
-            </a>
+            <a href="index.html"><img src="../images/logo.png" alt="Backstage Logo" class="logo-img"></a>
         </div>
-
-         <div class="header-center">
-            <div class="header-search" id="searchBar">
+        <div class="header-center">
+            <div class="header-search">
                 <i class="fas fa-search header-search-icon"></i>
-                <input type="text" class="header-search-input" placeholder="Buscar músicos..." readonly>
-                <button class="btn-filtrar" style="pointer-events:none;opacity:0.5;"><i class="fas fa-sliders"></i></button>
-                <button class="header-search-btn" id="btnBuscar">Buscar</button>
+                <input type="text" class="header-search-input" placeholder="Buscar músicos..." readonly onclick="location.href='pesquisar_usuarios.html?focar=true'">
+                <button class="header-search-btn" onclick="location.href='pesquisar_usuarios.html?focar=true'">Buscar</button>
             </div>
         </div>
-
         <div class="header-actions">
             <div class="profile-dropdown" id="profileDropdown">
                 <div class="profile-trigger" id="profileTrigger"></div>
                 <div class="dropdown-menu">
                     <a href="perfil.html" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a>
-                    <a href="pesquisar_usuarios.html" class="dropdown-item"><i class="fas fa-search"></i> Explorar</a>
+                    <a href="pesquisar_usuarios.html" class="dropdown-item"><i class="fas fa-search"></i> Buscar Músicos</a>
                     <a href="config.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações</a>
                     <div class="dropdown-divider"></div>
                     <div class="dropdown-item" id="btnSair"><i class="fas fa-sign-out-alt"></i> Sair</div>
@@ -335,20 +70,14 @@
 
     <div class="container">
         <div class="hero">
-            <h1 class="hero-title">Feed de <span>Prévias</span></h1>
-            <p class="hero-subtitle">Trechos exclusivos que expiram em 24h</p>
+            <h1 class="hero-title">Feed da <span>Cena</span></h1>
+            <p class="hero-subtitle">Trechos de músicas que somem em 24h</p>
         </div>
 
-        <div class="previas-grid" id="previasGrid">
-            <!-- Cards serão inseridos aqui -->
-            <div class="empty-state" id="emptyState">
-                <i class="fas fa-compact-disc"></i>
-                <h3>Silêncio no estúdio...</h3>
-                <p>Nenhuma prévia postada nas últimas 24h.</p>
-            </div>
-        </div>
+        <div class="feed-grid" id="feedGrid"></div>
     </div>
-        <footer>
+
+    <footer>
         <div class="footer-content">
             <img src="../images/logo.png" alt="Backstage Logo" class="footer-logo-img">
             <p>A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
@@ -364,79 +93,12 @@
             const nome = usuario.nome_artistico || usuario.nome_completo;
             document.getElementById('profileTrigger').textContent = nome.substring(0, 2).toUpperCase();
         }
-
         document.getElementById('profileDropdown')?.addEventListener('click', () => {
             document.getElementById('profileDropdown').classList.toggle('active');
         });
-
         document.getElementById('btnSair')?.addEventListener('click', fazerLogout);
 
-        // Renderizar feed real
-        const previasGrid = document.getElementById('previasGrid');
-        const emptyState = document.getElementById('emptyState');
-        const totalCount = document.getElementById('totalCount');
-
-        renderizarGradeFeedPostagens(previasGrid, (count) => {
-            if (count > 0) {
-                emptyState.style.display = 'none';
-                totalCount.textContent = `${count} prévia${count !== 1 ? 's' : ''} na cena`;
-            } else {
-                emptyState.style.display = 'flex';
-                totalCount.textContent = 'Nenhuma prévia disponível';
-            }
-        });
-    </script>
-
-    <script>
-        /* ── CANVAS PARTÍCULAS (EXACT MATCH) ── */
-        const canvas = document.getElementById('bg-canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-
-        function initCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 2;
-                this.speedX = Math.random() * 0.5 - 0.25;
-                this.speedY = Math.random() * 0.5 - 0.25;
-                this.opacity = Math.random() * 0.5 + 0.1;
-            }
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-                if (this.x > canvas.width) this.x = 0;
-                if (this.x < 0) this.x = canvas.width;
-                if (this.y > canvas.height) this.y = 0;
-                if (this.y < 0) this.y = canvas.height;
-            }
-            draw() {
-                ctx.fillStyle = `rgba(139, 92, 246, ${this.opacity})`;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-
-        function createParticles() {
-            for (let i = 0; i < 100; i++) particles.push(new Particle());
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => { p.update(); p.draw(); });
-            requestAnimationFrame(animate);
-        }
-
-        window.addEventListener('resize', initCanvas);
-        initCanvas();
-        createParticles();
-        animate();
+        renderizarGradeFeedPostagens(document.getElementById('feedGrid'));
     </script>
 </body>
 </html>

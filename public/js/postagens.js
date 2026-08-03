@@ -353,6 +353,30 @@ export async function criarPostagem(arquivoAudio, titulo, inicioSeg, duracaoSeg)
   return res.json();
 }
 
+/**
+ * Publica um tweet (texto curto). `expirar` = true faz ele sumir em 24h,
+ * false deixa permanente no perfil/feed.
+ */
+export async function criarTweet(texto, expirar) {
+  const usuarioLocal = verificarAutenticacao();
+  if (!usuarioLocal) return null;
+
+  const res = await fetch('/api/tweets', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      id_usuario: usuarioLocal.id_usuario,
+      texto,
+      expirar: Boolean(expirar),
+    }),
+  });
+  if (!res.ok) {
+    const erro = await res.json().catch(() => ({}));
+    throw new Error(erro.erro || 'Não foi possível publicar o tweet.');
+  }
+  return res.json();
+}
+
 function escaparHtml(texto) {
   const div = document.createElement('div');
   div.textContent = texto;

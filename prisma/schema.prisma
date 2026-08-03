@@ -31,6 +31,7 @@ model Usuario {
   disponibilidades UsuarioDisponibilidade[]
   configuracoes    ConfiguracaoUsuario?
   postagens        Postagem[]
+  tweets           Tweet[]
 
   @@map("usuario")
 }
@@ -139,4 +140,16 @@ model UsuarioDaw {
 
   @@id([id_usuario, id_daw])
   @@map("usuario_daw")
+}
+
+model Tweet {
+  id_tweet   Int       @id @default(autoincrement())
+  id_usuario Int
+  texto      String
+  criado_em  DateTime  @default(now())
+  expira_em  DateTime? // null = permanece pra sempre; preenchido = some quando passar dessa data
+
+  usuario Usuario @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
+
+  @@map("tweet")
 }

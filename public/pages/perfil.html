@@ -540,7 +540,7 @@
                 <div class="profile-trigger" id="profileTrigger"></div>
                 <div class="dropdown-menu">
                     <a href="perfil.html" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a>
-                    <a href="feed.html" class="dropdown-item"><i class="fas fa-music"></i> Feed de Prévias</a>
+                    <a href="feed.html" class="dropdown-item"><i class="fas fa-music"></i> Feed</a>
                     <a href="config.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações</a>
                     <div class="dropdown-divider"></div>
                     <div class="dropdown-item" id="btnSair"><i class="fas fa-sign-out-alt"></i> Sair</div>
@@ -618,61 +618,13 @@
                 </div>
 
                 <!-- ADD PREVIEW (OWNER ONLY) -->
-                <div class="backstage-panel hidden" id="addPreviaPanel">
-                    <div class="section-header">
-                        <h2 class="section-title"><i class="fas fa-bolt"></i> Backstage Pass</h2>
-                        <span style="font-size: 10px; color: var(--primary); font-weight: 800; letter-spacing: 2px;">NOVA PRÉVIA</span>
+                <a href="publicar.html" class="backstage-panel hidden" id="addPreviaPanel" style="display:flex; align-items:center; justify-content:space-between; text-decoration:none; color:inherit; cursor:pointer;">
+                    <div class="section-header" style="margin-bottom:0;">
+                        <h2 class="section-title"><i class="fas fa-bolt"></i> Backstage Posts</h2>
+                        <span style="font-size: 10px; color: var(--primary); font-weight: 800; letter-spacing: 2px;">ADICIONE UMA POSTAGEM</span>
                     </div>
-
-                    <form id="formNovaPrevia" class="upload-zone">
-                        <div class="form-group">
-                            <label>Título da Prévia</label>
-                            <input type="text" id="previaNome" class="form-control" placeholder="Ex: Solo de Guitarra - Track 04" maxlength="60">
-
-                            <label style="margin-top:8px;">Arquivo de Áudio</label>
-                            <div class="file-input-wrapper" id="fileWrapper">
-                                <i class="fas fa-cloud-arrow-up"></i>
-                                <span id="fileNameDisplay">Clique ou arraste o áudio</span>
-                                <input type="file" id="previaArquivo" accept="audio/*" required>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Trecho da prévia</label>
-                            <div class="trimmer" id="trimmerBox">
-                                <p class="trimmer-hint" id="trimmerHint">Escolha um áudio pra ver a forma de onda e arrastar o trecho que quer usar.</p>
-
-                                <div class="waveform-wrap hidden" id="waveformWrap">
-                                    <canvas id="waveformCanvas"></canvas>
-                                    <div class="waveform-selection" id="waveformSelection">
-                                        <span class="waveform-handle waveform-handle-left" id="handleEsquerda"></span>
-                                        <span class="waveform-handle waveform-handle-right" id="handleDireita"></span>
-                                    </div>
-                                </div>
-
-                                <div class="trimmer-footer hidden" id="trimmerFooter">
-                                    <div class="trimmer-duration-buttons" id="trimmerDuracaoBtns">
-                                        <button type="button" class="dur-btn" data-dur="15">15s</button>
-                                        <button type="button" class="dur-btn active" data-dur="30">30s</button>
-                                        <button type="button" class="dur-btn" data-dur="45">45s</button>
-                                        <button type="button" class="dur-btn" data-dur="60">60s</button>
-                                    </div>
-                                    <button type="button" class="btn-preview-trim" id="btnPreviewTrim">
-                                        <i class="fas fa-play" id="btnPreviewIcon"></i>
-                                        <span id="trimmerTempo">0:00 – 0:30</span>
-                                    </button>
-                                </div>
-                            </div>
-                            <input type="hidden" id="previaInicio" value="0">
-                            <input type="hidden" id="previaDuracao" value="30">
-                        </div>
-
-                        <button type="submit" class="btn-publish" id="btnPublicarPrevia">
-                            <i class="fas fa-upload"></i> PUBLICAR NA CENA
-                        </button>
-                    </form>
-                    <p id="previaMsg" class="hidden" style="margin-top: 16px; font-size: 12px; text-align: center; color: var(--accent-cyan);"></p>
-                </div>
+                    <i class="fas fa-arrow-right" style="color: var(--primary); font-size: 20px;"></i>
+                </a>
 
                 <!-- PREVIEWS LIST -->
                 <div class="glass-card">
@@ -719,7 +671,7 @@
     <script type="module">
         import { showLoading, hideLoading } from '../js/loading.js';
         import { verificarAutenticacao, fazerLogout } from '../js/auth.js';
-        import { renderizarGradePreviasDoUsuario, criarPostagem } from '../js/postagens.js';
+        import { renderizarGradePreviasDoUsuario } from '../js/postagens.js';
 
         const SOCIAL_ICONS = {
             instagram:'fa-brands fa-instagram', youtube:'fa-brands fa-youtube',
@@ -841,272 +793,6 @@
                     localStorage.setItem('usuarioLogado', JSON.stringify(usuarioLogado));
                 } catch (err) { console.error(err); }
             });
-        });
-
-        // ── Seletor visual de trecho (waveform trimmer) ─────────────────────────
-        const DURACAO_MAX = 60;
-        const DURACAO_MIN = 5;
-
-        const elWrap = document.getElementById('waveformWrap');
-        const elCanvas = document.getElementById('waveformCanvas');
-        const elSelecao = document.getElementById('waveformSelection');
-        const elFooter = document.getElementById('trimmerFooter');
-        const elHint = document.getElementById('trimmerHint');
-        const elTempo = document.getElementById('trimmerTempo');
-        const inputInicio = document.getElementById('previaInicio');
-        const inputDuracao = document.getElementById('previaDuracao');
-
-        let audioCtx = null;
-        let bufferTotalSeg = 0;
-        let selInicio = 0;
-        let selDuracao = 30;
-        let audioPreview = null;
-        let objectUrlAtual = null;
-
-        function formatarTempo(seg) {
-            const m = Math.floor(seg / 60);
-            const s = Math.floor(seg % 60);
-            return `${m}:${String(s).padStart(2, '0')}`;
-        }
-
-        function atualizarUISelecao() {
-            const pctLeft = (selInicio / bufferTotalSeg) * 100;
-            const pctWidth = (selDuracao / bufferTotalSeg) * 100;
-            elSelecao.style.left = pctLeft + '%';
-            elSelecao.style.width = pctWidth + '%';
-            elTempo.textContent = `${formatarTempo(selInicio)} – ${formatarTempo(selInicio + selDuracao)}`;
-            inputInicio.value = Math.round(selInicio);
-            inputDuracao.value = Math.round(selDuracao);
-        }
-
-        function desenharWaveform(audioBuffer) {
-            const dpr = window.devicePixelRatio || 1;
-            const rect = elWrap.getBoundingClientRect();
-            elCanvas.width = rect.width * dpr;
-            elCanvas.height = rect.height * dpr;
-            const ctx = elCanvas.getContext('2d');
-            ctx.scale(dpr, dpr);
-
-            const dados = audioBuffer.getChannelData(0);
-            const NUM_BARRAS = 140;
-            const tamanhoBloco = Math.floor(dados.length / NUM_BARRAS);
-            const picos = [];
-            for (let i = 0; i < NUM_BARRAS; i++) {
-                let max = 0;
-                const inicioBloco = i * tamanhoBloco;
-                for (let j = 0; j < tamanhoBloco; j++) {
-                    const v = Math.abs(dados[inicioBloco + j] || 0);
-                    if (v > max) max = v;
-                }
-                picos.push(max);
-            }
-            const maiorPico = Math.max(...picos, 0.01);
-
-            const larguraBarra = rect.width / NUM_BARRAS;
-            ctx.clearRect(0, 0, rect.width, rect.height);
-            ctx.fillStyle = 'rgba(255,255,255,0.55)';
-            picos.forEach((p, i) => {
-                const alturaBarra = Math.max(2, (p / maiorPico) * rect.height * 0.9);
-                const x = i * larguraBarra;
-                const y = (rect.height - alturaBarra) / 2;
-                ctx.fillRect(x, y, Math.max(1.5, larguraBarra - 1.5), alturaBarra);
-            });
-        }
-
-        async function carregarAudioParaTrimmer(file) {
-            elHint.textContent = 'Analisando áudio...';
-            try {
-                audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-                const arrayBuffer = await file.arrayBuffer();
-                const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
-
-                bufferTotalSeg = audioBuffer.duration;
-                selDuracao = Math.min(30, bufferTotalSeg);
-                selInicio = 0;
-
-                elHint.classList.add('hidden');
-                elWrap.classList.remove('hidden');
-                elFooter.classList.remove('hidden');
-
-                desenharWaveform(audioBuffer);
-                document.querySelectorAll('.dur-btn').forEach(b => b.classList.toggle('active', Number(b.dataset.dur) === 30));
-                atualizarUISelecao();
-
-                if (objectUrlAtual) URL.revokeObjectURL(objectUrlAtual);
-                objectUrlAtual = URL.createObjectURL(file);
-                if (!audioPreview) audioPreview = new Audio();
-                audioPreview.src = objectUrlAtual;
-            } catch (err) {
-                console.error('Não foi possível analisar o áudio:', err);
-                elHint.textContent = 'Não conseguimos gerar a forma de onda deste arquivo, mas ele ainda pode ser publicado (início 0s, duração 30s por padrão).';
-                elHint.classList.remove('hidden');
-                elWrap.classList.add('hidden');
-                elFooter.classList.add('hidden');
-                bufferTotalSeg = 0;
-                selInicio = 0;
-                selDuracao = 30;
-                inputInicio.value = 0;
-                inputDuracao.value = 30;
-            }
-        }
-
-        document.getElementById('previaArquivo')?.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            document.getElementById('fileNameDisplay').textContent = file?.name || 'Clique ou arraste o áudio';
-            document.getElementById('fileWrapper').style.borderColor = file ? 'var(--primary)' : 'var(--glass-border)';
-            pararPreview();
-            if (file) carregarAudioParaTrimmer(file);
-        });
-
-        // Botões de duração rápida
-        document.getElementById('trimmerDuracaoBtns')?.addEventListener('click', (e) => {
-            const btn = e.target.closest('.dur-btn');
-            if (!btn || !bufferTotalSeg) return;
-            document.querySelectorAll('.dur-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            selDuracao = Math.min(Number(btn.dataset.dur), bufferTotalSeg);
-            if (selInicio + selDuracao > bufferTotalSeg) selInicio = bufferTotalSeg - selDuracao;
-            atualizarUISelecao();
-        });
-
-        // Arrastar a janela inteira (move o início, mantém a duração)
-        function iniciarArrastoJanela(evPointerDown) {
-            if (!bufferTotalSeg) return;
-            evPointerDown.preventDefault();
-            const larguraWrap = elWrap.getBoundingClientRect().width;
-            const xInicial = evPointerDown.clientX;
-            const inicioOriginal = selInicio;
-
-            function mover(ev) {
-                const deltaPx = ev.clientX - xInicial;
-                const deltaSeg = (deltaPx / larguraWrap) * bufferTotalSeg;
-                selInicio = Math.min(Math.max(0, inicioOriginal + deltaSeg), bufferTotalSeg - selDuracao);
-                atualizarUISelecao();
-            }
-            function soltar() {
-                document.removeEventListener('pointermove', mover);
-                document.removeEventListener('pointerup', soltar);
-            }
-            document.addEventListener('pointermove', mover);
-            document.addEventListener('pointerup', soltar);
-        }
-        elSelecao?.addEventListener('pointerdown', iniciarArrastoJanela);
-
-        // Arrastar a borda esquerda (ajusta início e duração)
-        document.getElementById('handleEsquerda')?.addEventListener('pointerdown', (evPointerDown) => {
-            if (!bufferTotalSeg) return;
-            evPointerDown.preventDefault();
-            evPointerDown.stopPropagation();
-            const larguraWrap = elWrap.getBoundingClientRect().width;
-            const xInicial = evPointerDown.clientX;
-            const inicioOriginal = selInicio;
-            const duracaoOriginal = selDuracao;
-            const fimFixo = inicioOriginal + duracaoOriginal;
-
-            function mover(ev) {
-                const deltaPx = ev.clientX - xInicial;
-                const deltaSeg = (deltaPx / larguraWrap) * bufferTotalSeg;
-                let novoInicio = inicioOriginal + deltaSeg;
-                novoInicio = Math.max(0, Math.min(novoInicio, fimFixo - DURACAO_MIN));
-                selInicio = novoInicio;
-                selDuracao = Math.min(DURACAO_MAX, fimFixo - novoInicio);
-                document.querySelectorAll('.dur-btn').forEach(b => b.classList.remove('active'));
-                atualizarUISelecao();
-            }
-            function soltar() {
-                document.removeEventListener('pointermove', mover);
-                document.removeEventListener('pointerup', soltar);
-            }
-            document.addEventListener('pointermove', mover);
-            document.addEventListener('pointerup', soltar);
-        });
-
-        // Arrastar a borda direita (ajusta só a duração)
-        document.getElementById('handleDireita')?.addEventListener('pointerdown', (evPointerDown) => {
-            if (!bufferTotalSeg) return;
-            evPointerDown.preventDefault();
-            evPointerDown.stopPropagation();
-            const larguraWrap = elWrap.getBoundingClientRect().width;
-            const xInicial = evPointerDown.clientX;
-            const duracaoOriginal = selDuracao;
-
-            function mover(ev) {
-                const deltaPx = ev.clientX - xInicial;
-                const deltaSeg = (deltaPx / larguraWrap) * bufferTotalSeg;
-                let novaDuracao = duracaoOriginal + deltaSeg;
-                novaDuracao = Math.max(DURACAO_MIN, Math.min(DURACAO_MAX, novaDuracao, bufferTotalSeg - selInicio));
-                selDuracao = novaDuracao;
-                document.querySelectorAll('.dur-btn').forEach(b => b.classList.remove('active'));
-                atualizarUISelecao();
-            }
-            function soltar() {
-                document.removeEventListener('pointermove', mover);
-                document.removeEventListener('pointerup', soltar);
-            }
-            document.addEventListener('pointermove', mover);
-            document.addEventListener('pointerup', soltar);
-        });
-
-        // Ouvir o trecho selecionado antes de publicar
-        let previewTimeoutId = null;
-        function pararPreview() {
-            clearTimeout(previewTimeoutId);
-            audioPreview?.pause();
-            document.getElementById('btnPreviewIcon')?.classList.remove('fa-pause');
-            document.getElementById('btnPreviewIcon')?.classList.add('fa-play');
-        }
-        document.getElementById('btnPreviewTrim')?.addEventListener('click', () => {
-            if (!audioPreview) return;
-            const icon = document.getElementById('btnPreviewIcon');
-            if (!audioPreview.paused) { pararPreview(); return; }
-            audioPreview.currentTime = selInicio;
-            audioPreview.play().catch(() => {});
-            icon.classList.remove('fa-play');
-            icon.classList.add('fa-pause');
-            previewTimeoutId = setTimeout(pararPreview, selDuracao * 1000);
-        });
-
-        // ── Publicar ──────────────────────────────────────────────────────────
-        document.getElementById('formNovaPrevia')?.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('btnPublicarPrevia');
-            const msgEl = document.getElementById('previaMsg');
-            const arquivo = document.getElementById('previaArquivo').files[0];
-            const nome = document.getElementById('previaNome').value.trim();
-            const inicio = Number(inputInicio.value || 0);
-            const duracao = Number(inputDuracao.value || 30);
-
-            if (!arquivo) return;
-
-            pararPreview();
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> PUBLICANDO...';
-            msgEl.classList.add('hidden');
-
-            try {
-                await criarPostagem(arquivo, nome, inicio, duracao);
-                e.target.reset();
-                document.getElementById('fileNameDisplay').textContent = 'Clique ou arraste o áudio';
-                document.getElementById('fileWrapper').style.borderColor = 'var(--glass-border)';
-                elHint.textContent = 'Escolha um áudio pra ver a forma de onda e arrastar o trecho que quer usar.';
-                elHint.classList.remove('hidden');
-                elWrap.classList.add('hidden');
-                elFooter.classList.add('hidden');
-                bufferTotalSeg = 0;
-
-                renderizarGradePreviasDoUsuario(idUsuarioAtual, document.getElementById('previasLista'), (count) => {
-                    document.getElementById('countPrevias').textContent = count;
-                });
-
-                msgEl.textContent = 'PRÉVIA PUBLICADA COM SUCESSO!';
-                msgEl.classList.remove('hidden');
-            } catch (err) {
-                msgEl.textContent = err.message || 'ERRO AO PUBLICAR PRÉVIA.';
-                msgEl.classList.remove('hidden');
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-upload"></i> PUBLICAR NA CENA';
-            }
         });
 
         document.getElementById('btnSair')?.addEventListener('click', fazerLogout);
