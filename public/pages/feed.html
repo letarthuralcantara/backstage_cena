@@ -3,55 +3,238 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Feed de Prévias - Backstage Cena</title>
+    <title>Backstage | Feed da Cena</title>
     <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../css/global.css">
     <style>
         :root {
             --primary: #8b5cf6;
-            --primary-glow: rgba(139, 92, 246, 0.6);
+            --primary-glow: rgba(139, 92, 246, 0.4);
             --secondary: #d946ef;
+            --accent-cyan: #06b6d4;
             --bg-dark: #050505;
-            --glass: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
+            --bg-card: rgba(15, 15, 15, 0.85); /* Aumentado para melhor contraste */
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --text-muted: #bbb; /* Melhorado de #888 para #bbb */
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-dark);
+            color: #fff;
             min-height: 100vh;
+            overflow-x: hidden;
             background-image:
-                radial-gradient(circle at 10% 10%, rgba(139,92,246,0.15), transparent 50%),
-                radial-gradient(circle at 90% 90%, rgba(217,70,239,0.1), transparent 50%);
+                radial-gradient(circle at 10% 10%, rgba(139, 92, 246, 0.12), transparent 50%),
+                radial-gradient(circle at 90% 90%, rgba(217, 70, 239, 0.1), transparent 50%);
             background-attachment: fixed;
         }
-        .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
-        .hero { text-align: center; padding: 60px 0 20px; }
-        .hero-title { font-family:'Poppins',sans-serif; font-size: 42px; font-weight: 900; }
-        .hero-title span { background: linear-gradient(135deg,var(--primary),var(--secondary)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-        .hero-subtitle { color:#aaa; margin-top: 10px; font-size: 16px; }
 
-        .feed-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            padding: 40px 0 80px;
+        #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.3; }
+
+        .container {
+            max-width: 700px;
+            margin: 40px auto; /* Aumentado a margem superior para evitar colar na navbar */
+            padding: 0 20px 100px;
+            position: relative;
+            z-index: 1;
         }
-        @media (max-width: 900px) { .feed-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 560px) { .feed-grid { grid-template-columns: 1fr; } }
+
+        /* ── HEADER ── */
+        .page-header {
+            text-align: center;
+            margin-bottom: 32px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(139, 92, 246, 0.15);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+        }
+
+        .hero-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(32px, 5vw, 48px);
+            font-weight: 900;
+            letter-spacing: -1px;
+            line-height: 1.1;
+            color: #fff;
+        }
+
+        .hero-title span {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle { color: var(--text-muted); margin-top: 10px; font-size: 15px; }
+
+        /* ── SEÇÕES ── */
+        .section-block { margin-bottom: 40px; position: relative; z-index: 5; }
+        .section-heading {
+            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--glass-border);
+            color: #fff;
+        }
+        .section-heading i { color: var(--primary); font-size: 14px; }
+        .section-heading .count-badge {
+            margin-left: auto;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: none;
+            letter-spacing: normal;
+        }
+
+        /* ── STORIES (prévias) ── */
+        .stories-bar { 
+            padding: 4px 4px 8px; 
+            min-height: 100px;
+            position: relative;
+            z-index: 10; /* Garante que as prévias sejam clicáveis */
+        }
+        
+        /* Ajuste para garantir que itens dentro do storiesBar sejam visíveis e clicáveis */
+        .stories-bar > * {
+            cursor: pointer;
+        }
+
+        .feed-loading, .feed-vazio, .empty-feed {
+            color: var(--text-muted);
+            font-size: 13px;
+            text-align: center;
+            padding: 30px 10px;
+        }
+
+        /* ── TIMELINE GERAL (tweets) ── */
+        .feed-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .feed-item {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 22px;
+            padding: 20px;
+            backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.5s ease-out both;
+        }
+
+        .feed-item:hover {
+            border-color: rgba(139, 92, 246, 0.35);
+            transform: translateY(-2px);
+            background: rgba(20, 20, 20, 0.9);
+        }
+
+        .item-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .author-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+            color: white;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(139, 92, 246, 0.3);
+        }
+
+        .author-info { flex: 1; min-width: 0; }
+
+        .author-name {
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .post-meta {
+            font-size: 12px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .tweet-body {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #eee;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        /* FIX: Classe hidden necessária para o funcionamento do script */
+        .hidden { display: none !important; }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── MOBILE ── */
+        @media (max-width: 600px) {
+            .container { margin-top: 20px; padding: 0 12px 80px; }
+            .feed-item { padding: 16px; border-radius: 18px; }
+            .hero-title { font-size: 28px; }
+        }
     </style>
 </head>
 <body>
+    <canvas id="bg-canvas"></canvas>
+
     <header class="header">
         <div class="header-left">
             <a href="index.html"><img src="../images/logo.png" alt="Backstage Logo" class="logo-img"></a>
         </div>
         <div class="header-center">
-            <div class="header-search">
+            <div class="header-search" onclick="window.location.href='pesquisar_usuarios.html?focar=true'">
                 <i class="fas fa-search header-search-icon"></i>
-                <input type="text" class="header-search-input" placeholder="Buscar músicos..." readonly onclick="location.href='pesquisar_usuarios.html?focar=true'">
-                <button class="header-search-btn" onclick="location.href='pesquisar_usuarios.html?focar=true'">Buscar</button>
+                <input type="text" class="header-search-input" placeholder="Buscar na cena..." readonly>
+                <button class="header-search-btn">Buscar</button>
             </div>
         </div>
         <div class="header-actions">
@@ -59,7 +242,8 @@
                 <div class="profile-trigger" id="profileTrigger"></div>
                 <div class="dropdown-menu">
                     <a href="perfil.html" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a>
-                    <a href="pesquisar_usuarios.html" class="dropdown-item"><i class="fas fa-search"></i> Buscar Músicos</a>
+                    <a href="nova_postagem.html" class="dropdown-item"><i class="fas fa-plus-circle"></i> Nova Postagem</a>
+                    <a href="feed.html" class="dropdown-item"><i class="fas fa-stream"></i> Feed</a>
                     <a href="config.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações</a>
                     <div class="dropdown-divider"></div>
                     <div class="dropdown-item" id="btnSair"><i class="fas fa-sign-out-alt"></i> Sair</div>
@@ -69,36 +253,140 @@
     </header>
 
     <div class="container">
-        <div class="hero">
+        <div class="page-header">
+            <div class="hero-badge"><i class="fas fa-broadcast-tower"></i> Live Now</div>
             <h1 class="hero-title">Feed da <span>Cena</span></h1>
-            <p class="hero-subtitle">Trechos de músicas que somem em 24h</p>
+            <p class="hero-subtitle">Prévias e tweets da comunidade</p>
         </div>
 
-        <div class="feed-grid" id="feedGrid"></div>
+        <div class="section-block">
+            <h2 class="section-heading"><i class="fas fa-music"></i> Prévias</h2>
+            <!-- storiesBar agora com z-index garantido para cliques -->
+            <div class="stories-bar" id="storiesBar"></div>
+        </div>
+
+        <div class="section-block">
+            <h2 class="section-heading"><i class="fas fa-comment"></i> Geral</h2>
+            <div class="feed-timeline" id="feedTimeline"></div>
+        </div>
     </div>
-
-    <footer>
-        <div class="footer-content">
-            <img src="../images/logo.png" alt="Backstage Logo" class="footer-logo-img">
-            <p>A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
-        </div>
-    </footer>
 
     <script type="module">
         import { verificarAutenticacao, fazerLogout } from '../js/auth.js';
-        import { renderizarGradeFeedPostagens } from '../js/postagens.js';
+        import { renderizarFeedPostagens, buscarTweetsFeed, tempoRelativo, tempoRestante } from '../js/postagens.js';
 
-        const usuario = verificarAutenticacao();
-        if (usuario) {
-            const nome = usuario.nome_artistico || usuario.nome_completo;
-            document.getElementById('profileTrigger').textContent = nome.substring(0, 2).toUpperCase();
-        }
-        document.getElementById('profileDropdown')?.addEventListener('click', () => {
-            document.getElementById('profileDropdown').classList.toggle('active');
+        document.addEventListener('DOMContentLoaded', () => {
+            const usuario = verificarAutenticacao();
+            if (usuario) {
+                const nome = usuario.nome_artistico || usuario.nome_completo;
+                const trigger = document.getElementById('profileTrigger');
+                if (trigger) trigger.textContent = nome.substring(0, 2).toUpperCase();
+            }
+
+            const profileDropdown = document.getElementById('profileDropdown');
+            profileDropdown?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                profileDropdown.classList.toggle('active');
+            });
+            document.addEventListener('click', () => profileDropdown?.classList.remove('active'));
+
+            document.getElementById('btnSair')?.addEventListener('click', fazerLogout);
+
+            function iniciais(nome) {
+                const partes = nome.trim().split(/\s+/).filter(Boolean);
+                if (partes.length >= 2) return (partes[0][0] + partes[1][0]).toUpperCase();
+                return nome.substring(0, 2).toUpperCase();
+            }
+
+            function escaparHtml(texto) {
+                const div = document.createElement('div');
+                div.textContent = texto;
+                return div.innerHTML;
+            }
+
+            function criarCardTweet(t) {
+                const item = document.createElement('div');
+                item.className = 'feed-item';
+                const expira = tempoRestante(t.expira_em);
+                item.innerHTML = `
+                    <div class="item-header">
+                        <div class="author-avatar">${escaparHtml(iniciais(t.autor.nome))}</div>
+                        <div class="author-info">
+                            <div class="author-name">${escaparHtml(t.autor.nome)}</div>
+                            <div class="post-meta">
+                                <span>há ${tempoRelativo(t.criado_em)}</span>
+                                ${expira ? `<span>•</span><span style="color:#ef4444;"><i class="fas fa-clock"></i> some em ${expira}</span>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tweet-body">${escaparHtml(t.texto)}</div>
+                `;
+                return item;
+            }
+
+            async function iniciarFeedGeral() {
+                const timeline = document.getElementById('feedTimeline');
+                if (!timeline) return;
+                
+                timeline.innerHTML = '<p class="feed-loading">Carregando...</p>';
+                try {
+                    const tweets = await buscarTweetsFeed();
+                    timeline.innerHTML = '';
+
+                    if (!tweets || tweets.length === 0) {
+                        timeline.innerHTML = '<p class="feed-vazio">Nada por aqui ainda. Seja o primeiro a tweetar!</p>';
+                        return;
+                    }
+
+                    tweets.forEach((t, index) => {
+                        const card = criarCardTweet(t);
+                        card.style.animationDelay = `${Math.min(index, 10) * 0.05}s`;
+                        timeline.appendChild(card);
+                    });
+                } catch (err) {
+                    timeline.innerHTML = '<p class="feed-vazio">Erro ao carregar o feed.</p>';
+                }
+            }
+
+            // Inicializa componentes
+            const storiesBar = document.getElementById('storiesBar');
+            if (storiesBar) renderizarFeedPostagens(storiesBar);
+            iniciarFeedGeral();
         });
-        document.getElementById('btnSair')?.addEventListener('click', fazerLogout);
+    </script>
 
-        renderizarGradeFeedPostagens(document.getElementById('feedGrid'));
+    <script>
+        // Partículas de Fundo
+        const canvas = document.getElementById('bg-canvas');
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            function initCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+            class Particle {
+                constructor() {
+                    this.x = Math.random()*canvas.width; this.y = Math.random()*canvas.height;
+                    this.size = Math.random()*2; this.speedX = Math.random()*0.5-0.25;
+                    this.speedY = Math.random()*0.5-0.25; this.opacity = Math.random()*0.5+0.1;
+                }
+                update() {
+                    this.x+=this.speedX; this.y+=this.speedY;
+                    if(this.x>canvas.width)this.x=0; if(this.x<0)this.x=canvas.width;
+                    if(this.y>canvas.height)this.y=0; if(this.y<0)this.y=canvas.height;
+                }
+                draw() {
+                    ctx.fillStyle=`rgba(139,92,246,${this.opacity})`;
+                    ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill();
+                }
+            }
+            function createParticles() { for(let i=0;i<100;i++) particles.push(new Particle()); }
+            function animate() {
+                ctx.clearRect(0,0,canvas.width,canvas.height);
+                particles.forEach(p=>{p.update();p.draw()});
+                requestAnimationFrame(animate);
+            }
+            window.addEventListener('resize', initCanvas);
+            initCanvas(); createParticles(); animate();
+        }
     </script>
 </body>
 </html>

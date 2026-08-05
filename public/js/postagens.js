@@ -17,13 +17,38 @@ function svgOnda(tamanho = 22) {
 
 // ── Tempo relativo (ex: "agora", "12min", "3h") ─────────────────────────────────
 // Como a prévia expira em 24h, nunca precisa mostrar em dias — só min/h.
-function tempoRelativo(dataISO) {
+export function tempoRelativo(dataISO) {
   const diffMs = Date.now() - new Date(dataISO).getTime();
   const diffMin = Math.round(diffMs / 60000);
   if (diffMin < 1) return 'agora';
   if (diffMin < 60) return `${diffMin}min`;
   const diffH = Math.floor(diffMin / 60);
   return `${diffH}h`;
+}
+
+// ── Tempo restante até expirar (ex: "expira em 3h", ou null se for permanente) ──
+export function tempoRestante(dataISO) {
+  if (!dataISO) return null; // permanente, sem expiração
+  const diffMs = new Date(dataISO).getTime() - Date.now();
+  if (diffMs <= 0) return 'expirando';
+  const diffMin = Math.round(diffMs / 60000);
+  if (diffMin < 60) return `${diffMin}min`;
+  const diffH = Math.floor(diffMin / 60);
+  return `${diffH}h`;
+}
+
+/**
+ * Busca prévias + tweets ativos e devolve uma lista única, ordenada por data
+ * (mais recente primeiro), sem renderizar nada — pra páginas que querem
+ * montar o próprio HTML/visual do card.
+ * Cada item vem como { tipo: 'previa'|'tweet', dado: {...} }.
+ */
+export async function buscarItensFeed() {
+  const [postagens, tweets] = await Promise.all([buscarFeed(), buscarTweetsFeed()]);
+  return [
+    ...(postagens || []).map(p => ({ tipo: 'previa', dado: p })),
+    ...(tweets || []).map(t => ({ tipo: 'tweet', dado: t })),
+  ].sort((a, b) => new Date(b.dado.criado_em) - new Date(a.dado.criado_em));
 }
 
 // ── Feed (barra de "bolinhas" tipo stories) ────────────────────────────────────
@@ -151,6 +176,81 @@ async function buscarFeed() {
   }
 }
 
+export async function buscarTweetsFeed() {
+  try {
+    const res = await fetch('/api/tweets/feed');
+    if (!res.ok) throw new Error('Falha ao buscar tweets');
+    return await res.json();
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+}
+
+function iniciais(nome) {
+  const partes = nome.trim().split(/\s+/).filter(Boolean);
+  if (partes.length >= 2) return (partes[0][0] + partes[1][0]).toUpperCase();
+  return nome.substring(0, 2).toUpperCase();
+}
+
+/**
+ * Timeline única (feed.html): prévias de áudio e tweets misturados,
+ * ordenados por data — igual uma linha do tempo normal de rede social.
+ */
+export async function renderizarTimelineFeed(container) {
+  if (!container) return;
+  container.innerHTML = '<p class="feed-loading">Carregando feed...</p>';
+
+  const itens = await buscarItensFeed();
+  container.innerHTML = '';
+
+  if (itens.length === 0) {
+    container.innerHTML = '<p class="feed-vazio">Nada por aqui ainda. Seja o primeiro a postar!</p>';
+    return;
+  }
+
+  for (const item of itens) {
+    container.appendChild(item.tipo === 'tweet' ? criarItemTweet(item.dado) : criarItemPrevia(item.dado));
+  }
+}
+
+function criarItemTweet(t) {
+  const div = document.createElement('div');
+  div.className = 'timeline-item timeline-item--tweet';
+  div.innerHTML = `
+    <div class="timeline-avatar">${escaparHtml(iniciais(t.autor.nome))}</div>
+    <div class="timeline-content">
+      <div class="timeline-header">
+        <span class="timeline-autor">${escaparHtml(t.autor.nome)}</span>
+        <span class="timeline-tempo">há ${tempoRelativo(t.criado_em)}</span>
+      </div>
+      <p class="timeline-texto">${escaparHtml(t.texto)}</p>
+    </div>
+  `;
+  return div;
+}
+
+function criarItemPrevia(p) {
+  const div = document.createElement('div');
+  div.className = 'timeline-item timeline-item--previa';
+  div.innerHTML = `
+    <div class="timeline-avatar timeline-avatar--previa">${svgOnda(18)}</div>
+    <div class="timeline-content">
+      <div class="timeline-header">
+        <span class="timeline-autor">${escaparHtml(p.autor.nome)}</span>
+        <span class="timeline-tempo">há ${tempoRelativo(p.criado_em)}</span>
+      </div>
+      <button class="timeline-previa-btn" type="button" aria-label="Ouvir prévia: ${escaparHtml(p.titulo || 'sem título')}">
+        <span class="timeline-previa-icone">${svgOnda(16)}</span>
+        <span class="timeline-previa-titulo">${escaparHtml(p.titulo || 'Prévia sem título')}</span>
+        <span class="timeline-previa-duracao">${p.duracao_seg}s</span>
+      </button>
+    </div>
+  `;
+  div.querySelector('.timeline-previa-btn').addEventListener('click', () => abrirViewer([p], 0));
+  return div;
+}
+
 // Agrupa por autor: cada bolinha/card representa um usuário, não uma postagem —
 // se ele postou 3 prévias, o clique abre um viewer que passa pelas 3 em sequência.
 function agruparPorAutor(postagens) {
@@ -272,7 +372,6 @@ function abrirViewer(postagens, indiceInicial = 0) {
   document.body.style.overflow = 'hidden';
 
   const audio = new Audio();
-  audio.crossOrigin = 'anonymous';
   let timeoutId = null;
 
   // ── Pulso reagindo ao áudio (Web Audio API) ─────────────────────────────────
@@ -292,8 +391,22 @@ function abrirViewer(postagens, indiceInicial = 0) {
     clearTimeout(timeoutId);
     audio.pause();
     audio.src = p.audio_url;
-    audio.currentTime = p.inicio_seg || 0;
-    audio.play().catch(() => {}); // navegador pode bloquear autoplay sem interação — ok, tem play manual
+
+    // Definir currentTime ANTES dos metadados carregarem pode lançar erro em
+    // vários navegadores (e, sem try/catch, isso travava a função bem antes
+    // do audio.play() ser chamado — por isso a prévia "não rodava").
+    const iniciarReproducao = () => {
+      audio.currentTime = p.inicio_seg || 0;
+      audio.play().catch(err => console.error('Não foi possível tocar a prévia:', err));
+    };
+    if (audio.readyState >= 1) {
+      iniciarReproducao();
+    } else {
+      audio.addEventListener('loadedmetadata', iniciarReproducao, { once: true });
+    }
+    audio.addEventListener('error', () => {
+      console.error('Erro ao carregar o áudio da prévia:', p.audio_url, audio.error);
+    }, { once: true });
 
     animarBarraProgresso(overlay.querySelector('.story-viewer-progresso'), p.duracao_seg);
     timeoutId = setTimeout(() => tocar(indice + 1), p.duracao_seg * 1000);

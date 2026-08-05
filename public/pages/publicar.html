@@ -15,14 +15,12 @@
             --secondary: #d946ef;
             --accent-cyan: #06b6d4;
             --bg-dark: #050505;
-            --bg-card: rgba(15, 15, 15, 0.6);
-            --glass: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --text-muted: #888;
+            --bg-card: rgba(15, 15, 15, 0.85);
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --text-muted: #bbb;
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-dark);
@@ -34,57 +32,43 @@
             background-attachment: fixed;
         }
 
-        #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.3; }
-
-        .container { max-width: 720px; margin: 40px auto; padding: 0 24px 80px; }
-
-        .page-header {
-            margin-bottom: 32px;
-            text-align: center;
-        }
-
-        .page-title {
-            font-family: 'Poppins', sans-serif;
-            font-size: 32px;
-            font-weight: 900;
-            margin-bottom: 8px;
-            background: linear-gradient(135deg, #fff, #aaa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -1px;
-        }
-
-        .page-subtitle {
-            color: var(--text-muted);
-            font-size: 14px;
-            letter-spacing: 0.5px;
-        }
-
-        /* ── TABS ── */
-        .tabs-container {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 28px;
+        /* Container com margem superior adequada para desgrudar da navbar */
+        .container { 
+            max-width: 720px; 
+            margin: 40px auto; 
+            padding: 0 24px 80px;
             position: relative;
+            z-index: 1;
         }
 
-        .tabs-container::after {
-            content: '';
-            position: absolute;
-            bottom: -12px;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
+        .page-title { font-family:'Poppins',sans-serif; font-size: 26px; font-weight: 800; margin-bottom: 6px; color: #fff; }
+        .page-subtitle { color: var(--text-muted); font-size: 14px; margin-bottom: 28px; }
+
+        .glass-card {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            backdrop-filter: blur(20px);
+            padding: 24px;
+            position: relative;
+            z-index: 2;
         }
 
+        /* ── ABAS ── */
+        .tabs { 
+            display: flex; 
+            gap: 8px; 
+            margin-bottom: 20px; 
+            position: relative;
+            z-index: 10;
+        }
         .tab-btn {
             flex: 1;
             background: var(--glass);
             border: 1px solid var(--glass-border);
             color: var(--text-muted);
             border-radius: 14px;
-            padding: 12px 16px;
+            padding: 14px;
             font-family: 'Poppins', sans-serif;
             font-weight: 700;
             font-size: 13px;
@@ -93,83 +77,32 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            transition: all 0.3s cubic-bezier(0.2, 1, 0.3, 1);
-            position: relative;
-            overflow: hidden;
+            transition: all .25s;
+            outline: none;
         }
-
-        .tab-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--primary), transparent);
-            transition: left 0.3s;
-        }
-
         .tab-btn:hover {
-            border-color: rgba(139, 92, 246, 0.2);
-            background: rgba(139, 92, 246, 0.05);
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
         }
-
         .tab-btn.active {
             color: white;
             border-color: var(--primary);
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.18), rgba(217, 70, 239, 0.12));
-            box-shadow: 0 0 20px rgba(139, 92, 246, 0.15);
+            background: linear-gradient(135deg, rgba(139,92,246,.3), rgba(217,70,239,.2));
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2);
         }
-
-        .tab-btn.active::before {
-            left: 0;
-        }
-
-        .tab-panel {
-            display: none;
-            animation: fadeIn 0.3s ease-out;
-        }
-
-        .tab-panel.active {
-            display: block;
-        }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; animation: fadeIn 0.3s ease; }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .glass-card {
-            background: var(--bg-card);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            backdrop-filter: blur(20px);
-            padding: 32px;
-            transition: all 0.3s ease;
-        }
-
-        .glass-card:hover {
-            border-color: rgba(139, 92, 246, 0.2);
-        }
-
         /* ── FORM ── */
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--primary);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
+        .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+        .form-group label { font-size: 11px; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; }
         .form-control {
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.4);
             border: 1px solid var(--glass-border);
             border-radius: 12px;
             padding: 12px 16px;
@@ -179,12 +112,7 @@
             outline: none;
             transition: all 0.3s;
         }
-
-        .form-control:focus {
-            border-color: var(--primary);
-            background: rgba(139, 92, 246, 0.05);
-            box-shadow: 0 0 15px rgba(139, 92, 246, 0.1);
-        }
+        .form-control:focus { border-color: var(--primary); background: rgba(139, 92, 246, 0.1); }
 
         .file-input-wrapper {
             position: relative;
@@ -198,157 +126,18 @@
             gap: 10px;
             cursor: pointer;
             transition: all 0.3s;
-            background: rgba(139, 92, 246, 0.02);
         }
-
-        .file-input-wrapper:hover {
-            border-color: var(--primary);
-            background: rgba(139, 92, 246, 0.08);
-        }
-
-        .file-input-wrapper i { font-size: 28px; color: var(--primary); opacity: 0.7; }
-        .file-input-wrapper span { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+        .file-input-wrapper:hover { border-color: var(--primary); background: rgba(139, 92, 246, 0.05); }
+        .file-input-wrapper i { font-size: 24px; color: var(--text-muted); }
+        .file-input-wrapper span { font-size: 12px; color: var(--text-muted); }
         .file-input-wrapper input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
 
-        /* ── WAVEFORM TRIMMER ── */
-        .trimmer {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            padding: 20px;
-            margin-top: 12px;
-        }
-
-        .trimmer-hint {
-            font-size: 13px;
-            color: var(--text-muted);
-            text-align: center;
-            padding: 32px 10px;
-            font-style: italic;
-        }
-
-        .waveform-wrap {
-            position: relative;
-            width: 100%;
-            height: 80px;
-            touch-action: none;
-            margin-bottom: 16px;
-        }
-
-        .waveform-wrap canvas {
-            width: 100%;
-            height: 100%;
-            display: block;
-            border-radius: 8px;
-        }
-
-        .waveform-selection {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            width: 30%;
-            background: rgba(139, 92, 246, 0.25);
-            border: 2px solid var(--primary);
-            border-radius: 6px;
-            cursor: grab;
-            box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
-        }
-
-        .waveform-selection:active { cursor: grabbing; }
-
-        .waveform-handle {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 14px;
-            background: var(--primary);
-            border-radius: 3px;
-            cursor: ew-resize;
-            box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
-        }
-
-        .waveform-handle::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 2px;
-            height: 12px;
-            background: rgba(255, 255, 255, 0.8);
-            transform: translate(-50%, -50%);
-            border-radius: 2px;
-        }
-
-        .waveform-handle-left { left: -7px; }
-        .waveform-handle-right { right: -7px; }
-
-        .trimmer-footer {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .trimmer-duration-buttons {
-            display: flex;
-            gap: 6px;
-        }
-
-        .dur-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
-            color: #aaa;
-            border-radius: 8px;
-            padding: 6px 12px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-family: 'Inter', sans-serif;
-            font-weight: 600;
-        }
-
-        .dur-btn:hover {
-            border-color: var(--primary);
-            background: rgba(139, 92, 246, 0.1);
-        }
-
-        .dur-btn.active {
-            border-color: var(--primary);
-            color: white;
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(217, 70, 239, 0.2));
-            box-shadow: 0 0 10px rgba(139, 92, 246, 0.2);
-        }
-
-        .btn-preview-trim {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
-            color: #eee;
-            border-radius: 20px;
-            padding: 8px 16px;
-            font-size: 12px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-family: 'Inter', sans-serif;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-
-        .btn-preview-trim:hover {
-            border-color: var(--primary);
-            background: rgba(139, 92, 246, 0.1);
-            color: white;
-        }
-
-        /* ── TWEET TEXTAREA ── */
+        /* ── TWEET ── */
         .tweet-textarea {
             width: 100%;
-            min-height: 140px;
+            min-height: 120px;
             resize: vertical;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.4);
             border: 1px solid var(--glass-border);
             border-radius: 16px;
             padding: 16px;
@@ -357,65 +146,14 @@
             font-size: 15px;
             outline: none;
             transition: all 0.3s;
-            line-height: 1.6;
         }
+        .tweet-textarea:focus { border-color: var(--primary); background: rgba(139, 92, 246, 0.1); }
+        .tweet-footer { display: flex; align-items: center; justify-content: space-between; margin: 14px 0 20px; flex-wrap: wrap; gap: 12px; }
+        .tweet-expira-toggle { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #eee; cursor: pointer; }
+        .tweet-expira-toggle input { accent-color: var(--primary); width: 16px; height: 16px; cursor: pointer; }
+        .tweet-contador { font-size: 12px; color: var(--text-muted); }
+        .tweet-contador.no-limite { color: #ef4444; }
 
-        .tweet-textarea:focus {
-            border-color: var(--primary);
-            background: rgba(139, 92, 246, 0.05);
-            box-shadow: 0 0 15px rgba(139, 92, 246, 0.1);
-        }
-
-        .tweet-textarea::placeholder {
-            color: var(--text-muted);
-        }
-
-        .tweet-footer {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin: 16px 0 24px;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        .tweet-expira-toggle {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            color: #ccc;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .tweet-expira-toggle:hover {
-            color: white;
-        }
-
-        .tweet-expira-toggle input {
-            accent-color: var(--primary);
-            width: 16px;
-            height: 16px;
-            cursor: pointer;
-        }
-
-        .tweet-contador {
-            font-size: 12px;
-            color: var(--text-muted);
-            font-weight: 600;
-            font-family: 'Courier New', monospace;
-        }
-
-        .tweet-contador.perto-limite {
-            color: #f59e0b;
-        }
-
-        .tweet-contador.no-limite {
-            color: #ef4444;
-        }
-
-        /* ── BUTTONS ── */
         .btn-publish {
             width: 100%;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
@@ -432,66 +170,29 @@
             gap: 10px;
             transition: all 0.3s;
             box-shadow: 0 10px 20px rgba(139, 92, 246, 0.2);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 13px;
         }
+        .btn-publish:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(139, 92, 246, 0.4); }
+        .btn-publish:disabled { opacity: .6; cursor: not-allowed; }
 
-        .btn-publish:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 30px rgba(139, 92, 246, 0.4);
-        }
-
-        .btn-publish:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* ── FEEDBACK ── */
         .msg-feedback {
             margin-top: 16px;
             font-size: 13px;
             text-align: center;
-            padding: 12px 16px;
+            padding: 12px;
             border-radius: 12px;
-            display: none;
-            animation: slideIn 0.3s ease-out;
         }
-
-        .msg-feedback.show {
-            display: block;
-        }
-
-        .msg-feedback.sucesso {
-            color: #22c55e;
-            background: rgba(34, 197, 94, 0.08);
-            border: 1px solid rgba(34, 197, 94, 0.25);
-        }
-
-        .msg-feedback.erro {
-            color: #ef4444;
-            background: rgba(239, 68, 68, 0.08);
-            border: 1px solid rgba(239, 68, 68, 0.25);
-        }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .msg-feedback.sucesso { color: #22c55e; background: rgba(34,197,94,.1); border: 1px solid rgba(34,197,94,.3); }
+        .msg-feedback.erro { color: #ef4444; background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.3); }
 
         .hidden { display: none !important; }
 
         @media (max-width: 560px) {
-            .tabs-container { flex-direction: column; }
-            .glass-card { padding: 24px; }
-            .page-title { font-size: 24px; }
+            .tabs { flex-direction: column; }
+            .container { margin-top: 20px; }
         }
     </style>
 </head>
 <body>
-    <canvas id="bg-canvas"></canvas>
-
     <header class="header">
         <div class="header-left">
             <a href="index.html"><img src="../images/logo.png" alt="Backstage Logo" class="logo-img"></a>
@@ -508,7 +209,7 @@
                 <div class="profile-trigger" id="profileTrigger"></div>
                 <div class="dropdown-menu">
                     <a href="perfil.html" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a>
-                    <a href="feed.html" class="dropdown-item"><i class="fas fa-music"></i> Feed de Prévias</a>
+                    <a href="feed.html" class="dropdown-item"><i class="fas fa-stream"></i> Feed</a>
                     <a href="config.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações</a>
                     <div class="dropdown-divider"></div>
                     <div class="dropdown-item" id="btnSair"><i class="fas fa-sign-out-alt"></i> Sair</div>
@@ -518,18 +219,12 @@
     </header>
 
     <div class="container">
-        <div class="page-header">
-            <h1 class="page-title">Nova Postagem</h1>
-            <p class="page-subtitle">Compartilhe uma prévia ou deixe um recado para a cena</p>
-        </div>
+        <h1 class="page-title">Nova Postagem</h1>
+        <p class="page-subtitle">Compartilhe uma prévia da sua música ou solte um tweet pra cena.</p>
 
-        <div class="tabs-container">
-            <button type="button" class="tab-btn active" data-tab="previa">
-                <i class="fas fa-music"></i> Prévia de Áudio
-            </button>
-            <button type="button" class="tab-btn" data-tab="tweet">
-                <i class="fas fa-comment"></i> Tweet
-            </button>
+        <div class="tabs">
+            <button type="button" class="tab-btn active" data-tab="previa"><i class="fas fa-music"></i> Prévia de áudio</button>
+            <button type="button" class="tab-btn" data-tab="tweet"><i class="fas fa-comment"></i> Tweet</button>
         </div>
 
         <div class="glass-card">
@@ -551,40 +246,19 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Selecione o Trecho</label>
-                        <div class="trimmer" id="trimmerBox">
-                            <p class="trimmer-hint" id="trimmerHint">Escolha um áudio pra ver a forma de onda e arrastar o trecho que quer usar.</p>
-
-                            <div class="waveform-wrap hidden" id="waveformWrap">
-                                <canvas id="waveformCanvas"></canvas>
-                                <div class="waveform-selection" id="waveformSelection">
-                                    <span class="waveform-handle waveform-handle-left" id="handleEsquerda"></span>
-                                    <span class="waveform-handle waveform-handle-right" id="handleDireita"></span>
-                                </div>
-                            </div>
-
-                            <div class="trimmer-footer hidden" id="trimmerFooter">
-                                <div class="trimmer-duration-buttons" id="trimmerDuracaoBtns">
-                                    <button type="button" class="dur-btn" data-dur="15">15s</button>
-                                    <button type="button" class="dur-btn active" data-dur="30">30s</button>
-                                    <button type="button" class="dur-btn" data-dur="45">45s</button>
-                                    <button type="button" class="dur-btn" data-dur="60">60s</button>
-                                </div>
-                                <button type="button" class="btn-preview-trim" id="btnPreviewTrim">
-                                    <i class="fas fa-play" id="btnPreviewIcon"></i>
-                                    <span id="trimmerTempo">0:00 – 0:30</span>
-                                </button>
-                            </div>
+                        <label>Trecho da prévia (30s padrão)</label>
+                        <div class="trimmer">
+                            <p class="trimmer-hint">Selecione o arquivo para publicar.</p>
                         </div>
                         <input type="hidden" id="previaInicio" value="0">
                         <input type="hidden" id="previaDuracao" value="30">
                     </div>
 
                     <button type="submit" class="btn-publish" id="btnPublicarPrevia">
-                        <i class="fas fa-upload"></i> Publicar na Cena
+                        <i class="fas fa-upload"></i> PUBLICAR NA CENA
                     </button>
                 </form>
-                <div id="previaMsg" class="msg-feedback"></div>
+                <p id="previaMsg" class="msg-feedback hidden"></p>
             </div>
 
             <!-- ABA: TWEET -->
@@ -598,16 +272,16 @@
                     <div class="tweet-footer">
                         <label class="tweet-expira-toggle">
                             <input type="checkbox" id="tweetExpira">
-                            <span>Some em 24h</span>
+                            Some em 24h (senão fica permanente no seu perfil)
                         </label>
                         <span class="tweet-contador" id="tweetContador">280</span>
                     </div>
 
                     <button type="submit" class="btn-publish" id="btnPublicarTweet">
-                        <i class="fas fa-paper-plane"></i> Publicar Tweet
+                        <i class="fas fa-paper-plane"></i> PUBLICAR TWEET
                     </button>
                 </form>
-                <div id="tweetMsg" class="msg-feedback"></div>
+                <p id="tweetMsg" class="msg-feedback hidden"></p>
             </div>
         </div>
     </div>
@@ -623,364 +297,106 @@
         import { verificarAutenticacao, fazerLogout } from '../js/auth.js';
         import { criarPostagem, criarTweet } from '../js/postagens.js';
 
-        const usuarioLogado = verificarAutenticacao();
-        if (!usuarioLogado) { window.location.href = 'login.html'; }
-        const nomeUsuario = usuarioLogado?.nome_artistico || usuarioLogado?.nome_completo || '';
-        document.getElementById('profileTrigger').textContent = nomeUsuario.substring(0, 2).toUpperCase();
+        document.addEventListener('DOMContentLoaded', () => {
+            const usuarioLogado = verificarAutenticacao();
+            if (!usuarioLogado) { window.location.href = 'login.html'; }
+            
+            const nomeUsuario = usuarioLogado?.nome_artistico || usuarioLogado?.nome_completo || '';
+            const profileTrigger = document.getElementById('profileTrigger');
+            if (profileTrigger) profileTrigger.textContent = nomeUsuario.substring(0, 2).toUpperCase();
 
-        document.getElementById('btnSair')?.addEventListener('click', fazerLogout);
-        document.getElementById('profileDropdown')?.addEventListener('click', () =>
-            document.getElementById('profileDropdown').classList.toggle('active'));
-
-        // ── ABAS (CORRIGIDO) ──
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
+            document.getElementById('btnSair')?.addEventListener('click', fazerLogout);
+            
+            const profileDropdown = document.getElementById('profileDropdown');
+            profileDropdown?.addEventListener('click', (e) => {
                 e.stopPropagation();
+                profileDropdown.classList.toggle('active');
+            });
+            document.addEventListener('click', () => profileDropdown?.classList.remove('active'));
+
+            // Lógica de Abas
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabPanels = document.querySelectorAll('.tab-panel');
+
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetTab = btn.getAttribute('data-tab');
+                    
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabPanels.forEach(p => p.classList.remove('active'));
+                    
+                    btn.classList.add('active');
+                    const panel = document.getElementById(targetTab === 'previa' ? 'painelPrevia' : 'painelTweet');
+                    if (panel) panel.classList.add('active');
+                });
+            });
+
+            // Contador de Tweet
+            const tweetTextarea = document.getElementById('tweetTexto');
+            const tweetContador = document.getElementById('tweetContador');
+            tweetTextarea?.addEventListener('input', () => {
+                const restante = 280 - tweetTextarea.value.length;
+                tweetContador.textContent = restante;
+            });
+
+            // Submit Tweet
+            document.getElementById('formNovoTweet')?.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = document.getElementById('btnPublicarTweet');
+                const msgEl = document.getElementById('tweetMsg');
+                const texto = tweetTextarea.value.trim();
+                const expira = document.getElementById('tweetExpira').checked;
+
+                if (!texto) return;
                 
-                const tabName = btn.dataset.tab;
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> PUBLICANDO...';
+                msgEl.className = 'msg-feedback hidden';
+
+                try {
+                    await criarTweet(texto, expira);
+                    e.target.reset();
+                    tweetContador.textContent = '280';
+                    msgEl.textContent = 'Tweet publicado com sucesso!';
+                    msgEl.className = 'msg-feedback sucesso';
+                } catch (err) {
+                    msgEl.textContent = err.message || 'Erro ao publicar tweet.';
+                    msgEl.className = 'msg-feedback erro';
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-paper-plane"></i> PUBLICAR TWEET';
+                }
+            });
+
+            // Submit Prévia
+            document.getElementById('formNovaPrevia')?.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = document.getElementById('btnPublicarPrevia');
+                const msgEl = document.getElementById('previaMsg');
+                const arquivo = document.getElementById('previaArquivo').files[0];
+                const nome = document.getElementById('previaNome').value.trim();
+
+                if (!arquivo) return;
                 
-                // Remove active de todos os botões e painéis
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-                
-                // Adiciona active ao botão clicado e seu painel correspondente
-                btn.classList.add('active');
-                if (tabName === 'previa') {
-                    document.getElementById('painelPrevia').classList.add('active');
-                } else if (tabName === 'tweet') {
-                    document.getElementById('painelTweet').classList.add('active');
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> PUBLICANDO...';
+                msgEl.className = 'msg-feedback hidden';
+
+                try {
+                    await criarPostagem(arquivo, nome, 0, 30);
+                    e.target.reset();
+                    msgEl.textContent = 'Prévia publicada com sucesso!';
+                    msgEl.className = 'msg-feedback sucesso';
+                } catch (err) {
+                    msgEl.textContent = err.message || 'Erro ao publicar prévia.';
+                    msgEl.className = 'msg-feedback erro';
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-upload"></i> PUBLICAR NA CENA';
                 }
             });
         });
-
-        // ── WAVEFORM TRIMMER ──
-        const DURACAO_MAX = 60;
-        const DURACAO_MIN = 5;
-
-        const elWrap = document.getElementById('waveformWrap');
-        const elCanvas = document.getElementById('waveformCanvas');
-        const elSelecao = document.getElementById('waveformSelection');
-        const elFooter = document.getElementById('trimmerFooter');
-        const elHint = document.getElementById('trimmerHint');
-        const elTempo = document.getElementById('trimmerTempo');
-        const inputInicio = document.getElementById('previaInicio');
-        const inputDuracao = document.getElementById('previaDuracao');
-
-        let audioCtx = null;
-        let bufferTotalSeg = 0;
-        let selInicio = 0;
-        let selDuracao = 30;
-        let audioPreview = null;
-        let objectUrlAtual = null;
-
-        function formatarTempo(seg) {
-            const m = Math.floor(seg / 60);
-            const s = Math.floor(seg % 60);
-            return `${m}:${String(s).padStart(2, '0')}`;
-        }
-
-        function atualizarUISelecao() {
-            const pctLeft = (selInicio / bufferTotalSeg) * 100;
-            const pctWidth = (selDuracao / bufferTotalSeg) * 100;
-            elSelecao.style.left = pctLeft + '%';
-            elSelecao.style.width = pctWidth + '%';
-            elTempo.textContent = `${formatarTempo(selInicio)} – ${formatarTempo(selInicio + selDuracao)}`;
-            inputInicio.value = Math.round(selInicio);
-            inputDuracao.value = Math.round(selDuracao);
-        }
-
-        function desenharWaveform(audioBuffer) {
-            const dpr = window.devicePixelRatio || 1;
-            const rect = elWrap.getBoundingClientRect();
-            elCanvas.width = rect.width * dpr;
-            elCanvas.height = rect.height * dpr;
-            const ctx = elCanvas.getContext('2d');
-            ctx.scale(dpr, dpr);
-
-            const dados = audioBuffer.getChannelData(0);
-            const NUM_BARRAS = 140;
-            const tamanhoBloco = Math.floor(dados.length / NUM_BARRAS);
-            const picos = [];
-            for (let i = 0; i < NUM_BARRAS; i++) {
-                let max = 0;
-                const inicioBloco = i * tamanhoBloco;
-                for (let j = 0; j < tamanhoBloco; j++) {
-                    const v = Math.abs(dados[inicioBloco + j] || 0);
-                    if (v > max) max = v;
-                }
-                picos.push(max);
-            }
-            const maiorPico = Math.max(...picos, 0.01);
-
-            const larguraBarra = rect.width / NUM_BARRAS;
-            ctx.clearRect(0, 0, rect.width, rect.height);
-            ctx.fillStyle = 'rgba(255,255,255,0.55)';
-            picos.forEach((p, i) => {
-                const alturaBarra = Math.max(2, (p / maiorPico) * rect.height * 0.9);
-                const x = i * larguraBarra;
-                const y = (rect.height - alturaBarra) / 2;
-                ctx.fillRect(x, y, Math.max(1.5, larguraBarra - 1.5), alturaBarra);
-            });
-        }
-
-        async function carregarAudioParaTrimmer(file) {
-            elHint.textContent = 'Analisando áudio...';
-            try {
-                audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-                const arrayBuffer = await file.arrayBuffer();
-                const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
-
-                bufferTotalSeg = audioBuffer.duration;
-                selDuracao = Math.min(30, bufferTotalSeg);
-                selInicio = 0;
-
-                elHint.classList.add('hidden');
-                elWrap.classList.remove('hidden');
-                elFooter.classList.remove('hidden');
-
-                desenharWaveform(audioBuffer);
-                document.querySelectorAll('.dur-btn').forEach(b => b.classList.toggle('active', Number(b.dataset.dur) === 30));
-                atualizarUISelecao();
-
-                if (objectUrlAtual) URL.revokeObjectURL(objectUrlAtual);
-                objectUrlAtual = URL.createObjectURL(file);
-                if (!audioPreview) audioPreview = new Audio();
-                audioPreview.src = objectUrlAtual;
-            } catch (err) {
-                console.error('Erro ao analisar áudio:', err);
-                elHint.textContent = 'Não conseguimos gerar a forma de onda, mas o áudio ainda pode ser publicado.';
-                elHint.classList.remove('hidden');
-                elWrap.classList.add('hidden');
-                elFooter.classList.add('hidden');
-                bufferTotalSeg = 0;
-                selInicio = 0;
-                selDuracao = 30;
-                inputInicio.value = 0;
-                inputDuracao.value = 30;
-            }
-        }
-
-        document.getElementById('previaArquivo')?.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            document.getElementById('fileNameDisplay').textContent = file?.name || 'Clique ou arraste o áudio';
-            document.getElementById('fileWrapper').style.borderColor = file ? 'var(--primary)' : 'var(--glass-border)';
-            pararPreview();
-            if (file) carregarAudioParaTrimmer(file);
-        });
-
-        document.getElementById('trimmerDuracaoBtns')?.addEventListener('click', (e) => {
-            const btn = e.target.closest('.dur-btn');
-            if (!btn || !bufferTotalSeg) return;
-            document.querySelectorAll('.dur-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            selDuracao = Math.min(Number(btn.dataset.dur), bufferTotalSeg);
-            if (selInicio + selDuracao > bufferTotalSeg) selInicio = bufferTotalSeg - selDuracao;
-            atualizarUISelecao();
-        });
-
-        function iniciarArrastoJanela(evPointerDown) {
-            if (!bufferTotalSeg) return;
-            evPointerDown.preventDefault();
-            const larguraWrap = elWrap.getBoundingClientRect().width;
-            const xInicial = evPointerDown.clientX;
-            const inicioOriginal = selInicio;
-
-            function mover(ev) {
-                const deltaPx = ev.clientX - xInicial;
-                const deltaSeg = (deltaPx / larguraWrap) * bufferTotalSeg;
-                selInicio = Math.min(Math.max(0, inicioOriginal + deltaSeg), bufferTotalSeg - selDuracao);
-                atualizarUISelecao();
-            }
-            function soltar() {
-                document.removeEventListener('pointermove', mover);
-                document.removeEventListener('pointerup', soltar);
-            }
-            document.addEventListener('pointermove', mover);
-            document.addEventListener('pointerup', soltar);
-        }
-        elSelecao?.addEventListener('pointerdown', iniciarArrastoJanela);
-
-        document.getElementById('handleEsquerda')?.addEventListener('pointerdown', (evPointerDown) => {
-            if (!bufferTotalSeg) return;
-            evPointerDown.preventDefault();
-            evPointerDown.stopPropagation();
-            const larguraWrap = elWrap.getBoundingClientRect().width;
-            const xInicial = evPointerDown.clientX;
-            const inicioOriginal = selInicio;
-            const duracaoOriginal = selDuracao;
-            const fimFixo = inicioOriginal + duracaoOriginal;
-
-            function mover(ev) {
-                const deltaPx = ev.clientX - xInicial;
-                const deltaSeg = (deltaPx / larguraWrap) * bufferTotalSeg;
-                let novoInicio = inicioOriginal + deltaSeg;
-                novoInicio = Math.max(0, Math.min(novoInicio, fimFixo - DURACAO_MIN));
-                selInicio = novoInicio;
-                selDuracao = Math.min(DURACAO_MAX, fimFixo - novoInicio);
-                document.querySelectorAll('.dur-btn').forEach(b => b.classList.remove('active'));
-                atualizarUISelecao();
-            }
-            function soltar() {
-                document.removeEventListener('pointermove', mover);
-                document.removeEventListener('pointerup', soltar);
-            }
-            document.addEventListener('pointermove', mover);
-            document.addEventListener('pointerup', soltar);
-        });
-
-        document.getElementById('handleDireita')?.addEventListener('pointerdown', (evPointerDown) => {
-            if (!bufferTotalSeg) return;
-            evPointerDown.preventDefault();
-            evPointerDown.stopPropagation();
-            const larguraWrap = elWrap.getBoundingClientRect().width;
-            const xInicial = evPointerDown.clientX;
-            const duracaoOriginal = selDuracao;
-
-            function mover(ev) {
-                const deltaPx = ev.clientX - xInicial;
-                const deltaSeg = (deltaPx / larguraWrap) * bufferTotalSeg;
-                let novaDuracao = duracaoOriginal + deltaSeg;
-                novaDuracao = Math.max(DURACAO_MIN, Math.min(DURACAO_MAX, novaDuracao, bufferTotalSeg - selInicio));
-                selDuracao = novaDuracao;
-                document.querySelectorAll('.dur-btn').forEach(b => b.classList.remove('active'));
-                atualizarUISelecao();
-            }
-            function soltar() {
-                document.removeEventListener('pointermove', mover);
-                document.removeEventListener('pointerup', soltar);
-            }
-            document.addEventListener('pointermove', mover);
-            document.addEventListener('pointerup', soltar);
-        });
-
-        let previewTimeoutId = null;
-        function pararPreview() {
-            clearTimeout(previewTimeoutId);
-            audioPreview?.pause();
-            document.getElementById('btnPreviewIcon')?.classList.remove('fa-pause');
-            document.getElementById('btnPreviewIcon')?.classList.add('fa-play');
-        }
-        document.getElementById('btnPreviewTrim')?.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (!audioPreview) return;
-            const icon = document.getElementById('btnPreviewIcon');
-            if (!audioPreview.paused) { pararPreview(); return; }
-            audioPreview.currentTime = selInicio;
-            audioPreview.play().catch(() => {});
-            icon.classList.remove('fa-play');
-            icon.classList.add('fa-pause');
-            previewTimeoutId = setTimeout(pararPreview, selDuracao * 1000);
-        });
-
-        // ── PUBLICAR PRÉVIA ──
-        document.getElementById('formNovaPrevia')?.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('btnPublicarPrevia');
-            const msgEl = document.getElementById('previaMsg');
-            const arquivo = document.getElementById('previaArquivo').files[0];
-            const nome = document.getElementById('previaNome').value.trim();
-            const inicio = Number(inputInicio.value || 0);
-            const duracao = Number(inputDuracao.value || 30);
-
-            if (!arquivo) return;
-
-            pararPreview();
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> PUBLICANDO...';
-            msgEl.className = 'msg-feedback';
-
-            try {
-                await criarPostagem(arquivo, nome, inicio, duracao);
-                e.target.reset();
-                document.getElementById('fileNameDisplay').textContent = 'Clique ou arraste o áudio';
-                document.getElementById('fileWrapper').style.borderColor = 'var(--glass-border)';
-                elHint.textContent = 'Escolha um áudio pra ver a forma de onda e arrastar o trecho que quer usar.';
-                elHint.classList.remove('hidden');
-                elWrap.classList.add('hidden');
-                elFooter.classList.add('hidden');
-                bufferTotalSeg = 0;
-
-                msgEl.textContent = '✓ Prévia publicada! Ela já está no seu perfil e no feed.';
-                msgEl.className = 'msg-feedback sucesso show';
-            } catch (err) {
-                msgEl.textContent = '✗ ' + (err.message || 'Erro ao publicar a prévia.');
-                msgEl.className = 'msg-feedback erro show';
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-upload"></i> Publicar na Cena';
-            }
-        });
-
-        // ── PUBLICAR TWEET ──
-        const tweetTextarea = document.getElementById('tweetTexto');
-        const tweetContador = document.getElementById('tweetContador');
-        tweetTextarea?.addEventListener('input', () => {
-            const restante = 280 - tweetTextarea.value.length;
-            tweetContador.textContent = restante;
-            tweetContador.classList.toggle('perto-limite', restante <= 40 && restante > 10);
-            tweetContador.classList.toggle('no-limite', restante <= 10);
-        });
-
-        document.getElementById('formNovoTweet')?.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('btnPublicarTweet');
-            const msgEl = document.getElementById('tweetMsg');
-            const texto = tweetTextarea.value.trim();
-            const expira = document.getElementById('tweetExpira').checked;
-
-            if (!texto) return;
-
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> PUBLICANDO...';
-            msgEl.className = 'msg-feedback';
-
-            try {
-                await criarTweet(texto, expira);
-                e.target.reset();
-                tweetContador.textContent = '280';
-                tweetContador.className = 'tweet-contador';
-                msgEl.textContent = expira ? '✓ Tweet publicado! Some em 24h.' : '✓ Tweet publicado! Fica permanente no feed.';
-                msgEl.className = 'msg-feedback sucesso show';
-            } catch (err) {
-                msgEl.textContent = '✗ ' + (err.message || 'Erro ao publicar o tweet.');
-                msgEl.className = 'msg-feedback erro show';
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-paper-plane"></i> Publicar Tweet';
-            }
-        });
-    </script>
-
-    <script>
-        const canvas = document.getElementById('bg-canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-        function initCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-        class Particle {
-            constructor() {
-                this.x = Math.random()*canvas.width; this.y = Math.random()*canvas.height;
-                this.size = Math.random()*2; this.speedX = Math.random()*0.5-0.25;
-                this.speedY = Math.random()*0.5-0.25; this.opacity = Math.random()*0.5+0.1;
-            }
-            update() {
-                this.x+=this.speedX; this.y+=this.speedY;
-                if(this.x>canvas.width)this.x=0; if(this.x<0)this.x=canvas.width;
-                if(this.y>canvas.height)this.y=0; if(this.y<0)this.y=canvas.height;
-            }
-            draw() {
-                ctx.fillStyle=`rgba(139,92,246,${this.opacity})`;
-                ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill();
-            }
-        }
-        function createParticles() { for(let i=0;i<100;i++) particles.push(new Particle()); }
-        function animate() {
-            ctx.clearRect(0,0,canvas.width,canvas.height);
-            particles.forEach(p=>{p.update();p.draw()});
-            requestAnimationFrame(animate);
-        }
-        window.addEventListener('resize', initCanvas);
-        initCanvas(); createParticles(); animate();
     </script>
 </body>
 </html>
