@@ -1,3 +1,16 @@
+export function getToken() {
+  return localStorage.getItem('token');
+}
+
+export function authHeaders(extra = {}) {
+  const token = getToken();
+  return {
+    'Content-Type': 'application/json',
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...extra,
+  };
+}
+
 export async function salvarCadastro(dados) {
   const body = {
     nome_completo:    dados.nome_completo,
@@ -28,14 +41,16 @@ export async function salvarCadastro(dados) {
     throw new Error(erro.erro || 'Erro ao cadastrar');
   }
 
-  const usuario = await res.json();
+  // POST /api/usuarios devolve { usuario, token }
+  const { usuario, token } = await res.json();
   localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
+  if (token) localStorage.setItem('token', token);
   return usuario;
 }
 
 export async function completarCadastro(dados) {
   const usuarioLocal = JSON.parse(localStorage.getItem('usuarioLogado'));
-  if (!usuarioLocal) throw new Error('Usuário não autenticado.');
+  if (!usuarioLocal || !getToken()) throw new Error('Usuário não autenticado.');
 
   const id = Number(usuarioLocal.id_usuario);
 
@@ -66,7 +81,7 @@ export async function completarCadastro(dados) {
 
   const res = await fetch(`/api/usuarios/${id}`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
+    headers: authHeaders(), // precisa do token: rota protegida por isAuthenticated + isOwner
     body: JSON.stringify(body),
   });
 
@@ -75,6 +90,7 @@ export async function completarCadastro(dados) {
     throw new Error(erro.erro || 'Erro ao atualizar cadastro');
   }
 
+  // PUT /api/usuarios/:id devolve o usuário puro (sem token novo)
   const usuario = await res.json();
   localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
   return usuario;
@@ -92,19 +108,23 @@ export async function fazerLogin(email, senha) {
     throw new Error(erro.erro || 'Email ou senha incorretos');
   }
 
-  const usuario = await res.json();
+  // POST /api/usuarios/login devolve { usuario, token }
+  const { usuario, token } = await res.json();
   localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
+  if (token) localStorage.setItem('token', token);
   return usuario;
 }
 
 export function fazerLogout() {
   localStorage.removeItem('usuarioLogado');
+  localStorage.removeItem('token');
   window.location.href = 'login.html';
 }
 
 export function verificarAutenticacao(redirecionar = true) {
   const usuario = localStorage.getItem('usuarioLogado');
-  if (!usuario) {
+  const token = getToken();
+  if (!usuario || !token) {
     if (redirecionar) window.location.href = 'login.html';
     return null;
   }

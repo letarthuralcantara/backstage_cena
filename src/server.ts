@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import express, { Request, Response } from 'express'
 import morgan from 'morgan'
 import cors from 'cors'

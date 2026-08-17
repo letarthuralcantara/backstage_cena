@@ -1,3 +1,11 @@
+
+declare global {
+  namespace Express {
+    interface Request {
+      userId?: number
+    }
+  }
+}
 // ── Entidades retornadas pela API ──────────────────────────────────────────
 export type UserStatus = 'disponivel' | 'ocupado' | 'nao_perturbe' | 'invisivel'
 

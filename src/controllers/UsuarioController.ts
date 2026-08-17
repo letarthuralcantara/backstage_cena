@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import usuarioService, { sanitizeUsuario } from '../models/UsuarioModel.js'
 import { HttpError } from '../errors/HttpError.js'
 import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
 
 class UsuarioController {
   async listar(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -21,13 +22,17 @@ class UsuarioController {
   }
 
   async criar(req: Request, res: Response, next: NextFunction): Promise<void> {
-    try {
-      const novoUsuario = await usuarioService.create(req.body)
-      res.status(201).json(sanitizeUsuario(novoUsuario))
-    } catch (error) {
-      next(error)
-    }
-  }
+     try {
+       const novoUsuario = await usuarioService.create(req.body)
+     res.status(201).json(sanitizeUsuario(novoUsuario))
+      const secret = process.env.JWT_SECRET
+     if (!secret) throw new HttpError(500, 'Configuração de autenticação ausente no servidor.')
+      const token = jwt.sign({ userId: novoUsuario.id_usuario }, secret, { expiresIn: '1h' })
+      res.status(201).json({ usuario: sanitizeUsuario(novoUsuario), token })
+     } catch (error) {
+       next(error)
+     }
+   }
 
   async atualizar(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
@@ -53,7 +58,11 @@ class UsuarioController {
       if (!usuario) throw new HttpError(401, 'E-mail ou senha incorretos.')
       const senhaCorreta = await bcrypt.compare(senha, usuario.senha)
       if (!senhaCorreta) throw new HttpError(401, 'E-mail ou senha incorretos.')
-      res.status(200).json(sanitizeUsuario(usuario))
+      const secret = process.env.JWT_SECRET
+      if (!secret) throw new HttpError(500, 'Configuração de autenticação ausente no servidor.')
+
+      const token = jwt.sign({ userId: usuario.id_usuario }, secret, { expiresIn: '1h' })
+      res.status(200).json({ usuario: sanitizeUsuario(usuario), token })
     } catch (error) { next(error) }
   }
 
