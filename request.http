@@ -1,45 +1,17 @@
-@baseUrl = https://crispy-umbrella-5666xx4v9p5249q5-3000.app.github.dev/api/usuarios
-### GET — listar todos os músicos
-GET {{baseUrl}}
-Accept: application/json
+### ============================================================================
+### Testes de Autenticação — Backstage Cena
+### Extensão necessária: REST Client (VSCode) — humao.rest-client
+### Como usar: clique em "Send Request" acima de cada bloco "###", na ordem.
+### O REST Client encadeia as requisições: a variável {{login.response.body.token}}
+### é capturada automaticamente da resposta do login (marcado com "# @name login")
+### e reutilizada nas requisições seguintes, sem precisar copiar/colar o token.
+### ============================================================================
 
-###
+@baseUrl = http://localhost:3000/api/usuarios
 
-### GET — listar disponibilidades cadastradas
-GET {{baseUrl}}/disponibilidades
-Accept: application/json
 
-###
-
-### GET — listar instrumentos cadastrados
-GET {{baseUrl}}/instrumentos
-Accept: application/json
-
-###
-
-### GET — listar gêneros cadastrados
-GET {{baseUrl}}/generos
-Accept: application/json
-
-###
-
-### GET — listar DAWs cadastradas
-GET {{baseUrl}}/daws
-Accept: application/json
-
-### GET — buscar músico por ID
-GET {{baseUrl}}/1
-Accept: application/json
-
-###
-
-### GET — ID inexistente (espera 404)
-GET {{baseUrl}}/999
-Accept: application/json
-
-###
-
-### POST — cadastrar novo músico (válido)
+### 1) CADASTRO — cria um usuário novo (rota pública)
+# @name cadastro
 POST {{baseUrl}}
 Content-Type: application/json
 
@@ -47,45 +19,26 @@ Content-Type: application/json
   "nome_completo": "Arthur Alcântara",
   "nome_artistico": "Tucko",
   "email": "tucko@mail.com",
-  "senha": "123456",
-  "telefone": "83999999999",
-  "cidade": "João Pessoa",
-  "estado": "PB",
-  "bairro": "Tambiá",
-  "area_atuacao": "Produtor",
-  "anos_experiencia": 3,
-  "biografia": "Produtor de trap e beat maker.",
-  "instrumentos": ["Guitarra"],
-  "generos": ["Hip Hop", "Eletrônica"],
-  "disponibilidades": ["Tarde", "Noite"],
-  "daws": ["FL Studio", "Ableton Live"]
+  "senha": "123456"
 }
 
-###
+### Esperado: 201 Created, corpo com { usuario, token }
 
-### POST — login válido
-POST {{baseUrl}}/login
+
+### 1.1) CADASTRO — e-mail já existente (deve ser rejeitado)
+POST {{baseUrl}}
 Content-Type: application/json
 
 {
-  "email": "lucas@mail.com",
-  "senha": "123"
+  "nome_completo": "Outro Usuário",
+  "email": "tucko@mail.com",
+  "senha": "123456"
 }
 
-###
+### Esperado: 400 Bad Request — "Este e-mail já está cadastrado. Tente fazer login."
 
-### POST — login inválido (espera 401)
-POST {{baseUrl}}/login
-Content-Type: application/json
 
-{
-  "email": "naoexiste@mail.com",
-  "senha": "errado"
-}
-
-###
-
-### POST — dados inválidos, sem email (espera 400)
+### 1.2) CADASTRO — dados inválidos (sem e-mail)
 POST {{baseUrl}}
 Content-Type: application/json
 
@@ -93,55 +46,116 @@ Content-Type: application/json
   "nome_completo": "Sem Email"
 }
 
-###
+### Esperado: 400 Bad Request — "O campo e-mail é obrigatório."
 
-### POST — email já cadastrado (espera 400)
-POST {{baseUrl}}
+
+### 2) LOGIN — credenciais válidas
+# @name login
+POST {{baseUrl}}/login
 Content-Type: application/json
 
 {
-  "nome_completo": "Lucas Duplicado",
-  "email": "lucas@mail.com",
-  "senha": "123"
+  "email": "tucko@mail.com",
+  "senha": "123456"
 }
 
-###
+### Esperado: 200 OK, corpo com { usuario, token }
+### O token retornado aqui é reaproveitado automaticamente abaixo.
 
-### PUT — atualizar músico de ID 2
-PUT {{baseUrl}}/2
+@token = {{login.response.body.token}}
+@userId = {{login.response.body.usuario.id_usuario}}
+
+
+### 2.1) LOGIN — senha incorreta
+POST {{baseUrl}}/login
 Content-Type: application/json
 
 {
-  "nome_completo": "Mariana Costa",
-  "nome_artistico": "Mari",
-  "email": "mariana@mail.com",
-  "senha": "123",
-  "cidade": "Recife",
-  "estado": "PE",
-  "bairro": "Boa Viagem",
-  "area_atuacao": "Vocalista",
-  "anos_experiencia": 5,
-  "biografia": "Vocalista de MPB.",
-  "instrumentos": ["Vocal"],
-  "generos": ["MPB", "Bossa Nova"],
-  "disponibilidades": ["Manhã"],
-  "daws": []
+  "email": "tucko@mail.com",
+  "senha": "senhaErrada"
 }
 
-###
+### Esperado: 401 Unauthorized — "E-mail ou senha incorretos."
 
-### DELETE — remover músico
-DELETE {{baseUrl}}/9
-Accept: application/json
 
-###
+### 2.2) LOGIN — usuário inexistente
+POST {{baseUrl}}/login
+Content-Type: application/json
 
-### DELETE — ID inexistente (espera 404)
-DELETE {{baseUrl}}/999
-Accept: application/json
+{
+  "email": "naoexiste@mail.com",
+  "senha": "123456"
+}
 
-###
+### Esperado: 401 Unauthorized — "E-mail ou senha incorretos."
 
-### GET — verificar lista após operações
-GET {{baseUrl}}
-Accept: application/json
+
+### 3) ROTA PROTEGIDA SEM TOKEN — atualizar o próprio perfil, sem enviar Authorization
+PUT {{baseUrl}}/{{userId}}
+Content-Type: application/json
+
+{
+  "nome_completo": "Tentativa sem token"
+}
+
+### Esperado: 401 Unauthorized — "Token não informado."
+### Comprova que a rota está protegida e ninguém não-autenticado consegue alterar dados.
+
+
+### 3.1) ROTA PROTEGIDA COM TOKEN DE OUTRO USUÁRIO (IDOR) — tentando editar o id 1
+PUT {{baseUrl}}/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nome_completo": "Tentativa com dono errado"
+}
+
+### Esperado: 403 Forbidden — "Você não tem permissão para acessar este recurso."
+### Comprova que o token só autoriza o dono do próprio recurso, mesmo estando autenticado.
+
+
+### 4) ROTA PROTEGIDA COM TOKEN — atualizar o PRÓPRIO perfil, enviando Authorization: Bearer
+PUT {{baseUrl}}/{{userId}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nome_completo": "Arthur Alcântara Atualizado"
+}
+
+### Esperado: 200 OK, usuário retornado com o nome atualizado.
+### Comprova que o mesmo endpoint, agora com o Bearer token do dono, funciona normalmente.
+
+
+### 4.1) ROTA PROTEGIDA COM TOKEN — trocar status (outra rota protegida, mesmo padrão)
+PATCH {{baseUrl}}/{{userId}}/status
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "status": "ocupado"
+}
+
+### Esperado: 200 OK
+
+
+### 4.2) ROTA PROTEGIDA COM TOKEN — alterar senha
+PUT {{baseUrl}}/{{userId}}/senha
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "senha_atual": "123456",
+  "nova_senha": "novaSenha123",
+  "confirmar_senha": "novaSenha123"
+}
+
+### Esperado: 200 OK
+
+
+### 5) LIMPEZA — remove o usuário de teste criado neste arquivo
+DELETE {{baseUrl}}/{{userId}}
+Authorization: Bearer {{token}}
+
+### Esperado: 204 No Content

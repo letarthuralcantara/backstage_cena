@@ -304,30 +304,23 @@
 
     <script type="module">
         import { showLoading, hideLoading } from '../js/loading.js';
+        import { fazerLogin } from '../js/auth.js';
         const form = document.getElementById('loginForm');
         const erroMsg = document.getElementById('erroMsg');
 
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
+            erroMsg.style.display = 'none';
             const email = document.getElementById('email').value.trim();
             const senha = document.getElementById('senha').value;
 
-            const res = await fetch('/api/usuarios/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, senha }),
-            });
-
-            if (!res.ok) {
-                const erro = await res.json();
-                erroMsg.textContent = erro.erro;
+            try {
+                await fazerLogin(email, senha);
+                window.location.href = 'perfil.html';
+            } catch (erro) {
+                erroMsg.textContent = erro.message || 'Erro ao fazer login.';
                 erroMsg.style.display = 'block';
-                return;
             }
-
-            const usuario = await res.json();
-            localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
-            window.location.href = 'perfil.html';
         });
         showLoading('Carregando...');
         hideLoading();
