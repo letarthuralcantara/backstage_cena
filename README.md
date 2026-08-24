@@ -54,7 +54,8 @@ The system focuses on clarity and correctness, prioritizing functional implement
 ---
 
 ## Data Base
-![descrição](/public/images/mermaid-diagram-2026-05-21-083052.png.png)
+
+[![Diagrama do Banco de Dados](/public/images/mermaid-diagram-2026-05-21-083052.png.png)](https://mermaid.live/embed?theme=default&look=classic&mode=light#pako:eNqtVs1...)
 ## Methodology
 1. Definition of the platform concept and use cases  
 2. Design of the relational database structure  
