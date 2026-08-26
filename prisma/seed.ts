@@ -1,9 +1,6 @@
-import { PrismaClient } from '../src/generated/prisma/index.js'
-import { PrismaLibSql } from '@prisma/adapter-libsql'
-import bcrypt from 'bcryptjs'
-
-const adapter = new PrismaLibSql({ url: 'file:./dev.db' })
-const prisma = new PrismaClient({ adapter } as any)
+import 'dotenv/config'
+import prisma from '../src/database/prisma.js'
+import { hash as argon2Hash } from 'argon2'
 
 async function main() {
   console.log('🌱 Iniciando seed...')
@@ -45,7 +42,7 @@ async function main() {
     'Manhã', 'Tarde', 'Noite', 'Fins de semana'
   ].map(descricao => prisma.disponibilidade.create({ data: { descricao } })))
 
-  const senha = await bcrypt.hash('123456', 10)
+  const senha = await argon2Hash('123456')
 
   const usuarios = [
     {

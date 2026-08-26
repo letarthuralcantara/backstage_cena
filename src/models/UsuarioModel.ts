@@ -1,6 +1,6 @@
 import prisma from '../database/prisma.js'
 import { HttpError } from '../errors/HttpError.js'
-import bcrypt from 'bcryptjs'
+import { hash as argon2Hash, verify as argon2Verify } from 'argon2'
 import type { Usuario, CreateUsuarioInput, UpdateUsuarioInput } from '../types/index.js'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -40,7 +40,7 @@ export function cadastroCompleto(u: any): boolean {
 }
 
 // mapUsuario mantém TODOS os campos, incluindo o hash da senha — necessário
-// internamente (ex: bcrypt.compare no login). Nunca use o retorno desta função
+// internamente (ex: argon2.verify no login). Nunca use o retorno desta função
 // diretamente numa resposta HTTP: use sanitizeUsuario() antes de enviar ao cliente.
 function mapUsuario(u: any): Usuario {
   const instrumentos = u.instrumentos?.map((r: any) => r.instrumento.nome) ?? []
@@ -113,7 +113,7 @@ async function create(dados: CreateUsuarioInput): Promise<Usuario> {
   const existente = await prisma.usuario.findUnique({ where: { email: dados.email } })
   if (existente) throw new HttpError(400, 'Este e-mail já está cadastrado. Tente fazer login.')
 
-  const senhaHash = await bcrypt.hash(dados.senha, 10)
+  const senhaHash = await argon2Hash(dados.senha)
 
   const novo = await prisma.usuario.create({
     data: {
@@ -170,7 +170,7 @@ async function update({ id_usuario, ...dados }: UpdateUsuarioInput): Promise<Usu
   // Se "senha" vier no corpo, é sempre senha em texto puro digitada pelo usuário.
   let senhaFinal: string | undefined = undefined
   if (dados.senha) {
-    senhaFinal = await bcrypt.hash(dados.senha, 10)
+    senhaFinal = await argon2Hash(dados.senha)
   }
 
   await prisma.usuarioInstrumento.deleteMany({ where: { id_usuario } })
@@ -266,9 +266,9 @@ async function alterarSenha(id_usuario: number, senhaAtual: string, novaSenha: s
   const usuario = await prisma.usuario.findUnique({ where: { id_usuario } })
   if (!usuario) throw new HttpError(404, 'Usuário não encontrado.')
   if (novaSenha.length < 6) throw new HttpError(400, 'A nova senha deve ter pelo menos 6 caracteres.')
-  const senhaCorreta = await bcrypt.compare(senhaAtual, usuario.senha)
+  const senhaCorreta = await argon2Verify(usuario.senha, senhaAtual)
   if (!senhaCorreta) throw new HttpError(401, 'Senha atual incorreta.')
-  const novoHash = await bcrypt.hash(novaSenha, 10)
+  const novoHash = await argon2Hash(novaSenha)
   await prisma.usuario.update({ where: { id_usuario }, data: { senha: novoHash } })
 }
 

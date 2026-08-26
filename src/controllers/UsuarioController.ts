@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express'
 import usuarioService, { sanitizeUsuario } from '../models/UsuarioModel.js'
 import { HttpError } from '../errors/HttpError.js'
-import bcrypt from 'bcryptjs'
-import jwt, { JsonWebTokenError } from 'jsonwebtoken'
+import { verify as argon2Verify } from 'argon2'
+import jwt from 'jsonwebtoken'
 
 class UsuarioController {
   async listar(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -22,16 +22,21 @@ class UsuarioController {
   }
 
   async criar(req: Request, res: Response, next: NextFunction): Promise<void> {
-     try {
-       const novoUsuario = await usuarioService.create(req.body)
-       const secret = process.env.JWT_SECRET
-       if(!secret) throw new HttpError(500, 'Configuração de autenticação ausente no servidor.')
-       const token = jwt.sign({userId: novoUsuario.id_usuario}, secret, {expiresIn: '1hr'})
+    try {
+      const novoUsuario = await usuarioService.create(req.body)
+
+      const secret = process.env.JWT_SECRET
+      if (!secret) throw new HttpError(500, 'Configuração de autenticação ausente no servidor.')
+
+      // Emite token já no cadastro para permitir completar o perfil
+      // (etapa 2 do onboarding) sem exigir um novo login.
+      const token = jwt.sign({ userId: novoUsuario.id_usuario }, secret, { expiresIn: '1h' })
+
       res.status(201).json({ usuario: sanitizeUsuario(novoUsuario), token })
-     } catch (error) {
-       next(error)
-     }
-   }
+    } catch (error) {
+      next(error)
+    }
+  }
 
   async atualizar(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
@@ -55,12 +60,14 @@ class UsuarioController {
       if (!email || !senha) throw new HttpError(400, 'E-mail e senha são obrigatórios.')
       const usuario = await usuarioService.findByEmail(email)
       if (!usuario) throw new HttpError(401, 'E-mail ou senha incorretos.')
-      const senhaCorreta = await bcrypt.compare(senha, usuario.senha)
+      const senhaCorreta = await argon2Verify(usuario.senha, senha)
       if (!senhaCorreta) throw new HttpError(401, 'E-mail ou senha incorretos.')
+
       const secret = process.env.JWT_SECRET
       if (!secret) throw new HttpError(500, 'Configuração de autenticação ausente no servidor.')
 
       const token = jwt.sign({ userId: usuario.id_usuario }, secret, { expiresIn: '1h' })
+
       res.status(200).json({ usuario: sanitizeUsuario(usuario), token })
     } catch (error) { next(error) }
   }
