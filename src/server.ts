@@ -30,6 +30,17 @@ app.get('/', (_req: Request, res: Response) => {
   res.json({ mensagem: 'API Backstage Cena rodando' })
 })
 
+// ── 404 ───────────────────────────────────────────────────────────────────────
+// Rotas de API não encontradas continuam em JSON; qualquer outra rota (navegação
+// direta pelo navegador) recebe a página 404 personalizada.
+app.use((req: Request, res: Response, next) => {
+  if (req.path.startsWith('/api')) {
+    res.status(404).json({ erro: 'Rota não encontrada.' })
+    return
+  }
+  res.status(404).sendFile('404.html', { root: 'public' }, (err) => { if (err) next(err) })
+})
+
 // ── Middleware de erros (deve ser o último) ───────────────────────────────────
 app.use(errorHandler)
 

@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#050505" />
+  <title>404 — Essa cena saiu do line-up | Backstage Cena</title>
+  <meta name="robots" content="noindex" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #050505;
+      --bg-soft: #0b0912;
+      --white: #f7f7fa;
+      --muted: #92919b;
+      --quiet: #5d5b68;
+      --purple: #8b5cf6;
+      --magenta: #d946ef;
+      --line: rgba(255,255,255,.1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { min-height: 100%; background: var(--bg); }
+
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+      background:
+        radial-gradient(circle at 50% 38%, rgba(139,92,246,.12), transparent 28rem),
+        radial-gradient(circle at 90% 100%, rgba(217,70,239,.09), transparent 25rem),
+        var(--bg);
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .25;
+      background-image:
+        linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+      background-size: 80px 80px;
+      mask-image: linear-gradient(to bottom, black, transparent 75%);
+    }
+
+    #dust {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      opacity: .32;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      min-height: 100svh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+
+    .header,
+    .footer {
+      width: min(1080px, calc(100% - 48px));
+      margin: 0 auto;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 0;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--white);
+      font-family: 'Poppins', sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 29px;
+      height: 29px;
+      border: 1px solid rgba(167,139,250,.48);
+      border-radius: 8px;
+      color: var(--purple);
+      font-size: 13px;
+      box-shadow: 0 0 18px rgba(139,92,246,.18);
+    }
+
+    .brand span:last-child { color: var(--purple); }
+
+    .header-label {
+      color: var(--quiet);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+    }
+
+    .main {
+      position: relative;
+      width: min(650px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 44px 0 54px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .main::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 420px;
+      height: 420px;
+      border: 1px solid rgba(139,92,246,.1);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .eyebrow,
+    .title,
+    .tagline,
+    .description,
+    .ticket,
+    .actions,
+    .error-code {
+      position: relative;
+      z-index: 1;
+    }
+
+    .eyebrow {
+      color: var(--purple);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 2.8px;
+      text-transform: uppercase;
+      animation: fade-up .7s ease both;
+    }
+
+    .title {
+      margin-top: 18px;
+      font-family: 'Poppins', sans-serif;
+      font-size: clamp(116px, 22vw, 198px);
+      font-weight: 900;
+      letter-spacing: -.1em;
+      line-height: .75;
+      background: linear-gradient(180deg, #fff 8%, #d8d8df 55%, #777680 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      filter: drop-shadow(0 16px 32px rgba(139,92,246,.18));
+      animation: title-in .85s cubic-bezier(.2,1,.3,1) .08s both;
+    }
+
+    .title .zero {
+      background: linear-gradient(135deg, var(--purple), var(--magenta));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      filter: drop-shadow(0 0 27px rgba(139,92,246,.48));
+    }
+
+    .tagline {
+      max-width: 520px;
+      margin-top: 24px;
+      color: var(--white);
+      font-family: 'Poppins', sans-serif;
+      font-size: clamp(23px, 4vw, 33px);
+      font-weight: 800;
+      letter-spacing: -.045em;
+      line-height: 1.1;
+      animation: fade-up .75s ease .2s both;
+    }
+
+    .tagline em {
+      color: var(--purple);
+      font-style: normal;
+    }
+
+    .description {
+      max-width: 500px;
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+      animation: fade-up .75s ease .3s both;
+    }
+
+    .description code {
+      display: inline-block;
+      max-width: 100%;
+      padding: 2px 7px;
+      overflow: hidden;
+      border: 1px solid rgba(139,92,246,.22);
+      border-radius: 6px;
+      color: #d8cbff;
+      background: rgba(139,92,246,.08);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: .88em;
+      text-overflow: ellipsis;
+      vertical-align: -1px;
+      white-space: nowrap;
+    }
+
+    .ticket {
+      width: min(360px, 100%);
+      margin-top: 24px;
+      padding: 17px 19px 15px;
+      text-align: left;
+      border: 1px solid rgba(255,255,255,.13);
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(255,255,255,.065), rgba(255,255,255,.025));
+      box-shadow: 0 18px 45px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.06);
+      backdrop-filter: blur(12px);
+      transform: rotate(-1.5deg);
+      animation: ticket-in .8s cubic-bezier(.2,1,.3,1) .42s both;
+    }
+
+    .ticket-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px dashed rgba(255,255,255,.16);
+    }
+
+    .ticket-label {
+      color: var(--purple);
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 1.7px;
+      text-transform: uppercase;
+    }
+
+    .ticket-title {
+      margin-top: 3px;
+      color: var(--white);
+      font-family: 'Poppins', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -.04em;
+    }
+
+    .ticket-status {
+      flex: 0 0 auto;
+      padding: 4px 7px;
+      border: 1px solid rgba(217,70,239,.45);
+      border-radius: 5px;
+      color: #ee83ee;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      transform: rotate(5deg);
+    }
+
+    .ticket-bottom {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 10px;
+      color: var(--quiet);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 9px;
+      letter-spacing: .9px;
+      text-transform: uppercase;
+    }
+
+    .ticket-bottom strong {
+      color: #c5c4ce;
+      font-weight: 500;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 28px;
+      animation: fade-up .75s ease .54s both;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 47px;
+      padding: 0 25px;
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 999px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--purple), var(--magenta));
+      box-shadow: 0 0 24px rgba(139,92,246,.34), inset 0 1px 0 rgba(255,255,255,.18);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .5px;
+      text-decoration: none;
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+
+    .button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 38px rgba(139,92,246,.56), inset 0 1px 0 rgba(255,255,255,.18);
+    }
+
+    .button:focus-visible {
+      outline: 3px solid #fff;
+      outline-offset: 4px;
+    }
+
+    .button svg { width: 16px; height: 16px; }
+
+    .error-code {
+      margin-top: 14px;
+      color: rgba(255,255,255,.25);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 9px;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      animation: fade-up .75s ease .63s both;
+    }
+
+    .footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 18px 0 22px;
+      border-top: 1px solid var(--line);
+      color: var(--quiet);
+      font-size: 10px;
+    }
+
+    .footer strong {
+      color: rgba(255,255,255,.55);
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .footer span:last-child { text-align: right; }
+
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes title-in {
+      from { opacity: 0; transform: scale(.88) translateY(28px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    @keyframes ticket-in {
+      from { opacity: 0; transform: translateY(-22px) rotate(-7deg); }
+      to { opacity: 1; transform: translateY(0) rotate(-1.5deg); }
+    }
+
+    @media (max-width: 600px) {
+      .header, .footer { width: calc(100% - 32px); }
+      .header { padding: 18px 0; }
+      .header-label { display: none; }
+      .main { width: calc(100% - 32px); padding: 28px 0 36px; }
+      .main::before { width: 290px; height: 290px; }
+      .eyebrow { font-size: 9px; letter-spacing: 2px; }
+      .title { margin-top: 15px; font-size: clamp(105px, 31vw, 160px); }
+      .tagline { max-width: 330px; margin-top: 19px; font-size: 25px; }
+      .description { max-width: 340px; font-size: 13px; }
+      .ticket { margin-top: 21px; }
+      .footer { align-items: flex-start; flex-direction: column; gap: 8px; }
+      .footer span:last-child { text-align: left; }
+    }
+
+    @media (max-height: 740px) and (min-width: 601px) {
+      .header { padding: 15px 0; }
+      .main { padding: 20px 0 28px; }
+      .title { margin-top: 12px; font-size: clamp(100px, 18vw, 160px); }
+      .tagline { margin-top: 17px; }
+      .description { margin-top: 10px; }
+      .ticket { margin-top: 17px; }
+      .actions { margin-top: 21px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <canvas id="dust" aria-hidden="true"></canvas>
+
+    <header class="header">
+      <a class="brand" href="index.html" aria-label="Voltar para o Backstage Cena">
+        <span class="brand-mark" aria-hidden="true">B</span>
+        <span>Backstage <span>Cena</span></span>
+      </a>
+      <div class="header-label">Palco principal · conexão perdida</div>
+    </header>
+
+    <main class="main">
+      <div class="eyebrow">Erro 404</div>
+
+      <h1 class="title" aria-label="Erro 404">4<span class="zero">0</span>4</h1>
+
+      <p class="tagline">Essa <em>cena</em> saiu do line-up.</p>
+
+      <p class="description">
+        A página <code id="path-slot">/</code> não foi encontrada. Talvez tenha sido cancelada de última hora.
+      </p>
+
+      <section class="ticket" aria-label="Acesso cancelado">
+        <div class="ticket-top">
+          <div>
+            <div class="ticket-label">Backstage Cena · acesso</div>
+            <div class="ticket-title">ALL ACCESS</div>
+          </div>
+          <div class="ticket-status">CANCELADO</div>
+        </div>
+        <div class="ticket-bottom">
+          <span>SETOR: <strong>404</strong></span>
+          <span>PORTÃO: <strong>???</strong></span>
+          <span>NOITE: <strong>∞</strong></span>
+        </div>
+      </section>
+
+      <div class="actions">
+        <a class="button" href="index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Voltar pro show
+        </a>
+      </div>
+
+      <div class="error-code">ERROR 404 · PAGE NOT FOUND</div>
+    </main>
+
+    <footer class="footer">
+      <strong>A cena começa aqui.</strong>
+      <span>Backstage Cena · conecte-se com músicos</span>
+    </footer>
+  </div>
+
+  <script>
+    try {
+      document.getElementById('path-slot').textContent = window.location.pathname || '/';
+    } catch (error) {}
+
+    const canvas = document.getElementById('dust');
+    const context = canvas.getContext('2d');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let particles = [];
+
+    function resizeCanvas() {
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.floor(window.innerWidth * ratio);
+      canvas.height = Math.floor(window.innerHeight * ratio);
+      context.setTransform(ratio, 0, 0, ratio, 0, 0);
+    }
+
+    class Particle {
+      constructor() { this.reset(true); }
+      reset(initial) {
+        this.x = Math.random() * window.innerWidth;
+        this.y = initial ? Math.random() * window.innerHeight : window.innerHeight + 8;
+        this.size = Math.random() * 1.4 + .35;
+        this.speedY = -(Math.random() * .2 + .04);
+        this.speedX = (Math.random() - .5) * .12;
+        this.opacity = Math.random() * .3 + .04;
+        this.color = Math.random() > .5 ? '139,92,246' : '217,70,239';
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.y < -8 || this.x < -8 || this.x > window.innerWidth + 8) this.reset(false);
+      }
+      draw() {
+        context.fillStyle = `rgba(${this.color}, ${this.opacity})`;
+        context.beginPath();
+        context.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        context.fill();
+      }
+    }
+
+    function initParticles() {
+      resizeCanvas();
+      particles = Array.from({ length: window.innerWidth < 600 ? 34 : 64 }, () => new Particle());
+    }
+
+    function animate() {
+      context.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      particles.forEach((particle) => { particle.update(); particle.draw(); });
+      if (!reduceMotion) window.requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('resize', initParticles, { passive: true });
+    initParticles();
+    animate();
+  </script>
+</body>
+</html>
