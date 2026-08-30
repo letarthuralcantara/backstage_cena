@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Perfil - Backstage Cena</title>
+    <meta name="description" content="Edite suas informações, instrumentos e disponibilidade no Backstage Cena.">
+    <meta name="robots" content="noindex, nofollow">
     <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -334,7 +336,7 @@
 
     <script type="module">
         import { showLoading, hideLoading } from '../js/loading.js';
-        import { verificarAutenticacao, fazerLogout } from '../js/auth.js';
+        import { verificarAutenticacao, fazerLogout, authHeaders } from '../js/auth.js';
         import { fetchDados } from '../js/dados.js';
 
         showLoading('Carregando dados...');
@@ -508,7 +510,7 @@
             try {
                 const r = await fetch(`/api/usuarios/${usuario.id_usuario}`, {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: authHeaders(),
                     body: JSON.stringify(dadosForm),
                 });
                 if (!r.ok) throw new Error((await r.json()).erro);

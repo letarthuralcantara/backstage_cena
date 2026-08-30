@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Backstage | Meu Perfil</title>
+    <meta name="description" content="Gerencie seu perfil, portfólio e disponibilidade no Backstage Cena.">
+    <meta name="robots" content="noindex, nofollow">
     <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -671,7 +673,7 @@
 
     <script type="module">
         import { showLoading, hideLoading } from '../js/loading.js';
-        import { verificarAutenticacao, fazerLogout } from '../js/auth.js';
+        import { verificarAutenticacao, fazerLogout, authHeaders } from '../js/auth.js';
         import { renderizarGradePreviasDoUsuario } from '../js/postagens.js';
 
         const SOCIAL_ICONS = {
@@ -787,7 +789,7 @@
                 try {
                     await fetch(`/api/usuarios/${usuarioLogado.id_usuario}/status`, {
                         method: 'PATCH',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers: authHeaders(),
                         body: JSON.stringify({ status: novoStatus })
                     });
                     usuarioLogado.status = novoStatus;

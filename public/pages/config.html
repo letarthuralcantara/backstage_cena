@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Configurações - Backstage Cena</title>
+    <meta name="description" content="Gerencie suas configurações de conta e privacidade no Backstage Cena.">
+    <meta name="robots" content="noindex, nofollow">
     <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -343,7 +345,7 @@
     </div>
 
     <script type="module">
-        import { verificarAutenticacao, fazerLogout } from '../js/auth.js';
+        import { verificarAutenticacao, fazerLogout, authHeaders } from '../js/auth.js';
 
         const usuario = verificarAutenticacao();
         if (!usuario) { window.location.href = 'login.html'; }
@@ -399,7 +401,7 @@
             try {
                 await fetch(`/api/usuarios/${usuario.id_usuario}/configuracoes`, {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: authHeaders(),
                     body: JSON.stringify({ [campo]: valor ? 1 : 0 }),
                 });
                 mostrarToast();
@@ -453,7 +455,7 @@
             try {
                 const r = await fetch(`/api/usuarios/${usuario.id_usuario}/senha`, {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: authHeaders(),
                     body: JSON.stringify({ senha_atual: senhaAtual, nova_senha: novaSenha, confirmar_senha: confirmarSenha }),
                 });
                 if (!r.ok) {
@@ -495,10 +497,11 @@
             try {
                 const r = await fetch(`/api/usuarios/${usuario.id_usuario}`, {
                     method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: authHeaders(),
                 });
                 if (!r.ok) throw new Error((await r.json()).erro || 'Erro ao excluir conta');
                 localStorage.removeItem('usuarioLogado');
+                localStorage.removeItem('token');
                 window.location.href = 'login.html';
             } catch (erro) {
                 erroMsg.textContent = erro.message;
