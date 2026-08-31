@@ -371,10 +371,13 @@
         </div>
     </div>
 
-    <footer>
-        <div class="footer-content">
-            <img src="../images/logo.png" alt="Backstage Logo" class="footer-logo-img">
-            <p>A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <img src="../images/logo.png" alt="Backstage Logo" class="footer-logo-img">
+                <p style="color:rgba(255,255,255,0.4);font-size:13px;">A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
+                <a href="privacidade.html" style="color:rgba(255,255,255,0.4);font-size:13px;">Política de Privacidade</a>
+            </div>
         </div>
     </footer>
 
@@ -384,10 +387,16 @@
         const usuario = verificarAutenticacao();
         if (usuario) {
             const nome = usuario.nome_artistico || usuario.nome_completo;
-            document.getElementById('profileTrigger').textContent = nome.substring(0, 2).toUpperCase();
+            document.getElementById('profileTrigger').textContent = (nome || 'B').substring(0, 2).toUpperCase();
+            const badge = document.getElementById('profileIncompleteBadge');
+            if (badge) badge.classList.toggle('show', Number(usuario.cadastro_completo ?? 0) === 0);
         }
-        document.getElementById('profileDropdown')?.addEventListener('click', () => {
+        document.getElementById('profileDropdown')?.addEventListener('click', (e) => {
+            e.stopPropagation();
             document.getElementById('profileDropdown').classList.toggle('active');
+        });
+        document.addEventListener('click', () => {
+            document.getElementById('profileDropdown')?.classList.remove('active');
         });
         document.getElementById('btnSair')?.addEventListener('click', fazerLogout);
 

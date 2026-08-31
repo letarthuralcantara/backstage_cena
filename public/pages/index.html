@@ -200,10 +200,12 @@
 
         if (usuario) {
             const nome = usuario.nome_artistico || usuario.nome_completo;
-            const iniciais = nome.substring(0, 2).toUpperCase();
+            const iniciais = (nome || 'B').substring(0, 2).toUpperCase();
+            const incompleto = Number(usuario.cadastro_completo ?? 0) === 0;
             headerActions.innerHTML = `
                 <div class="profile-dropdown" id="profileDropdown">
                     <div class="profile-trigger" id="profileTrigger">${iniciais}</div>
+                    ${incompleto ? '<div class="profile-incomplete-badge show" id="profileIncompleteBadge">!</div>' : '<div class="profile-incomplete-badge" id="profileIncompleteBadge">!</div>'}
                     <div class="dropdown-menu">
                         <a href="perfil.html" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a>
                         <a href="config.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações</a>

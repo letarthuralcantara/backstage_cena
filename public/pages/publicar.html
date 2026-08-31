@@ -200,7 +200,7 @@
             <a href="index.html"><img src="../images/logo.png" alt="Backstage Logo" class="logo-img"></a>
         </div>
         <div class="header-center">
-            <div class="header-search" onclick="window.location.href='pesquisar_usuarios.html?focar=true'">
+            <div class="header-search" id="searchBar" onclick="window.location.href='pesquisar_usuarios.html?focar=true'">
                 <i class="fas fa-search header-search-icon"></i>
                 <input type="text" class="header-search-input" placeholder="Buscar músicos..." readonly>
                 <button class="header-search-btn">Buscar</button>
@@ -209,9 +209,11 @@
         <div class="header-actions">
             <div class="profile-dropdown" id="profileDropdown">
                 <div class="profile-trigger" id="profileTrigger"></div>
+                <div class="profile-incomplete-badge" id="profileIncompleteBadge">!</div>
                 <div class="dropdown-menu">
                     <a href="perfil.html" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a>
                     <a href="feed.html" class="dropdown-item"><i class="fas fa-stream"></i> Feed</a>
+                    <a href="publicar.html" class="dropdown-item"><i class="fas fa-plus-circle"></i> Nova Postagem</a>
                     <a href="config.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações</a>
                     <div class="dropdown-divider"></div>
                     <div class="dropdown-item" id="btnSair"><i class="fas fa-sign-out-alt"></i> Sair</div>
@@ -288,10 +290,13 @@
         </div>
     </div>
 
-    <footer>
-        <div class="footer-content">
-            <img src="../images/logo.png" alt="Backstage Logo" class="footer-logo-img">
-            <p>A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <img src="../images/logo.png" alt="Backstage Logo" class="footer-logo-img">
+                <p style="color:rgba(255,255,255,0.4);font-size:13px;">A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
+                <a href="privacidade.html" style="color:rgba(255,255,255,0.4);font-size:13px;">Política de Privacidade</a>
+            </div>
         </div>
     </footer>
 
@@ -305,7 +310,9 @@
             
             const nomeUsuario = usuarioLogado?.nome_artistico || usuarioLogado?.nome_completo || '';
             const profileTrigger = document.getElementById('profileTrigger');
-            if (profileTrigger) profileTrigger.textContent = nomeUsuario.substring(0, 2).toUpperCase();
+            if (profileTrigger) profileTrigger.textContent = (nomeUsuario || 'B').substring(0, 2).toUpperCase();
+            const badge = document.getElementById('profileIncompleteBadge');
+            if (badge) badge.classList.toggle('show', Number(usuarioLogado?.cadastro_completo ?? 0) === 0);
 
             document.getElementById('btnSair')?.addEventListener('click', fazerLogout);
             

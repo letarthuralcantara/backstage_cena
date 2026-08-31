@@ -233,19 +233,20 @@
             <a href="index.html"><img src="../images/logo.png" alt="Backstage Logo" class="logo-img"></a>
         </div>
         <div class="header-center">
-            <div class="header-search" onclick="window.location.href='pesquisar_usuarios.html?focar=true'">
+            <div class="header-search" id="searchBar" onclick="window.location.href='pesquisar_usuarios.html?focar=true'">
                 <i class="fas fa-search header-search-icon"></i>
-                <input type="text" class="header-search-input" placeholder="Buscar na cena..." readonly>
+                <input type="text" class="header-search-input" placeholder="Buscar músicos..." readonly>
                 <button class="header-search-btn">Buscar</button>
             </div>
         </div>
         <div class="header-actions">
             <div class="profile-dropdown" id="profileDropdown">
                 <div class="profile-trigger" id="profileTrigger"></div>
+                <div class="profile-incomplete-badge" id="profileIncompleteBadge">!</div>
                 <div class="dropdown-menu">
                     <a href="perfil.html" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a>
-                    <a href="nova_postagem.html" class="dropdown-item"><i class="fas fa-plus-circle"></i> Nova Postagem</a>
                     <a href="feed.html" class="dropdown-item"><i class="fas fa-stream"></i> Feed</a>
+                    <a href="publicar.html" class="dropdown-item"><i class="fas fa-plus-circle"></i> Nova Postagem</a>
                     <a href="config.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações</a>
                     <div class="dropdown-divider"></div>
                     <div class="dropdown-item" id="btnSair"><i class="fas fa-sign-out-alt"></i> Sair</div>
@@ -282,7 +283,9 @@
             if (usuario) {
                 const nome = usuario.nome_artistico || usuario.nome_completo;
                 const trigger = document.getElementById('profileTrigger');
-                if (trigger) trigger.textContent = nome.substring(0, 2).toUpperCase();
+                if (trigger) trigger.textContent = (nome || 'B').substring(0, 2).toUpperCase();
+                const badge = document.getElementById('profileIncompleteBadge');
+                if (badge) badge.classList.toggle('show', Number(usuario.cadastro_completo ?? 0) === 0);
             }
 
             const profileDropdown = document.getElementById('profileDropdown');

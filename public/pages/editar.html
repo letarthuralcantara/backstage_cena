@@ -155,6 +155,7 @@
         <div class="header-actions">
             <div class="profile-dropdown" id="profileDropdown">
                 <div class="profile-trigger" id="profileTrigger"></div>
+                <div class="profile-incomplete-badge" id="profileIncompleteBadge">!</div>
                 <div class="dropdown-menu">
                     <a href="perfil.html" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a>
                     <a href="config.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações</a>
@@ -327,10 +328,13 @@
         </main>
     </div>
 
-    <footer>
-        <div class="footer-content">
-            <img src="../images/logo.png" alt="Backstage Logo" class="footer-logo-img">
-            <p>A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <img src="../images/logo.png" alt="Backstage Logo" class="footer-logo-img">
+                <p style="color:rgba(255,255,255,0.4);font-size:13px;">A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
+                <a href="privacidade.html" style="color:rgba(255,255,255,0.4);font-size:13px;">Política de Privacidade</a>
+            </div>
         </div>
     </footer>
 
@@ -361,10 +365,12 @@
         const u = await res.json();
 
         const nome = u.nome_artistico || u.nome_completo;
-        const iniciais = nome.substring(0,2).toUpperCase();
+        const iniciais = (nome || 'B').substring(0,2).toUpperCase();
         document.getElementById('sidebarAvatar').textContent = iniciais;
         document.getElementById('sidebarNome').textContent = nome;
         document.getElementById('profileTrigger').textContent = iniciais;
+        const badge = document.getElementById('profileIncompleteBadge');
+        if (badge) badge.classList.toggle('show', Number(u.cadastro_completo ?? 0) === 0);
         document.getElementById('fotoAvatarBig').textContent = iniciais;
 
         document.getElementById('nome_completo').value  = u.nome_completo || '';

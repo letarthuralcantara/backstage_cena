@@ -166,11 +166,11 @@
         </section>
     </main>
 
-    <footer>
+    <footer class="footer">
         <div class="container">
             <div class="footer-content">
                 <img src="../images/logo.png" alt="Backstage Logo" class="footer-logo-img">
-                <p>A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
+                <p style="color:rgba(255,255,255,0.4);font-size:13px;">A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
                 <a href="privacidade.html" style="color:rgba(255,255,255,0.4);font-size:13px;">Política de Privacidade</a>
             </div>
         </div>
@@ -185,12 +185,15 @@
 
         if (usuario) {
             const nome = usuario.nome_artistico || usuario.nome_completo;
-            const iniciais = nome.substring(0, 2).toUpperCase();
+            const iniciais = (nome || 'B').substring(0, 2).toUpperCase();
             headerActions.innerHTML = `
                 <div class="profile-dropdown" id="profileDropdown">
                     <div class="profile-trigger" id="profileTrigger">${iniciais}</div>
+                    <div class="profile-incomplete-badge ${Number(usuario.cadastro_completo ?? 0) === 0 ? 'show' : ''}" id="profileIncompleteBadge">!</div>
                     <div class="dropdown-menu">
                         <a href="perfil.html" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a>
+                        <a href="feed.html" class="dropdown-item"><i class="fas fa-stream"></i> Feed</a>
+                        <a href="publicar.html" class="dropdown-item"><i class="fas fa-plus-circle"></i> Nova Postagem</a>
                         <a href="config.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações</a>
                         <div class="dropdown-divider"></div>
                         <div class="dropdown-item" id="btnSair"><i class="fas fa-sign-out-alt"></i> Sair</div>

@@ -540,6 +540,7 @@
         <div class="header-actions">
             <div class="profile-dropdown" id="profileDropdown">
                 <div class="profile-trigger" id="profileTrigger"></div>
+                <div class="profile-incomplete-badge" id="profileIncompleteBadge">!</div>
                 <div class="dropdown-menu">
                     <a href="perfil.html" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a>
                     <a href="feed.html" class="dropdown-item"><i class="fas fa-stream"></i> Feed</a>
@@ -664,10 +665,13 @@
         </div>
     </div>
 
-    <footer>
-        <div class="footer-content">
-            <img src="../images/logo.png" alt="Backstage Logo" class="footer-logo-img">
-            <p>A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <img src="../images/logo.png" alt="Backstage Logo" class="footer-logo-img">
+                <p style="color:rgba(255,255,255,0.4);font-size:13px;">A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
+                <a href="privacidade.html" style="color:rgba(255,255,255,0.4);font-size:13px;">Política de Privacidade</a>
+            </div>
         </div>
     </footer>
 
@@ -689,6 +693,18 @@
             nao_perturbe: { label: 'Não perturbe', cls: 'nao_perturbe' },
             invisivel:    { label: 'Invisível',    cls: 'invisivel' },
         };
+
+        function calcularFaltantesPerfil(u) {
+            const faltando = [];
+            if (!u.instrumentos || u.instrumentos.length === 0) faltando.push('pelo menos 1 instrumento');
+            if (!u.generos || u.generos.length === 0) faltando.push('pelo menos 1 gênero');
+            if (!u.estado) faltando.push('estado');
+            const bio = (u.biografia || '').trim();
+            if (bio.length < 20) faltando.push('biografia com mínimo 20 caracteres');
+            const areas = Array.isArray(u.area_atuacao) ? u.area_atuacao : (u.area_atuacao ? [u.area_atuacao] : []);
+            if (areas.length === 0) faltando.push('área de atuação');
+            return faltando;
+        }
 
         function aplicarStatus(status) {
             const s = STATUS_MAP[status] || STATUS_MAP['disponivel'];
@@ -721,7 +737,13 @@
 
             // Render
             const nome = u.nome_artistico || u.nome_completo;
-            document.getElementById('avatar').textContent = nome.substring(0,2).toUpperCase();
+            const iniciais = (nome || 'B').substring(0, 2).toUpperCase();
+            document.getElementById('avatar').textContent = iniciais;
+            document.getElementById('profileTrigger').textContent = iniciais;
+            const badge = document.getElementById('profileIncompleteBadge');
+            if (badge) {
+                badge.classList.toggle('show', Number(u.cadastro_completo ?? 0) === 0);
+            }
             document.getElementById('nomeExibir').textContent = nome;
             document.getElementById('emailExibir').textContent = u.email;
             document.getElementById('localExibir').textContent = [u.cidade, u.estado].filter(Boolean).join(', ') || 'Brasil';
@@ -733,6 +755,48 @@
             if (ehProprio) {
                 document.getElementById('statusBadge').classList.add('is-editable');
                 document.getElementById('statusChevron').classList.remove('hidden');
+            }
+
+            if (ehProprio) {
+                const faltando = calcularFaltantesPerfil(u);
+                if (faltando.length > 0) {
+                    const container = document.querySelector('.container');
+                    if (container && !document.getElementById('perfilBannerIncompleto')) {
+                        const banner = document.createElement('div');
+                        banner.id = 'perfilBannerIncompleto';
+                        banner.style.cssText = `
+                            background: rgba(139,92,246,0.15);
+                            border: 1px solid rgba(139,92,246,0.4);
+                            border-radius: 12px;
+                            padding: 16px 20px;
+                            margin: 0 0 24px;
+                        `;
+                        banner.innerHTML = `
+                            <div style="display:flex; align-items:flex-start; gap:12px;">
+                                <i class="fas fa-circle-exclamation" style="color:#a78bfa; font-size:20px; margin-top:2px; flex-shrink:0;"></i>
+                                <div style="flex:1;">
+                                    <p style="font-weight:600; color:#e5e7eb; margin:0 0 6px;">Seu perfil está incompleto — você não aparece nas buscas</p>
+                                    <p style="font-size:13px; color:#9ca3af; margin:0 0 8px;">Para aparecer nas pesquisas, adicione:</p>
+                                    <ul style="margin:0; padding-left:18px; color:#9ca3af; font-size:13px;">
+                                        ${faltando.map(item => `<li>${item}</li>`).join('')}
+                                    </ul>
+                                </div>
+                                <a href="editar.html" style="
+                                    white-space: nowrap;
+                                    padding: 10px 20px;
+                                    background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+                                    border-radius: 8px;
+                                    color: white;
+                                    text-decoration: none;
+                                    font-size: 14px;
+                                    font-weight: 600;
+                                    flex-shrink: 0;
+                                ">Completar agora</a>
+                            </div>
+                        `;
+                        container.prepend(banner);
+                    }
+                }
             }
 
             // Area
