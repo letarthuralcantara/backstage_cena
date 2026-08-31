@@ -12,7 +12,10 @@ export function errorHandler(
   _next: NextFunction
 ): void {
   if (err instanceof HttpError) {
-    res.status(err.statusCode).json({ erro: err.message })
+    res.status(err.code).json({
+      erro: err.message,
+      ...(err.issues ? { issues: err.issues } : {}),
+    })
     return
   }
   const message = err instanceof Error ? err.message : 'Erro interno.'
