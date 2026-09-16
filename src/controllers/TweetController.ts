@@ -5,11 +5,8 @@ import { HttpError } from '../errors/HttpError.js'
 const TweetController = {
   async criar(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      // TODO: mesma observação dos outros controllers — quando a autenticação
-      // real (JWT) existir, troque por req.usuarioId em vez de confiar no
-      // id_usuario mandado pelo cliente no corpo da requisição.
-      const id_usuario = Number(req.body.id_usuario)
-      if (!id_usuario) throw new HttpError(400, 'id_usuario é obrigatório.')
+      const id_usuario = req.userId
+      if (!id_usuario) throw new HttpError(401, 'Usuário não autenticado.')
 
       const tweet = await tweetService.create({
         id_usuario,
@@ -45,8 +42,8 @@ const TweetController = {
   async remover(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const id_tweet = Number(req.params.id)
-      const id_usuario = Number(req.body.id_usuario)
-      await tweetService.remover(id_tweet, id_usuario)
+      if (!req.userId) throw new HttpError(401, 'Usuário não autenticado.')
+      await tweetService.remover(id_tweet, req.userId)
       res.status(204).send()
     } catch (error) {
       next(error)

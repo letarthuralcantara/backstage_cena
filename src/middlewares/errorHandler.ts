@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import { HttpError } from '../errors/HttpError.js'
+import multer from 'multer'
 
 /**
  * Middleware global de tratamento de erros.
@@ -18,7 +19,12 @@ export function errorHandler(
     })
     return
   }
-  const message = err instanceof Error ? err.message : 'Erro interno.'
+  if (err instanceof multer.MulterError) {
+    res.status(err.code === 'LIMIT_FILE_SIZE' ? 413 : 400).json({
+      erro: err.code === 'LIMIT_FILE_SIZE' ? 'O arquivo excede o limite permitido.' : 'Falha no upload.',
+    })
+    return
+  }
   console.error(err)
-  res.status(500).json({ erro: message })
+  res.status(500).json({ erro: 'Erro interno do servidor.' })
 }

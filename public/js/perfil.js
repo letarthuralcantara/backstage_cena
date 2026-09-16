@@ -1,4 +1,4 @@
-import { verificarAutenticacao, fazerLogout } from './auth.js';
+import { authHeaders, verificarAutenticacao, fazerLogout } from './auth.js';
 
 // ── Helpers de status ─────────────────────────────────────────────────────────
 const STATUS_INFO = {
@@ -285,7 +285,7 @@ function _adicionarDropdownStatus(u) {
     try {
       const res = await fetch(`/api/usuarios/${usuarioLocal.id_usuario}/status`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: authHeaders(),
         body: JSON.stringify({ status: novoStatus }),
       });
       if (!res.ok) throw new Error('Erro ao atualizar status');

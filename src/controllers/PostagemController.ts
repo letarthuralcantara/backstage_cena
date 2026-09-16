@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import multer from 'multer'
 import path from 'node:path'
 import fs from 'node:fs'
+import { promises as fsPromises } from 'node:fs'
 import crypto from 'node:crypto'
 import postagemService from '../models/PostagemModel.js'
 import { HttpError } from '../errors/HttpError.js'
@@ -19,6 +20,12 @@ const TIPOS_PERMITIDOS = new Set([
   'audio/webm',
 ])
 const TAMANHO_MAXIMO_BYTES = 15 * 1024 * 1024 // 15MB é de sobra pra uma prévia de até 60s
+
+function audioTemAssinaturaValida(bytes: Buffer): boolean {
+  const ascii = bytes.toString('ascii', 0, 12)
+  const frameMpegValido = bytes[0] === 0xff && (bytes[1] & 0xe0) === 0xe0
+  return ascii.startsWith('ID3') || frameMpegValido || ascii.startsWith('OggS') || ascii.startsWith('RIFF') || ascii.includes('ftyp') || bytes.subarray(0, 4).equals(Buffer.from([0x1a, 0x45, 0xdf, 0xa3]))
+}
 
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, PASTA_UPLOADS_AUDIO),
@@ -46,11 +53,14 @@ const PostagemController = {
     try {
       if (!req.file) throw new HttpError(400, 'Arquivo de áudio é obrigatório.')
 
-      // TODO: quando a autenticação real (JWT) existir, troque isto por
-      // req.usuarioId, vindo do middleware requireAuth — nunca confie em um
-      // id_usuario mandado livremente pelo cliente no corpo da requisição.
-      const id_usuario = Number(req.body.id_usuario)
-      if (!id_usuario) throw new HttpError(400, 'id_usuario é obrigatório.')
+      const bytes = await fsPromises.readFile(req.file.path)
+      if (!audioTemAssinaturaValida(bytes)) {
+        await fsPromises.unlink(req.file.path).catch(() => undefined)
+        throw new HttpError(415, 'O conteúdo do arquivo de áudio é inválido.')
+      }
+
+      const id_usuario = req.userId
+      if (!id_usuario) throw new HttpError(401, 'Usuário não autenticado.')
 
       const inicio_seg = req.body.inicio_seg !== undefined ? Number(req.body.inicio_seg) : 0
       const duracao_seg = req.body.duracao_seg !== undefined ? Number(req.body.duracao_seg) : 30
@@ -91,10 +101,8 @@ const PostagemController = {
   async remover(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const id_postagem = Number(req.params.id)
-      // TODO: mesma observação do criar() — id_usuario deveria vir do token,
-      // não do corpo da requisição, assim que a autenticação real existir.
-      const id_usuario = Number(req.body.id_usuario)
-      await postagemService.remover(id_postagem, id_usuario)
+      if (!req.userId) throw new HttpError(401, 'Usuário não autenticado.')
+      await postagemService.remover(id_postagem, req.userId)
       res.status(204).send()
     } catch (error) {
       next(error)

@@ -16,7 +16,7 @@ const PORT = Number(process.env.PORT ?? 3000)
 // ── Middlewares globais ───────────────────────────────────────────────────────
 app.use(morgan('dev'))
 app.use(express.json())
-app.use(cors())
+app.use(cors({ origin: process.env.CORS_ORIGIN?.split(',').map(origin => origin.trim()) ?? 'http://localhost:3000' }))
 app.use(express.static('public'))
 
 // ── Rotas ─────────────────────────────────────────────────────────────────────

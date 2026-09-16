@@ -111,11 +111,13 @@ async function create(dados: CreateUsuarioInput): Promise<Usuario> {
   if (dados.senha.length < 6) throw new HttpError(400, 'A senha deve ter pelo menos 6 caracteres.')
 
   const existente = await prisma.usuario.findUnique({ where: { email: dados.email } })
-  if (existente) throw new HttpError(400, 'Este e-mail já está cadastrado. Tente fazer login.')
+  if (existente) throw new HttpError(409, 'Este e-mail já está cadastrado. Tente fazer login.')
 
   const senhaHash = await argon2Hash(dados.senha)
 
-  const novo = await prisma.usuario.create({
+  let novo
+  try {
+    novo = await prisma.usuario.create({
     data: {
       nome_completo:    dados.nome_completo,
       nome_artistico:   dados.nome_artistico ?? dados.nome_completo,
@@ -153,7 +155,13 @@ async function create(dados: CreateUsuarioInput): Promise<Usuario> {
       }
     },
     include,
-  })
+    })
+  } catch (error: any) {
+    if (error?.code === 'P2002') {
+      throw new HttpError(409, 'Este e-mail já está cadastrado. Tente fazer login.')
+    }
+    throw error
+  }
   const mapped = mapUsuario(novo)
   await prisma.usuario.update({
     where: { id_usuario: novo.id_usuario },
@@ -173,39 +181,39 @@ async function update({ id_usuario, ...dados }: UpdateUsuarioInput): Promise<Usu
     senhaFinal = await argon2Hash(dados.senha)
   }
 
-  await prisma.usuarioInstrumento.deleteMany({ where: { id_usuario } })
-  await prisma.usuarioGenero.deleteMany({ where: { id_usuario } })
-  await prisma.usuarioDaw.deleteMany({ where: { id_usuario } })
-  await prisma.usuarioDisponibilidade.deleteMany({ where: { id_usuario } })
+  if (dados.instrumentos !== undefined) await prisma.usuarioInstrumento.deleteMany({ where: { id_usuario } })
+  if (dados.generos !== undefined) await prisma.usuarioGenero.deleteMany({ where: { id_usuario } })
+  if (dados.daws !== undefined) await prisma.usuarioDaw.deleteMany({ where: { id_usuario } })
+  if (dados.disponibilidades !== undefined) await prisma.usuarioDisponibilidade.deleteMany({ where: { id_usuario } })
 
   const atualizado = await prisma.usuario.update({
     where: { id_usuario },
     data: {
-      nome_completo:    dados.nome_completo,
-      nome_artistico:   dados.nome_artistico,
-      email:            dados.email,
+      ...(dados.nome_completo !== undefined ? { nome_completo: dados.nome_completo } : {}),
+      ...(dados.nome_artistico !== undefined ? { nome_artistico: dados.nome_artistico } : {}),
+      ...(dados.email !== undefined ? { email: dados.email } : {}),
       ...(senhaFinal ? { senha: senhaFinal } : {}),
-      telefone:         dados.telefone,
-      cidade:           dados.cidade,
-      estado:           dados.estado,
-      bairro:           dados.bairro,
-      area_atuacao:     serializeArea(dados.area_atuacao),
-      anos_experiencia: dados.anos_experiencia ?? 0,
-      biografia:        dados.biografia,
-      redes_sociais:    dados.redes_sociais ? JSON.stringify(dados.redes_sociais) : null,
-      status:           dados.status,
-      instrumentos: dados.instrumentos?.length ? {
+      ...(dados.telefone !== undefined ? { telefone: dados.telefone } : {}),
+      ...(dados.cidade !== undefined ? { cidade: dados.cidade } : {}),
+      ...(dados.estado !== undefined ? { estado: dados.estado } : {}),
+      ...(dados.bairro !== undefined ? { bairro: dados.bairro } : {}),
+      ...(dados.area_atuacao !== undefined ? { area_atuacao: serializeArea(dados.area_atuacao) } : {}),
+      ...(dados.anos_experiencia !== undefined ? { anos_experiencia: dados.anos_experiencia } : {}),
+      ...(dados.biografia !== undefined ? { biografia: dados.biografia } : {}),
+      ...(dados.redes_sociais !== undefined ? { redes_sociais: dados.redes_sociais ? JSON.stringify(dados.redes_sociais) : null } : {}),
+      ...(dados.status !== undefined ? { status: dados.status } : {}),
+      ...(dados.instrumentos !== undefined && dados.instrumentos.length ? { instrumentos: {
         create: await resolverInstrumentos(dados.instrumentos)
-      } : undefined,
-      generos: dados.generos?.length ? {
+      } } : {}),
+      ...(dados.generos !== undefined && dados.generos.length ? { generos: {
         create: await resolverGeneros(dados.generos)
-      } : undefined,
-      daws: dados.daws?.length ? {
+      } } : {}),
+      ...(dados.daws !== undefined && dados.daws.length ? { daws: {
         create: await resolverDaws(dados.daws)
-      } : undefined,
-      disponibilidades: dados.disponibilidades?.length ? {
+      } } : {}),
+      ...(dados.disponibilidades !== undefined && dados.disponibilidades.length ? { disponibilidades: {
         create: await resolverDisponibilidades(dados.disponibilidades)
-      } : undefined,
+      } } : {}),
     },
     include,
   })

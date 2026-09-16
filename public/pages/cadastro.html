@@ -120,6 +120,9 @@
     .btn-avancar:hover { transform:scale(1.04); box-shadow:0 0 40px var(--primary-glow); }
     .btn-avancar:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
     .erro-msg { background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); color:#f87171; padding:14px 18px; border-radius:15px; font-size:14px; margin-bottom:24px; display:none; }
+    .toast { position:fixed; right:24px; bottom:24px; z-index:300; max-width:360px; padding:15px 18px; border-radius:12px; background:#17131f; border:1px solid rgba(139,92,246,.45); color:#fff; box-shadow:0 15px 35px rgba(0,0,0,.45); opacity:0; transform:translateY(12px); pointer-events:none; transition:all .25s ease; }
+    .toast.show { opacity:1; transform:translateY(0); }
+    .toast.erro { border-color:rgba(239,68,68,.55); color:#fecaca; }
     .login-link { text-align:center; margin-top:24px; color:#777; font-size:14px; }
     .login-link a { color:var(--primary); text-decoration:none; font-weight:700; }
     .back-home { text-align:center; margin-top:24px; }
@@ -162,21 +165,21 @@
             <div class="form-group">
               <label for="nome_completo">Nome Completo <span class="required">*</span></label>
               <div class="input-wrap">
-                <input type="text" id="nome_completo" placeholder="Seu nome completo" autocomplete="name">
+                <input type="text" id="nome_completo" placeholder="Seu nome completo" autocomplete="name" required minlength="3" maxlength="120">
               </div>
               <div class="campo-erro" id="erro-nome">Informe seu nome completo.</div>
             </div>
             <div class="form-group">
               <label for="email">E-mail <span class="required">*</span></label>
               <div class="input-wrap">
-                <input type="email" id="email" placeholder="seu@email.com" autocomplete="email">
+                <input type="email" id="email" placeholder="seu@email.com" autocomplete="email" required maxlength="255">
               </div>
               <div class="campo-erro" id="erro-email">Informe um e-mail válido.</div>
             </div>
             <div class="form-group">
               <label for="senha">Senha <span class="required">*</span></label>
               <div class="input-wrap">
-                <input type="password" id="senha" placeholder="Mínimo 6 caracteres" autocomplete="new-password">
+                <input type="password" id="senha" placeholder="Mínimo 6 caracteres" autocomplete="new-password" required minlength="6" maxlength="128">
                 <i class="fas fa-eye toggle-senha" id="toggleSenha"></i>
               </div>
               <div class="campo-erro" id="erro-senha">Mínimo 6 caracteres.</div>
@@ -192,7 +195,7 @@
             <div class="form-group">
               <label for="confirmarSenha">Confirmar Senha <span class="required">*</span></label>
               <div class="input-wrap">
-                <input type="password" id="confirmarSenha" placeholder="Confirme a senha" autocomplete="new-password">
+                <input type="password" id="confirmarSenha" placeholder="Confirme a senha" autocomplete="new-password" required minlength="6" maxlength="128">
                 <i class="fas fa-eye toggle-senha" id="toggleConfirmar"></i>
               </div>
               <div class="campo-erro" id="erro-confirmar">As senhas não coincidem.</div>
@@ -215,13 +218,13 @@
             <div class="form-group">
               <label for="nome_artistico">Nome Artístico <span class="required">*</span></label>
               <div class="input-wrap">
-                <input type="text" id="nome_artistico" placeholder="Seu nome artístico" autocomplete="off">
+                <input type="text" id="nome_artistico" placeholder="Seu nome artístico" autocomplete="off" required minlength="2" maxlength="120">
               </div>
             </div>
             <div class="form-group">
               <label for="biografia">Biografia <span class="required">*</span></label>
               <div class="bio-wrap">
-                <textarea id="biografia" placeholder="Fale um pouco sobre você, seu estilo e experiência..." maxlength="500"></textarea>
+                <textarea id="biografia" placeholder="Fale um pouco sobre você, seu estilo e experiência..." required minlength="5" maxlength="500"></textarea>
                 <div class="bio-counter" id="bioCounter">0 / 500</div>
               </div>
             </div>
@@ -353,6 +356,58 @@
   <script type="module">
     import { salvarCadastro, completarCadastro, verificarAutenticacao } from '../js/auth.js';
     import { fetchDados } from '../js/dados.js';
+
+    const formulario = document.getElementById('cadastroForm');
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.setAttribute('role', 'status');
+    document.body.appendChild(toast);
+    let toastTimer;
+
+    function mostrarToast(mensagem, erro = false) {
+      clearTimeout(toastTimer);
+      toast.textContent = mensagem;
+      toast.classList.toggle('erro', erro);
+      toast.classList.add('show');
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 4500);
+    }
+
+    function limparErrosDeCampo() {
+      formulario.querySelectorAll('input, textarea, select').forEach(campo => {
+        campo.setCustomValidity('');
+        campo.classList.remove('erro');
+      });
+      formulario.querySelectorAll('.campo-erro').forEach(campo => campo.classList.remove('show'));
+    }
+
+    formulario.querySelectorAll('input, textarea, select').forEach(campo => {
+      campo.addEventListener('input', () => {
+        campo.setCustomValidity('');
+        campo.classList.remove('erro');
+      });
+    });
+
+    function aplicarErrosDaApi(erro) {
+      const issues = erro.issues ?? [];
+      for (const issue of issues) {
+        const campoNome = issue.path?.at(-1);
+        const ids = { nome_completo: 'nome_completo', confirmar_senha: 'confirmarSenha' };
+        const campoId = ids[campoNome] || campoNome;
+        const campo = campoId ? document.getElementById(campoId) : null;
+        const mensagem = issue.message || erro.message;
+        const mensagens = { nome_completo: 'erro-nome', email: 'erro-email', senha: 'erro-senha', confirmar_senha: 'erro-confirmar' };
+        const mensagemVisual = document.getElementById(mensagens[campoNome] || `erro-${campoId}`);
+        if (campo && 'setCustomValidity' in campo) {
+          campo.setCustomValidity(mensagem);
+          campo.classList.add('erro');
+        }
+        if (mensagemVisual) {
+          mensagemVisual.textContent = mensagem;
+          mensagemVisual.classList.add('show');
+        }
+      }
+      if (!issues.length) mostrarToast(erro.message, true);
+    }
 
     // ── MÁSCARA TELEFONE ──
     document.getElementById('telefone')?.addEventListener('input', function() {
@@ -577,8 +632,14 @@
     }
 
     // ── SUBMIT ──
-    document.getElementById('cadastroForm').addEventListener('submit', async (e) => {
+    formulario.addEventListener('submit', async (e) => {
       e.preventDefault();
+      limparErrosDeCampo();
+      const etapaVisivel = document.getElementById(`etapa${etapaAtual}`);
+      if (!etapaVisivel.checkValidity()) {
+        etapaVisivel.reportValidity();
+        return;
+      }
       const erroMsg = document.getElementById('erroMsg');
       erroMsg.style.display='none';
       const btn = document.querySelector(`#etapa${etapaAtual} .btn-avancar`);
@@ -597,7 +658,8 @@
           if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { document.getElementById('erro-email').classList.add('show'); temErro=true; } else { document.getElementById('erro-email').classList.remove('show'); }
           if(senha.length<6) { document.getElementById('erro-senha').classList.add('show'); temErro=true; } else { document.getElementById('erro-senha').classList.remove('show'); }
           if(senha!==confirmar) { document.getElementById('erro-confirmar').classList.add('show'); temErro=true; } else { document.getElementById('erro-confirmar').classList.remove('show'); }
-          if(temErro) return;
+          confirmarInput.setCustomValidity(senha===confirmar ? '' : 'As senhas não coincidem.');
+          if(temErro || !etapaVisivel.checkValidity()) { etapaVisivel.reportValidity(); return; }
 
           const jaLogado = verificarAutenticacao(false);
           if(jaLogado) {
@@ -605,7 +667,7 @@
             else { erroMsg.textContent='Você já está logado com outro e-mail. Faça logout antes.'; erroMsg.style.display='block'; return; }
           }
 
-          await salvarCadastro({ nome_completo:nome, email, senha, cadastro_completo:0 });
+          await salvarCadastro({ nome_completo:nome, email, senha });
           etapasCompletas.add(1);
           mostrarEtapa(2);
 
@@ -614,7 +676,6 @@
             nome_artistico: document.getElementById('nome_artistico').value.trim(),
             biografia:      document.getElementById('biografia').value.trim(),
             instrumentos:[], generos:[], daws:[], area_atuacao:[],
-            cadastro_completo:0,
           });
           etapasCompletas.add(2);
           mostrarEtapa(3);
@@ -635,13 +696,15 @@
             generos:        coletarCheckboxes('generos'),
             daws:           coletarCheckboxes('daws'),
             status:         document.querySelector('input[name="status"]:checked')?.value ?? 'disponivel',
-            cadastro_completo:1,
           });
+          mostrarToast('Cadastro concluído com sucesso!');
           window.location.href='perfil.html';
         }
       } catch(erro) {
         erroMsg.textContent=erro.message||'Erro inesperado. Tente novamente.';
         erroMsg.style.display='block';
+        aplicarErrosDaApi(erro);
+        mostrarToast(erro.message || 'Erro inesperado. Tente novamente.', true);
       } finally {
         if(btn) btn.disabled=false;
       }

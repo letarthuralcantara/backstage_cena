@@ -1,4 +1,4 @@
-import { verificarAutenticacao } from './auth.js';
+import { authHeaders, verificarAutenticacao } from './auth.js';
 
 // ── Ícone ────────────────────────────────────────────────────────────────────
 // Ondinha de áudio em SVG (branca), sem depender de fontes de ícone externas.
@@ -453,12 +453,15 @@ export async function criarPostagem(arquivoAudio, titulo, inicioSeg, duracaoSeg)
 
   const form = new FormData();
   form.append('audio', arquivoAudio);
-  form.append('id_usuario', String(usuarioLocal.id_usuario));
   if (titulo) form.append('titulo', titulo);
   form.append('inicio_seg', String(inicioSeg));
   form.append('duracao_seg', String(duracaoSeg));
 
-  const res = await fetch('/api/postagens', { method: 'POST', body: form });
+  const res = await fetch('/api/postagens', {
+    method: 'POST',
+    headers: authHeaders({}, false),
+    body: form,
+  });
   if (!res.ok) {
     const erro = await res.json().catch(() => ({}));
     throw new Error(erro.erro || 'Não foi possível publicar a prévia.');
@@ -476,12 +479,8 @@ export async function criarTweet(texto, expirar) {
 
   const res = await fetch('/api/tweets', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      id_usuario: usuarioLocal.id_usuario,
-      texto,
-      expirar: Boolean(expirar),
-    }),
+    headers: authHeaders(),
+    body: JSON.stringify({ texto, expirar: Boolean(expirar) }),
   });
   if (!res.ok) {
     const erro = await res.json().catch(() => ({}));

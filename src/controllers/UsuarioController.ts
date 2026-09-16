@@ -3,6 +3,7 @@ import usuarioService, { sanitizeUsuario } from '../models/UsuarioModel.js'
 import { HttpError } from '../errors/HttpError.js'
 import { verify as argon2Verify } from 'argon2'
 import jwt from 'jsonwebtoken'
+import EmailService from '../services/EmailService.js'
 
 class UsuarioController {
   async listar(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -32,6 +33,15 @@ class UsuarioController {
       // (etapa 2 do onboarding) sem exigir um novo login.
       const token = jwt.sign({ userId: novoUsuario.id_usuario }, secret, { expiresIn: '1h' })
 
+      // O e-mail é efeito colateral, não regra de negócio: um SMTP fora do ar
+      // não pode impedir alguém de criar conta. Por isso vive num try/catch
+      // próprio, depois do cadastro já persistido, e nunca chega ao next(error).
+      try {
+        await EmailService.enviarBoasVindas(novoUsuario.email, novoUsuario.nome_completo)
+      } catch (mailError) {
+        console.error('Falha ao enviar e-mail de boas-vindas:', mailError)
+      }
+
       res.status(201).json({ usuario: sanitizeUsuario(novoUsuario), token })
     } catch (error) {
       next(error)
@@ -57,7 +67,7 @@ class UsuarioController {
   async login(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { email, senha } = req.body as { email?: string; senha?: string }
-      if (!email || !senha) throw new HttpError(400, 'E-mail e senha são obrigatórios.')
+      if (typeof email !== 'string' || typeof senha !== 'string') return next(new HttpError(400, 'Dados de login inválidos.'))
       const usuario = await usuarioService.findByEmail(email)
       if (!usuario) throw new HttpError(401, 'E-mail ou senha incorretos.')
       const senhaCorreta = await argon2Verify(usuario.senha, senha)
@@ -77,7 +87,7 @@ class UsuarioController {
     try {
       const id = Number(req.params.id)
       const { status } = req.body as { status?: string }
-      if (!status) throw new HttpError(400, 'O campo status é obrigatório.')
+      if (typeof status !== 'string') return next(new HttpError(400, 'Status inválido.'))
       const usuario = await usuarioService.updateStatus(id, status)
       res.json(sanitizeUsuario(usuario))
     } catch (error) { next(error) }
@@ -106,10 +116,8 @@ class UsuarioController {
       const { senha_atual, nova_senha, confirmar_senha } = req.body as {
         senha_atual?: string; nova_senha?: string; confirmar_senha?: string
       }
-      if (!senha_atual || !nova_senha || !confirmar_senha)
-        throw new HttpError(400, 'Preencha todos os campos de senha.')
-      if (nova_senha !== confirmar_senha)
-        throw new HttpError(400, 'A nova senha e a confirmação não coincidem.')
+      if (typeof senha_atual !== 'string' || typeof nova_senha !== 'string' || typeof confirmar_senha !== 'string')
+        return next(new HttpError(400, 'Dados de senha inválidos.'))
       await usuarioService.alterarSenha(id, senha_atual, nova_senha)
       res.json({ mensagem: 'Senha alterada com sucesso.' })
     } catch (error) { next(error) }

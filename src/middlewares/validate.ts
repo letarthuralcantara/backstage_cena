@@ -20,6 +20,14 @@ export function validate(schema: ZodType) {
       return
     }
 
+    const data = result.data as {
+      body?: unknown
+      query?: unknown
+      params?: unknown
+    }
+    req.body = data.body ?? {}
+    req.query = (data.query ?? {}) as Request['query']
+    req.params = (data.params ?? {}) as Request['params']
     next()
   }
 }

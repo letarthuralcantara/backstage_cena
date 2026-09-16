@@ -2,13 +2,22 @@ export function getToken() {
   return localStorage.getItem('token');
 }
 
-export function authHeaders(extra = {}) {
+export function authHeaders(extra = {}, json = true) {
   const token = getToken();
   return {
-    'Content-Type': 'application/json',
+    ...(json ? { 'Content-Type': 'application/json' } : {}),
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
     ...extra,
   };
+}
+
+async function respostaComErro(res, fallback) {
+  let erro
+  try { erro = await res.json() } catch { erro = {} }
+  const error = new Error(erro.erro || fallback)
+  error.status = res.status
+  error.issues = Array.isArray(erro.issues) ? erro.issues : []
+  throw error
 }
 
 export async function salvarCadastro(dados) {
@@ -27,7 +36,6 @@ export async function salvarCadastro(dados) {
     instrumentos:     dados.instrumentos || [],
     generos:          dados.generos || [],
     daws:             dados.daws || [],
-    cadastro_completo: dados.cadastro_completo ?? 0,
   };
 
   const res = await fetch('/api/usuarios', {
@@ -37,8 +45,7 @@ export async function salvarCadastro(dados) {
   });
 
   if (!res.ok) {
-    const erro = await res.json();
-    throw new Error(erro.erro || 'Erro ao cadastrar');
+    await respostaComErro(res, 'Erro ao cadastrar');
   }
 
   // POST /api/usuarios devolve { usuario, token }
@@ -59,7 +66,6 @@ export async function completarCadastro(dados) {
     : (usuarioLocal.area_atuacao ? [usuarioLocal.area_atuacao] : []);
 
   const body = {
-    id_usuario:       id,
     nome_completo:    usuarioLocal.nome_completo,
     nome_artistico:   dados.nome_artistico || usuarioLocal.nome_artistico || usuarioLocal.nome_completo,
     email:            usuarioLocal.email.toLowerCase().trim(),
@@ -76,7 +82,6 @@ export async function completarCadastro(dados) {
     generos:          dados.generos       || [],
     daws:             dados.daws          || [],
     status:           dados.status        || usuarioLocal.status || 'disponivel',
-    cadastro_completo: dados.cadastro_completo ?? 1,
   };
 
   const res = await fetch(`/api/usuarios/${id}`, {
@@ -86,8 +91,7 @@ export async function completarCadastro(dados) {
   });
 
   if (!res.ok) {
-    const erro = await res.json();
-    throw new Error(erro.erro || 'Erro ao atualizar cadastro');
+    await respostaComErro(res, 'Erro ao atualizar cadastro');
   }
 
   // PUT /api/usuarios/:id devolve o usuário puro (sem token novo)
@@ -104,8 +108,7 @@ export async function fazerLogin(email, senha) {
   });
 
   if (!res.ok) {
-    const erro = await res.json();
-    throw new Error(erro.erro || 'Email ou senha incorretos');
+    await respostaComErro(res, 'E-mail ou senha incorretos');
   }
 
   // POST /api/usuarios/login devolve { usuario, token }

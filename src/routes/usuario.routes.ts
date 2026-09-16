@@ -9,23 +9,33 @@ import {
   removerSchema,
   statusSchema,
   alterarSenhaSchema,
+  listarSchema,
+  buscarSchema,
+  configuracoesSchema,
+  atualizarConfiguracoesSchema,
+  semEntradaSchema,
 } from '../schema/usuario.schema.js'
 
 const router = Router()
 
-// ...rotas de catálogo continuam iguais...
+router.get('/estados', validate(semEntradaSchema), UsuarioController.listarEstados)
+router.get('/areas', validate(semEntradaSchema), UsuarioController.listarAreas)
+router.get('/instrumentos', validate(semEntradaSchema), UsuarioController.listarInstrumentos)
+router.get('/generos', validate(semEntradaSchema), UsuarioController.listarGeneros)
+router.get('/daws', validate(semEntradaSchema), UsuarioController.listarDaws)
+router.get('/disponibilidades', validate(semEntradaSchema), UsuarioController.listarDisponibilidades)
 
 router.post('/login', validate(loginSchema), UsuarioController.login)
 
-router.patch('/:id/status', isAuthenticated, isOwner, validate(statusSchema), UsuarioController.atualizarStatus)
-router.get('/:id/configuracoes', isAuthenticated, isOwner, UsuarioController.getConfiguracoes)
-router.put('/:id/configuracoes', isAuthenticated, isOwner, UsuarioController.updateConfiguracoes)
-router.put('/:id/senha', isAuthenticated, isOwner, validate(alterarSenhaSchema), UsuarioController.alterarSenha)
+router.patch('/:id/status', isAuthenticated, validate(statusSchema), isOwner, UsuarioController.atualizarStatus)
+router.get('/:id/configuracoes', isAuthenticated, validate(configuracoesSchema), isOwner, UsuarioController.getConfiguracoes)
+router.put('/:id/configuracoes', isAuthenticated, validate(atualizarConfiguracoesSchema), isOwner, UsuarioController.updateConfiguracoes)
+router.put('/:id/senha', isAuthenticated, validate(alterarSenhaSchema), isOwner, UsuarioController.alterarSenha)
 
-router.get('/', UsuarioController.listar)
-router.get('/:id', UsuarioController.buscarPorId)
+router.get('/', validate(listarSchema), UsuarioController.listar)
+router.get('/:id', validate(buscarSchema), UsuarioController.buscarPorId)
 router.post('/', validate(cadastroSchema), UsuarioController.criar)
-router.put('/:id', isAuthenticated, isOwner, validate(atualizarSchema), UsuarioController.atualizar)
-router.delete('/:id', isAuthenticated, isOwner, validate(removerSchema), UsuarioController.remover)
+router.put('/:id', isAuthenticated, validate(atualizarSchema), isOwner, UsuarioController.atualizar)
+router.delete('/:id', isAuthenticated, validate(removerSchema), isOwner, UsuarioController.remover)
 
 export default router

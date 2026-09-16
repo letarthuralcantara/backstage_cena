@@ -35,7 +35,7 @@ Content-Type: application/json
   "senha": "123456"
 }
 
-### Esperado: 400 Bad Request — "Este e-mail já está cadastrado. Tente fazer login."
+### Esperado: 409 Conflict — "Este e-mail já está cadastrado. Tente fazer login."
 
 
 ### 1.2) CADASTRO — dados inválidos (sem e-mail)
@@ -46,7 +46,7 @@ Content-Type: application/json
   "nome_completo": "Sem Email"
 }
 
-### Esperado: 400 Bad Request — "O campo e-mail é obrigatório."
+### Esperado: 400 Bad Request com `issues` apontando para `body.email`.
 
 
 ### 2) LOGIN — credenciais válidas
@@ -154,7 +154,73 @@ Authorization: Bearer {{token}}
 ### Esperado: 200 OK
 
 
-### 5) LIMPEZA — remove o usuário de teste criado neste arquivo
+### 6) VALIDAÇÃO — filtro com campo não permitido
+GET {{baseUrl}}?field=senha&value=qualquer
+
+### Esperado: 400 Bad Request com issue identificando "field".
+
+
+### 7) CONFIGURAÇÕES — body vazio
+PUT {{baseUrl}}/{{userId}}/configuracoes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{}
+
+### Esperado: 400 Bad Request com issue identificando o body.
+
+
+### 8) CONTEÚDO — tweet sem autenticação
+POST http://localhost:3000/api/tweets
+Content-Type: application/json
+
+{
+  "texto": "Tentativa sem token"
+}
+
+### Esperado: 401 Unauthorized.
+
+
+### 8.1) CONTEÚDO — tweet inválido autenticado
+POST http://localhost:3000/api/tweets
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "texto": ""
+}
+
+### Esperado: 400 Bad Request com issue identificando "texto".
+
+
+### 8.2) POSTAGEM — sem autenticação
+POST http://localhost:3000/api/postagens
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="titulo"
+
+Sem token
+--boundary--
+
+### Esperado: 401 Unauthorized.
+
+
+### 8.3) POSTAGEM — duração inválida autenticada
+POST http://localhost:3000/api/postagens
+Content-Type: multipart/form-data; boundary=boundary
+Authorization: Bearer {{token}}
+
+--boundary
+Content-Disposition: form-data; name="duracao_seg"
+
+90
+--boundary--
+
+### Esperado: 400 Bad Request com issue apontando para `body.duracao_seg`.
+
+
+### 9) LIMPEZA — remove o usuário de teste criado neste arquivo
 DELETE {{baseUrl}}/{{userId}}
 Authorization: Bearer {{token}}
 
