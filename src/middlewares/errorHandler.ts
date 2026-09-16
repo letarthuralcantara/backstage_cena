@@ -20,7 +20,7 @@ export function errorHandler(
     return
   }
   if (err instanceof multer.MulterError) {
-    res.status(err.code === 'LIMIT_FILE_SIZE' ? 413 : 400).json({
+    res.status(400).json({
       erro: err.code === 'LIMIT_FILE_SIZE' ? 'O arquivo excede o limite permitido.' : 'Falha no upload.',
     })
     return

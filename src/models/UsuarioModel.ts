@@ -2,6 +2,7 @@ import prisma from '../database/prisma.js'
 import { HttpError } from '../errors/HttpError.js'
 import { hash as argon2Hash, verify as argon2Verify } from 'argon2'
 import type { Usuario, CreateUsuarioInput, UpdateUsuarioInput } from '../types/index.js'
+import { cadastroCompleto, sanitizeUsuario } from '../utils/usuario.js'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function parseArea(raw: string | null | undefined): string[] {
@@ -24,20 +25,7 @@ function serializeArea(a: string | string[] | null | undefined): string | null {
  *  - biografia com mínimo 20 caracteres
  *  - área de atuação
  */
-export function cadastroCompleto(u: any): boolean {
-  const areas = parseArea(u.area_atuacao)
-  const bio = (u.biografia || '').trim()
-  const insts = Array.isArray(u.instrumentos) ? u.instrumentos : []
-  const gens  = Array.isArray(u.generos)      ? u.generos      : []
-  return !!(
-    u.nome_completo &&
-    insts.length > 0 &&
-    gens.length > 0 &&
-    u.estado &&
-    bio.length >= 5 &&
-    areas.length > 0
-  )
-}
+export { cadastroCompleto, sanitizeUsuario } from '../utils/usuario.js'
 
 // mapUsuario mantém TODOS os campos, incluindo o hash da senha — necessário
 // internamente (ex: argon2.verify no login). Nunca use o retorno desta função
@@ -63,11 +51,6 @@ function mapUsuario(u: any): Usuario {
  * Use SEMPRE no controller, na resposta HTTP — nunca envie o resultado
  * "cru" de mapUsuario() diretamente em um res.json().
  */
-export function sanitizeUsuario<T extends { senha?: string }>(u: T): Omit<T, 'senha'> {
-  const { senha, ...resto } = u
-  return resto
-}
-
 const include = {
   instrumentos:     { include: { instrumento: true } },
   generos:          { include: { genero: true } },

@@ -225,3 +225,51 @@ DELETE {{baseUrl}}/{{userId}}
 Authorization: Bearer {{token}}
 
 ### Esperado: 204 No Content
+
+
+### 10) UPLOAD — envio válido de áudio
+POST http://localhost:3000/api/postagens
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=audio-boundary
+
+--audio-boundary
+Content-Disposition: form-data; name="titulo"
+
+Minha prévia
+--audio-boundary
+Content-Disposition: form-data; name="audio"; filename="sample.mp3"
+Content-Type: audio/mpeg
+
+< ./tests/fixtures/sample.mp3
+--audio-boundary--
+
+### Esperado: 201 Created e `audio_url` acessível por GET.
+
+
+### 10.1) UPLOAD — tipo não permitido
+POST http://localhost:3000/api/postagens
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=invalid-audio-boundary
+
+--invalid-audio-boundary
+Content-Disposition: form-data; name="audio"; filename="arquivo.txt"
+Content-Type: text/plain
+
+arquivo inválido
+--invalid-audio-boundary--
+
+### Esperado: 400 Bad Request e nenhum arquivo gravado.
+
+
+### 10.2) UPLOAD — sem autenticação
+POST http://localhost:3000/api/postagens
+Content-Type: multipart/form-data; boundary=no-auth-boundary
+
+--no-auth-boundary
+Content-Disposition: form-data; name="audio"; filename="sample.mp3"
+Content-Type: audio/mpeg
+
+< ./tests/fixtures/sample.mp3
+--no-auth-boundary--
+
+### Esperado: 401 Unauthorized sem processar o arquivo.

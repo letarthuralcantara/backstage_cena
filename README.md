@@ -1,4 +1,8 @@
-# Backstage Cena — Web Platform for Connecting Musicians
+# Backstage Cena
+
+Plataforma web para conectar musicos, com front-end estatico, API Express,
+Prisma/SQLite, autenticacao JWT, validacao Zod, upload de audio e testes
+automatizados.
 
 ## Desenvolvimento local
 
@@ -10,6 +14,19 @@ cp .env.example .env
 npm run setup
 npm run dev
 ```
+
+Para validar o projeto antes da apresentacao:
+
+```bash
+npm run build
+npm test
+npm run front:test
+npm run coverage
+npm run e2e
+```
+
+`npm run dev` e `npm start` iniciam o mesmo entrypoint, e os testes de API
+importam `src/app.ts` sem abrir uma porta.
 
 O servidor fica em `http://localhost:3000`. Em `NODE_ENV=development`, se o
 SMTP não estiver configurado, o cadastro tenta usar uma conta Ethereal e
@@ -86,7 +103,7 @@ erDiagram
 
 access the web page: https://letarthuralcantara.github.io/backstage_cena/public/pages/index.html
 
-Backstage Cena is a web application created to connect musicians through a centralized platform. The project allows users to register, store information in a relational database, and interact through a structured web system designed to support collaboration and visibility.
+Backstage Cena is a web application created to connect musicians through a centralized platform. Users can register, complete a profile, publish audio previews and tweets, and search for collaborators.
 
 This project was developed as part of my learning process in web development and database integration.
 
@@ -99,24 +116,20 @@ The project goes beyond a static website by implementing data persistence using 
 
 ---
 
-## Objectives
-- Provide a platform to connect musicians  
-- Allow user registration and persistent data storage  
-- Apply relational database concepts using SQL  
-- Integrate front-end, back-end, and database layers  
+## Objetivos
+- Conectar musicos e produtores independentes
+- Permitir cadastro, autenticacao e perfis persistentes
+- Integrar front-end, API, banco relacional e uploads
 
 ---
 
-## System description
-Backstage Cena is structured as a web application with database support and user interaction.
+## Arquitetura
+O front-end estatico consome uma API Express. Controllers coordenam as
+requisicoes, Models concentram o Prisma Client e os schemas Zod validam as
+entradas antes da camada de negocio.
 
-Main components:
-- Front-end interface for user interaction  
-- Back-end logic for processing requests  
-- Relational database for persistent data storage  
-- SQL queries for data insertion, retrieval, and updates  
-
-The system focuses on clarity and correctness, prioritizing functional implementation and learning.
+O banco SQLite e recriado por migration e seed; senhas sao armazenadas com
+Argon2 e rotas privadas usam JWT.
 
 ---
 
@@ -129,23 +142,26 @@ The system focuses on clarity and correctness, prioritizing functional implement
 ---
 
 ## Technologies used
-- HTML  
-- CSS  
-- PHP  
-- SQL (relational database)  
-- Git and GitHub for version control  
+- HTML, CSS and JavaScript ESM
+- TypeScript, Node.js, Express and Morgan
+- Prisma with SQLite, migrations and seed
+- Argon2, JWT, Zod, Multer and Nodemailer
+- Vitest, Supertest, JSDOM and Playwright
 
 ---
 
 ## Data Base
 
 [![Diagrama do Banco de Dados](/public/images/mermaid-diagram-2026-05-21-083052.png.png)](https://mermaid.live/embed?theme=default&look=classic&mode=light#pako:eNqtVs1...)
-## Methodology
-1. Definition of the platform concept and use cases  
-2. Design of the relational database structure  
-3. Implementation of front-end interfaces  
-4. Development of back-end logic  
-5. SQL integration and functional testing  
+## Testes
+Os testes rapidos sao separados por responsabilidade:
+
+- `npm test`: unidade e rotas com Supertest, sem abrir porta
+- `npm run front:test`: Vitest com JSDOM e mocks de `fetch`/`localStorage`
+- `npm run e2e`: fluxo de navegador com Playwright
+- `npm run coverage`: relatorio V8 com piso configurado
+
+O E2E requer as dependencias nativas do Chromium no sistema operacional.
 
 ---
 

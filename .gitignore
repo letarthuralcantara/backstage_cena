@@ -4,3 +4,7 @@ src/database/db.sql
 .env
 public/uploads/audio/*
 !public/uploads/audio/.gitkeep
+dist/
+coverage/
+test-results/
+playwright-report/

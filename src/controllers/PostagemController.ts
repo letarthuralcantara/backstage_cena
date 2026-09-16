@@ -40,7 +40,7 @@ export const uploadAudio = multer({
   limits: { fileSize: TAMANHO_MAXIMO_BYTES },
   fileFilter: (_req, file, cb) => {
     if (!TIPOS_PERMITIDOS.has(file.mimetype)) {
-      cb(new HttpError(415, 'Formato de áudio não suportado. Use mp3, wav, m4a ou ogg.'))
+      cb(new HttpError(400, 'Formato de áudio não suportado. Use mp3, wav, m4a ou ogg.'))
       return
     }
     cb(null, true)
@@ -56,7 +56,7 @@ const PostagemController = {
       const bytes = await fsPromises.readFile(req.file.path)
       if (!audioTemAssinaturaValida(bytes)) {
         await fsPromises.unlink(req.file.path).catch(() => undefined)
-        throw new HttpError(415, 'O conteúdo do arquivo de áudio é inválido.')
+        throw new HttpError(400, 'O conteúdo do arquivo de áudio é inválido.')
       }
 
       const id_usuario = req.userId
@@ -75,6 +75,7 @@ const PostagemController = {
 
       res.status(201).json(postagem)
     } catch (error) {
+      if (req.file) await fsPromises.unlink(req.file.path).catch(() => undefined)
       next(error)
     }
   },
