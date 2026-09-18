@@ -5,6 +5,8 @@ import { validate } from '../middlewares/validate.js'
 import {
   cadastroSchema,
   loginSchema,
+  esqueciSenhaSchema,
+  redefinirSenhaSchema,
   atualizarSchema,
   removerSchema,
   statusSchema,
@@ -26,6 +28,8 @@ router.get('/daws', validate(semEntradaSchema), UsuarioController.listarDaws)
 router.get('/disponibilidades', validate(semEntradaSchema), UsuarioController.listarDisponibilidades)
 
 router.post('/login', validate(loginSchema), UsuarioController.login)
+router.post('/esqueci-senha', validate(esqueciSenhaSchema), UsuarioController.esqueciSenha)
+router.post('/redefinir-senha', validate(redefinirSenhaSchema), UsuarioController.redefinirSenha)
 
 router.patch('/:id/status', isAuthenticated, validate(statusSchema), isOwner, UsuarioController.atualizarStatus)
 router.get('/:id/configuracoes', isAuthenticated, validate(configuracoesSchema), isOwner, UsuarioController.getConfiguracoes)

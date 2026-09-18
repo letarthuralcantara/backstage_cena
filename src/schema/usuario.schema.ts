@@ -52,12 +52,28 @@ const bodyConfiguracoes = z.object({
   perfil_publico: z.coerce.number().int().min(0).max(1).optional(),
 }).refine(data => Object.keys(data).length > 0, 'Informe ao menos uma configuração para atualizar')
 
+const bodyEsqueciSenha = z.object({
+  email: z.string().email('E-mail inválido'),
+}).strict()
+
+const bodyRedefinirSenha = z.object({
+  email: z.string().email('E-mail inválido'),
+  codigo: z.string().regex(/^\d{6}$/, 'O código deve ter 6 dígitos'),
+  nova_senha: z.string().min(6, 'A nova senha deve ter no mínimo 6 caracteres'),
+  confirmar_senha: z.string().min(1, 'A confirmação de senha é obrigatória'),
+}).refine(data => data.nova_senha === data.confirmar_senha, {
+  path: ['confirmar_senha'],
+  message: 'A confirmação de senha não coincide com a nova senha',
+})
+
 const params = z.object({
   id: z.coerce.number().int().positive('O id deve ser um número positivo'),
 })
 
 export const cadastroSchema = z.object({ body: bodyCadastro })
 export const loginSchema = z.object({ body: bodyLogin })
+export const esqueciSenhaSchema = z.object({ body: bodyEsqueciSenha })
+export const redefinirSenhaSchema = z.object({ body: bodyRedefinirSenha })
 export const atualizarSchema = z.object({ params, body: bodyCadastro.partial() })
 export const removerSchema = z.object({ params })
 export const statusSchema = z.object({ params, body: bodyStatus })

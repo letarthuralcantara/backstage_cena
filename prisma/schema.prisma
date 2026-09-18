@@ -25,6 +25,13 @@ model Usuario {
   redes_sociais     String?
   status            String   @default("disponivel") // disponivel, ocupado, nao_perturbe, invisivel
 
+  // Redefinição de senha por código enviado por e-mail. O código fica
+  // guardado em texto puro (não é a senha, é um código de uso único e
+  // curta duração — 15 min) e é apagado assim que usado ou substituído
+  // por um novo pedido.
+  codigo_reset_senha     String?
+  codigo_reset_expira_em DateTime?
+
   instrumentos     UsuarioInstrumento[]
   generos          UsuarioGenero[]
   daws             UsuarioDaw[]

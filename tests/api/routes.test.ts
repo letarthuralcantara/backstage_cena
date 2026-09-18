@@ -4,6 +4,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 vi.mock('../../src/services/EmailService.js', () => ({ default: { enviarBoasVindas: vi.fn().mockResolvedValue(undefined) } }))
 
 const { default: app } = await import('../../src/app.js')
+const { default: EmailService } = await import('../../src/services/EmailService.js')
 
 let userId = 0
 let token = ''
@@ -35,9 +36,34 @@ describe('rotas da API sem abrir porta', () => {
   })
 
   it('retorna 400 com issues para cadastro inválido', async () => {
+    vi.mocked(EmailService.enviarBoasVindas).mockClear()
     const response = await request(app).post('/api/usuarios').send({ email: 'invalido', senha: '1' })
     expect(response.status).toBe(400)
     expect(response.body.issues.length).toBeGreaterThan(0)
+    expect(EmailService.enviarBoasVindas).not.toHaveBeenCalled()
+  })
+
+  it('mantém 201 quando o SMTP falha depois do cadastro', async () => {
+    const emailComFalha = `smtp-falha-${Date.now()}@example.com`
+    vi.mocked(EmailService.enviarBoasVindas)
+      .mockClear()
+      .mockRejectedValueOnce(new Error('SMTP indisponível'))
+
+    const response = await request(app).post('/api/usuarios').send({
+      nome_completo: 'Cadastro sem SMTP',
+      email: emailComFalha,
+      senha: '123456',
+    })
+
+    expect(response.status).toBe(201)
+    expect(EmailService.enviarBoasVindas).toHaveBeenCalledWith(
+      emailComFalha,
+      'Cadastro sem SMTP',
+    )
+
+    await request(app)
+      .delete(`/api/usuarios/${response.body.usuario.id_usuario}`)
+      .set('Authorization', `Bearer ${response.body.token}`)
   })
 
   it('protege criação de tweet sem token', async () => {
@@ -66,10 +92,25 @@ describe('rotas da API sem abrir porta', () => {
     expect(updated.body.nome_completo).toBe('Usuario Atualizado')
   })
 
-  it('bloqueia outro proprietario', async () => {
+  it('rejeita token com formato invalido', async () => {
     const response = await request(app).put(`/api/usuarios/${userId}`)
       .set('Authorization', 'Bearer token-invalido')
       .send({ nome_completo: 'Nao autorizado' })
     expect(response.status).toBe(401)
+  })
+
+  it('bloqueia um usuario autenticado de editar o perfil de outro (IDOR)', async () => {
+    const outro = await request(app).post('/api/usuarios').send({
+      nome_completo: 'Outro Usuario', email: `intruso-${Date.now()}@example.com`, senha: '123456',
+    })
+    const outroToken = outro.body.token
+    const outroId = outro.body.usuario.id_usuario
+
+    const response = await request(app).put(`/api/usuarios/${userId}`)
+      .set('Authorization', `Bearer ${outroToken}`)
+      .send({ nome_completo: 'Nao autorizado' })
+    expect(response.status).toBe(403)
+
+    await request(app).delete(`/api/usuarios/${outroId}`).set('Authorization', `Bearer ${outroToken}`)
   })
 })

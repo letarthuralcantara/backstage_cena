@@ -118,6 +118,40 @@ export async function fazerLogin(email, senha) {
   return usuario;
 }
 
+export async function pedirCodigoRedefinicao(email) {
+  const res = await fetch('/api/usuarios/esqueci-senha', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email.toLowerCase().trim() }),
+  });
+
+  if (!res.ok) {
+    await respostaComErro(res, 'Erro ao solicitar código de redefinição');
+  }
+
+  // Sempre 200 com mensagem genérica, exista ou não o e-mail (ver back-end).
+  return res.json();
+}
+
+export async function redefinirSenhaComCodigo(email, codigo, novaSenha, confirmarSenha) {
+  const res = await fetch('/api/usuarios/redefinir-senha', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      email: email.toLowerCase().trim(),
+      codigo,
+      nova_senha: novaSenha,
+      confirmar_senha: confirmarSenha,
+    }),
+  });
+
+  if (!res.ok) {
+    await respostaComErro(res, 'Erro ao redefinir senha');
+  }
+
+  return res.json();
+}
+
 export function fazerLogout() {
   localStorage.removeItem('usuarioLogado');
   localStorage.removeItem('token');

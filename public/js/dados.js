@@ -34,14 +34,25 @@ export async function fetchMusicos() {
 }
 
 export async function fetchDados() {
+    try {
+        const response = await fetch('/data/dados.json');
+        if (response.ok) {
+            const dados = await response.json();
+            if (dados?.instrumentos && dados?.generos && dados?.daws && dados?.areas) {
+                return dados;
+            }
+        }
+    } catch (erro) {
+        console.warn('Não foi possível carregar dados.json; usando a API.', erro);
+    }
 
-          const [
+    const [
           instrumentos,
           generos,
           daws,
           disponibilidades,
           areas
-      ] = await Promise.all([
+    ] = await Promise.all([
           buscar("instrumentos"),
           buscar("generos"),
           buscar("daws"),

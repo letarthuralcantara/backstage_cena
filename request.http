@@ -90,6 +90,78 @@ Content-Type: application/json
 ### Esperado: 401 Unauthorized — "E-mail ou senha incorretos."
 
 
+### 2.3) ESQUECI MINHA SENHA — pede o código (sempre 200, exista ou não o e-mail)
+POST {{baseUrl}}/esqueci-senha
+Content-Type: application/json
+
+{
+  "email": "tucko@mail.com"
+}
+
+### Esperado: 200 OK — mensagem genérica. Com SMTP de desenvolvimento (Ethereal),
+### o link de prévia do e-mail aparece no console do servidor.
+### O código em si só existe no banco (coluna codigo_reset_senha) ou no e-mail
+### enviado — a API nunca devolve ele na resposta, de propósito.
+
+
+### 2.4) ESQUECI MINHA SENHA — e-mail inexistente responde igualzinho
+POST {{baseUrl}}/esqueci-senha
+Content-Type: application/json
+
+{
+  "email": "naoexiste@mail.com"
+}
+
+### Esperado: 200 OK — a MESMA mensagem genérica do 2.3 (não revela quem está
+### cadastrado).
+
+
+### 2.5) REDEFINIR SENHA — código incorreto
+POST {{baseUrl}}/redefinir-senha
+Content-Type: application/json
+
+{
+  "email": "tucko@mail.com",
+  "codigo": "000000",
+  "nova_senha": "novaSenha123",
+  "confirmar_senha": "novaSenha123"
+}
+
+### Esperado: 400 Bad Request — "Código inválido ou expirado."
+
+
+### 2.6) REDEFINIR SENHA — confirmação não bate
+POST {{baseUrl}}/redefinir-senha
+Content-Type: application/json
+
+{
+  "email": "tucko@mail.com",
+  "codigo": "123456",
+  "nova_senha": "novaSenha123",
+  "confirmar_senha": "outraCoisa"
+}
+
+### Esperado: 400 Bad Request — issue em confirmar_senha.
+
+
+### 2.7) REDEFINIR SENHA — código válido
+### Rode o 2.3 antes, pegue o código no console/e-mail de prévia e cole abaixo.
+POST {{baseUrl}}/redefinir-senha
+Content-Type: application/json
+
+{
+  "email": "tucko@mail.com",
+  "codigo": "COLE_O_CODIGO_AQUI",
+  "nova_senha": "novaSenha123",
+  "confirmar_senha": "novaSenha123"
+}
+
+### Esperado: 200 OK — "Senha redefinida com sucesso." Faça login de novo com
+### a nova senha pra confirmar, e tente reenviar esta mesma requisição: o
+### código já usado deve voltar 400.
+
+
+
 ### 3) ROTA PROTEGIDA SEM TOKEN — atualizar o próprio perfil, sem enviar Authorization
 PUT {{baseUrl}}/{{userId}}
 Content-Type: application/json

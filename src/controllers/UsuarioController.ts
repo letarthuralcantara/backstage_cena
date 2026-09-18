@@ -66,8 +66,7 @@ class UsuarioController {
 
   async login(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { email, senha } = req.body as { email?: string; senha?: string }
-      if (typeof email !== 'string' || typeof senha !== 'string') return next(new HttpError(400, 'Dados de login inválidos.'))
+      const { email, senha } = req.body as { email: string; senha: string }
       const usuario = await usuarioService.findByEmail(email)
       if (!usuario) throw new HttpError(401, 'E-mail ou senha incorretos.')
       const senhaCorreta = await argon2Verify(usuario.senha, senha)
@@ -86,8 +85,7 @@ class UsuarioController {
   async atualizarStatus(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const id = Number(req.params.id)
-      const { status } = req.body as { status?: string }
-      if (typeof status !== 'string') return next(new HttpError(400, 'Status inválido.'))
+      const { status } = req.body as { status: string }
       const usuario = await usuarioService.updateStatus(id, status)
       res.json(sanitizeUsuario(usuario))
     } catch (error) { next(error) }
@@ -113,13 +111,40 @@ class UsuarioController {
   async alterarSenha(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const id = Number(req.params.id)
-      const { senha_atual, nova_senha, confirmar_senha } = req.body as {
-        senha_atual?: string; nova_senha?: string; confirmar_senha?: string
+      const { senha_atual, nova_senha } = req.body as {
+        senha_atual: string; nova_senha: string
       }
-      if (typeof senha_atual !== 'string' || typeof nova_senha !== 'string' || typeof confirmar_senha !== 'string')
-        return next(new HttpError(400, 'Dados de senha inválidos.'))
       await usuarioService.alterarSenha(id, senha_atual, nova_senha)
       res.json({ mensagem: 'Senha alterada com sucesso.' })
+    } catch (error) { next(error) }
+  }
+
+  // ── Esqueci minha senha ──────────────────────────────────────────────────
+  async esqueciSenha(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { email } = req.body as { email: string }
+      const resultado = await usuarioService.gerarCodigoRedefinicao(email)
+
+      // O e-mail é efeito colateral: se o SMTP falhar, não derruba a
+      // requisição (mesma regra do cadastro). E respondemos com a mesma
+      // mensagem exista ou não o e-mail, pra não vazar quais contas existem.
+      if (resultado) {
+        try {
+          await EmailService.enviarCodigoRedefinicaoSenha(resultado.usuario.email, resultado.usuario.nome_completo, resultado.codigo)
+        } catch (mailError) {
+          console.error('Falha ao enviar e-mail de redefinição de senha:', mailError)
+        }
+      }
+
+      res.status(200).json({ mensagem: 'Se este e-mail estiver cadastrado, enviamos um código de verificação.' })
+    } catch (error) { next(error) }
+  }
+
+  async redefinirSenha(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { email, codigo, nova_senha } = req.body as { email: string; codigo: string; nova_senha: string }
+      await usuarioService.redefinirSenhaComCodigo(email, codigo, nova_senha)
+      res.status(200).json({ mensagem: 'Senha redefinida com sucesso.' })
     } catch (error) { next(error) }
   }
 

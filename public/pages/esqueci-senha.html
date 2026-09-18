@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esqueci minha senha - Backstage Cena</title>
+    <meta name="description" content="Redefina a senha da sua conta Backstage Cena com um código enviado por e-mail.">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/global.css">
+    <style>
+        :root {
+            --primary: #8b5cf6;
+            --primary-glow: rgba(139, 92, 246, 0.6);
+            --secondary: #d946ef;
+            --bg-dark: #050505;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            overflow-x: hidden;
+            background-image:
+                radial-gradient(circle at 10% 10%, rgba(139, 92, 246, 0.15), transparent 50%),
+                radial-gradient(circle at 90% 90%, rgba(217, 70, 239, 0.1), transparent 50%);
+            background-attachment: fixed;
+        }
+
+        #bg-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1;
+            opacity: 0.4;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 480px;
+        }
+
+        .login-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 40px;
+            padding: 60px 50px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+            transition: border-color 0.4s;
+            animation: cardIn 0.8s cubic-bezier(0.2, 1, 0.3, 1) both;
+        }
+        .login-card:hover { border-color: rgba(139, 92, 246, 0.3); }
+
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateY(40px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 36px;
+            display: flex;
+            justify-content: center;
+        }
+        .logo-img {
+            width: 160px;
+            height: auto;
+            display: block;
+            filter: drop-shadow(0 0 20px var(--primary-glow));
+            transition: filter 0.3s;
+        }
+        .logo-img:hover { filter: drop-shadow(0 0 35px var(--primary-glow)); }
+
+        .form-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 8px;
+            background: linear-gradient(to bottom, #fff, #bbb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .form-subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 36px;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group { margin-bottom: 28px; position: relative; }
+        .form-group label {
+            display: block;
+            color: #ccc;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+        .input-wrapper { position: relative; }
+        .input-wrapper i {
+            position: absolute;
+            left: 18px; top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+        input[type="email"], input[type="password"], input[type="text"] {
+            width: 100%;
+            padding: 16px 16px 16px 50px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            color: #fff;
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+            outline: none;
+        }
+        input[type="email"]:focus, input[type="password"]:focus, input[type="text"]:focus {
+            background: rgba(139, 92, 246, 0.06);
+            border-color: var(--primary);
+            box-shadow: 0 0 25px rgba(139, 92, 246, 0.2);
+        }
+        input#codigo {
+            letter-spacing: 6px;
+            font-weight: 700;
+            text-align: center;
+            padding-left: 16px;
+        }
+
+        .btn-login {
+            font-family: 'Inter', sans-serif;
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 0 25px var(--primary-glow);
+        }
+        .btn-login:hover { transform: scale(1.05); box-shadow: 0 0 50px var(--primary-glow); }
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secundario {
+            width: 100%;
+            margin-top: 14px;
+            padding: 14px;
+            background: transparent;
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            color: #ccc;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+        .btn-secundario:hover { border-color: var(--primary); color: #fff; }
+
+        .erro-msg, .sucesso-msg {
+            padding: 14px 18px;
+            border-radius: 15px;
+            font-size: 14px;
+            margin-bottom: 24px;
+            display: none;
+        }
+        .erro-msg {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #f87171;
+        }
+        .sucesso-msg {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #4ade80;
+        }
+
+        .back-home { text-align: center; margin-top: 20px; }
+        .back-home a {
+            color: #555;
+            text-decoration: none;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.3s;
+        }
+        .back-home a:hover { color: var(--primary); }
+
+        .etapa { display: none; }
+        .etapa.active { display: block; animation: cardIn 0.4s ease both; }
+
+        @media (max-width: 480px) {
+            .login-card { padding: 40px 28px; border-radius: 28px; }
+            .form-title { font-size: 22px; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="bg-canvas"></canvas>
+
+    <div class="container">
+        <div class="login-card">
+            <div class="logo-container">
+                <a href="index.html"><img src="../images/logo.png" alt="Backstage Logo" class="logo-img"></a>
+            </div>
+
+            <!-- Etapa 1: informar o e-mail e pedir o código -->
+            <div class="etapa active" id="etapaEmail">
+                <h1 class="form-title">Esqueceu sua senha?</h1>
+                <p class="form-subtitle">Informe seu e-mail e enviaremos um código de 6 dígitos</p>
+
+                <div class="erro-msg" id="erroEmail"></div>
+
+                <form id="formEmail">
+                    <div class="form-group">
+                        <label for="email">E-mail</label>
+                        <div class="input-wrapper">
+                            <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-login" id="btnEnviarCodigo">Enviar código</button>
+                </form>
+            </div>
+
+            <!-- Etapa 2: informar o código recebido e a nova senha -->
+            <div class="etapa" id="etapaCodigo">
+                <h1 class="form-title">Verifique seu e-mail</h1>
+                <p class="form-subtitle" id="subtituloCodigo">Digite o código de 6 dígitos e sua nova senha</p>
+
+                <div class="erro-msg" id="erroCodigo"></div>
+
+                <form id="formCodigo">
+                    <div class="form-group">
+                        <label for="codigo">Código de verificação</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="codigo" name="codigo" placeholder="000000" inputmode="numeric" pattern="\d{6}" maxlength="6" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="novaSenha">Nova senha</label>
+                        <div class="input-wrapper">
+                            <input type="password" id="novaSenha" name="novaSenha" placeholder="••••••••" minlength="6" required>
+                            <i class="fas fa-lock"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmarSenha">Confirmar nova senha</label>
+                        <div class="input-wrapper">
+                            <input type="password" id="confirmarSenha" name="confirmarSenha" placeholder="••••••••" minlength="6" required>
+                            <i class="fas fa-lock"></i>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-login">Redefinir senha</button>
+                </form>
+                <button type="button" class="btn-secundario" id="btnReenviar">Reenviar código</button>
+            </div>
+
+            <!-- Etapa 3: sucesso -->
+            <div class="etapa" id="etapaSucesso">
+                <h1 class="form-title">Senha redefinida!</h1>
+                <p class="form-subtitle">Já pode entrar com sua nova senha</p>
+                <div class="sucesso-msg" style="display:block;">
+                    <i class="fas fa-circle-check"></i> Tudo certo por aqui.
+                </div>
+                <a href="login.html" class="btn-login" style="display:block; text-align:center; text-decoration:none;">Ir para o login</a>
+            </div>
+
+            <div class="back-home">
+                <a href="login.html">
+                    <i class="fas fa-arrow-left"></i>
+                    Voltar para o login
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { showLoading, hideLoading } from '../js/loading.js';
+        import { pedirCodigoRedefinicao, redefinirSenhaComCodigo } from '../js/auth.js';
+
+        const etapaEmail = document.getElementById('etapaEmail');
+        const etapaCodigo = document.getElementById('etapaCodigo');
+        const etapaSucesso = document.getElementById('etapaSucesso');
+
+        const formEmail = document.getElementById('formEmail');
+        const erroEmail = document.getElementById('erroEmail');
+        const btnEnviarCodigo = document.getElementById('btnEnviarCodigo');
+
+        const formCodigo = document.getElementById('formCodigo');
+        const erroCodigo = document.getElementById('erroCodigo');
+        const subtituloCodigo = document.getElementById('subtituloCodigo');
+        const btnReenviar = document.getElementById('btnReenviar');
+
+        let emailAtual = '';
+
+        function mostrarEtapa(etapa) {
+            [etapaEmail, etapaCodigo, etapaSucesso].forEach(e => e.classList.remove('active'));
+            etapa.classList.add('active');
+        }
+
+        formEmail.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            erroEmail.style.display = 'none';
+            emailAtual = document.getElementById('email').value.trim();
+
+            btnEnviarCodigo.disabled = true;
+            btnEnviarCodigo.textContent = 'Enviando...';
+            try {
+                await pedirCodigoRedefinicao(emailAtual);
+                subtituloCodigo.textContent = `Enviamos um código para ${emailAtual}, se essa conta existir. Ele vale por 15 minutos.`;
+                mostrarEtapa(etapaCodigo);
+            } catch (erro) {
+                erroEmail.textContent = erro.message || 'Erro ao solicitar o código.';
+                erroEmail.style.display = 'block';
+            } finally {
+                btnEnviarCodigo.disabled = false;
+                btnEnviarCodigo.textContent = 'Enviar código';
+            }
+        });
+
+        btnReenviar.addEventListener('click', async () => {
+            erroCodigo.style.display = 'none';
+            try {
+                await pedirCodigoRedefinicao(emailAtual);
+                subtituloCodigo.textContent = `Reenviamos o código para ${emailAtual}.`;
+            } catch (erro) {
+                erroCodigo.textContent = erro.message || 'Erro ao reenviar o código.';
+                erroCodigo.style.display = 'block';
+            }
+        });
+
+        formCodigo.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            erroCodigo.style.display = 'none';
+
+            const codigo = document.getElementById('codigo').value.trim();
+            const novaSenha = document.getElementById('novaSenha').value;
+            const confirmarSenha = document.getElementById('confirmarSenha').value;
+
+            if (novaSenha !== confirmarSenha) {
+                erroCodigo.textContent = 'As senhas não coincidem.';
+                erroCodigo.style.display = 'block';
+                return;
+            }
+
+            try {
+                await redefinirSenhaComCodigo(emailAtual, codigo, novaSenha, confirmarSenha);
+                mostrarEtapa(etapaSucesso);
+            } catch (erro) {
+                erroCodigo.textContent = erro.message || 'Código inválido ou expirado.';
+                erroCodigo.style.display = 'block';
+            }
+        });
+
+        showLoading('Carregando...');
+        hideLoading();
+    </script>
+
+    <script>
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function initCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2;
+                this.speedX = Math.random() * 0.5 - 0.25;
+                this.speedY = Math.random() * 0.5 - 0.25;
+                this.opacity = Math.random() * 0.5 + 0.1;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.x < 0) this.x = canvas.width;
+                if (this.y > canvas.height) this.y = 0;
+                if (this.y < 0) this.y = canvas.height;
+            }
+            draw() {
+                ctx.fillStyle = `rgba(139, 92, 246, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function createParticles() {
+            for (let i = 0; i < 100; i++) particles.push(new Particle());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', initCanvas);
+        initCanvas();
+        createParticles();
+        animate();
+    </script>
+</body>
+</html>

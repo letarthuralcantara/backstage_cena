@@ -399,8 +399,7 @@ function criarConteudoEmail(nome: string) {
 async function enviarBoasVindas(
   destinatario: string,
   nome: string,
-): Promise<void> {
-  const config = await mailConfig()
+): Promise<void> {  const config = await mailConfig()
 
   // O cadastro não deve falhar se o SMTP não estiver configurado.
   if (!config?.host) {
@@ -455,6 +454,106 @@ async function enviarBoasVindas(
   }
 }
 
+const ASSUNTO_CODIGO_RESET = 'Código para redefinir sua senha — Backstage Cena'
+
+function criarConteudoCodigoReset(nome: string, codigo: string) {
+  const nomeExibicao = nome.trim() || 'músico'
+  const nomeSeguro = escapeHtml(nomeExibicao)
+  const codigoSeguro = escapeHtml(codigo)
+
+  const texto = [
+    `Olá, ${nomeExibicao}!`,
+    `Recebemos um pedido para redefinir a senha da sua conta no Backstage Cena.`,
+    `Seu código de verificação é: ${codigo}`,
+    'Esse código vale por 15 minutos. Se você não pediu a redefinição, é só ignorar este e-mail — sua senha continua a mesma.',
+    'Equipe Backstage Cena',
+  ].join('\n\n')
+
+  const html = `
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>${ASSUNTO_CODIGO_RESET}</title>
+      </head>
+      <body style="margin:0;padding:0;background-color:#050505;font-family:Arial,Helvetica,sans-serif;color:#ffffff;">
+        <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="min-height:100vh;background-color:#050505;padding:40px 16px;">
+          <tr>
+            <td align="center" valign="top">
+              <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width:520px;background-color:#0d0d0f;border:1px solid rgba(255,255,255,0.12);border-radius:24px;overflow:hidden;">
+                <tr>
+                  <td style="height:3px;background:linear-gradient(90deg,#8b5cf6,#d946ef);font-size:0;line-height:0;">&nbsp;</td>
+                </tr>
+                <tr>
+                  <td style="padding:38px 34px 36px;">
+                    <p style="margin:0 0 14px;color:#8b5cf6;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;">Redefinição de senha</p>
+                    <h1 style="margin:0 0 20px;color:#ffffff;font-size:26px;font-weight:800;line-height:1.2;">Olá, ${nomeSeguro}!</h1>
+                    <p style="margin:0 0 22px;color:#d1d5db;font-size:15px;line-height:1.8;">
+                      Use o código abaixo para redefinir sua senha. Ele vale por
+                      <strong style="color:#d946ef;">15 minutos</strong>.
+                    </p>
+                    <div style="margin:0 0 24px;padding:18px;text-align:center;background-color:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.3);border-radius:14px;">
+                      <span style="font-size:32px;font-weight:800;letter-spacing:8px;color:#ffffff;">${codigoSeguro}</span>
+                    </div>
+                    <p style="margin:0;color:#a1a1aa;font-size:13px;line-height:1.7;">
+                      Se você não pediu essa redefinição, pode ignorar este e-mail — sua senha continua a mesma.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </body>
+    </html>
+  `
+
+  return { text: texto, html }
+}
+
+/**
+ * Envia o código de verificação usado no fluxo de "esqueci minha senha".
+ */
+async function enviarCodigoRedefinicaoSenha(
+  destinatario: string,
+  nome: string,
+  codigo: string,
+): Promise<void> {
+  const config = await mailConfig()
+
+  // Mesma regra do cadastro: SMTP fora do ar não pode travar a aplicação.
+  // O controller decide o que fazer (aqui, só logamos o aviso).
+  if (!config?.host) {
+    console.warn(
+      `SMTP não configurado: e-mail de redefinição de senha para ${destinatario} não enviado.`,
+    )
+    return
+  }
+
+  if (!transporter) {
+    transporter = nodemailer.createTransport(config)
+  }
+
+  const { text, html } = criarConteudoCodigoReset(nome, codigo)
+
+  const info = await transporter.sendMail({
+    from: process.env.EMAIL_FROM ?? REMETENTE_PADRAO,
+    to: destinatario,
+    subject: ASSUNTO_CODIGO_RESET,
+    text,
+    html,
+  })
+
+  if (process.env.NODE_ENV === 'development') {
+    const previewUrl = nodemailer.getTestMessageUrl(info)
+    if (previewUrl) {
+      console.info(`Preview do e-mail de redefinição de senha: ${previewUrl}`)
+    }
+  }
+}
+
 export default {
   enviarBoasVindas,
+  enviarCodigoRedefinicaoSenha,
 }

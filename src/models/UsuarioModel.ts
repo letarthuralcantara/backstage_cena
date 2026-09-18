@@ -1,6 +1,7 @@
 import prisma from '../database/prisma.js'
 import { HttpError } from '../errors/HttpError.js'
 import { hash as argon2Hash, verify as argon2Verify } from 'argon2'
+import { randomInt } from 'node:crypto'
 import type { Usuario, CreateUsuarioInput, UpdateUsuarioInput } from '../types/index.js'
 import { cadastroCompleto, sanitizeUsuario } from '../utils/usuario.js'
 
@@ -88,11 +89,6 @@ async function findByEmail(email: string): Promise<Usuario | null> {
 }
 
 async function create(dados: CreateUsuarioInput): Promise<Usuario> {
-  if (!dados.nome_completo) throw new HttpError(400, 'O campo nome completo é obrigatório.')
-  if (!dados.email)         throw new HttpError(400, 'O campo e-mail é obrigatório.')
-  if (!dados.senha)         throw new HttpError(400, 'O campo senha é obrigatório.')
-  if (dados.senha.length < 6) throw new HttpError(400, 'A senha deve ter pelo menos 6 caracteres.')
-
   const existente = await prisma.usuario.findUnique({ where: { email: dados.email } })
   if (existente) throw new HttpError(409, 'Este e-mail já está cadastrado. Tente fazer login.')
 
@@ -256,11 +252,66 @@ async function updateConfiguracoes(id_usuario: number, dados: {
 async function alterarSenha(id_usuario: number, senhaAtual: string, novaSenha: string): Promise<void> {
   const usuario = await prisma.usuario.findUnique({ where: { id_usuario } })
   if (!usuario) throw new HttpError(404, 'Usuário não encontrado.')
-  if (novaSenha.length < 6) throw new HttpError(400, 'A nova senha deve ter pelo menos 6 caracteres.')
   const senhaCorreta = await argon2Verify(usuario.senha, senhaAtual)
   if (!senhaCorreta) throw new HttpError(401, 'Senha atual incorreta.')
   const novoHash = await argon2Hash(novaSenha)
   await prisma.usuario.update({ where: { id_usuario }, data: { senha: novoHash } })
+}
+
+// ── Esqueci minha senha ──────────────────────────────────────────────────────
+const RESET_CODIGO_VALIDADE_MIN = 15
+
+function gerarCodigoNumerico(): string {
+  // 6 dígitos, sempre com zero à esquerda quando necessário (ex.: "004821").
+  return String(randomInt(0, 1_000_000)).padStart(6, '0')
+}
+
+/**
+ * Gera um código de redefinição para o e-mail informado e retorna o usuário +
+ * o código em texto puro (para o Controller enviar por e-mail).
+ * Se o e-mail não existir, retorna null — quem decide a resposta HTTP nesse
+ * caso é o Controller (por segurança, a resposta ao cliente deve ser igual
+ * em ambos os casos, pra não revelar quais e-mails estão cadastrados).
+ */
+async function gerarCodigoRedefinicao(email: string): Promise<{ usuario: { id_usuario: number; email: string; nome_completo: string }; codigo: string } | null> {
+  const usuario = await prisma.usuario.findUnique({ where: { email }, select: { id_usuario: true, email: true, nome_completo: true } })
+  if (!usuario) return null
+
+  const codigo = gerarCodigoNumerico()
+  const expiraEm = new Date(Date.now() + RESET_CODIGO_VALIDADE_MIN * 60 * 1000)
+
+  await prisma.usuario.update({
+    where: { id_usuario: usuario.id_usuario },
+    data: { codigo_reset_senha: codigo, codigo_reset_expira_em: expiraEm },
+  })
+
+  return { usuario, codigo }
+}
+
+/**
+ * Confere o código e, se válido, troca a senha e invalida o código (uso único).
+ */
+async function redefinirSenhaComCodigo(email: string, codigo: string, novaSenha: string): Promise<void> {
+  const usuario = await prisma.usuario.findUnique({ where: { email } })
+  // Mesma mensagem genérica tanto pra e-mail inexistente quanto pra código
+  // errado/expirado — não dá pra um atacante descobrir por tentativa e erro
+  // se o e-mail existe só observando a resposta.
+  const codigoInvalido = () => new HttpError(400, 'Código inválido ou expirado.')
+
+  if (!usuario || !usuario.codigo_reset_senha || !usuario.codigo_reset_expira_em) {
+    throw codigoInvalido()
+  }
+  if (usuario.codigo_reset_senha !== codigo) {
+    throw codigoInvalido()
+  }
+  if (usuario.codigo_reset_expira_em.getTime() < Date.now()) {
+    throw codigoInvalido()
+  }
+  const novoHash = await argon2Hash(novaSenha)
+  await prisma.usuario.update({
+    where: { id_usuario: usuario.id_usuario },
+    data: { senha: novoHash, codigo_reset_senha: null, codigo_reset_expira_em: null },
+  })
 }
 
 // ── Catálogos ─────────────────────────────────────────────────────────────────
@@ -316,5 +367,6 @@ async function resolverDisponibilidades(descricoes: string[]) {
 export default {
   read, readById, findByEmail, create, update, updateStatus, remove,
   getConfiguracoes, updateConfiguracoes, alterarSenha,
+  gerarCodigoRedefinicao, redefinirSenhaComCodigo,
   listarInstrumentos, listarGeneros, listarDaws, listarDisponibilidades,
 }

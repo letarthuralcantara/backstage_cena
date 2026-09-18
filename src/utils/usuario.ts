@@ -19,7 +19,9 @@ export function cadastroCompleto(u: any): boolean {
   )
 }
 
-export function sanitizeUsuario<T extends { senha?: string }>(u: T): Omit<T, 'senha'> {
-  const { senha, ...resto } = u
+export function sanitizeUsuario<T extends { senha?: string; codigo_reset_senha?: string | null; codigo_reset_expira_em?: Date | null }>(
+  u: T,
+): Omit<T, 'senha' | 'codigo_reset_senha' | 'codigo_reset_expira_em'> {
+  const { senha, codigo_reset_senha, codigo_reset_expira_em, ...resto } = u
   return resto
 }

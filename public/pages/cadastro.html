@@ -153,7 +153,7 @@
 
       <div class="erro-msg" id="erroMsg"></div>
 
-      <form id="cadastroForm">
+      <form id="cadastroForm" novalidate>
 
         <!-- ETAPA 1 -->
         <div id="etapa1">
@@ -631,13 +631,28 @@
       return [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(el=>el.value);
     }
 
+    // O <form> tem `novalidate`: os 3 passos do cadastro vivem no mesmo
+    // formulário, e campos `required` das etapas ainda escondidas (display:none)
+    // travariam a validação nativa do navegador mesmo antes de você chegar
+    // nelas. Por isso validamos manualmente, campo a campo, só dentro da etapa
+    // visível — e etapa é uma <div>, que não tem checkValidity() nativo.
+    function validarEtapa(etapa) {
+      const campos = etapa.querySelectorAll('input, textarea, select');
+      for (const campo of campos) {
+        if (!campo.checkValidity()) {
+          campo.reportValidity();
+          return false;
+        }
+      }
+      return true;
+    }
+
     // ── SUBMIT ──
     formulario.addEventListener('submit', async (e) => {
       e.preventDefault();
       limparErrosDeCampo();
       const etapaVisivel = document.getElementById(`etapa${etapaAtual}`);
-      if (!etapaVisivel.checkValidity()) {
-        etapaVisivel.reportValidity();
+      if (!validarEtapa(etapaVisivel)) {
         return;
       }
       const erroMsg = document.getElementById('erroMsg');
@@ -659,7 +674,7 @@
           if(senha.length<6) { document.getElementById('erro-senha').classList.add('show'); temErro=true; } else { document.getElementById('erro-senha').classList.remove('show'); }
           if(senha!==confirmar) { document.getElementById('erro-confirmar').classList.add('show'); temErro=true; } else { document.getElementById('erro-confirmar').classList.remove('show'); }
           confirmarInput.setCustomValidity(senha===confirmar ? '' : 'As senhas não coincidem.');
-          if(temErro || !etapaVisivel.checkValidity()) { etapaVisivel.reportValidity(); return; }
+          if(temErro || !validarEtapa(etapaVisivel)) { return; }
 
           const jaLogado = verificarAutenticacao(false);
           if(jaLogado) {

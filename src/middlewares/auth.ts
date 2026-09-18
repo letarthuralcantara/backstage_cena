@@ -26,6 +26,12 @@ export function isAuthenticated(req: Request, res: Response, next: NextFunction)
   }
 }
 
+// Use isOwner SOMENTE em rotas onde `req.params.id` é o id do próprio
+// usuário (ex.: PUT/DELETE /api/usuarios/:id). Para recursos como
+// postagem/tweet, onde `:id` é o id do recurso (não do usuário), a
+// checagem de dono deve ser feita comparando o `id_usuario` do recurso
+// (buscado no banco) com req.userId — é isso que PostagemModel.remover e
+// TweetModel.remover já fazem.
 export function isOwner(req: Request, res: Response, next: NextFunction): void {
   const id = Number(req.params.id)
   if (req.userId !== id) {

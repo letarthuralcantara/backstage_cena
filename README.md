@@ -54,8 +54,18 @@ npm run seed
 ```
 
 A migration inicial versionada está em
-`prisma/migrations/20260914143000_init/migration.sql`. Em um banco novo, use
-`npx prisma migrate deploy` para aplicá-la e depois `npm run seed`.
+`prisma/migrations/20260914143000_init/migration.sql`; a migration incremental
+de reset de senha está em
+`prisma/migrations/20260918120000_add_reset_password_fields/migration.sql`.
+Em um banco novo, use `npx prisma migrate deploy` para aplicar ambas e depois
+`npm run seed`. Para um `dev.db` antigo criado com `prisma db push`, faça o
+baseline uma única vez, sem apagar dados:
+
+```bash
+npx prisma migrate resolve --applied 20260914143000_init
+npx prisma migrate resolve --applied 20260918120000_add_reset_password_fields
+npx prisma migrate status
+```
 
 ```mermaid
 erDiagram
@@ -74,7 +84,9 @@ erDiagram
 	USUARIO {
 		int id_usuario PK
 		string email UK
-		string senha_hash
+		string senha
+		string codigo_reset_senha NULL
+		datetime codigo_reset_expira_em NULL
 		string status
 	}
 	CONFIGURACAO_USUARIO {
