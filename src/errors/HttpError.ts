@@ -5,12 +5,12 @@
  */
 
 export class HttpError extends Error {
-  code: number
-  issues?: unknown[]
+  code: number;
+  issues?: unknown[];
 
   constructor(code: number, message: string, issues?: unknown[]) {
-    super(message)
-    this.code = code
-    this.issues = issues
+    super(message);
+    this.code = code;
+    this.issues = issues;
   }
 }

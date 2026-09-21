@@ -1,12 +1,39 @@
 # Backstage Cena
 
-Plataforma web para conectar musicos, com front-end estatico, API Express,
-Prisma/SQLite, autenticacao JWT, validacao Zod, upload de audio e testes
-automatizados.
+Plataforma web para conectar músicos, com front-end estático, API Express, Prisma/SQLite, autenticação JWT, validação com Zod, upload de áudio e testes automatizados.
 
-## Desenvolvimento local
+## Visão geral
 
-Requisitos: Node.js 20+, npm e um banco SQLite configurado em `DATABASE_URL`.
+O Backstage Cena é uma aplicação web desenvolvida para conectar músicos, produtores e artistas independentes. A plataforma permite:
+
+- cadastro e login de usuários;
+- criação e atualização de perfil;
+- publicação de postagens de áudio;
+- publicação de tweets;
+- pesquisa de perfis e colaboração;
+- envio de e-mails de boas-vindas e redefinição de senha.
+
+A aplicação combina front-end estático em HTML/CSS/JavaScript com API REST em Node.js + Express e persistência com Prisma + SQLite.
+
+## Stack principal
+
+- Front-end: HTML, CSS, JavaScript ESM
+- Back-end: Node.js, TypeScript, Express, Morgan
+- Banco: Prisma + SQLite
+- Autenticação: JWT + Argon2
+- Validação: Zod
+- Upload: Multer
+- E-mail: Nodemailer
+- Testes: Vitest, Supertest, Playwright, JSDOM
+
+## Requisitos
+
+- Node.js 20+
+- npm
+- SQLite local
+- Um arquivo `.env` com variáveis de ambiente
+
+## Configuração inicial
 
 ```bash
 npm install
@@ -15,37 +42,56 @@ npm run setup
 npm run dev
 ```
 
-Para validar o projeto antes da apresentacao:
+O servidor será iniciado em:
+
+```text
+http://localhost:3000
+```
+
+## Variáveis de ambiente
+
+Use o arquivo `.env.example` como referência. As variáveis essenciais são:
+
+```env
+DATABASE_URL="file:./dev.db"
+JWT_SECRET="seu_segredo_aqui"
+NODE_ENV=development
+EMAIL_HOST=
+EMAIL_PORT=587
+EMAIL_SECURE=false
+EMAIL_USER=
+EMAIL_PASS=
+EMAIL_FROM=noreply@backstagecena.com
+APP_PROFILE_URL=http://localhost:3000/pages/perfil.html
+```
+
+Observações:
+
+- `.env` não deve ser versionado;
+- em desenvolvimento, se `EMAIL_HOST` estiver vazio, o sistema usa uma conta Ethereal de testes e imprime no terminal a URL da pré-visualização do e-mail;
+- `APP_PROFILE_URL` adiciona o botão de “Completar meu perfil” no e-mail de boas-vindas;
+- os valores reais das credenciais de e-mail devem ficar somente no `.env` local.
+
+## Scripts disponíveis
 
 ```bash
+npm run dev
+npm start
 npm run build
 npm test
 npm run front:test
-npm run coverage
 npm run e2e
+npm run coverage
+npm run prisma:generate
+npm run prisma:push
+npm run seed
+npm run setup
+npm run reset
 ```
 
-`npm run dev` e `npm start` iniciam o mesmo entrypoint, e os testes de API
-importam `src/app.ts` sem abrir uma porta.
+## Banco de dados e Prisma
 
-O servidor fica em `http://localhost:3000`. Em `NODE_ENV=development`, se o
-SMTP não estiver configurado, o cadastro tenta usar uma conta Ethereal e
-registra no console a URL de prévia da mensagem. Em produção, preencha
-`EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_SECURE`, `EMAIL_USER`, `EMAIL_PASS` e
-`EMAIL_FROM` no `.env`.
-
-O endpoint de cadastro responde `201` mesmo quando o SMTP falha, pois o e-mail
-é um efeito colateral. Dados inválidos respondem `400`, recursos inexistentes
-respondem `404` e conflitos de unicidade respondem `409`.
-
-Variáveis opcionais de e-mail: `APP_PROFILE_URL` adiciona o botão de perfil,
-e `EMAIL_REPLY_TO` define o endereço de resposta.
-
-## Banco, migration e seed
-
-O Prisma Client fica isolado na camada Model (`src/models`). Controllers
-coordenam regras HTTP e as rotas aplicam autenticação e validação antes deles.
-Para recriar o banco e os dados de demonstração:
+O projeto usa Prisma para modelagem, migrações e acesso ao banco:
 
 ```bash
 npm run prisma:generate
@@ -53,153 +99,131 @@ npx prisma migrate deploy
 npm run seed
 ```
 
-A migration inicial versionada está em
-`prisma/migrations/20260914143000_init/migration.sql`; a migration incremental
-de reset de senha está em
-`prisma/migrations/20260918120000_add_reset_password_fields/migration.sql`.
-Em um banco novo, use `npx prisma migrate deploy` para aplicar ambas e depois
-`npm run seed`. Para um `dev.db` antigo criado com `prisma db push`, faça o
-baseline uma única vez, sem apagar dados:
+Estrutura relevante:
 
-```bash
-npx prisma migrate resolve --applied 20260914143000_init
-npx prisma migrate resolve --applied 20260918120000_add_reset_password_fields
-npx prisma migrate status
+- `prisma/schema.prisma` — modelo do banco
+- `prisma/migrations/` — migrations versionadas
+- `prisma/seed.ts` — dados iniciais para desenvolvimento
+- `src/models/` — camada de acesso ao banco via Prisma Client
+
+## Validação, autenticação e e-mail
+
+A aplicação aplica regras de validação antes dos controllers usando Zod:
+
+- `src/schema/usuario.schema.ts`
+- `src/schema/conteudo.schema.ts`
+- `src/middlewares/validate.ts`
+
+A autenticação usa JWT e proteção de rotas por middleware:
+
+- `src/middlewares/auth.ts`
+- `src/controllers/UsuarioController.ts`
+
+O envio de e-mail foi centralizado em serviço isolado:
+
+- `src/config/mail.ts`
+- `src/services/EmailService.ts`
+
+O cadastro envia e-mail de boas-vindas após criação bem-sucedida. Falha no SMTP não bloqueia a criação e apenas registra o erro no log.
+
+## Testes
+
+Os testes estão organizados por escala e responsabilidade:
+
+- `npm test`: testes unitários e de API
+- `npm run front:test`: testes de front-end com JSDOM
+- `npm run e2e`: testes end-to-end com Playwright
+- `npm run coverage`: relatório de cobertura de código
+
+## Estrutura do projeto
+
+```text
+.
+├── prisma/
+│   ├── migrations/
+│   ├── schema.prisma
+│   └── seed.ts
+├── public/
+│   ├── css/
+│   ├── js/
+│   ├── pages/
+│   └── uploads/
+├── src/
+│   ├── config/
+│   ├── controllers/
+│   ├── database/
+│   ├── errors/
+│   ├── middlewares/
+│   ├── models/
+│   ├── routes/
+│   ├── schema/
+│   ├── services/
+│   └── utils/
+├── tests/
+├── .env.example
+├── .gitignore
+├── package.json
+├── tsconfig.json
+├── vitest.config.ts
+├── playwright.config.ts
+├── request.http
+├── README.md
+└── LICENSE
 ```
+
+## Diagrama ERD
 
 ```mermaid
 erDiagram
-	USUARIO ||--o| CONFIGURACAO_USUARIO : possui
-	USUARIO ||--o{ POSTAGEM : publica
-	USUARIO ||--o{ TWEET : escreve
-	USUARIO ||--o{ USUARIO_INSTRUMENTO : relaciona
-	INSTRUMENTO ||--o{ USUARIO_INSTRUMENTO : possui
-	USUARIO ||--o{ USUARIO_GENERO : relaciona
-	GENERO ||--o{ USUARIO_GENERO : possui
-	USUARIO ||--o{ USUARIO_DAW : relaciona
-	DAW ||--o{ USUARIO_DAW : possui
-	USUARIO ||--o{ USUARIO_DISPONIBILIDADE : informa
-	DISPONIBILIDADE ||--o{ USUARIO_DISPONIBILIDADE : possui
+  USUARIO ||--o| CONFIGURACAO_USUARIO : possui
+  USUARIO ||--o{ POSTAGEM : publica
+  USUARIO ||--o{ TWEET : escreve
+  USUARIO ||--o{ USUARIO_INSTRUMENTO : relaciona
+  INSTRUMENTO ||--o{ USUARIO_INSTRUMENTO : possui
+  USUARIO ||--o{ USUARIO_GENERO : relaciona
+  GENERO ||--o{ USUARIO_GENERO : possui
+  USUARIO ||--o{ USUARIO_DAW : relaciona
+  DAW ||--o{ USUARIO_DAW : possui
+  USUARIO ||--o{ USUARIO_DISPONIBILIDADE : informa
+  DISPONIBILIDADE ||--o{ USUARIO_DISPONIBILIDADE : possui
 
-	USUARIO {
-		int id_usuario PK
-		string email UK
-		string senha
-		string codigo_reset_senha NULL
-		datetime codigo_reset_expira_em NULL
-		string status
-	}
-	CONFIGURACAO_USUARIO {
-		int id_config PK
-		int id_usuario FK UK
-	}
-	POSTAGEM {
-		int id_postagem PK
-		int id_usuario FK
-		string audio_url
-	}
-	TWEET {
-		int id_tweet PK
-		int id_usuario FK
-		string texto
-	}
-	INSTRUMENTO { int id_instrumento PK string nome UK }
-	GENERO { int id_genero PK string nome UK }
-	DAW { int id_daw PK string nome UK }
-	DISPONIBILIDADE { int id_disponibilidade PK string descricao UK }
-	USUARIO_INSTRUMENTO { int id_usuario PK,FK int id_instrumento PK,FK }
-	USUARIO_GENERO { int id_usuario PK,FK int id_genero PK,FK }
-	USUARIO_DAW { int id_usuario PK,FK int id_daw PK,FK }
-	USUARIO_DISPONIBILIDADE { int id_usuario PK,FK int id_disponibilidade PK,FK }
+  USUARIO {
+    int id_usuario PK
+    string email UK
+    string senha
+    string codigo_reset_senha
+    datetime codigo_reset_expira_em
+    string status
+  }
+
+  CONFIGURACAO_USUARIO {
+    int id_config PK
+    int id_usuario FK
+    int mostrar_email
+    int mostrar_telefone
+    int mostrar_redes_sociais
+    int perfil_publico
+  }
+
+  POSTAGEM {
+    int id_postagem PK
+    int id_usuario FK
+    string audio_url
+  }
+
+  TWEET {
+    int id_tweet PK
+    int id_usuario FK
+    string texto
+  }
 ```
 
-access the web page: https://letarthuralcantara.github.io/backstage_cena/public/pages/index.html
+## Observações importantes
 
-Backstage Cena is a web application created to connect musicians through a centralized platform. Users can register, complete a profile, publish audio previews and tweets, and search for collaborators.
+- O projeto usa `localStorage` para armazenar token do usuário no front-end; isso é adequado para a entrega didática, mas em produção uma opção mais segura seria usar cookies HttpOnly.
+- A validação do front-end é de experiência/UX; a proteção real está no back-end.
+- As regras de negócio e de integridade permanecem no servidor, no schema e no banco.
 
-This project was developed as part of my learning process in web development and database integration.
+## Autor
 
----
-
-## Project overview
-Musicians often rely on multiple social networks to promote their work and find collaborators. Backstage Cena was designed as a focused platform where musicians can create profiles and centralize information related to their work, reducing fragmentation and improving accessibility.
-
-The project goes beyond a static website by implementing data persistence using a relational database.
-
----
-
-## Objetivos
-- Conectar musicos e produtores independentes
-- Permitir cadastro, autenticacao e perfis persistentes
-- Integrar front-end, API, banco relacional e uploads
-
----
-
-## Arquitetura
-O front-end estatico consome uma API Express. Controllers coordenam as
-requisicoes, Models concentram o Prisma Client e os schemas Zod validam as
-entradas antes da camada de negocio.
-
-O banco SQLite e recriado por migration e seed; senhas sao armazenadas com
-Argon2 e rotas privadas usam JWT.
-
----
-
-## Features
-- User registration  
-- Persistent storage using a SQL database  
-- Structured user data management  
-- Integration between front-end, back-end, and database  
-
----
-
-## Technologies used
-- HTML, CSS and JavaScript ESM
-- TypeScript, Node.js, Express and Morgan
-- Prisma with SQLite, migrations and seed
-- Argon2, JWT, Zod, Multer and Nodemailer
-- Vitest, Supertest, JSDOM and Playwright
-
----
-
-## Data Base
-
-[![Diagrama do Banco de Dados](/public/images/mermaid-diagram-2026-05-21-083052.png.png)](https://mermaid.live/embed?theme=default&look=classic&mode=light#pako:eNqtVs1...)
-## Testes
-Os testes rapidos sao separados por responsabilidade:
-
-- `npm test`: unidade e rotas com Supertest, sem abrir porta
-- `npm run front:test`: Vitest com JSDOM e mocks de `fetch`/`localStorage`
-- `npm run e2e`: fluxo de navegador com Playwright
-- `npm run coverage`: relatorio V8 com piso configurado
-
-O E2E requer as dependencias nativas do Chromium no sistema operacional.
-
----
-
-## Learning outcomes
-Through this project, I was able to:
-- Design and use relational databases  
-- Write SQL queries for data manipulation  
-- Understand data persistence in web applications  
-- Integrate front-end interfaces with a database  
-- Organize a web project structure  
-
----
-
-## Limitations and future improvements
-- Improved user authentication and access control  
-- Enhanced security for database operations  
-- Better interface design and responsiveness  
-- Additional features for collaboration between users  
-
----
-
-## Academic context
-This project was developed during my technical education as a practical exercise in web development and relational database integration.
-
----
-
-## Author
-Developed by Arthur
-
+Desenvolvido por Arthur Alcântara e equipe do projeto Backstage Cena.

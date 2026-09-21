@@ -1,4 +1,4 @@
-import { authHeaders, verificarAutenticacao } from './auth.js';
+import { authHeaders, verificarAutenticacao } from "./auth.js";
 
 // ── Ícone ────────────────────────────────────────────────────────────────────
 // Ondinha de áudio em SVG (branca), sem depender de fontes de ícone externas.
@@ -20,7 +20,7 @@ function svgOnda(tamanho = 22) {
 export function tempoRelativo(dataISO) {
   const diffMs = Date.now() - new Date(dataISO).getTime();
   const diffMin = Math.round(diffMs / 60000);
-  if (diffMin < 1) return 'agora';
+  if (diffMin < 1) return "agora";
   if (diffMin < 60) return `${diffMin}min`;
   const diffH = Math.floor(diffMin / 60);
   return `${diffH}h`;
@@ -30,7 +30,7 @@ export function tempoRelativo(dataISO) {
 export function tempoRestante(dataISO) {
   if (!dataISO) return null; // permanente, sem expiração
   const diffMs = new Date(dataISO).getTime() - Date.now();
-  if (diffMs <= 0) return 'expirando';
+  if (diffMs <= 0) return "expirando";
   const diffMin = Math.round(diffMs / 60000);
   if (diffMin < 60) return `${diffMin}min`;
   const diffH = Math.floor(diffMin / 60);
@@ -44,10 +44,13 @@ export function tempoRestante(dataISO) {
  * Cada item vem como { tipo: 'previa'|'tweet', dado: {...} }.
  */
 export async function buscarItensFeed() {
-  const [postagens, tweets] = await Promise.all([buscarFeed(), buscarTweetsFeed()]);
+  const [postagens, tweets] = await Promise.all([
+    buscarFeed(),
+    buscarTweetsFeed(),
+  ]);
   return [
-    ...(postagens || []).map(p => ({ tipo: 'previa', dado: p })),
-    ...(tweets || []).map(t => ({ tipo: 'tweet', dado: t })),
+    ...(postagens || []).map((p) => ({ tipo: "previa", dado: p })),
+    ...(tweets || []).map((t) => ({ tipo: "tweet", dado: t })),
   ].sort((a, b) => new Date(b.dado.criado_em) - new Date(a.dado.criado_em));
 }
 
@@ -62,11 +65,15 @@ export async function renderizarFeedPostagens(container) {
   container.innerHTML = '<p class="feed-loading">Carregando prévias...</p>';
 
   const postagens = await buscarFeed();
-  if (postagens === null) { container.innerHTML = ''; return; }
+  if (postagens === null) {
+    container.innerHTML = "";
+    return;
+  }
 
-  container.innerHTML = '';
+  container.innerHTML = "";
   if (postagens.length === 0) {
-    container.innerHTML = '<p class="feed-vazio">Nenhuma prévia nas últimas 24h ainda.</p>';
+    container.innerHTML =
+      '<p class="feed-vazio">Nenhuma prévia nas últimas 24h ainda.</p>';
     return;
   }
 
@@ -84,11 +91,15 @@ export async function renderizarGradeFeedPostagens(container) {
   container.innerHTML = '<p class="feed-loading">Carregando prévias...</p>';
 
   const postagens = await buscarFeed();
-  if (postagens === null) { container.innerHTML = ''; return; }
+  if (postagens === null) {
+    container.innerHTML = "";
+    return;
+  }
 
-  container.innerHTML = '';
+  container.innerHTML = "";
   if (postagens.length === 0) {
-    container.innerHTML = '<p class="feed-vazio">Nenhuma prévia nas últimas 24h ainda. Poste a sua no seu perfil!</p>';
+    container.innerHTML =
+      '<p class="feed-vazio">Nenhuma prévia nas últimas 24h ainda. Poste a sua no seu perfil!</p>';
     return;
   }
 
@@ -101,14 +112,18 @@ export async function renderizarGradeFeedPostagens(container) {
  * Busca e desenha só as prévias ativas de UM usuário (usado na página de perfil).
  * Clicar na bolinha abre o viewer passando por todas as prévias dele em sequência.
  */
-export async function renderizarGradePreviasDoUsuario(idUsuario, container, onContagem) {
+export async function renderizarGradePreviasDoUsuario(
+  idUsuario,
+  container,
+  onContagem,
+) {
   if (!container) return;
-  container.innerHTML = '';
+  container.innerHTML = "";
 
   let postagens = [];
   try {
     const res = await fetch(`/api/postagens/usuario/${idUsuario}`);
-    if (!res.ok) throw new Error('Falha ao buscar prévias do usuário');
+    if (!res.ok) throw new Error("Falha ao buscar prévias do usuário");
     postagens = await res.json();
   } catch (err) {
     console.error(err);
@@ -119,35 +134,43 @@ export async function renderizarGradePreviasDoUsuario(idUsuario, container, onCo
   onContagem?.(postagens.length);
 
   if (postagens.length === 0) {
-    container.innerHTML = '<p class="feed-vazio" style="grid-column:1/-1;">Nenhuma prévia ativa no momento.</p>';
+    container.innerHTML =
+      '<p class="feed-vazio" style="grid-column:1/-1;">Nenhuma prévia ativa no momento.</p>';
     return;
   }
 
   postagens.forEach((p, indice) => {
-    const thumb = document.createElement('button');
-    thumb.type = 'button';
-    thumb.className = 'story-thumb';
-    thumb.setAttribute('aria-label', `Ouvir prévia: ${p.titulo || 'sem título'}`);
+    const thumb = document.createElement("button");
+    thumb.type = "button";
+    thumb.className = "story-thumb";
+    thumb.setAttribute(
+      "aria-label",
+      `Ouvir prévia: ${p.titulo || "sem título"}`,
+    );
     thumb.innerHTML = `
       <div class="story-thumb-icone">${svgOnda(30)}</div>
       <div class="story-thumb-overlay">
-        <span class="story-thumb-title">${escaparHtml(p.titulo || 'Sem título')}</span>
+        <span class="story-thumb-title">${escaparHtml(p.titulo || "Sem título")}</span>
         <span class="story-thumb-tempo">${tempoRelativo(p.criado_em)}</span>
       </div>
     `;
-    thumb.addEventListener('click', () => abrirViewer(postagens, indice));
+    thumb.addEventListener("click", () => abrirViewer(postagens, indice));
     container.appendChild(thumb);
   });
 }
 
-export async function renderizarPostagensDoUsuario(idUsuario, container, onContagem) {
+export async function renderizarPostagensDoUsuario(
+  idUsuario,
+  container,
+  onContagem,
+) {
   if (!container) return;
-  container.innerHTML = '';
+  container.innerHTML = "";
 
   let postagens = [];
   try {
     const res = await fetch(`/api/postagens/usuario/${idUsuario}`);
-    if (!res.ok) throw new Error('Falha ao buscar prévias do usuário');
+    if (!res.ok) throw new Error("Falha ao buscar prévias do usuário");
     postagens = await res.json();
   } catch (err) {
     console.error(err);
@@ -158,7 +181,8 @@ export async function renderizarPostagensDoUsuario(idUsuario, container, onConta
   onContagem?.(postagens.length);
 
   if (postagens.length === 0) {
-    container.innerHTML = '<p class="feed-vazio">Nenhuma prévia ativa no momento.</p>';
+    container.innerHTML =
+      '<p class="feed-vazio">Nenhuma prévia ativa no momento.</p>';
     return;
   }
 
@@ -167,8 +191,8 @@ export async function renderizarPostagensDoUsuario(idUsuario, container, onConta
 
 async function buscarFeed() {
   try {
-    const res = await fetch('/api/postagens/feed');
-    if (!res.ok) throw new Error('Falha ao buscar prévias');
+    const res = await fetch("/api/postagens/feed");
+    if (!res.ok) throw new Error("Falha ao buscar prévias");
     return await res.json();
   } catch (err) {
     console.error(err);
@@ -178,8 +202,8 @@ async function buscarFeed() {
 
 export async function buscarTweetsFeed() {
   try {
-    const res = await fetch('/api/tweets/feed');
-    if (!res.ok) throw new Error('Falha ao buscar tweets');
+    const res = await fetch("/api/tweets/feed");
+    if (!res.ok) throw new Error("Falha ao buscar tweets");
     return await res.json();
   } catch (err) {
     console.error(err);
@@ -202,21 +226,26 @@ export async function renderizarTimelineFeed(container) {
   container.innerHTML = '<p class="feed-loading">Carregando feed...</p>';
 
   const itens = await buscarItensFeed();
-  container.innerHTML = '';
+  container.innerHTML = "";
 
   if (itens.length === 0) {
-    container.innerHTML = '<p class="feed-vazio">Nada por aqui ainda. Seja o primeiro a postar!</p>';
+    container.innerHTML =
+      '<p class="feed-vazio">Nada por aqui ainda. Seja o primeiro a postar!</p>';
     return;
   }
 
   for (const item of itens) {
-    container.appendChild(item.tipo === 'tweet' ? criarItemTweet(item.dado) : criarItemPrevia(item.dado));
+    container.appendChild(
+      item.tipo === "tweet"
+        ? criarItemTweet(item.dado)
+        : criarItemPrevia(item.dado),
+    );
   }
 }
 
 function criarItemTweet(t) {
-  const div = document.createElement('div');
-  div.className = 'timeline-item timeline-item--tweet';
+  const div = document.createElement("div");
+  div.className = "timeline-item timeline-item--tweet";
   div.innerHTML = `
     <div class="timeline-avatar">${escaparHtml(iniciais(t.autor.nome))}</div>
     <div class="timeline-content">
@@ -231,8 +260,8 @@ function criarItemTweet(t) {
 }
 
 function criarItemPrevia(p) {
-  const div = document.createElement('div');
-  div.className = 'timeline-item timeline-item--previa';
+  const div = document.createElement("div");
+  div.className = "timeline-item timeline-item--previa";
   div.innerHTML = `
     <div class="timeline-avatar timeline-avatar--previa">${svgOnda(18)}</div>
     <div class="timeline-content">
@@ -240,14 +269,16 @@ function criarItemPrevia(p) {
         <span class="timeline-autor">${escaparHtml(p.autor.nome)}</span>
         <span class="timeline-tempo">há ${tempoRelativo(p.criado_em)}</span>
       </div>
-      <button class="timeline-previa-btn" type="button" aria-label="Ouvir prévia: ${escaparHtml(p.titulo || 'sem título')}">
+      <button class="timeline-previa-btn" type="button" aria-label="Ouvir prévia: ${escaparHtml(p.titulo || "sem título")}">
         <span class="timeline-previa-icone">${svgOnda(16)}</span>
-        <span class="timeline-previa-titulo">${escaparHtml(p.titulo || 'Prévia sem título')}</span>
+        <span class="timeline-previa-titulo">${escaparHtml(p.titulo || "Prévia sem título")}</span>
         <span class="timeline-previa-duracao">${p.duracao_seg}s</span>
       </button>
     </div>
   `;
-  div.querySelector('.timeline-previa-btn').addEventListener('click', () => abrirViewer([p], 0));
+  div
+    .querySelector(".timeline-previa-btn")
+    .addEventListener("click", () => abrirViewer([p], 0));
   return div;
 }
 
@@ -265,38 +296,38 @@ function agruparPorAutor(postagens) {
 
 function criarBolinha(postagensDoAutor, onClick) {
   const nomeAutor = postagensDoAutor[0].autor.nome;
-  const bolinha = document.createElement('button');
-  bolinha.className = 'story-bolinha';
-  bolinha.type = 'button';
-  bolinha.setAttribute('aria-label', `Ver prévias de ${nomeAutor}`);
+  const bolinha = document.createElement("button");
+  bolinha.className = "story-bolinha";
+  bolinha.type = "button";
+  bolinha.setAttribute("aria-label", `Ver prévias de ${nomeAutor}`);
   bolinha.innerHTML = `
     <span class="story-anel">
       <span class="story-icone">${svgOnda(20)}</span>
     </span>
     <span class="story-nome">${escaparHtml(nomeAutor)}</span>
   `;
-  bolinha.addEventListener('click', onClick);
+  bolinha.addEventListener("click", onClick);
   return bolinha;
 }
 
 function criarCardFeed(postagensDoAutor, onClick) {
   const primeira = postagensDoAutor[0];
   const nomeAutor = primeira.autor.nome;
-  const titulo = primeira.titulo || 'Prévia sem título';
+  const titulo = primeira.titulo || "Prévia sem título";
   const qtd = postagensDoAutor.length;
 
-  const card = document.createElement('button');
-  card.className = 'feed-card';
-  card.type = 'button';
-  card.setAttribute('aria-label', `Ouvir prévias de ${nomeAutor}`);
+  const card = document.createElement("button");
+  card.className = "feed-card";
+  card.type = "button";
+  card.setAttribute("aria-label", `Ouvir prévias de ${nomeAutor}`);
   card.innerHTML = `
     <span class="feed-card-icone">${svgOnda(28)}</span>
     <span class="feed-card-texto">
       <span class="feed-card-titulo">${escaparHtml(titulo)}</span>
-      <span class="feed-card-autor">${escaparHtml(nomeAutor)}${qtd > 1 ? ` · ${qtd} prévias` : ''} · há ${tempoRelativo(primeira.criado_em)}</span>
+      <span class="feed-card-autor">${escaparHtml(nomeAutor)}${qtd > 1 ? ` · ${qtd} prévias` : ""} · há ${tempoRelativo(primeira.criado_em)}</span>
     </span>
   `;
-  card.addEventListener('click', onClick);
+  card.addEventListener("click", onClick);
   return card;
 }
 
@@ -324,7 +355,7 @@ function iniciarVisualizer(audio, circulo) {
     dataArray = new Uint8Array(analyser.frequencyBinCount);
   } catch (err) {
     // Autoplay bloqueado, navegador sem suporte, etc — sem pulso, sem quebrar nada
-    console.error('Visualizador de áudio indisponível:', err);
+    console.error("Visualizador de áudio indisponível:", err);
     return () => {};
   }
 
@@ -346,7 +377,7 @@ function iniciarVisualizer(audio, circulo) {
 
   return function parar() {
     cancelAnimationFrame(frameId);
-    circulo.style.transform = '';
+    circulo.style.transform = "";
     audioCtx.close().catch(() => {});
   };
 }
@@ -355,8 +386,8 @@ function abrirViewer(postagens, indiceInicial = 0) {
   fecharViewer(); // garante que não existam dois viewers abertos
 
   let indice = 0;
-  const overlay = document.createElement('div');
-  overlay.className = 'story-viewer-overlay';
+  const overlay = document.createElement("div");
+  overlay.className = "story-viewer-overlay";
   overlay.innerHTML = `
     <div class="story-viewer-barra"><div class="story-viewer-progresso"></div></div>
     <button class="story-viewer-fechar" type="button" aria-label="Fechar">&times;</button>
@@ -369,24 +400,30 @@ function abrirViewer(postagens, indiceInicial = 0) {
     <div class="story-viewer-titulo"></div>
   `;
   document.body.appendChild(overlay);
-  document.body.style.overflow = 'hidden';
+  document.body.style.overflow = "hidden";
 
   const audio = new Audio();
   let timeoutId = null;
 
   // ── Pulso reagindo ao áudio (Web Audio API) ─────────────────────────────────
-  const circulo = overlay.querySelector('.story-viewer-icone-grande');
+  const circulo = overlay.querySelector(".story-viewer-icone-grande");
   let pararVisualizer = iniciarVisualizer(audio, circulo);
 
   function tocar(i) {
-    if (i < 0) { fecharViewer(); return; }
-    if (i >= postagens.length) { fecharViewer(); return; }
+    if (i < 0) {
+      fecharViewer();
+      return;
+    }
+    if (i >= postagens.length) {
+      fecharViewer();
+      return;
+    }
     indice = i;
 
     const p = postagens[indice];
-    overlay.querySelector('.story-viewer-info').textContent =
+    overlay.querySelector(".story-viewer-info").textContent =
       `${p.autor.nome} · prévia ${indice + 1}/${postagens.length} · há ${tempoRelativo(p.criado_em)}`;
-    overlay.querySelector('.story-viewer-titulo').textContent = p.titulo || '';
+    overlay.querySelector(".story-viewer-titulo").textContent = p.titulo || "";
 
     clearTimeout(timeoutId);
     audio.pause();
@@ -397,29 +434,57 @@ function abrirViewer(postagens, indiceInicial = 0) {
     // do audio.play() ser chamado — por isso a prévia "não rodava").
     const iniciarReproducao = () => {
       audio.currentTime = p.inicio_seg || 0;
-      audio.play().catch(err => console.error('Não foi possível tocar a prévia:', err));
+      audio
+        .play()
+        .catch((err) => console.error("Não foi possível tocar a prévia:", err));
     };
     if (audio.readyState >= 1) {
       iniciarReproducao();
     } else {
-      audio.addEventListener('loadedmetadata', iniciarReproducao, { once: true });
+      audio.addEventListener("loadedmetadata", iniciarReproducao, {
+        once: true,
+      });
     }
-    audio.addEventListener('error', () => {
-      console.error('Erro ao carregar o áudio da prévia:', p.audio_url, audio.error);
-    }, { once: true });
+    audio.addEventListener(
+      "error",
+      () => {
+        console.error(
+          "Erro ao carregar o áudio da prévia:",
+          p.audio_url,
+          audio.error,
+        );
+      },
+      { once: true },
+    );
 
-    animarBarraProgresso(overlay.querySelector('.story-viewer-progresso'), p.duracao_seg);
+    animarBarraProgresso(
+      overlay.querySelector(".story-viewer-progresso"),
+      p.duracao_seg,
+    );
     timeoutId = setTimeout(() => tocar(indice + 1), p.duracao_seg * 1000);
   }
 
-  overlay.querySelector('.story-viewer-fechar').addEventListener('click', fecharViewer);
-  overlay.querySelector('.story-viewer-anterior').addEventListener('click', () => tocar(indice - 1));
-  overlay.querySelector('.story-viewer-proxima').addEventListener('click', () => tocar(indice + 1));
-  overlay.addEventListener('click', (e) => {
+  overlay
+    .querySelector(".story-viewer-fechar")
+    .addEventListener("click", fecharViewer);
+  overlay
+    .querySelector(".story-viewer-anterior")
+    .addEventListener("click", () => tocar(indice - 1));
+  overlay
+    .querySelector(".story-viewer-proxima")
+    .addEventListener("click", () => tocar(indice + 1));
+  overlay.addEventListener("click", (e) => {
     if (e.target === overlay) fecharViewer();
   });
 
-  viewerAtual = { overlay, audio, limpar: () => { clearTimeout(timeoutId); pararVisualizer(); } };
+  viewerAtual = {
+    overlay,
+    audio,
+    limpar: () => {
+      clearTimeout(timeoutId);
+      pararVisualizer();
+    },
+  };
   tocar(indiceInicial);
 }
 
@@ -428,17 +493,17 @@ function fecharViewer() {
   viewerAtual.limpar();
   viewerAtual.audio.pause();
   viewerAtual.overlay.remove();
-  document.body.style.overflow = '';
+  document.body.style.overflow = "";
   viewerAtual = null;
 }
 
 function animarBarraProgresso(el, duracaoSeg) {
-  el.style.transition = 'none';
-  el.style.width = '0%';
+  el.style.transition = "none";
+  el.style.width = "0%";
   // força reflow antes de trocar a transition, senão o navegador "pula" a animação
   void el.offsetWidth;
   el.style.transition = `width ${duracaoSeg}s linear`;
-  el.style.width = '100%';
+  el.style.width = "100%";
 }
 
 // ── Criar postagem (usado na página de perfil, só pelo dono) ───────────────────
@@ -447,24 +512,29 @@ function animarBarraProgresso(el, duracaoSeg) {
  * Envia um arquivo de áudio + intervalo escolhido como uma nova prévia.
  * `arquivoAudio` é um File (input type="file"), inicioSeg/duracaoSeg em segundos.
  */
-export async function criarPostagem(arquivoAudio, titulo, inicioSeg, duracaoSeg) {
+export async function criarPostagem(
+  arquivoAudio,
+  titulo,
+  inicioSeg,
+  duracaoSeg,
+) {
   const usuarioLocal = verificarAutenticacao();
   if (!usuarioLocal) return null;
 
   const form = new FormData();
-  form.append('audio', arquivoAudio);
-  if (titulo) form.append('titulo', titulo);
-  form.append('inicio_seg', String(inicioSeg));
-  form.append('duracao_seg', String(duracaoSeg));
+  form.append("audio", arquivoAudio);
+  if (titulo) form.append("titulo", titulo);
+  form.append("inicio_seg", String(inicioSeg));
+  form.append("duracao_seg", String(duracaoSeg));
 
-  const res = await fetch('/api/postagens', {
-    method: 'POST',
+  const res = await fetch("/api/postagens", {
+    method: "POST",
     headers: authHeaders({}, false),
     body: form,
   });
   if (!res.ok) {
     const erro = await res.json().catch(() => ({}));
-    throw new Error(erro.erro || 'Não foi possível publicar a prévia.');
+    throw new Error(erro.erro || "Não foi possível publicar a prévia.");
   }
   return res.json();
 }
@@ -477,20 +547,20 @@ export async function criarTweet(texto, expirar) {
   const usuarioLocal = verificarAutenticacao();
   if (!usuarioLocal) return null;
 
-  const res = await fetch('/api/tweets', {
-    method: 'POST',
+  const res = await fetch("/api/tweets", {
+    method: "POST",
     headers: authHeaders(),
     body: JSON.stringify({ texto, expirar: Boolean(expirar) }),
   });
   if (!res.ok) {
     const erro = await res.json().catch(() => ({}));
-    throw new Error(erro.erro || 'Não foi possível publicar o tweet.');
+    throw new Error(erro.erro || "Não foi possível publicar o tweet.");
   }
   return res.json();
 }
 
 function escaparHtml(texto) {
-  const div = document.createElement('div');
+  const div = document.createElement("div");
   div.textContent = texto;
   return div.innerHTML;
 }

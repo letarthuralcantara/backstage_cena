@@ -1,42 +1,44 @@
-import nodemailer from 'nodemailer'
-import path from 'node:path'
-import mailConfig from '../config/mail.js'
+import nodemailer from "nodemailer";
+import path from "node:path";
+import mailConfig from "../config/mail.js";
 
-let transporter: nodemailer.Transporter | null = null
+let transporter: nodemailer.Transporter | null = null;
 
-const ASSUNTO_BOAS_VINDAS = 'Bem-vindo(a) ao Backstage Cena!'
-const REMETENTE_PADRAO = 'Backstage Cena <noreply@backstagecena.com>'
+const ASSUNTO_BOAS_VINDAS = "Bem-vindo(a) ao Backstage Cena!";
+const REMETENTE_PADRAO = "Backstage Cena <noreply@backstagecena.com>";
 
 function escapeHtml(value: string): string {
-  return value.replace(/[&<>'"]/g, (character) => ({
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    "'": '&#39;',
-    '"': '&quot;',
-  }[character] ?? character))
+  return value.replace(
+    /[&<>'"]/g,
+    (character) =>
+      ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "'": "&#39;",
+        '"': "&quot;",
+      })[character] ?? character,
+  );
 }
 
 function criarConteudoEmail(nome: string) {
-  const nomeExibicao = nome.trim() || 'músico'
-  const nomeSeguro = escapeHtml(nomeExibicao)
+  const nomeExibicao = nome.trim() || "músico";
+  const nomeSeguro = escapeHtml(nomeExibicao);
 
-  const urlPerfil = process.env.APP_PROFILE_URL?.trim()
-  const urlPerfilSegura = urlPerfil
-    ? escapeHtml(urlPerfil)
-    : undefined
+  const urlPerfil = process.env.APP_PROFILE_URL?.trim();
+  const urlPerfilSegura = urlPerfil ? escapeHtml(urlPerfil) : undefined;
 
   const texto = [
     `Olá, ${nomeExibicao}!`,
-    'Sua conta no Backstage Cena foi criada com sucesso.',
-    'Complete seu perfil para começar a se conectar com músicos, produtores e artistas independentes.',
-    urlPerfil ? `Complete seu perfil em: ${urlPerfil}` : '',
-    'Se você não criou esta conta, entre em contato com o suporte pelo número 83 98713-1376.',
-    'Até breve!',
-    'Equipe Backstage Cena',
+    "Sua conta no Backstage Cena foi criada com sucesso.",
+    "Complete seu perfil para começar a se conectar com músicos, produtores e artistas independentes.",
+    urlPerfil ? `Complete seu perfil em: ${urlPerfil}` : "",
+    "Se você não criou esta conta, entre em contato com o suporte pelo número 83 98713-1376.",
+    "Até breve!",
+    "Equipe Backstage Cena",
   ]
     .filter(Boolean)
-    .join('\n\n')
+    .join("\n\n");
 
   const botaoPerfil = urlPerfilSegura
     ? `
@@ -79,7 +81,7 @@ function criarConteudoEmail(nome: string) {
         </tr>
       </table>
     `
-    : ''
+    : "";
 
   const html = `
     <!DOCTYPE html>
@@ -388,9 +390,9 @@ function criarConteudoEmail(nome: string) {
         </table>
       </body>
     </html>
-  `
+  `;
 
-  return { text: texto, html }
+  return { text: texto, html };
 }
 
 /**
@@ -399,22 +401,23 @@ function criarConteudoEmail(nome: string) {
 async function enviarBoasVindas(
   destinatario: string,
   nome: string,
-): Promise<void> {  const config = await mailConfig()
+): Promise<void> {
+  const config = await mailConfig();
 
   // O cadastro não deve falhar se o SMTP não estiver configurado.
   if (!config?.host) {
     console.warn(
       `SMTP não configurado: e-mail de boas-vindas para ${destinatario} não enviado.`,
-    )
+    );
 
-    return
+    return;
   }
 
   if (!transporter) {
-    transporter = nodemailer.createTransport(config)
+    transporter = nodemailer.createTransport(config);
   }
 
-  const { text, html } = criarConteudoEmail(nome)
+  const { text, html } = criarConteudoEmail(nome);
 
   const info = await transporter.sendMail({
     from: process.env.EMAIL_FROM ?? REMETENTE_PADRAO,
@@ -426,48 +429,41 @@ async function enviarBoasVindas(
     // Logo oficial do site incorporado no e-mail.
     attachments: [
       {
-        filename: 'logo.png',
-        path: path.resolve(
-          process.cwd(),
-          'public',
-          'images',
-          'logo.png',
-        ),
-        cid: 'backstage-logo',
-        contentType: 'image/png',
+        filename: "logo.png",
+        path: path.resolve(process.cwd(), "public", "images", "logo.png"),
+        cid: "backstage-logo",
+        contentType: "image/png",
       },
     ],
 
     ...(process.env.EMAIL_REPLY_TO && {
       replyTo: process.env.EMAIL_REPLY_TO,
     }),
-  })
+  });
 
-  if (process.env.NODE_ENV === 'development') {
-    const previewUrl = nodemailer.getTestMessageUrl(info)
+  if (process.env.NODE_ENV === "development") {
+    const previewUrl = nodemailer.getTestMessageUrl(info);
 
     if (previewUrl) {
-      console.info(
-        `Preview do e-mail de boas-vindas: ${previewUrl}`,
-      )
+      console.info(`Preview do e-mail de boas-vindas: ${previewUrl}`);
     }
   }
 }
 
-const ASSUNTO_CODIGO_RESET = 'Código para redefinir sua senha — Backstage Cena'
+const ASSUNTO_CODIGO_RESET = "Código para redefinir sua senha — Backstage Cena";
 
 function criarConteudoCodigoReset(nome: string, codigo: string) {
-  const nomeExibicao = nome.trim() || 'músico'
-  const nomeSeguro = escapeHtml(nomeExibicao)
-  const codigoSeguro = escapeHtml(codigo)
+  const nomeExibicao = nome.trim() || "músico";
+  const nomeSeguro = escapeHtml(nomeExibicao);
+  const codigoSeguro = escapeHtml(codigo);
 
   const texto = [
     `Olá, ${nomeExibicao}!`,
     `Recebemos um pedido para redefinir a senha da sua conta no Backstage Cena.`,
     `Seu código de verificação é: ${codigo}`,
-    'Esse código vale por 15 minutos. Se você não pediu a redefinição, é só ignorar este e-mail — sua senha continua a mesma.',
-    'Equipe Backstage Cena',
-  ].join('\n\n')
+    "Esse código vale por 15 minutos. Se você não pediu a redefinição, é só ignorar este e-mail — sua senha continua a mesma.",
+    "Equipe Backstage Cena",
+  ].join("\n\n");
 
   const html = `
     <!DOCTYPE html>
@@ -507,9 +503,9 @@ function criarConteudoCodigoReset(nome: string, codigo: string) {
         </table>
       </body>
     </html>
-  `
+  `;
 
-  return { text: texto, html }
+  return { text: texto, html };
 }
 
 /**
@@ -520,22 +516,22 @@ async function enviarCodigoRedefinicaoSenha(
   nome: string,
   codigo: string,
 ): Promise<void> {
-  const config = await mailConfig()
+  const config = await mailConfig();
 
   // Mesma regra do cadastro: SMTP fora do ar não pode travar a aplicação.
   // O controller decide o que fazer (aqui, só logamos o aviso).
   if (!config?.host) {
     console.warn(
       `SMTP não configurado: e-mail de redefinição de senha para ${destinatario} não enviado.`,
-    )
-    return
+    );
+    return;
   }
 
   if (!transporter) {
-    transporter = nodemailer.createTransport(config)
+    transporter = nodemailer.createTransport(config);
   }
 
-  const { text, html } = criarConteudoCodigoReset(nome, codigo)
+  const { text, html } = criarConteudoCodigoReset(nome, codigo);
 
   const info = await transporter.sendMail({
     from: process.env.EMAIL_FROM ?? REMETENTE_PADRAO,
@@ -543,12 +539,12 @@ async function enviarCodigoRedefinicaoSenha(
     subject: ASSUNTO_CODIGO_RESET,
     text,
     html,
-  })
+  });
 
-  if (process.env.NODE_ENV === 'development') {
-    const previewUrl = nodemailer.getTestMessageUrl(info)
+  if (process.env.NODE_ENV === "development") {
+    const previewUrl = nodemailer.getTestMessageUrl(info);
     if (previewUrl) {
-      console.info(`Preview do e-mail de redefinição de senha: ${previewUrl}`)
+      console.info(`Preview do e-mail de redefinição de senha: ${previewUrl}`);
     }
   }
 }
@@ -556,4 +552,4 @@ async function enviarCodigoRedefinicaoSenha(
 export default {
   enviarBoasVindas,
   enviarCodigoRedefinicaoSenha,
-}
+};

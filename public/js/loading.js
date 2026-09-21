@@ -4,9 +4,9 @@
  */
 
 function injectLoader() {
-  if (document.getElementById('loading-overlay')) return;
+  if (document.getElementById("loading-overlay")) return;
 
-  const style = document.createElement('style');
+  const style = document.createElement("style");
   style.textContent = `
     #loading-overlay {
       position: fixed;
@@ -96,14 +96,14 @@ function injectLoader() {
   `;
   document.head.appendChild(style);
 
-  const notes = ['♩','♪','♫','♬','𝅘𝅥𝅮','♭'];
+  const notes = ["♩", "♪", "♫", "♬", "𝅘𝅥𝅮", "♭"];
 
-  const overlay = document.createElement('div');
-  overlay.id = 'loading-overlay';
+  const overlay = document.createElement("div");
+  overlay.id = "loading-overlay";
   overlay.innerHTML = `
     <img src="../images/logo.png" alt="Backstage" class="loader-logo" onerror="this.style.display='none'">
     <div class="loader-scene">
-      ${notes.map(n => `<span class="loader-note" style="color:#a78bfa">${n}</span>`).join('')}
+      ${notes.map((n) => `<span class="loader-note" style="color:#a78bfa">${n}</span>`).join("")}
       <div class="loader-ring"></div>
     </div>
     <span class="loader-text" id="loader-msg">Carregando...</span>
@@ -113,19 +113,21 @@ function injectLoader() {
 
 injectLoader();
 
-export function showLoading(msg = 'Carregando...') {
+export function showLoading(msg = "Carregando...") {
   // injectLoader() é idempotente (sai cedo se já existir), então é seguro
   // chamar sempre — cobre o caso de hideLoading() ter removido o overlay do DOM.
   injectLoader();
-  const overlay = document.getElementById('loading-overlay');
-  const msgEl = document.getElementById('loader-msg');
-  if (overlay) overlay.classList.remove('hidden');
+  const overlay = document.getElementById("loading-overlay");
+  const msgEl = document.getElementById("loader-msg");
+  if (overlay) overlay.classList.remove("hidden");
   if (msgEl) msgEl.textContent = msg;
 }
 
 export function hideLoading() {
-  const overlay = document.getElementById('loading-overlay');
+  const overlay = document.getElementById("loading-overlay");
   if (!overlay) return;
-  overlay.classList.add('hidden');
-  setTimeout(() => { if (overlay.parentNode) overlay.remove(); }, 400);
+  overlay.classList.add("hidden");
+  setTimeout(() => {
+    if (overlay.parentNode) overlay.remove();
+  }, 400);
 }

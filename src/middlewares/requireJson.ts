@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express'
+import { Request, Response, NextFunction } from "express";
 
 /**
  * Exige Content-Type: application/json em POST e PUT.
@@ -7,11 +7,11 @@ import { Request, Response, NextFunction } from 'express'
 export function requireJson(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): void {
-  if (['POST', 'PUT'].includes(req.method) && !req.is('application/json')) {
-    res.status(415).json({ erro: 'Content-Type deve ser application/json.' })
-    return
+  if (["POST", "PUT"].includes(req.method) && !req.is("application/json")) {
+    res.status(415).json({ erro: "Content-Type deve ser application/json." });
+    return;
   }
-  next()
+  next();
 }

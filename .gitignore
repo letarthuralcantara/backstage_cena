@@ -1,10 +1,26 @@
-node_modules
-src/database/db.sql
-/src/generated/prisma
-.env
-public/uploads/audio/*
-!public/uploads/audio/.gitkeep
-dist/
-coverage/
-test-results/
-playwright-report/
+/node_modules
+/.env
+.env.*
+!.env.example
+
+# Banco e artefatos locais
+*.db
+*.sqlite
+*.sqlite3
+*.log
+debug.log
+
+# Arquivos gerados
+/coverage
+/dist
+/test-results
+/playwright-report
+src/generated/
+
+# Uploads locais
+/public/uploads/audio/*
+!/public/uploads/audio/.gitkeep
+
+# Outros temporários
+.DS_Store
+*.tsbuildinfo
