@@ -1,781 +1,238 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-    />
+<head>
+    <meta charset="UTF-8">
+    <meta name="theme-color" content="#000000">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Backstage | Conecte-se com Músicos</title>
-    <meta
-      name="description"
-      content="Backstage Cena é a rede social que conecta músicos, produtores e artistas independentes para formar bandas, trocar experiências e criar juntos."
-    />
-    <meta
-      property="og:title"
-      content="Backstage Cena — Conecte-se com Músicos"
-    />
-    <meta
-      property="og:description"
-      content="A rede social feita para músicos encontrarem parceiros de banda, produtores e colaborações musicais."
-    />
-    <meta property="og:type" content="website" />
-    <meta name="robots" content="index, follow" />
-    <link
-      rel="shortcut icon"
-      href="../images/favicon.ico"
-      type="image/x-icon"
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <link rel="stylesheet" href="../css/global.css" />
+    <meta name="description" content="Backstage Cena é a rede social que conecta músicos, produtores e artistas independentes para formar bandas, trocar experiências e criar juntos.">
+    <meta property="og:title" content="Backstage Cena — Conecte-se com Músicos">
+    <meta property="og:description" content="A rede social feita para músicos encontrarem parceiros de banda, produtores e colaborações musicais.">
+    <meta property="og:type" content="website">
+    <meta name="robots" content="index, follow">
+    <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/global.css">
     <style>
-      * {
-        scroll-behavior: smooth;
-      }
-      .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 24px;
-      }
-      .reveal {
-        opacity: 0;
-        transform: translateY(60px);
-        transition: all 1s cubic-bezier(0.2, 1, 0.3, 1);
-      }
-      .reveal.active {
-        opacity: 1;
-        transform: translateY(0);
-      }
-      .hero-section {
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        position: relative;
-      }
-      .hero-eyebrow {
-        color: var(--primary);
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 4px;
-        font-size: 14px;
-        margin-bottom: 20px;
-        display: block;
-        animation: eyebrowSlide 0.8s cubic-bezier(0.2, 1, 0.3, 1);
-      }
-      @keyframes eyebrowSlide {
-        from {
-          opacity: 0;
-          transform: translateX(-40px);
+        * { scroll-behavior: smooth; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .reveal { opacity:0; transform:translateY(40px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
+        /* Maior especificidade que qualquer transição própria de cartão (ex.: .mvv-item,
+           .glass-card): assim que revelado, o hover volta a usar a duração rápida
+           do próprio cartão em vez de herdar 1s inteiro da revelação. */
+        .reveal.active { opacity:1; transform:translateY(0); transition: opacity .7s var(--ease), transform .25s var(--ease); }
+        .hero-section { height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; position:relative; }
+        .hero-eyebrow { color:var(--primary); font-weight:800; text-transform:uppercase; letter-spacing:4px; font-size:14px; margin-bottom:20px; display:block; animation:eyebrowSlide 0.8s cubic-bezier(0.2,1,0.3,1); }
+        @keyframes eyebrowSlide { from{opacity:0;transform:translateX(-40px)} to{opacity:1;transform:translateX(0)} }
+        .main-title { font-size: clamp(38px, 9vw, 84px); line-height: .95; margin-bottom: 22px; animation: titleBounce 1s cubic-bezier(0.2,1,0.3,1) 0.2s both; }
+        @keyframes titleBounce { from{opacity:0;transform:scale(0.9) translateY(40px)} to{opacity:1;transform:scale(1) translateY(0)} }
+        .main-title .highlight { display:block; background:linear-gradient(90deg,var(--primary),var(--secondary)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; filter:drop-shadow(0 0 30px var(--primary-glow)); animation:highlightGlow 3s ease-in-out infinite; }
+        @keyframes highlightGlow { 0%,100%{filter:drop-shadow(0 0 30px var(--primary-glow))} 50%{filter:drop-shadow(0 0 60px var(--primary-glow))} }
+        .main-subtitle { font-size: 16px; color: var(--text-2); max-width: 480px; margin-bottom: 36px; animation: subtitleFade 1s cubic-bezier(0.2,1,0.3,1) 0.4s both; }
+        @keyframes subtitleFade { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+        .hero-actions { display:flex; align-items:center; gap:20px; flex-wrap:wrap; justify-content:center; animation:actionsFade 1s cubic-bezier(0.2,1,0.3,1) 0.6s both; }
+        @keyframes actionsFade { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+        .btn-cta {
+            display: inline-block; background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white; padding: 16px 36px; border-radius: var(--r-full);
+            font-weight: 700; text-decoration: none; font-size: 14px;
+            box-shadow: 0 4px 22px var(--primary-glow), inset 0 1px 0 rgba(255,255,255,.25);
+            transition: transform .2s var(--ease), box-shadow .2s var(--ease); cursor: pointer; font-family: 'Inter', sans-serif; border: none;
         }
-        to {
-          opacity: 1;
-          transform: translateX(0);
+        .btn-cta:hover { transform: translateY(-2px); box-shadow: 0 6px 30px var(--primary-glow); }
+        .btn-cta:active { transform: scale(.96); }
+        .btn-ghost {
+            color: var(--text-2); padding: 16px 32px; border-radius: var(--r-full);
+            font-weight: 600; text-decoration: none; font-size: 14px;
+            border: 1px solid var(--glass-border); transition: all .25s; display: inline-flex; align-items: center; gap: 8px;
         }
-      }
-      .main-title {
-        font-size: clamp(38px, 9vw, 84px);
-        line-height: 0.95;
-        margin-bottom: 22px;
-        animation: titleBounce 1s cubic-bezier(0.2, 1, 0.3, 1) 0.2s both;
-      }
-      @keyframes titleBounce {
-        from {
-          opacity: 0;
-          transform: scale(0.9) translateY(40px);
+        .btn-ghost:hover { color: #fff; border-color: rgba(255,255,255,.35); background: var(--glass-fill); }
+        .btn-ghost:active { transform: scale(.96); }
+        .scroll-indicator { position:absolute; bottom:40px; width:30px; height:50px; border:2px solid #555; border-radius:20px; animation:scrollPulse 2s ease-in-out infinite; }
+        .scroll-indicator::after { content:''; position:absolute; top:10px; left:50%; width:6px; height:6px; background:var(--primary); border-radius:50%; transform:translateX(-50%); animation:scrollDown 2s infinite; }
+        @keyframes scrollDown { 0%{top:10px;opacity:1} 100%{top:30px;opacity:0} }
+        @keyframes scrollPulse { 0%,100%{opacity:0.6} 50%{opacity:1} }
+        .hero-visual-wrap { position:relative; width:380px; height:380px; margin:60px auto 0; animation:visualFade 1s cubic-bezier(0.2,1,0.3,1) 0.8s both; }
+        @keyframes visualFade { from{opacity:0;transform:scale(0.8) translateY(40px)} to{opacity:1;transform:scale(1) translateY(0)} }
+        .hero-glow { position:absolute; inset:0; background:radial-gradient(circle,rgba(139,92,246,0.35) 0%,transparent 70%); border-radius:50%; animation:glowPulse 4s ease-in-out infinite; }
+        .hero-ring { position:absolute; inset:0; border-radius:50%; border:1px solid rgba(139,92,246,0.2); animation:ringRotate 20s linear infinite; }
+        .hero-ring::before { content:''; position:absolute; top:-4px; left:50%; width:8px; height:8px; background:#8b5cf6; border-radius:50%; box-shadow:0 0 12px rgba(139,92,246,0.9); }
+        .bear-image { width:300px; height:auto; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:1; filter:drop-shadow(0 20px 40px rgba(139,92,246,0.4)); animation: bearFloatWave 6s ease-in-out infinite; }
+        @keyframes glowPulse { 0%,100%{transform:scale(1);opacity:.6} 50%{transform:scale(1.15);opacity:1} }
+        @keyframes ringRotate { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+        /* Antes eram duas @keyframes separadas (bearFloat + bearWave) animando
+           "transform" ao mesmo tempo, fora de fase (6s vs 4s) — cada uma
+           sobrescrevia a outra a cada frame, causando o "engasgo" visual.
+           Uma única animação combinando flutuação + balanço resolve isso. */
+        @keyframes bearFloatWave {
+            0%, 100% { transform:translate(-50%,-50%) translateY(0) rotateZ(0deg); }
+            25%      { transform:translate(-50%,-50%) translateY(-20px) rotateZ(-2deg); }
+            50%      { transform:translate(-50%,-50%) translateY(-14px) rotateZ(0deg); }
+            75%      { transform:translate(-50%,-50%) translateY(-20px) rotateZ(2deg); }
         }
-        to {
-          opacity: 1;
-          transform: scale(1) translateY(0);
+        .bear-particles { position:absolute; width:100%; height:100%; z-index:0; }
+        .particle { position:absolute; width:8px; height:8px; background:var(--primary); border-radius:50%; animation:particleFloat 8s infinite; opacity:0.6; box-shadow:0 0 8px var(--primary-glow); }
+        @keyframes particleFloat { 0%{transform:translateY(0) translateX(0);opacity:0} 10%{opacity:0.8} 90%{opacity:0.8} 100%{transform:translateY(-400px) translateX(100px);opacity:0} }
+        .section { padding:150px 0; position:relative; }
+        .section-label { color: var(--primary); font-weight: 700; letter-spacing: 1px; font-size: 12px; text-transform: uppercase; margin-bottom: 14px; display: block; text-align: center; }
+        .section-title { font-size: clamp(28px, 5vw, 40px); margin-bottom: 24px; line-height: 1.2; text-align: center; }
+        .features-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:40px; margin-top:80px; }
+        .feature-card {
+            background: var(--glass-fill); -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border); border-radius: var(--r-xl); padding: 36px 30px;
+            box-shadow: inset 0 1px 0 var(--glass-highlight);
+            position: relative; transition: border-color .25s, transform .25s var(--ease); overflow: hidden;
         }
-      }
-      .main-title .highlight {
-        display: block;
-        background: linear-gradient(90deg, var(--primary), var(--secondary));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        filter: drop-shadow(0 0 30px var(--primary-glow));
-        animation: highlightGlow 3s ease-in-out infinite;
-      }
-      @keyframes highlightGlow {
-        0%,
-        100% {
-          filter: drop-shadow(0 0 30px var(--primary-glow));
+        .feature-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,rgba(139,92,246,0.6),transparent); opacity:0; transition:opacity 0.4s; }
+        .feature-card:hover { border-color: rgba(139,92,246,.4); transform: translateY(-4px); }
+        .feature-card:hover::before { opacity:1; }
+        .feature-icon-circle { width: 56px; height: 56px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: var(--r-md); display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 20px; transition: transform .3s; }
+        .feature-card:nth-child(2) .feature-icon-circle { animation-delay:0.3s; }
+        .feature-card:nth-child(3) .feature-icon-circle { animation-delay:0.6s; }
+        @keyframes iconFloat { 0%,100%{transform:translateY(0) rotate(0deg)} 50%{transform:translateY(-12px) rotate(5deg)} }
+        .feature-card:hover .feature-icon-circle { transform:scale(1.1) rotate(-5deg); }
+        .feature-title { font-family:'Poppins',sans-serif; font-size:22px; font-weight:700; margin-bottom:14px; }
+        .feature-desc { font-size: 15px; color: var(--text-2); line-height: 1.7; }
+        .stats-section { padding:100px 0; position:relative; }
+        .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:40px; margin-top:60px; }
+        .stat-card {
+            background: var(--glass-fill); -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border); border-radius: var(--r-lg); padding: 30px 20px; text-align: center;
+            box-shadow: inset 0 1px 0 var(--glass-highlight);
+            transition: border-color .25s, transform .25s var(--ease); position: relative; overflow: hidden;
         }
-        50% {
-          filter: drop-shadow(0 0 60px var(--primary-glow));
-        }
-      }
-      .main-subtitle {
-        font-size: 16px;
-        color: var(--text-2);
-        max-width: 480px;
-        margin-bottom: 36px;
-        animation: subtitleFade 1s cubic-bezier(0.2, 1, 0.3, 1) 0.4s both;
-      }
-      @keyframes subtitleFade {
-        from {
-          opacity: 0;
-          transform: translateY(30px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-      .hero-actions {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        flex-wrap: wrap;
-        justify-content: center;
-        animation: actionsFade 1s cubic-bezier(0.2, 1, 0.3, 1) 0.6s both;
-      }
-      @keyframes actionsFade {
-        from {
-          opacity: 0;
-          transform: translateY(30px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-      .btn-cta {
-        display: inline-block;
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
-        color: white;
-        padding: 16px 36px;
-        border-radius: var(--r-full);
-        font-weight: 700;
-        text-decoration: none;
-        font-size: 14px;
-        box-shadow:
-          0 4px 22px var(--primary-glow),
-          inset 0 1px 0 rgba(255, 255, 255, 0.25);
-        transition:
-          transform 0.2s var(--ease),
-          box-shadow 0.2s var(--ease);
-        cursor: pointer;
-        font-family: "Inter", sans-serif;
-        border: none;
-      }
-      .btn-cta:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 30px var(--primary-glow);
-      }
-      .btn-cta:active {
-        transform: scale(0.96);
-      }
-      .btn-ghost {
-        color: var(--text-2);
-        padding: 16px 32px;
-        border-radius: var(--r-full);
-        font-weight: 600;
-        text-decoration: none;
-        font-size: 14px;
-        border: 1px solid var(--glass-border);
-        transition: all 0.25s;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-      }
-      .btn-ghost:hover {
-        color: #fff;
-        border-color: rgba(255, 255, 255, 0.35);
-        background: var(--glass-fill);
-      }
-      .btn-ghost:active {
-        transform: scale(0.96);
-      }
-      .scroll-indicator {
-        position: absolute;
-        bottom: 40px;
-        width: 30px;
-        height: 50px;
-        border: 2px solid #555;
-        border-radius: 20px;
-        animation: scrollPulse 2s ease-in-out infinite;
-      }
-      .scroll-indicator::after {
-        content: "";
-        position: absolute;
-        top: 10px;
-        left: 50%;
-        width: 6px;
-        height: 6px;
-        background: var(--primary);
-        border-radius: 50%;
-        transform: translateX(-50%);
-        animation: scrollDown 2s infinite;
-      }
-      @keyframes scrollDown {
-        0% {
-          top: 10px;
-          opacity: 1;
-        }
-        100% {
-          top: 30px;
-          opacity: 0;
-        }
-      }
-      @keyframes scrollPulse {
-        0%,
-        100% {
-          opacity: 0.6;
-        }
-        50% {
-          opacity: 1;
-        }
-      }
-      .hero-visual-wrap {
-        position: relative;
-        width: 380px;
-        height: 380px;
-        margin: 60px auto 0;
-        animation: visualFade 1s cubic-bezier(0.2, 1, 0.3, 1) 0.8s both;
-      }
-      @keyframes visualFade {
-        from {
-          opacity: 0;
-          transform: scale(0.8) translateY(40px);
-        }
-        to {
-          opacity: 1;
-          transform: scale(1) translateY(0);
-        }
-      }
-      .hero-glow {
-        position: absolute;
-        inset: 0;
-        background: radial-gradient(
-          circle,
-          rgba(139, 92, 246, 0.35) 0%,
-          transparent 70%
-        );
-        border-radius: 50%;
-        animation: glowPulse 4s ease-in-out infinite;
-      }
-      .hero-ring {
-        position: absolute;
-        inset: 0;
-        border-radius: 50%;
-        border: 1px solid rgba(139, 92, 246, 0.2);
-        animation: ringRotate 20s linear infinite;
-      }
-      .hero-ring::before {
-        content: "";
-        position: absolute;
-        top: -4px;
-        left: 50%;
-        width: 8px;
-        height: 8px;
-        background: #8b5cf6;
-        border-radius: 50%;
-        box-shadow: 0 0 12px rgba(139, 92, 246, 0.9);
-      }
-      .bear-image {
-        width: 300px;
-        height: auto;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 1;
-        filter: drop-shadow(0 20px 40px rgba(139, 92, 246, 0.4));
-        animation:
-          bearFloat 6s ease-in-out infinite,
-          bearWave 4s ease-in-out infinite;
-      }
-      @keyframes glowPulse {
-        0%,
-        100% {
-          transform: scale(1);
-          opacity: 0.6;
-        }
-        50% {
-          transform: scale(1.15);
-          opacity: 1;
-        }
-      }
-      @keyframes ringRotate {
-        from {
-          transform: rotate(0deg);
-        }
-        to {
-          transform: rotate(360deg);
-        }
-      }
-      @keyframes bearFloat {
-        0%,
-        100% {
-          transform: translate(-50%, -50%) translateY(0);
-        }
-        50% {
-          transform: translate(-50%, -50%) translateY(-20px);
-        }
-      }
-      @keyframes bearWave {
-        0%,
-        100% {
-          transform: translate(-50%, -50%) translateY(0) rotateZ(0deg);
-        }
-        25% {
-          transform: translate(-50%, -50%) translateY(-20px) rotateZ(-2deg);
-        }
-        75% {
-          transform: translate(-50%, -50%) translateY(-20px) rotateZ(2deg);
-        }
-      }
-      .bear-particles {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        z-index: 0;
-      }
-      .particle {
-        position: absolute;
-        width: 8px;
-        height: 8px;
-        background: var(--primary);
-        border-radius: 50%;
-        animation: particleFloat 8s infinite;
-        opacity: 0.6;
-        box-shadow: 0 0 8px var(--primary-glow);
-      }
-      @keyframes particleFloat {
-        0% {
-          transform: translateY(0) translateX(0);
-          opacity: 0;
-        }
-        10% {
-          opacity: 0.8;
-        }
-        90% {
-          opacity: 0.8;
-        }
-        100% {
-          transform: translateY(-400px) translateX(100px);
-          opacity: 0;
-        }
-      }
-      .section {
-        padding: 150px 0;
-        position: relative;
-      }
-      .section-label {
-        color: var(--primary);
-        font-weight: 700;
-        letter-spacing: 1px;
-        font-size: 12px;
-        text-transform: uppercase;
-        margin-bottom: 14px;
-        display: block;
-        text-align: center;
-      }
-      .section-title {
-        font-size: clamp(28px, 5vw, 40px);
-        margin-bottom: 24px;
-        line-height: 1.2;
-        text-align: center;
-      }
-      .features-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 40px;
-        margin-top: 80px;
-      }
-      .feature-card {
-        background: var(--glass-fill);
-        -webkit-backdrop-filter: var(--glass-blur);
-        backdrop-filter: var(--glass-blur);
-        border: 1px solid var(--glass-border);
-        border-radius: var(--r-xl);
-        padding: 36px 30px;
-        box-shadow: inset 0 1px 0 var(--glass-highlight);
-        position: relative;
-        transition:
-          border-color 0.25s,
-          transform 0.25s var(--ease);
-        overflow: hidden;
-      }
-      .feature-card::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          rgba(139, 92, 246, 0.6),
-          transparent
-        );
-        opacity: 0;
-        transition: opacity 0.4s;
-      }
-      .feature-card:hover {
-        border-color: rgba(139, 92, 246, 0.4);
-        transform: translateY(-4px);
-      }
-      .feature-card:hover::before {
-        opacity: 1;
-      }
-      .feature-icon-circle {
-        width: 56px;
-        height: 56px;
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
-        border-radius: var(--r-md);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 22px;
-        margin-bottom: 20px;
-        transition: transform 0.3s;
-      }
-      .feature-card:nth-child(2) .feature-icon-circle {
-        animation-delay: 0.3s;
-      }
-      .feature-card:nth-child(3) .feature-icon-circle {
-        animation-delay: 0.6s;
-      }
-      @keyframes iconFloat {
-        0%,
-        100% {
-          transform: translateY(0) rotate(0deg);
-        }
-        50% {
-          transform: translateY(-12px) rotate(5deg);
-        }
-      }
-      .feature-card:hover .feature-icon-circle {
-        transform: scale(1.1) rotate(-5deg);
-      }
-      .feature-title {
-        font-family: "Poppins", sans-serif;
-        font-size: 22px;
-        font-weight: 700;
-        margin-bottom: 14px;
-      }
-      .feature-desc {
-        font-size: 15px;
-        color: var(--text-2);
-        line-height: 1.7;
-      }
-      .stats-section {
-        padding: 100px 0;
-        position: relative;
-      }
-      .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 40px;
-        margin-top: 60px;
-      }
-      .stat-card {
-        background: var(--glass-fill);
-        -webkit-backdrop-filter: var(--glass-blur);
-        backdrop-filter: var(--glass-blur);
-        border: 1px solid var(--glass-border);
-        border-radius: var(--r-lg);
-        padding: 30px 20px;
-        text-align: center;
-        box-shadow: inset 0 1px 0 var(--glass-highlight);
-        transition:
-          border-color 0.25s,
-          transform 0.25s var(--ease);
-        position: relative;
-        overflow: hidden;
-      }
-      .stat-card::before {
-        content: "";
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(
-          circle,
-          rgba(139, 92, 246, 0.1),
-          transparent
-        );
-        animation: statShine 3s ease-in-out infinite;
-      }
-      @keyframes statShine {
-        0%,
-        100% {
-          transform: translate(0, 0);
-        }
-        50% {
-          transform: translate(50%, 50%);
-        }
-      }
-      .stat-card:hover {
-        border-color: rgba(139, 92, 246, 0.4);
-        transform: translateY(-4px);
-      }
-      .stat-number {
-        font-family: "Poppins", sans-serif;
-        font-size: 42px;
-        font-weight: 900;
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin-bottom: 12px;
-        position: relative;
-        z-index: 1;
-      }
-      .stat-label {
-        color: var(--text-2);
-        font-size: 13px;
-        position: relative;
-        z-index: 1;
-      }
-      .cta-section {
-        padding: 150px 0;
-        text-align: center;
-      }
-      .cta-title {
-        font-family: "Poppins", sans-serif;
-        font-size: clamp(40px, 8vw, 80px);
-        font-weight: 900;
-        margin-bottom: 50px;
-        line-height: 1;
-      }
-      .footer {
-        padding: 60px 0 40px;
-        text-align: center;
-        border-top: 1px solid var(--glass-border);
-      }
-      .footer-logo-img {
-        height: 36px;
-        width: auto;
-        opacity: 0.5;
-        transition: 0.3s;
-        margin-bottom: 16px;
-      }
-      .footer-logo-img:hover {
-        opacity: 1;
-      }
-      @media (max-width: 900px) {
-        .features-grid {
-          grid-template-columns: 1fr;
-          gap: 24px;
-        }
-        .stats-grid {
-          grid-template-columns: repeat(2, 1fr);
-        }
-        .main-title {
-          font-size: 60px;
-        }
-        .section-title {
-          font-size: 34px;
-        }
-        .hero-visual-wrap {
-          width: 280px;
-          height: 280px;
-        }
-        .bear-image {
-          width: 220px;
-        }
-      }
-      @media (max-width: 600px) {
-        .stats-grid {
-          grid-template-columns: 1fr;
-        }
-        .hero-visual-wrap {
-          width: 200px;
-          height: 200px;
-        }
-        .bear-image {
-          width: 160px;
-        }
-      }
+        .stat-card::before { content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%; background:radial-gradient(circle,rgba(139,92,246,0.1),transparent); animation:statShine 3s ease-in-out infinite; }
+        @keyframes statShine { 0%,100%{transform:translate(0,0)} 50%{transform:translate(50%,50%)} }
+        .stat-card:hover { border-color: rgba(139,92,246,.4); transform: translateY(-4px); }
+        .stat-number { font-family:'Poppins',sans-serif; font-size:42px; font-weight:900; background:linear-gradient(135deg,var(--primary),var(--secondary)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:12px; position:relative; z-index:1; }
+        .stat-label { color: var(--text-2); font-size: 13px; position: relative; z-index: 1; }
+        .cta-section { padding:150px 0; text-align:center; }
+        .cta-title { font-family:'Poppins',sans-serif; font-size:clamp(40px,8vw,80px); font-weight:900; margin-bottom:50px; line-height:1; }
+        .footer { padding:60px 0 40px; text-align:center; border-top:1px solid var(--glass-border); }
+        .footer-logo-img { height:36px; width:auto; opacity:0.5; transition:0.3s; margin-bottom:16px; }
+        .footer-logo-img:hover { opacity:1; }
+        @media (max-width:900px) { .features-grid{grid-template-columns:1fr;gap:24px} .stats-grid{grid-template-columns:repeat(2,1fr)} .main-title{font-size:60px} .section-title{font-size:34px} .hero-visual-wrap{width:280px;height:280px} .bear-image{width:220px} }
+        @media (max-width:600px) { .stats-grid{grid-template-columns:1fr} .hero-visual-wrap{width:200px;height:200px} .bear-image{width:160px} }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <canvas id="bg-canvas"></canvas>
 
     <header class="header">
-      <div class="header-left">
-        <a href="index.html"
-          ><img src="../images/logo.png" alt="Backstage Logo" class="logo-img"
-        /></a>
-      </div>
-      <div class="header-center">
-        <div class="header-search" id="searchBar">
-          <i class="fas fa-search header-search-icon"></i>
-          <input
-            type="text"
-            class="header-search-input"
-            placeholder="Buscar músicos..."
-            readonly
-          />
-          <button class="header-search-btn">Buscar</button>
+        <div class="header-left">
+            <a href="index.html"><img src="../images/logo.png" alt="Backstage Logo" class="logo-img"></a>
         </div>
-      </div>
-      <div class="header-actions" id="headerActions">
-        <!-- preenchido pelo JS -->
-      </div>
+        <div class="header-center">
+            <div class="header-search" id="searchBar">
+                <i class="fas fa-search header-search-icon"></i>
+                <input type="text" class="header-search-input" placeholder="Buscar músicos..." readonly>
+                <button class="header-search-btn">Buscar</button>
+            </div>
+        </div>
+        <div class="header-actions" id="headerActions">
+            <!-- preenchido pelo JS -->
+        </div>
     </header>
 
     <main>
-      <section class="hero-section">
-        <span class="hero-eyebrow reveal">Plataforma Musical Independente</span>
-        <h1 class="main-title reveal">
-          CONECTE-SE<br /><span class="highlight">COM MÚSICOS</span>
-        </h1>
-        <p class="main-subtitle reveal">
-          Encontre parceiros. Crie projetos. Faça história.
-        </p>
-        <div class="hero-actions reveal">
-          <button class="btn-cta" id="btnComecar">Começar agora</button>
-          <a href="sobrenos.html" class="btn-ghost"
-            >Saiba mais <i class="fas fa-arrow-right"></i
-          ></a>
-        </div>
-        <div class="hero-visual-wrap reveal">
-          <div class="bear-particles" id="bearParticles"></div>
-          <div class="hero-glow"></div>
-          <div class="hero-ring"></div>
-          <img
-            src="../images/urso.png"
-            alt="Mascote Backstage"
-            class="bear-image"
-          />
-        </div>
-      </section>
+        <section class="hero-section">
+            <span class="hero-eyebrow reveal">Plataforma Musical Independente</span>
+            <h1 class="main-title reveal">CONECTE-SE<br><span class="highlight">COM MÚSICOS</span></h1>
+            <p class="main-subtitle reveal">Encontre parceiros. Crie projetos. Faça história.</p>
+            <div class="hero-actions reveal">
+                <button class="btn-cta" id="btnComecar">Começar agora</button>
+                <a href="sobrenos.html" class="btn-ghost">Saiba mais <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="hero-visual-wrap reveal">
+                <div class="bear-particles" id="bearParticles"></div>
+                <div class="hero-glow"></div>
+                <div class="hero-ring"></div>
+                <img src="../images/urso.png" alt="Mascote Backstage" class="bear-image">
+            </div>
+        </section>
 
-      <section class="section">
-        <div class="container">
-          <span class="section-label reveal">O que oferecemos</span>
-          <h2 class="section-title reveal">
-            Tudo que você precisa para
-            <span style="color: var(--primary)">decolar</span>
-          </h2>
-          <div class="features-grid">
-            <div class="feature-card reveal" style="transition-delay: 0.1s">
-              <div class="feature-icon-circle">
-                <i class="fas fa-search"></i>
-              </div>
-              <h3 class="feature-title">Encontre Músicos</h3>
-              <p class="feature-desc">
-                Busque por instrumento, gênero, localização e disponibilidade
-                para achar o parceiro ideal para seu projeto.
-              </p>
+        <section class="section">
+            <div class="container">
+                <span class="section-label reveal">O que oferecemos</span>
+                <h2 class="section-title reveal">Tudo que você precisa para <span style="color:var(--primary)">decolar</span></h2>
+                <div class="features-grid">
+                    <div class="feature-card reveal" style="transition-delay:0.1s">
+                        <div class="feature-icon-circle"><i class="fas fa-search"></i></div>
+                        <h3 class="feature-title">Encontre Músicos</h3>
+                        <p class="feature-desc">Busque por instrumento, gênero, localização e disponibilidade para achar o parceiro ideal para seu projeto.</p>
+                    </div>
+                    <div class="feature-card reveal" style="transition-delay:0.2s">
+                        <div class="feature-icon-circle"><i class="fas fa-user-circle"></i></div>
+                        <h3 class="feature-title">Seu Perfil Musical</h3>
+                        <p class="feature-desc">Mostre seus talentos, gêneros favoritos, DAWs e redes sociais para ser encontrado pela cena certa.</p>
+                    </div>
+                    <div class="feature-card reveal" style="transition-delay:0.3s">
+                        <div class="feature-icon-circle"><i class="fas fa-handshake"></i></div>
+                        <h3 class="feature-title">Colabore e Crie</h3>
+                        <p class="feature-desc">Conecte-se com produtores, vocalistas e compositores da cena independente brasileira.</p>
+                    </div>
+                </div>
             </div>
-            <div class="feature-card reveal" style="transition-delay: 0.2s">
-              <div class="feature-icon-circle">
-                <i class="fas fa-user-circle"></i>
-              </div>
-              <h3 class="feature-title">Seu Perfil Musical</h3>
-              <p class="feature-desc">
-                Mostre seus talentos, gêneros favoritos, DAWs e redes sociais
-                para ser encontrado pela cena certa.
-              </p>
-            </div>
-            <div class="feature-card reveal" style="transition-delay: 0.3s">
-              <div class="feature-icon-circle">
-                <i class="fas fa-handshake"></i>
-              </div>
-              <h3 class="feature-title">Colabore e Crie</h3>
-              <p class="feature-desc">
-                Conecte-se com produtores, vocalistas e compositores da cena
-                independente brasileira.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section class="stats-section">
-        <div class="container">
-          <span class="section-label reveal">Faça acontecer</span>
-          <div class="stats-grid">
-            <div class="stat-card reveal" style="transition-delay: 0.1s">
-              <div class="stat-number">1</div>
-              <div class="stat-label">Crie seu perfil e linke suas redes</div>
+        <section class="stats-section">
+            <div class="container">
+                <span class="section-label reveal">Faça acontecer</span>
+                <div class="stats-grid">
+                    <div class="stat-card reveal" style="transition-delay:0.1s">
+                        <div class="stat-number">1</div>
+                        <div class="stat-label">Crie seu perfil e linke suas redes</div>
+                    </div>
+                    <div class="stat-card reveal" style="transition-delay:0.2s">
+                        <div class="stat-number">2</div>
+                        <div class="stat-label">Faça conexões com pessoas do mundo todo</div>
+                    </div>
+                    <div class="stat-card reveal" style="transition-delay:0.3s">
+                        <div class="stat-number">3</div>
+                        <div class="stat-label">Solte o som e faça acontecer</div>
+                    </div>
+                    <div class="stat-card reveal" style="transition-delay:0.4s">
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">Gratuito</div>
+                    </div>
+                </div>
             </div>
-            <div class="stat-card reveal" style="transition-delay: 0.2s">
-              <div class="stat-number">2</div>
-              <div class="stat-label">
-                Faça conexões com pessoas do mundo todo
-              </div>
-            </div>
-            <div class="stat-card reveal" style="transition-delay: 0.3s">
-              <div class="stat-number">3</div>
-              <div class="stat-label">Solte o som e faça acontecer</div>
-            </div>
-            <div class="stat-card reveal" style="transition-delay: 0.4s">
-              <div class="stat-number">100%</div>
-              <div class="stat-label">Gratuito</div>
-            </div>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section class="cta-section">
-        <div class="container reveal">
-          <h2 class="cta-title">
-            VOCÊ ESTÁ <br /><span style="color: var(--primary)">PRONTO?</span>
-          </h2>
-          <button
-            class="btn-cta"
-            id="btnComecar2"
-            style="padding: 22px 60px; font-size: 18px"
-          >
-            Criar minha conta
-          </button>
-        </div>
-      </section>
+        <section class="cta-section">
+            <div class="container reveal">
+                <h2 class="cta-title">VOCÊ ESTÁ <br><span style="color:var(--primary)">PRONTO?</span></h2>
+                <button class="btn-cta" id="btnComecar2" style="padding:22px 60px;font-size:18px;">Criar minha conta</button>
+            </div>
+        </section>
     </main>
 
     <footer class="footer">
-      <div class="container">
-        <div class="footer-content">
-          <img
-            src="../images/logo.png"
-            alt="Backstage Logo"
-            class="footer-logo-img"
-          />
-          <p style="color: rgba(255, 255, 255, 0.4); font-size: 13px">
-            A cena musical independente começa aqui. &copy; 2025 Backstage Cena
-          </p>
-          <a
-            href="privacidade.html"
-            style="color: rgba(255, 255, 255, 0.4); font-size: 13px"
-            >Política de Privacidade</a
-          >
+        <div class="container">
+            <div class="footer-content">
+                <img src="../images/logo.png" alt="Backstage Logo" class="footer-logo-img">
+                <p style="color:rgba(255,255,255,0.4);font-size:13px;">A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
+                <a href="privacidade.html" style="color:rgba(255,255,255,0.4);font-size:13px;">Política de Privacidade</a>
+            </div>
         </div>
-      </div>
     </footer>
 
     <script type="module">
-      import { verificarAutenticacao, fazerLogout } from "../js/auth.js";
-      import { initSearchOverlay } from "../js/search-overlay.js";
+        import { verificarAutenticacao, fazerLogout } from '../js/auth.js';
+        import { initSearchOverlay } from '../js/search-overlay.js';
 
-      // ── HEADER DINÂMICO ──
-      const usuario = verificarAutenticacao(false);
-      const headerActions = document.getElementById("headerActions");
+        // ── HEADER DINÂMICO ──
+        const usuario = verificarAutenticacao(false);
+        const headerActions = document.getElementById('headerActions');
 
-      if (usuario) {
-        const nome = usuario.nome_artistico || usuario.nome_completo;
-        const iniciais = (nome || "B").substring(0, 2).toUpperCase();
-        const incompleto = Number(usuario.cadastro_completo ?? 0) === 0;
-        headerActions.innerHTML = `
+        if (usuario) {
+            const nome = usuario.nome_artistico || usuario.nome_completo;
+            const iniciais = (nome || 'B').substring(0, 2).toUpperCase();
+            const incompleto = Number(usuario.cadastro_completo ?? 0) === 0;
+            headerActions.innerHTML = `
                 <div class="profile-dropdown" id="profileDropdown">
                     <div class="profile-trigger" id="profileTrigger">${iniciais}</div>
                     ${incompleto ? '<div class="profile-incomplete-badge show" id="profileIncompleteBadge">!</div>' : '<div class="profile-incomplete-badge" id="profileIncompleteBadge">!</div>'}
@@ -786,123 +243,73 @@
                         <div class="dropdown-item" id="btnSair"><i class="fas fa-sign-out-alt"></i> Sair</div>
                     </div>
                 </div>`;
-        document
-          .getElementById("profileDropdown")
-          .addEventListener("click", (e) => {
-            e.stopPropagation();
-            document
-              .getElementById("profileDropdown")
-              .classList.toggle("active");
-          });
-        document.addEventListener("click", () => {
-          document
-            .getElementById("profileDropdown")
-            ?.classList.remove("active");
-        });
-        document
-          .getElementById("btnSair")
-          .addEventListener("click", fazerLogout);
-      } else {
-        headerActions.innerHTML = `
-                <a href="login.html" class="btn-outline" style="padding:10px 18px;">Login</a>
-                <a href="cadastro.html" class="btn-primary" style="padding:10px 18px;">Registrar-se</a>`;
-      }
-
-      initSearchOverlay();
-
-      // ── BOTÕES CTA ──
-      function irParaCadastro() {
-        window.location.href = usuario ? "perfil.html" : "cadastro.html";
-      }
-      document
-        .getElementById("btnComecar")
-        .addEventListener("click", irParaCadastro);
-      document
-        .getElementById("btnComecar2")
-        .addEventListener("click", irParaCadastro);
-
-      // ── REVEAL (respeita "reduzir movimento") ──
-      const reduzMovimento = window.matchMedia(
-        "(prefers-reduced-motion: reduce)",
-      ).matches;
-      function reveal() {
-        document.querySelectorAll(".reveal").forEach((el) => {
-          if (el.getBoundingClientRect().top < window.innerHeight - 100)
-            el.classList.add("active");
-        });
-      }
-      if (reduzMovimento) {
-        document
-          .querySelectorAll(".reveal")
-          .forEach((el) => el.classList.add("active"));
-      } else {
-        window.addEventListener("scroll", reveal);
-        reveal();
-      }
-
-      // ── PARTÍCULAS ──
-      const canvas = document.getElementById("bg-canvas");
-      if (canvas && !reduzMovimento) {
-        const ctx = canvas.getContext("2d");
-        let particles = [];
-        function initCanvas() {
-          canvas.width = window.innerWidth;
-          canvas.height = window.innerHeight;
+            document.getElementById('profileDropdown').addEventListener('click', (e) => {
+                e.stopPropagation();
+                document.getElementById('profileDropdown').classList.toggle('active');
+            });
+            document.addEventListener('click', () => {
+                document.getElementById('profileDropdown')?.classList.remove('active');
+            });
+            document.getElementById('btnSair').addEventListener('click', fazerLogout);
+        } else {
+            headerActions.innerHTML = `
+                <a href="login.html" class="btn-outline btn-auth">Login</a>
+                <a href="cadastro.html" class="btn-primary btn-auth">Registrar-se</a>`;
         }
-        class Particle {
-          constructor() {
-            this.x = Math.random() * canvas.width;
-            this.y = Math.random() * canvas.height;
-            this.size = Math.random() * 2;
-            this.speedX = Math.random() * 0.5 - 0.25;
-            this.speedY = Math.random() * 0.5 - 0.25;
-            this.opacity = Math.random() * 0.5 + 0.1;
-          }
-          update() {
-            this.x += this.speedX;
-            this.y += this.speedY;
-            if (this.x > canvas.width) this.x = 0;
-            if (this.x < 0) this.x = canvas.width;
-            if (this.y > canvas.height) this.y = 0;
-            if (this.y < 0) this.y = canvas.height;
-          }
-          draw() {
-            ctx.fillStyle = `rgba(139,92,246,${this.opacity})`;
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fill();
-          }
-        }
-        function createParticles() {
-          for (let i = 0; i < 120; i++) particles.push(new Particle());
-        }
-        function animate() {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          particles.forEach((p) => {
-            p.update();
-            p.draw();
-          });
-          requestAnimationFrame(animate);
-        }
-        window.addEventListener("resize", initCanvas);
-        initCanvas();
-        createParticles();
-        animate();
-      }
 
-      function createBearParticles() {
-        const container = document.getElementById("bearParticles");
-        for (let i = 0; i < 15; i++) {
-          const p = document.createElement("div");
-          p.className = "particle";
-          p.style.left = Math.random() * 100 + "%";
-          p.style.top = Math.random() * 100 + "%";
-          p.style.animationDelay = Math.random() * 3 + "s";
-          p.style.animationDuration = 7 + Math.random() * 5 + "s";
-          container.appendChild(p);
+        initSearchOverlay();
+
+        // ── BOTÕES CTA ──
+        function irParaCadastro() {
+            window.location.href = usuario ? 'perfil.html' : 'cadastro.html';
         }
-      }
-      if (!reduzMovimento) createBearParticles();
+        document.getElementById('btnComecar').addEventListener('click', irParaCadastro);
+        document.getElementById('btnComecar2').addEventListener('click', irParaCadastro);
+
+        // ── REVEAL (respeita "reduzir movimento") ──
+        const reduzMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        function reveal() {
+            document.querySelectorAll('.reveal').forEach(el => {
+                if (el.getBoundingClientRect().top < window.innerHeight - 100) el.classList.add('active');
+            });
+        }
+        if (reduzMovimento) {
+            document.querySelectorAll('.reveal').forEach(el => el.classList.add('active'));
+        } else {
+            window.addEventListener('scroll', reveal);
+            reveal();
+        }
+
+        // ── PARTÍCULAS ──
+        const canvas = document.getElementById('bg-canvas');
+        if (canvas && !reduzMovimento) {
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            function initCanvas() { canvas.width=window.innerWidth; canvas.height=window.innerHeight; }
+            class Particle {
+                constructor() { this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.size=Math.random()*2; this.speedX=Math.random()*0.5-0.25; this.speedY=Math.random()*0.5-0.25; this.opacity=Math.random()*0.5+0.1; }
+                update() { this.x+=this.speedX; this.y+=this.speedY; if(this.x>canvas.width)this.x=0; if(this.x<0)this.x=canvas.width; if(this.y>canvas.height)this.y=0; if(this.y<0)this.y=canvas.height; }
+                draw() { ctx.fillStyle=`rgba(139,92,246,${this.opacity})`; ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill(); }
+            }
+            function createParticles() { for(let i=0;i<120;i++) particles.push(new Particle()); }
+            function animate() { ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{p.update();p.draw()}); requestAnimationFrame(animate); }
+            window.addEventListener('resize', initCanvas);
+            initCanvas(); createParticles(); animate();
+        }
+
+        function createBearParticles() {
+            const container = document.getElementById('bearParticles');
+            for(let i=0;i<15;i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = Math.random()*100+'%';
+                p.style.top = Math.random()*100+'%';
+                p.style.animationDelay = Math.random()*3+'s';
+                p.style.animationDuration = (7+Math.random()*5)+'s';
+                container.appendChild(p);
+            }
+        }
+        if (!reduzMovimento) createBearParticles();
     </script>
-  </body>
+</body>
 </html>

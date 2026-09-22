@@ -1,667 +1,472 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-    />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Backstage | Nova Postagem</title>
-    <meta
-      name="description"
-      content="Compartilhe uma nova faixa, vídeo ou novidade com a comunidade Backstage Cena."
-    />
-    <meta name="robots" content="noindex, nofollow" />
-    <link
-      rel="shortcut icon"
-      href="../images/favicon.ico"
-      type="image/x-icon"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <link rel="stylesheet" href="../css/global.css" />
+    <meta name="description" content="Compartilhe uma nova faixa, vídeo ou novidade com a comunidade Backstage Cena.">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/global.css">
     <style>
-      :root {
-        --primary: #8b5cf6;
-        --primary-glow: rgba(139, 92, 246, 0.4);
-        --secondary: #d946ef;
-        --accent-cyan: #06b6d4;
-        --bg-dark: #050505;
-        --bg-card: rgba(15, 15, 15, 0.85);
-        --glass: rgba(255, 255, 255, 0.05);
-        --glass-border: rgba(255, 255, 255, 0.12);
-        --text-muted: #bbb;
-      }
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-      body {
-        font-family: "Inter", sans-serif;
-        background-color: var(--bg-dark);
-        color: #fff;
-        min-height: 100vh;
-        background-image:
-          radial-gradient(
-            circle at 10% 10%,
-            rgba(139, 92, 246, 0.1),
-            transparent 50%
-          ),
-          radial-gradient(
-            circle at 90% 90%,
-            rgba(217, 70, 239, 0.08),
-            transparent 50%
-          );
-        background-attachment: fixed;
-      }
-
-      /* Container com margem superior adequada para desgrudar da navbar */
-      .container {
-        max-width: 720px;
-        margin: 40px auto;
-        padding: 0 24px 80px;
-        position: relative;
-        z-index: 1;
-      }
-
-      .page-title {
-        font-family: "Poppins", sans-serif;
-        font-size: 26px;
-        font-weight: 800;
-        margin-bottom: 6px;
-        color: #fff;
-      }
-      .page-subtitle {
-        color: var(--text-muted);
-        font-size: 14px;
-        margin-bottom: 28px;
-      }
-
-      .glass-card {
-        background: var(--bg-card);
-        border: 1px solid var(--glass-border);
-        border-radius: 24px;
-        backdrop-filter: blur(20px);
-        padding: 24px;
-        position: relative;
-        z-index: 2;
-      }
-
-      /* ── ABAS ── */
-      .tabs {
-        display: flex;
-        gap: 8px;
-        margin-bottom: 20px;
-        position: relative;
-        z-index: 10;
-      }
-      .tab-btn {
-        flex: 1;
-        background: var(--glass);
-        border: 1px solid var(--glass-border);
-        color: var(--text-muted);
-        border-radius: 14px;
-        padding: 14px;
-        font-family: "Poppins", sans-serif;
-        font-weight: 700;
-        font-size: 13px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        transition: all 0.25s;
-        outline: none;
-      }
-      .tab-btn:hover {
-        background: rgba(255, 255, 255, 0.1);
-        color: #fff;
-      }
-      .tab-btn.active {
-        color: white;
-        border-color: var(--primary);
-        background: linear-gradient(
-          135deg,
-          rgba(139, 92, 246, 0.3),
-          rgba(217, 70, 239, 0.2)
-        );
-        box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2);
-      }
-      .tab-panel {
-        display: none;
-      }
-      .tab-panel.active {
-        display: block;
-        animation: fadeIn 0.3s ease;
-      }
-
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(10px);
+        :root {
+            --primary: #8b5cf6;
+            --primary-glow: rgba(139, 92, 246, 0.4);
+            --secondary: #d946ef;
+            --accent-cyan: #06b6d4;
+            --bg-dark: #050505;
+            --bg-card: rgba(15, 15, 15, 0.85);
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --text-muted: #bbb;
         }
-        to {
-          opacity: 1;
-          transform: translateY(0);
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: #fff;
+            min-height: 100vh;
+            background-image:
+                radial-gradient(circle at 10% 10%, rgba(139, 92, 246, 0.1), transparent 50%),
+                radial-gradient(circle at 90% 90%, rgba(217, 70, 239, 0.08), transparent 50%);
+            background-attachment: fixed;
         }
-      }
 
-      /* ── FORM ── */
-      .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        margin-bottom: 16px;
-      }
-      .form-group label {
-        font-size: 11px;
-        font-weight: 700;
-        color: var(--primary);
-        text-transform: uppercase;
-        letter-spacing: 1px;
-      }
-      .form-control {
-        background: rgba(0, 0, 0, 0.4);
-        border: 1px solid var(--glass-border);
-        border-radius: 12px;
-        padding: 12px 16px;
-        color: white;
-        font-family: "Inter", sans-serif;
-        font-size: 14px;
-        outline: none;
-        transition: all 0.3s;
-      }
-      .form-control:focus {
-        border-color: var(--primary);
-        background: rgba(139, 92, 246, 0.1);
-      }
-
-      .file-input-wrapper {
-        position: relative;
-        min-height: 100px;
-        border: 2px dashed var(--glass-border);
-        border-radius: 16px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        cursor: pointer;
-        transition: all 0.3s;
-      }
-      .file-input-wrapper:hover {
-        border-color: var(--primary);
-        background: rgba(139, 92, 246, 0.05);
-      }
-      .file-input-wrapper i {
-        font-size: 24px;
-        color: var(--text-muted);
-      }
-      .file-input-wrapper span {
-        font-size: 12px;
-        color: var(--text-muted);
-      }
-      .file-input-wrapper input {
-        position: absolute;
-        inset: 0;
-        opacity: 0;
-        cursor: pointer;
-      }
-
-      /* ── TRIMMER: aparece depois que um arquivo de áudio é escolhido ── */
-      .trimmer {
-        background: var(--glass);
-        border: 1px solid var(--glass-border);
-        border-radius: 16px;
-        padding: 16px;
-      }
-      .trimmer-hint {
-        font-size: 13px;
-        color: var(--text-muted);
-      }
-      .trimmer audio {
-        width: 100%;
-        margin-bottom: 14px;
-      }
-      .trimmer-row {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 10px;
-      }
-      .trimmer-row label {
-        font-size: 12px;
-        color: var(--text-muted);
-        min-width: 64px;
-        flex-shrink: 0;
-      }
-      .trimmer-row input[type="range"] {
-        flex: 1;
-        accent-color: var(--primary);
-        cursor: pointer;
-      }
-      .trimmer-row select {
-        background: rgba(255, 255, 255, 0.06);
-        border: 1px solid var(--glass-border);
-        border-radius: 8px;
-        color: #fff;
-        padding: 6px 10px;
-        font-size: 13px;
-        cursor: pointer;
-      }
-      .trimmer-tempo {
-        font-size: 12px;
-        color: var(--primary);
-        font-weight: 700;
-        margin-bottom: 12px;
-      }
-      .btn-ouvir-trecho {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        background: none;
-        border: 1px solid var(--glass-border);
-        border-radius: 30px;
-        color: #fff;
-        padding: 8px 16px;
-        font-size: 13px;
-        cursor: pointer;
-        transition: border-color 0.2s;
-      }
-      .btn-ouvir-trecho:hover {
-        border-color: var(--primary);
-      }
-
-      /* ── TWEET ── */
-      .tweet-textarea {
-        width: 100%;
-        min-height: 120px;
-        resize: vertical;
-        background: rgba(0, 0, 0, 0.4);
-        border: 1px solid var(--glass-border);
-        border-radius: 16px;
-        padding: 16px;
-        color: white;
-        font-family: "Inter", sans-serif;
-        font-size: 15px;
-        outline: none;
-        transition: all 0.3s;
-      }
-      .tweet-textarea:focus {
-        border-color: var(--primary);
-        background: rgba(139, 92, 246, 0.1);
-      }
-      .tweet-footer {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin: 14px 0 20px;
-        flex-wrap: wrap;
-        gap: 12px;
-      }
-      .tweet-expira-toggle {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 13px;
-        color: #eee;
-        cursor: pointer;
-      }
-      .tweet-expira-toggle input {
-        accent-color: var(--primary);
-        width: 16px;
-        height: 16px;
-        cursor: pointer;
-      }
-      .tweet-contador {
-        font-size: 12px;
-        color: var(--text-muted);
-      }
-      .tweet-contador.no-limite {
-        color: #ef4444;
-      }
-
-      .btn-publish {
-        width: 100%;
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
-        border: none;
-        border-radius: 12px;
-        padding: 14px;
-        color: white;
-        font-weight: 700;
-        font-family: "Poppins", sans-serif;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        transition: all 0.3s;
-        box-shadow: 0 10px 20px rgba(139, 92, 246, 0.2);
-      }
-      .btn-publish:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 15px 30px rgba(139, 92, 246, 0.4);
-      }
-      .btn-publish:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-      }
-
-      .msg-feedback {
-        margin-top: 16px;
-        font-size: 13px;
-        text-align: center;
-        padding: 12px;
-        border-radius: 12px;
-      }
-      .msg-feedback.sucesso {
-        color: #22c55e;
-        background: rgba(34, 197, 94, 0.1);
-        border: 1px solid rgba(34, 197, 94, 0.3);
-      }
-      .msg-feedback.erro {
-        color: #ef4444;
-        background: rgba(239, 68, 68, 0.1);
-        border: 1px solid rgba(239, 68, 68, 0.3);
-      }
-
-      .hidden {
-        display: none !important;
-      }
-
-      @media (max-width: 560px) {
-        .tabs {
-          flex-direction: column;
+        /* Container com margem superior adequada para desgrudar da navbar */
+        .container { 
+            max-width: 720px; 
+            margin: 40px auto; 
+            padding: 0 24px 80px;
+            position: relative;
+            z-index: 1;
         }
-        .container {
-          margin-top: 20px;
+
+        .page-title { font-family:'Poppins',sans-serif; font-size: 26px; font-weight: 800; margin-bottom: 6px; color: #fff; }
+        .page-subtitle { color: var(--text-muted); font-size: 14px; margin-bottom: 28px; }
+
+        .glass-card {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            backdrop-filter: blur(20px);
+            padding: 24px;
+            position: relative;
+            z-index: 2;
         }
-      }
+
+        /* ── ABAS ── */
+        .tabs { 
+            display: flex; 
+            gap: 8px; 
+            margin-bottom: 20px; 
+            position: relative;
+            z-index: 10;
+        }
+        .tab-btn {
+            flex: 1;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            color: var(--text-muted);
+            border-radius: 14px;
+            padding: 14px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all .25s;
+            outline: none;
+        }
+        .tab-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+        .tab-btn.active {
+            color: white;
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(139,92,246,.3), rgba(217,70,239,.2));
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2);
+        }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; animation: fadeIn 0.3s ease; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── FORM ── */
+        .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+        .form-group label { font-size: 11px; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; }
+        .form-control {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s;
+        }
+        .form-control:focus { border-color: var(--primary); background: rgba(139, 92, 246, 0.1); }
+
+        .file-input-wrapper {
+            position: relative;
+            min-height: 100px;
+            border: 2px dashed var(--glass-border);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .file-input-wrapper:hover { border-color: var(--primary); background: rgba(139, 92, 246, 0.05); }
+        .file-input-wrapper i { font-size: 24px; color: var(--text-muted); }
+        .file-input-wrapper span { font-size: 12px; color: var(--text-muted); }
+        .file-input-wrapper input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+
+        /* ── TRIMMER: aparece depois que um arquivo de áudio é escolhido ── */
+        .trimmer {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 16px;
+        }
+        .trimmer-hint { font-size: 13px; color: var(--text-muted); }
+        .trimmer audio { width: 100%; margin-bottom: 14px; }
+        .trimmer-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+        .trimmer-row label { font-size: 12px; color: var(--text-muted); min-width: 64px; flex-shrink: 0; }
+        .trimmer-row select {
+            background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border);
+            border-radius: 8px; color: #fff; padding: 6px 10px; font-size: 13px; cursor: pointer;
+        }
+        .trimmer-tempo { font-size: 12px; color: var(--primary); font-weight: 700; margin-bottom: 12px; }
+
+        /* Linha do tempo estilo Instagram/Reels: barra inteira representa o
+           áudio, a janela clara é o trecho de 15/30/45/60s escolhido, e as
+           duas alças nas pontas se arrastam pra mover o começo/fim. */
+        .trimmer-timeline {
+            position: relative;
+            height: 56px;
+            border-radius: 10px;
+            background: repeating-linear-gradient(90deg, rgba(255,255,255,0.05) 0 2px, transparent 2px 6px);
+            margin-bottom: 10px;
+            overflow: hidden;
+            touch-action: none;
+            user-select: none;
+        }
+        .trimmer-playhead {
+            position: absolute; top: 0; bottom: 0; width: 2px;
+            background: #fff; box-shadow: 0 0 6px rgba(255,255,255,.7);
+            pointer-events: none; opacity: 0; transition: opacity .15s;
+        }
+        .trimmer-playhead.show { opacity: 1; }
+        .trimmer-window {
+            position: absolute; top: 0; bottom: 0;
+            background: rgba(139, 92, 246, 0.22);
+            border-top: 2px solid var(--primary);
+            border-bottom: 2px solid var(--primary);
+            cursor: grab;
+        }
+        .trimmer-window:active { cursor: grabbing; }
+        .trimmer-handle {
+            position: absolute; top: 0; bottom: 0; width: 22px;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--primary); cursor: ew-resize; touch-action: none;
+        }
+        .trimmer-handle::before {
+            content: ''; width: 3px; height: 20px; border-radius: 2px;
+            background: rgba(255,255,255,.85);
+        }
+        .trimmer-handle-esq { left: 0; border-radius: 10px 0 0 10px; }
+        .trimmer-handle-dir { right: 0; border-radius: 0 10px 10px 0; }
+        .trimmer-fora { position: absolute; top: 0; bottom: 0; background: rgba(0,0,0,.55); pointer-events: none; }
+        .btn-ouvir-trecho {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: none; border: 1px solid var(--glass-border); border-radius: 30px;
+            color: #fff; padding: 8px 16px; font-size: 13px; cursor: pointer; transition: border-color .2s;
+        }
+        .btn-ouvir-trecho:hover { border-color: var(--primary); }
+
+        /* ── TWEET ── */
+        .tweet-textarea {
+            width: 100%;
+            min-height: 120px;
+            resize: vertical;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 16px;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            outline: none;
+            transition: all 0.3s;
+        }
+        .tweet-textarea:focus { border-color: var(--primary); background: rgba(139, 92, 246, 0.1); }
+        .tweet-footer { display: flex; align-items: center; justify-content: space-between; margin: 14px 0 20px; flex-wrap: wrap; gap: 12px; }
+        .tweet-expira-toggle { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #eee; cursor: pointer; }
+        .tweet-expira-toggle input { accent-color: var(--primary); width: 16px; height: 16px; cursor: pointer; }
+        .tweet-contador { font-size: 12px; color: var(--text-muted); }
+        .tweet-contador.no-limite { color: #ef4444; }
+
+        .btn-publish {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            color: white;
+            font-weight: 700;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s;
+            box-shadow: 0 10px 20px rgba(139, 92, 246, 0.2);
+        }
+        .btn-publish:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(139, 92, 246, 0.4); }
+        .btn-publish:disabled { opacity: .6; cursor: not-allowed; }
+
+        .msg-feedback {
+            margin-top: 16px;
+            font-size: 13px;
+            text-align: center;
+            padding: 12px;
+            border-radius: 12px;
+        }
+        .msg-feedback.sucesso { color: #22c55e; background: rgba(34,197,94,.1); border: 1px solid rgba(34,197,94,.3); }
+        .msg-feedback.erro { color: #ef4444; background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.3); }
+
+        .hidden { display: none !important; }
+
+        @media (max-width: 560px) {
+            .tabs { flex-direction: column; }
+            .container { margin-top: 20px; }
+        }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <header class="header">
-      <div class="header-left">
-        <a href="index.html"
-          ><img src="../images/logo.png" alt="Backstage Logo" class="logo-img"
-        /></a>
-      </div>
-      <div class="header-center">
-        <div class="header-search" id="searchBar">
-          <i class="fas fa-search header-search-icon"></i>
-          <input
-            type="text"
-            class="header-search-input"
-            placeholder="Buscar músicos..."
-            readonly
-          />
-          <button class="header-search-btn">Buscar</button>
+        <div class="header-left">
+            <a href="index.html"><img src="../images/logo.png" alt="Backstage Logo" class="logo-img"></a>
         </div>
-      </div>
-      <div class="header-actions">
-        <div class="profile-dropdown" id="profileDropdown">
-          <div class="profile-trigger" id="profileTrigger"></div>
-          <div class="profile-incomplete-badge" id="profileIncompleteBadge">
-            !
-          </div>
-          <div class="dropdown-menu">
-            <a href="perfil.html" class="dropdown-item"
-              ><i class="fas fa-user"></i> Meu Perfil</a
-            >
-            <a href="feed.html" class="dropdown-item"
-              ><i class="fas fa-stream"></i> Feed</a
-            >
-            <a href="publicar.html" class="dropdown-item"
-              ><i class="fas fa-plus-circle"></i> Nova Postagem</a
-            >
-            <a href="config.html" class="dropdown-item"
-              ><i class="fas fa-cog"></i> Configurações</a
-            >
-            <div class="dropdown-divider"></div>
-            <div class="dropdown-item" id="btnSair">
-              <i class="fas fa-sign-out-alt"></i> Sair
+        <div class="header-center">
+            <div class="header-search" id="searchBar">
+                <i class="fas fa-search header-search-icon"></i>
+                <input type="text" class="header-search-input" placeholder="Buscar músicos..." readonly>
+                <button class="header-search-btn">Buscar</button>
             </div>
-          </div>
         </div>
-      </div>
+        <div class="header-actions">
+            <div class="profile-dropdown" id="profileDropdown">
+                <div class="profile-trigger" id="profileTrigger"></div>
+                <div class="profile-incomplete-badge" id="profileIncompleteBadge">!</div>
+                <div class="dropdown-menu">
+                    <a href="perfil.html" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a>
+                    <a href="feed.html" class="dropdown-item"><i class="fas fa-stream"></i> Feed</a>
+                    <a href="publicar.html" class="dropdown-item"><i class="fas fa-plus-circle"></i> Nova Postagem</a>
+                    <a href="config.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações</a>
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-item" id="btnSair"><i class="fas fa-sign-out-alt"></i> Sair</div>
+                </div>
+            </div>
+        </div>
     </header>
 
     <div class="container">
-      <h1 class="page-title">Nova Postagem</h1>
-      <p class="page-subtitle">
-        Compartilhe uma prévia da sua música ou solte um tweet pra cena.
-      </p>
+        <h1 class="page-title">Nova Postagem</h1>
+        <p class="page-subtitle">Compartilhe uma prévia da sua música ou solte um tweet pra cena.</p>
 
-      <div class="tabs">
-        <button type="button" class="tab-btn active" data-tab="previa">
-          <i class="fas fa-music"></i> Prévia de áudio
-        </button>
-        <button type="button" class="tab-btn" data-tab="tweet">
-          <i class="fas fa-comment"></i> Tweet
-        </button>
-      </div>
-
-      <div class="glass-card">
-        <!-- ABA: PRÉVIA -->
-        <div class="tab-panel active" id="painelPrevia">
-          <form id="formNovaPrevia">
-            <div class="form-group">
-              <label>Título da Prévia</label>
-              <input
-                type="text"
-                id="previaNome"
-                class="form-control"
-                placeholder="Ex: Solo de Guitarra - Track 04"
-                maxlength="60"
-              />
-            </div>
-
-            <div class="form-group">
-              <label>Arquivo de Áudio</label>
-              <div class="file-input-wrapper" id="fileWrapper">
-                <i class="fas fa-cloud-arrow-up"></i>
-                <span id="fileNameDisplay">Clique ou arraste o áudio</span>
-                <input
-                  type="file"
-                  id="previaArquivo"
-                  accept="audio/*"
-                  required
-                />
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label>Trecho da prévia (30s padrão)</label>
-              <div class="trimmer">
-                <p class="trimmer-hint">Selecione o arquivo para publicar.</p>
-              </div>
-              <input type="hidden" id="previaInicio" value="0" />
-              <input type="hidden" id="previaDuracao" value="30" />
-            </div>
-
-            <button type="submit" class="btn-publish" id="btnPublicarPrevia">
-              <i class="fas fa-upload"></i> PUBLICAR NA CENA
-            </button>
-          </form>
-          <p id="previaMsg" class="msg-feedback hidden"></p>
+        <div class="tabs">
+            <button type="button" class="tab-btn active" data-tab="previa"><i class="fas fa-music"></i> Prévia de áudio</button>
+            <button type="button" class="tab-btn" data-tab="tweet"><i class="fas fa-comment"></i> Tweet</button>
         </div>
 
-        <!-- ABA: TWEET -->
-        <div class="tab-panel" id="painelTweet">
-          <form id="formNovoTweet">
-            <div class="form-group">
-              <label for="tweetTexto">O que tá rolando?</label>
-              <textarea
-                id="tweetTexto"
-                class="tweet-textarea"
-                maxlength="280"
-                placeholder="Fala pra cena o que você tá pensando, gravando, procurando..."
-              ></textarea>
+        <div class="glass-card">
+            <!-- ABA: PRÉVIA -->
+            <div class="tab-panel active" id="painelPrevia">
+                <form id="formNovaPrevia">
+                    <div class="form-group">
+                        <label>Título da Prévia</label>
+                        <input type="text" id="previaNome" class="form-control" placeholder="Ex: Solo de Guitarra - Track 04" maxlength="60">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Arquivo de Áudio</label>
+                        <div class="file-input-wrapper" id="fileWrapper">
+                            <i class="fas fa-cloud-arrow-up"></i>
+                            <span id="fileNameDisplay">Clique ou arraste o áudio</span>
+                            <input type="file" id="previaArquivo" accept="audio/*" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Trecho da prévia (30s padrão)</label>
+                        <div class="trimmer">
+                            <p class="trimmer-hint">Selecione o arquivo para publicar.</p>
+                        </div>
+                        <input type="hidden" id="previaInicio" value="0">
+                        <input type="hidden" id="previaDuracao" value="30">
+                    </div>
+
+                    <button type="submit" class="btn-publish" id="btnPublicarPrevia">
+                        <i class="fas fa-upload"></i> PUBLICAR NA CENA
+                    </button>
+                </form>
+                <p id="previaMsg" class="msg-feedback hidden"></p>
             </div>
 
-            <div class="tweet-footer">
-              <label class="tweet-expira-toggle">
-                <input type="checkbox" id="tweetExpira" />
-                Some em 24h (senão fica permanente no seu perfil)
-              </label>
-              <span class="tweet-contador" id="tweetContador">280</span>
-            </div>
+            <!-- ABA: TWEET -->
+            <div class="tab-panel" id="painelTweet">
+                <form id="formNovoTweet">
+                    <div class="form-group">
+                        <label for="tweetTexto">O que tá rolando?</label>
+                        <textarea id="tweetTexto" class="tweet-textarea" maxlength="280" placeholder="Fala pra cena o que você tá pensando, gravando, procurando..."></textarea>
+                    </div>
 
-            <button type="submit" class="btn-publish" id="btnPublicarTweet">
-              <i class="fas fa-paper-plane"></i> PUBLICAR TWEET
-            </button>
-          </form>
-          <p id="tweetMsg" class="msg-feedback hidden"></p>
+                    <div class="tweet-footer">
+                        <label class="tweet-expira-toggle">
+                            <input type="checkbox" id="tweetExpira">
+                            Some em 24h (senão fica permanente no seu perfil)
+                        </label>
+                        <span class="tweet-contador" id="tweetContador">280</span>
+                    </div>
+
+                    <button type="submit" class="btn-publish" id="btnPublicarTweet">
+                        <i class="fas fa-paper-plane"></i> PUBLICAR TWEET
+                    </button>
+                </form>
+                <p id="tweetMsg" class="msg-feedback hidden"></p>
+            </div>
         </div>
-      </div>
     </div>
 
     <footer class="footer">
-      <div class="container">
-        <div class="footer-content">
-          <img
-            src="../images/logo.png"
-            alt="Backstage Logo"
-            class="footer-logo-img"
-          />
-          <p style="color: rgba(255, 255, 255, 0.4); font-size: 13px">
-            A cena musical independente começa aqui. &copy; 2025 Backstage Cena
-          </p>
-          <a
-            href="privacidade.html"
-            style="color: rgba(255, 255, 255, 0.4); font-size: 13px"
-            >Política de Privacidade</a
-          >
+        <div class="container">
+            <div class="footer-content">
+                <img src="../images/logo.png" alt="Backstage Logo" class="footer-logo-img">
+                <p style="color:rgba(255,255,255,0.4);font-size:13px;">A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
+                <a href="privacidade.html" style="color:rgba(255,255,255,0.4);font-size:13px;">Política de Privacidade</a>
+            </div>
         </div>
-      </div>
     </footer>
 
     <script type="module">
-      import { verificarAutenticacao, fazerLogout } from "../js/auth.js";
-      import { initSearchOverlay } from "../js/search-overlay.js";
-      import { criarPostagem, criarTweet } from "../js/postagens.js";
+        import { verificarAutenticacao, fazerLogout } from '../js/auth.js';
+        import { initSearchOverlay } from '../js/search-overlay.js';
+        import { criarPostagem, criarTweet } from '../js/postagens.js';
 
-      document.addEventListener("DOMContentLoaded", () => {
-        const usuarioLogado = verificarAutenticacao();
-        if (!usuarioLogado) {
-          window.location.href = "login.html";
-        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const usuarioLogado = verificarAutenticacao();
+            if (!usuarioLogado) { window.location.href = 'login.html'; }
+            
+            const nomeUsuario = usuarioLogado?.nome_artistico || usuarioLogado?.nome_completo || '';
+            const profileTrigger = document.getElementById('profileTrigger');
+            if (profileTrigger) profileTrigger.textContent = (nomeUsuario || 'B').substring(0, 2).toUpperCase();
+            const badge = document.getElementById('profileIncompleteBadge');
+            if (badge) badge.classList.toggle('show', Number(usuarioLogado?.cadastro_completo ?? 0) === 0);
 
-        const nomeUsuario =
-          usuarioLogado?.nome_artistico || usuarioLogado?.nome_completo || "";
-        const profileTrigger = document.getElementById("profileTrigger");
-        if (profileTrigger)
-          profileTrigger.textContent = (nomeUsuario || "B")
-            .substring(0, 2)
-            .toUpperCase();
-        const badge = document.getElementById("profileIncompleteBadge");
-        if (badge)
-          badge.classList.toggle(
-            "show",
-            Number(usuarioLogado?.cadastro_completo ?? 0) === 0,
-          );
+            document.getElementById('btnSair')?.addEventListener('click', fazerLogout);
+            
+            const profileDropdown = document.getElementById('profileDropdown');
+            profileDropdown?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                profileDropdown.classList.toggle('active');
+            });
+            document.addEventListener('click', () => profileDropdown?.classList.remove('active'));
 
-        document
-          .getElementById("btnSair")
-          ?.addEventListener("click", fazerLogout);
+            // Lógica de Abas
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabPanels = document.querySelectorAll('.tab-panel');
 
-        const profileDropdown = document.getElementById("profileDropdown");
-        profileDropdown?.addEventListener("click", (e) => {
-          e.stopPropagation();
-          profileDropdown.classList.toggle("active");
-        });
-        document.addEventListener("click", () =>
-          profileDropdown?.classList.remove("active"),
-        );
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetTab = btn.getAttribute('data-tab');
+                    
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabPanels.forEach(p => p.classList.remove('active'));
+                    
+                    btn.classList.add('active');
+                    const panel = document.getElementById(targetTab === 'previa' ? 'painelPrevia' : 'painelTweet');
+                    if (panel) panel.classList.add('active');
+                });
+            });
 
-        // Lógica de Abas
-        const tabBtns = document.querySelectorAll(".tab-btn");
-        const tabPanels = document.querySelectorAll(".tab-panel");
+            // Contador de Tweet
+            const tweetTextarea = document.getElementById('tweetTexto');
+            const tweetContador = document.getElementById('tweetContador');
+            tweetTextarea?.addEventListener('input', () => {
+                const restante = 280 - tweetTextarea.value.length;
+                tweetContador.textContent = restante;
+            });
 
-        tabBtns.forEach((btn) => {
-          btn.addEventListener("click", (e) => {
-            e.preventDefault();
-            const targetTab = btn.getAttribute("data-tab");
+            // Submit Tweet
+            document.getElementById('formNovoTweet')?.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = document.getElementById('btnPublicarTweet');
+                const msgEl = document.getElementById('tweetMsg');
+                const texto = tweetTextarea.value.trim();
+                const expira = document.getElementById('tweetExpira').checked;
 
-            tabBtns.forEach((b) => b.classList.remove("active"));
-            tabPanels.forEach((p) => p.classList.remove("active"));
+                if (!texto) return;
+                
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> PUBLICANDO...';
+                msgEl.className = 'msg-feedback hidden';
 
-            btn.classList.add("active");
-            const panel = document.getElementById(
-              targetTab === "previa" ? "painelPrevia" : "painelTweet",
-            );
-            if (panel) panel.classList.add("active");
-          });
-        });
+                try {
+                    await criarTweet(texto, expira);
+                    e.target.reset();
+                    tweetContador.textContent = '280';
+                    msgEl.textContent = 'Tweet publicado com sucesso!';
+                    msgEl.className = 'msg-feedback sucesso';
+                } catch (err) {
+                    msgEl.textContent = err.message || 'Erro ao publicar tweet.';
+                    msgEl.className = 'msg-feedback erro';
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-paper-plane"></i> PUBLICAR TWEET';
+                }
+            });
 
-        // Contador de Tweet
-        const tweetTextarea = document.getElementById("tweetTexto");
-        const tweetContador = document.getElementById("tweetContador");
-        tweetTextarea?.addEventListener("input", () => {
-          const restante = 280 - tweetTextarea.value.length;
-          tweetContador.textContent = restante;
-        });
+            // Trimmer: mostra o player e deixa escolher o trecho de 30s (ou
+            // outra duração) assim que um arquivo de áudio é escolhido.
+            const inputArquivo = document.getElementById('previaArquivo');
+            const fileNameDisplay = document.getElementById('fileNameDisplay');
+            const trimmer = document.querySelector('.trimmer');
+            const inputInicio = document.getElementById('previaInicio');
+            const inputDuracao = document.getElementById('previaDuracao');
 
-        // Submit Tweet
-        document
-          .getElementById("formNovoTweet")
-          ?.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById("btnPublicarTweet");
-            const msgEl = document.getElementById("tweetMsg");
-            const texto = tweetTextarea.value.trim();
-            const expira = document.getElementById("tweetExpira").checked;
+            inputArquivo?.addEventListener('change', () => {
+                const arquivo = inputArquivo.files[0];
+                if (!arquivo) return;
 
-            if (!texto) return;
+                if (fileNameDisplay) fileNameDisplay.textContent = arquivo.name;
 
-            btn.disabled = true;
-            btn.innerHTML =
-              '<i class="fas fa-spinner fa-spin"></i> PUBLICANDO...';
-            msgEl.className = "msg-feedback hidden";
-
-            try {
-              await criarTweet(texto, expira);
-              e.target.reset();
-              tweetContador.textContent = "280";
-              msgEl.textContent = "Tweet publicado com sucesso!";
-              msgEl.className = "msg-feedback sucesso";
-            } catch (err) {
-              msgEl.textContent = err.message || "Erro ao publicar tweet.";
-              msgEl.className = "msg-feedback erro";
-            } finally {
-              btn.disabled = false;
-              btn.innerHTML =
-                '<i class="fas fa-paper-plane"></i> PUBLICAR TWEET';
-            }
-          });
-
-        // Trimmer: mostra o player e deixa escolher o trecho de 30s (ou
-        // outra duração) assim que um arquivo de áudio é escolhido.
-        const inputArquivo = document.getElementById("previaArquivo");
-        const fileNameDisplay = document.getElementById("fileNameDisplay");
-        const trimmer = document.querySelector(".trimmer");
-        const inputInicio = document.getElementById("previaInicio");
-        const inputDuracao = document.getElementById("previaDuracao");
-
-        inputArquivo?.addEventListener("change", () => {
-          const arquivo = inputArquivo.files[0];
-          if (!arquivo) return;
-
-          if (fileNameDisplay) fileNameDisplay.textContent = arquivo.name;
-
-          const url = URL.createObjectURL(arquivo);
-          trimmer.innerHTML = `
-                    <audio id="trimmerAudio" src="${url}" controls preload="metadata"></audio>
-                    <div class="trimmer-row">
-                        <label>Início</label>
-                        <input type="range" id="trimmerInicio" min="0" max="0" step="1" value="0">
+                const url = URL.createObjectURL(arquivo);
+                trimmer.innerHTML = `
+                    <audio id="trimmerAudio" src="${url}" preload="metadata"></audio>
+                    <div class="trimmer-timeline" id="trimmerTimeline">
+                        <div class="trimmer-fora" id="trimmerForaEsq" style="left:0;"></div>
+                        <div class="trimmer-fora" id="trimmerForaDir" style="right:0;"></div>
+                        <div class="trimmer-window" id="trimmerWindow">
+                            <div class="trimmer-handle trimmer-handle-esq" id="trimmerHandleEsq"></div>
+                            <div class="trimmer-handle trimmer-handle-dir" id="trimmerHandleDir"></div>
+                        </div>
+                        <div class="trimmer-playhead" id="trimmerPlayhead"></div>
                     </div>
                     <div class="trimmer-row">
                         <label>Duração</label>
@@ -678,102 +483,189 @@
                     </button>
                 `;
 
-          const audioEl = document.getElementById("trimmerAudio");
-          const sliderInicio = document.getElementById("trimmerInicio");
-          const selectDuracao = document.getElementById("trimmerDuracao");
-          const tempoLabel = document.getElementById("trimmerTempo");
-          const btnOuvir = document.getElementById("btnOuvirTrecho");
+                const audioEl = document.getElementById('trimmerAudio');
+                const timeline = document.getElementById('trimmerTimeline');
+                const janela = document.getElementById('trimmerWindow');
+                const foraEsq = document.getElementById('trimmerForaEsq');
+                const foraDir = document.getElementById('trimmerForaDir');
+                const alcaEsq = document.getElementById('trimmerHandleEsq');
+                const alcaDir = document.getElementById('trimmerHandleDir');
+                const playhead = document.getElementById('trimmerPlayhead');
+                const selectDuracao = document.getElementById('trimmerDuracao');
+                const tempoLabel = document.getElementById('trimmerTempo');
+                const btnOuvir = document.getElementById('btnOuvirTrecho');
 
-          function formatarTempo(seg) {
-            seg = Math.max(0, Math.round(seg));
-            return `${Math.floor(seg / 60)}:${String(seg % 60).padStart(2, "0")}`;
-          }
+                let duracaoAudio = 0;
+                let inicio = 0; // segundos
 
-          function atualizarSelecao() {
-            const duracao = Number(selectDuracao.value);
-            const duracaoAudio = audioEl.duration || 0;
-            sliderInicio.max = Math.max(0, Math.floor(duracaoAudio - duracao));
-            if (Number(sliderInicio.value) > Number(sliderInicio.max)) {
-              sliderInicio.value = sliderInicio.max;
-            }
-            const inicio = Number(sliderInicio.value);
-            const duracaoReal = Math.min(
-              duracao,
-              Math.max(1, duracaoAudio - inicio),
-            );
-            inputInicio.value = String(inicio);
-            inputDuracao.value = String(Math.round(duracaoReal));
-            tempoLabel.textContent = `De ${formatarTempo(inicio)} até ${formatarTempo(inicio + duracaoReal)} (${Math.round(duracaoReal)}s de ${formatarTempo(duracaoAudio)})`;
-          }
+                function formatarTempo(seg) {
+                    seg = Math.max(0, Math.round(seg));
+                    return `${Math.floor(seg / 60)}:${String(seg % 60).padStart(2, '0')}`;
+                }
 
-          audioEl.addEventListener("loadedmetadata", atualizarSelecao);
-          sliderInicio.addEventListener("input", atualizarSelecao);
-          selectDuracao.addEventListener("change", atualizarSelecao);
+                // Redesenha a janela (posição + largura) a partir de inicio/duração,
+                // em porcentagem da largura da timeline.
+                function desenharJanela() {
+                    const duracao = Math.min(Number(selectDuracao.value), Math.max(1, duracaoAudio));
+                    const inicioPct = duracaoAudio ? (inicio / duracaoAudio) * 100 : 0;
+                    const larguraPct = duracaoAudio ? (duracao / duracaoAudio) * 100 : 100;
+                    janela.style.left = `${inicioPct}%`;
+                    janela.style.width = `${larguraPct}%`;
+                    foraEsq.style.width = `${inicioPct}%`;
+                    foraDir.style.width = `${Math.max(0, 100 - inicioPct - larguraPct)}%`;
 
-          btnOuvir.addEventListener("click", () => {
-            audioEl.currentTime = Number(sliderInicio.value);
-            audioEl.play();
-            const duracao = Number(inputDuracao.value);
-            clearTimeout(audioEl._paradaTrecho);
-            audioEl._paradaTrecho = setTimeout(
-              () => audioEl.pause(),
-              duracao * 1000,
-            );
-          });
+                    inputInicio.value = String(Math.round(inicio));
+                    inputDuracao.value = String(Math.round(duracao));
+                    tempoLabel.textContent = `De ${formatarTempo(inicio)} até ${formatarTempo(inicio + duracao)} (${Math.round(duracao)}s de ${formatarTempo(duracaoAudio)})`;
+                }
+
+                function limitarInicio(valor) {
+                    const duracao = Number(selectDuracao.value);
+                    return Math.max(0, Math.min(valor, Math.max(0, duracaoAudio - duracao)));
+                }
+
+                // Arrasta a janela inteira (segura no meio e desliza).
+                function arrastarJanela(e) {
+                    const rect = timeline.getBoundingClientRect();
+                    const xInicial = e.clientX;
+                    const inicioOriginal = inicio;
+                    function mover(ev) {
+                        const deltaPx = ev.clientX - xInicial;
+                        const deltaSeg = (deltaPx / rect.width) * duracaoAudio;
+                        inicio = limitarInicio(inicioOriginal + deltaSeg);
+                        desenharJanela();
+                    }
+                    function soltar() {
+                        document.removeEventListener('pointermove', mover);
+                        document.removeEventListener('pointerup', soltar);
+                    }
+                    document.addEventListener('pointermove', mover);
+                    document.addEventListener('pointerup', soltar);
+                }
+
+                // Arrasta só a alça esquerda: muda o início E a duração (o fim
+                // fica fixo), com o mínimo de 1s e sem passar da alça direita.
+                function arrastarAlcaEsquerda(e) {
+                    e.stopPropagation();
+                    const rect = timeline.getBoundingClientRect();
+                    const fim = inicio + Number(selectDuracao.value);
+                    function mover(ev) {
+                        const pct = Math.max(0, Math.min(1, (ev.clientX - rect.left) / rect.width));
+                        const novoInicio = Math.min(pct * duracaoAudio, fim - 1);
+                        inicio = Math.max(0, novoInicio);
+                        const novaDuracao = Math.max(1, Math.min(60, fim - inicio));
+                        atualizarOpcaoDuracaoMaisProxima(novaDuracao);
+                        desenharJanela();
+                    }
+                    function soltar() {
+                        document.removeEventListener('pointermove', mover);
+                        document.removeEventListener('pointerup', soltar);
+                    }
+                    document.addEventListener('pointermove', mover);
+                    document.addEventListener('pointerup', soltar);
+                }
+
+                // Arrasta só a alça direita: início fica fixo, muda a duração.
+                function arrastarAlcaDireita(e) {
+                    e.stopPropagation();
+                    const rect = timeline.getBoundingClientRect();
+                    function mover(ev) {
+                        const pct = Math.max(0, Math.min(1, (ev.clientX - rect.left) / rect.width));
+                        const fimSeg = pct * duracaoAudio;
+                        const novaDuracao = Math.max(1, Math.min(60, fimSeg - inicio));
+                        atualizarOpcaoDuracaoMaisProxima(novaDuracao);
+                        desenharJanela();
+                    }
+                    function soltar() {
+                        document.removeEventListener('pointermove', mover);
+                        document.removeEventListener('pointerup', soltar);
+                    }
+                    document.addEventListener('pointermove', mover);
+                    document.addEventListener('pointerup', soltar);
+                }
+
+                // O <select> só tem 15/30/45/60 — ao arrastar uma alça, escolhe
+                // a opção mais próxima da duração que o dedo/mouse pediu.
+                function atualizarOpcaoDuracaoMaisProxima(duracaoAlvo) {
+                    const opcoes = [15, 30, 45, 60];
+                    const maisProxima = opcoes.reduce((a, b) => Math.abs(b - duracaoAlvo) < Math.abs(a - duracaoAlvo) ? b : a);
+                    selectDuracao.value = String(maisProxima);
+                }
+
+                janela.addEventListener('pointerdown', arrastarJanela);
+                alcaEsq.addEventListener('pointerdown', arrastarAlcaEsquerda);
+                alcaDir.addEventListener('pointerdown', arrastarAlcaDireita);
+
+                audioEl.addEventListener('loadedmetadata', () => {
+                    duracaoAudio = audioEl.duration || 0;
+                    inicio = limitarInicio(0);
+                    desenharJanela();
+                });
+                selectDuracao.addEventListener('change', () => {
+                    inicio = limitarInicio(inicio);
+                    desenharJanela();
+                });
+
+                btnOuvir.addEventListener('click', () => {
+                    audioEl.currentTime = inicio;
+                    audioEl.play();
+                    playhead.classList.add('show');
+                    const duracao = Number(inputDuracao.value);
+
+                    clearInterval(audioEl._intervaloPlayhead);
+                    audioEl._intervaloPlayhead = setInterval(() => {
+                        const pct = duracaoAudio ? (audioEl.currentTime / duracaoAudio) * 100 : 0;
+                        playhead.style.left = `${pct}%`;
+                    }, 50);
+
+                    clearTimeout(audioEl._paradaTrecho);
+                    audioEl._paradaTrecho = setTimeout(() => {
+                        audioEl.pause();
+                        clearInterval(audioEl._intervaloPlayhead);
+                        playhead.classList.remove('show');
+                    }, duracao * 1000);
+                });
+            });
+
+            // Submit Prévia
+            document.getElementById('formNovaPrevia')?.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = document.getElementById('btnPublicarPrevia');
+                const msgEl = document.getElementById('previaMsg');
+                const arquivo = document.getElementById('previaArquivo').files[0];
+                const nome = document.getElementById('previaNome').value.trim();
+
+                if (!arquivo) return;
+                
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> PUBLICANDO...';
+                msgEl.className = 'msg-feedback hidden';
+
+                try {
+                    const inicio = Number(document.getElementById('previaInicio').value) || 0;
+                    const duracao = Number(document.getElementById('previaDuracao').value) || 30;
+                    await criarPostagem(arquivo, nome, inicio, duracao);
+                    e.target.reset();
+                    msgEl.textContent = 'Prévia publicada com sucesso!';
+                    msgEl.className = 'msg-feedback sucesso';
+                } catch (err) {
+                    msgEl.textContent = err.message || 'Erro ao publicar prévia.';
+                    msgEl.className = 'msg-feedback erro';
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-upload"></i> PUBLICAR NA CENA';
+                }
+            });
+
+            initSearchOverlay();
         });
-
-        // Submit Prévia
-        document
-          .getElementById("formNovaPrevia")
-          ?.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById("btnPublicarPrevia");
-            const msgEl = document.getElementById("previaMsg");
-            const arquivo = document.getElementById("previaArquivo").files[0];
-            const nome = document.getElementById("previaNome").value.trim();
-
-            if (!arquivo) return;
-
-            btn.disabled = true;
-            btn.innerHTML =
-              '<i class="fas fa-spinner fa-spin"></i> PUBLICANDO...';
-            msgEl.className = "msg-feedback hidden";
-
-            try {
-              const inicio =
-                Number(document.getElementById("previaInicio").value) || 0;
-              const duracao =
-                Number(document.getElementById("previaDuracao").value) || 30;
-              await criarPostagem(arquivo, nome, inicio, duracao);
-              e.target.reset();
-              msgEl.textContent = "Prévia publicada com sucesso!";
-              msgEl.className = "msg-feedback sucesso";
-            } catch (err) {
-              msgEl.textContent = err.message || "Erro ao publicar prévia.";
-              msgEl.className = "msg-feedback erro";
-            } finally {
-              btn.disabled = false;
-              btn.innerHTML = '<i class="fas fa-upload"></i> PUBLICAR NA CENA';
-            }
-          });
-
-        initSearchOverlay();
-      });
     </script>
     <div class="tab-bar-spacer"></div>
     <nav class="tab-bar" aria-label="Navegação principal">
-      <a class="tab-bar-item" href="feed.html"
-        ><i class="fas fa-stream"></i>Feed</a
-      >
-      <button type="button" class="tab-bar-item" id="tabBarBuscar">
-        <i class="fas fa-search"></i>Buscar
-      </button>
-      <a class="tab-bar-item tab-bar-cta active" href="publicar.html"
-        ><i class="fas fa-plus"></i>Postar</a
-      >
-      <a class="tab-bar-item" href="perfil.html"
-        ><i class="fas fa-user"></i>Perfil</a
-      >
+        <a class="tab-bar-item" href="feed.html"><i class="fas fa-stream"></i>Feed</a>
+        <button type="button" class="tab-bar-item" id="tabBarBuscar"><i class="fas fa-search"></i>Buscar</button>
+        <a class="tab-bar-item tab-bar-cta active" href="publicar.html"><i class="fas fa-plus"></i>Postar</a>
+        <a class="tab-bar-item" href="perfil.html"><i class="fas fa-user"></i>Perfil</a>
     </nav>
-  </body>
+</body>
 </html>
