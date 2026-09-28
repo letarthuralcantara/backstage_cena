@@ -1,5 +1,24 @@
 import { z } from "zod";
 
+export const TIPOS_AUDIO_PERMITIDOS = [
+  "audio/mpeg",
+  "audio/mp4",
+  "audio/wav",
+  "audio/x-wav",
+  "audio/ogg",
+  "audio/webm",
+] as const;
+export const TAMANHO_AUDIO_MAX_BYTES = 15 * 1024 * 1024;
+
+export const arquivoAudioSchema = z.object({
+  mimetype: z.enum(TIPOS_AUDIO_PERMITIDOS, {
+    message: "Formato de áudio não suportado. Use mp3, wav, m4a ou ogg.",
+  }),
+  size: z
+    .number()
+    .max(TAMANHO_AUDIO_MAX_BYTES, "O arquivo excede o limite de 15 MB."),
+});
+
 const idParams = z.object({
   id: z.coerce.number().int().positive("O id deve ser um número positivo"),
 });
@@ -24,7 +43,10 @@ export const postagemBodySchema = z
     duracao_seg: z.coerce.number().int().min(1).max(60).optional(),
   })
   .strict();
-export const criarPostagemSchema = z.object({ body: postagemBodySchema });
+export const criarPostagemSchema = z.object({
+  body: postagemBodySchema,
+  file: arquivoAudioSchema,
+});
 
 export const tweetParamsSchema = z.object({ params: idParams });
 export const tweetUsuarioSchema = z.object({ params: usuarioParams });

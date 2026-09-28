@@ -11,6 +11,30 @@ export function authHeaders(extra = {}, json = true) {
   };
 }
 
+export function aplicarErroApiNoCampo(error, aliases = {}) {
+  let primeiroCampo = null;
+  for (const issue of error.issues ?? []) {
+    const nome =
+      issue.path?.[0] === "body" ? issue.path[1] : issue.path?.at(-1);
+    const id = aliases[nome] || nome;
+    const campo = id ? document.getElementById(id) : null;
+    if (!campo || !issue.message) continue;
+
+    campo.setCustomValidity(issue.message);
+    campo.setAttribute("aria-invalid", "true");
+    if (!campo.dataset.apiValidationAttached) {
+      campo.addEventListener("input", () => {
+        campo.setCustomValidity("");
+        campo.removeAttribute("aria-invalid");
+      });
+      campo.dataset.apiValidationAttached = "true";
+    }
+    primeiroCampo ??= campo;
+  }
+  primeiroCampo?.reportValidity();
+  return Boolean(primeiroCampo);
+}
+
 async function respostaComErro(res, fallback) {
   let erro;
   try {

@@ -79,11 +79,7 @@
         /* ── HERO ── */
         .hero { margin-bottom: 36px; }
         .hero-title { font-size: clamp(28px, 6vw, 44px); margin-bottom: 8px; text-align: left; }
-        .hero-title span {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+        .hero-title span { color: var(--accent); }
         .hero-subtitle { font-size: 15px; color: var(--text-2); margin-bottom: 14px; }
         .total-count {
             display: inline-flex; align-items: center; gap: 8px;
@@ -116,9 +112,9 @@
         .musician-photo {
             width: 54px; height: 54px; flex-shrink: 0;
             border-radius: var(--r-md);
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: var(--glass-fill-strong); border: 1px solid var(--glass-border);
             display: flex; align-items: center; justify-content: center;
-            font-weight: 700; font-size: 1rem;
+            font-weight: 600; font-size: .95rem; color: var(--text-1);
         }
         .musician-info { flex: 1; min-width: 0; }
         .musician-name {

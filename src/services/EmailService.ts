@@ -1,8 +1,8 @@
-import nodemailer from "nodemailer";
+import nodemailer, { type Transporter } from "nodemailer";
 import path from "node:path";
 import mailConfig from "../config/mail.js";
 
-let transporter: nodemailer.Transporter | null = null;
+let transporter: Transporter | null = null;
 
 const ASSUNTO_BOAS_VINDAS = "Bem-vindo(a) ao Backstage Cena!";
 const REMETENTE_PADRAO = "Backstage Cena <noreply@backstagecena.com>";
@@ -420,7 +420,7 @@ async function enviarBoasVindas(
   const { text, html } = criarConteudoEmail(nome);
 
   const info = await transporter.sendMail({
-    from: process.env.EMAIL_FROM ?? REMETENTE_PADRAO,
+    from: process.env.EMAIL_FROM?.trim() || REMETENTE_PADRAO,
     to: destinatario,
     subject: ASSUNTO_BOAS_VINDAS,
     text,
@@ -534,7 +534,7 @@ async function enviarCodigoRedefinicaoSenha(
   const { text, html } = criarConteudoCodigoReset(nome, codigo);
 
   const info = await transporter.sendMail({
-    from: process.env.EMAIL_FROM ?? REMETENTE_PADRAO,
+    from: process.env.EMAIL_FROM?.trim() || REMETENTE_PADRAO,
     to: destinatario,
     subject: ASSUNTO_CODIGO_RESET,
     text,

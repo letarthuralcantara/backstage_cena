@@ -3,7 +3,6 @@ import path from "node:path";
 import prisma from "../database/prisma.js";
 import { HttpError } from "../errors/HttpError.js";
 
-const DURACAO_MAXIMA_SEG = 60; // trava de segurança: ninguém posta prévia de 10 minutos
 const PASTA_UPLOADS = path.resolve("public");
 
 async function apagarArquivo(audio_url: string) {
@@ -42,8 +41,6 @@ function mapPostagem(p: any) {
   };
 }
 
-const TITULO_MAX_CHARS = 60;
-
 // ── Criação ──────────────────────────────────────────────────────────────────
 async function create(dados: {
   id_usuario: number;
@@ -52,12 +49,9 @@ async function create(dados: {
   inicio_seg?: number;
   duracao_seg?: number;
 }) {
-  const inicio_seg = Math.max(0, Number(dados.inicio_seg ?? 0));
-  const duracao_seg = Math.min(
-    DURACAO_MAXIMA_SEG,
-    Math.max(1, Number(dados.duracao_seg ?? 30)),
-  );
-  const titulo = dados.titulo?.trim().slice(0, TITULO_MAX_CHARS) || null;
+  const inicio_seg = dados.inicio_seg ?? 0;
+  const duracao_seg = dados.duracao_seg ?? 30;
+  const titulo = dados.titulo?.trim() || null;
 
   const criado_em = new Date();
   const expira_em = new Date(criado_em.getTime() + 24 * 60 * 60 * 1000); // +24h

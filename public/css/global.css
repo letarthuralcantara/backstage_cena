@@ -1,10 +1,9 @@
 /* ============================================================
    global.css — Backstage Cena
-   Sistema de design "Liquid Glass" (baseado na Apple HIG 2025+):
-   material translúcido que reflete o fundo, raios concêntricos,
-   tipografia em negrito alinhada à esquerda, mobile-first.
-   Importar em todas as páginas:
-   <link rel="stylesheet" href="../css/global.css">
+   Material de vidro contido, quase neutro — o roxo é usado como UM
+   acento, não como identidade visual de todo elemento. Sombra real
+   em vez de brilho colorido. Sem gradiente martelado em botão, ícone,
+   avatar e card ao mesmo tempo. Mobile-first.
    ============================================================ */
 
 /* ── RESET ── */
@@ -12,34 +11,44 @@
 
 /* ── TOKENS ── */
 :root {
-    /* Cor — a identidade violeta/magenta da marca, agora tratada como
-       material (o "vidro" é tingido por ela) em vez de só preenchimento. */
-    --primary: #8b5cf6;
-    --secondary: #d946ef;
-    --primary-glow: rgba(139, 92, 246, 0.5);
-    --ink: #050505;
+    /* Um acento só. Usado em: link, foco, estado ativo, UM botão por tela.
+       Não é gradiente, não vaza pra ícone/avatar/borda por padrão. */
+    --accent: #8b5cf6;
+    --accent-ink: #6d28d9;   /* acento mais escuro — hover/active do botão sólido */
+    --accent-soft: rgba(139, 92, 246, .14);
+    --ink: #030303;
 
-    --text-1: #F5F5F7;              /* texto principal */
-    --text-2: rgba(245, 245, 247, .62); /* texto secundário */
-    --text-3: rgba(245, 245, 247, .40); /* texto terciário / placeholder */
+    --text-1: #f2f2f4;
+    --text-2: rgba(242, 242, 244, .58);
+    --text-3: rgba(242, 242, 244, .36);
 
-    /* Material de vidro: preenchimento + borda + brilho especular no topo */
-    --glass-fill: rgba(255, 255, 255, .055);
-    --glass-fill-strong: rgba(255, 255, 255, .09);
-    --glass-border: rgba(255, 255, 255, .12);
-    --glass-highlight: rgba(255, 255, 255, .5);
-    --glass-blur: blur(20px) saturate(160%);
-    --glass-blur-strong: blur(28px) saturate(180%);
+    /* Vidro: quase incolor. É a luz por trás que dá a cor, não um tingimento
+       roxo aplicado à força. */
+    --glass-fill: rgba(255, 255, 255, .045);
+    --glass-fill-strong: rgba(255, 255, 255, .075);
+    --glass-border: rgba(255, 255, 255, .10);
+    --glass-highlight: rgba(255, 255, 255, .16);
+    --glass-blur: blur(18px) saturate(140%);
+    --glass-blur-strong: blur(26px) saturate(150%);
 
-    /* Raios concêntricos: cada nível aninhado usa o raio de baixo */
-    --r-xl: 28px;   /* contêineres/cartões grandes */
-    --r-lg: 20px;   /* cartões */
-    --r-md: 14px;   /* botões, inputs */
-    --r-sm: 10px;   /* chips, ícones pequenos */
+    /* Sombra de verdade (preta, com profundidade), não "glow" colorido. */
+    --shadow-1: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.28);
+    --shadow-2: 0 2px 4px rgba(0,0,0,.35), 0 16px 40px rgba(0,0,0,.4);
+
+    --r-xl: 26px;
+    --r-lg: 18px;
+    --r-md: 12px;
+    --r-sm: 9px;
     --r-full: 999px;
 
-    --shadow-glass: 0 8px 32px rgba(0, 0, 0, .45);
     --ease: cubic-bezier(.22, 1, .36, 1);
+
+    /* Compatibilidade: páginas ainda não migradas ao vocabulário novo
+       (--accent) continuam funcionando com os nomes antigos, só que agora
+       apontando pro acento único e pra uma sombra real em vez de glow. */
+    --primary: var(--accent);
+    --secondary: #a78bfa;
+    --primary-glow: rgba(0, 0, 0, .35);
 }
 
 /* ── BODY BASE ── */
@@ -51,275 +60,166 @@ body {
     min-height: 100dvh;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
-
-    background:
-        radial-gradient(circle at 15% 0%, rgba(139, 92, 246, .16), transparent 45%),
-        radial-gradient(circle at 100% 100%, rgba(217, 70, 239, .10), transparent 45%),
-        var(--ink);
+    background: var(--ink);
 }
 
-h1, h2, h3, .display {
-    font-family: 'Poppins', sans-serif;
-    font-weight: 800;
-    letter-spacing: -0.01em;
-}
-/* Título em destaque alinhado à esquerda — opt-in, NUNCA aplicado a
-   h1/h2/h3 de forma genérica (isso quebrava títulos centralizados que já
-   existiam nas páginas, como o nome do usuário no perfil). */
+h1, h2, h3 { font-family: 'Poppins', sans-serif; font-weight: 700; letter-spacing: -.01em; }
+/* Título em destaque alinhado à esquerda — só onde a página pedir
+   explicitamente (nunca aplicado a h1/h2/h3 de forma genérica). */
 .headline-left { text-align: left; }
 
-#bg-canvas {
-    position: fixed;
-    inset: 0;
-    z-index: -2;
-    opacity: .3;
-}
-body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, .45);
-    z-index: 0;
-    pointer-events: none;
-}
+#bg-canvas { display: none; } /* ver nota no rodapé deste arquivo */
 
-::selection { background: var(--primary); color: white; }
-:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 6px; }
+::selection { background: var(--accent); color: white; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
 
-/* ── HEADER — barra de vidro superior (visível a partir de tablet/desktop) ── */
+/* ── HEADER ── */
 .header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-
-    width: 100%;
-    padding: 10px 16px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-
-    background: rgba(8, 6, 14, .55);
+    position: sticky; top: 0; z-index: 100;
+    width: 100%; padding: 10px 16px;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    background: rgba(6, 6, 8, .6);
     -webkit-backdrop-filter: var(--glass-blur-strong);
     backdrop-filter: var(--glass-blur-strong);
-
     border-bottom: 1px solid var(--glass-border);
-    box-shadow: inset 0 1px 0 var(--glass-highlight), var(--shadow-glass);
+    padding-top: max(10px, env(safe-area-inset-top));
 }
 .header-left { display: flex; align-items: center; justify-content: flex-start; }
 .header-center { display: none; }
 .header-actions { display: flex; justify-content: flex-end; align-items: center; gap: 12px; min-width: 0; }
-.logo-img { height: 30px; width: auto; display: block; flex-shrink: 0; }
+.logo-img { height: 28px; width: auto; display: block; flex-shrink: 0; }
 
-/* Botões de Login/Registrar-se no header público (index, privacidade,
-   sobrenos) — compactos no celular pra nunca disputar espaço com a logo,
-   voltam ao tamanho normal a partir do tablet. */
+@media (min-width: 768px) {
+    .header { padding: 12px 28px; gap: 16px; padding-top: max(12px, env(safe-area-inset-top)); }
+    .header-center { display: flex; justify-content: center; align-items: center; flex: 1; }
+    .logo-img { height: 32px; }
+}
+
 .btn-auth { padding: 8px 12px !important; font-size: 13px !important; min-height: 38px !important; white-space: nowrap; }
 @media (min-width: 480px) {
-    .btn-auth { padding: 10px 18px !important; font-size: 14px !important; min-height: 44px !important; }
+    .btn-auth { padding: 9px 16px !important; font-size: 14px !important; min-height: 40px !important; }
 }
 
-/* No mobile, a busca some do header (fica só um atalho no tab bar); a
-   partir de tablet, ela volta a ocupar o centro do header. */
-@media (min-width: 768px) {
-    .header { padding: 12px 28px; gap: 16px; }
-    .header-center { display: flex; justify-content: center; align-items: center; flex: 1; }
-    .logo-img { height: 42px; }
-}
-
-/* ── BARRA DE BUSCA NO HEADER ── */
+/* ── BARRA DE BUSCA ── */
 .header-search {
-    width: 100%;
-    max-width: 560px;
-    margin: 0 auto;
-
-    display: flex;
-    align-items: center;
-
+    width: 100%; max-width: 560px; margin: 0 auto;
+    display: flex; align-items: center;
     background: var(--glass-fill);
     border: 1px solid var(--glass-border);
     border-radius: var(--r-full);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .12);
     overflow: hidden;
-    transition: border-color .25s var(--ease), background .25s var(--ease);
+    transition: border-color .2s var(--ease), background .2s var(--ease);
 }
-.header-search:focus-within,
-.header-search:hover {
-    border-color: var(--primary);
-    background: rgba(139, 92, 246, .10);
-}
-.header-search-icon { padding: 0 14px; color: var(--primary); font-size: 14px; flex-shrink: 0; }
+.header-search:focus-within, .header-search:hover { border-color: rgba(255,255,255,.22); background: var(--glass-fill-strong); }
+.header-search-icon { padding: 0 14px; color: var(--text-3); font-size: 14px; flex-shrink: 0; }
 .header-search-input {
-    flex: 1; min-width: 0;
-    padding: 11px 0;
-    background: transparent;
-    border: none;
-    color: var(--text-1);
-    font-size: 15px;
-    font-family: 'Inter', sans-serif;
-    cursor: pointer;
+    flex: 1; min-width: 0; padding: 11px 0;
+    background: transparent; border: none; color: var(--text-1);
+    font-size: 15px; font-family: 'Inter', sans-serif; cursor: pointer;
 }
 .header-search-input::placeholder { color: var(--text-3); }
 .header-search-input:focus { outline: none; }
 .header-search-btn {
     padding: 11px 20px;
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    border: none;
-    color: white;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: 'Inter', sans-serif;
-    transition: opacity .2s;
-    flex-shrink: 0;
-    white-space: nowrap;
+    background: var(--text-1); color: var(--ink);
+    border: none; font-size: 13px; font-weight: 600; cursor: pointer;
+    font-family: 'Inter', sans-serif; transition: opacity .2s; flex-shrink: 0; white-space: nowrap;
 }
-.header-search-btn:hover { opacity: .88; }
+.header-search-btn:hover { opacity: .85; }
 
 /* ── DROPDOWN DE PERFIL ── */
 .profile-dropdown { position: relative; }
 .profile-trigger {
-    width: 40px; height: 40px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    width: 38px; height: 38px; border-radius: 50%;
+    background: var(--glass-fill-strong);
+    border: 1px solid var(--glass-border);
     display: flex; align-items: center; justify-content: center;
-    font-weight: 700; font-size: 14px; cursor: pointer;
-    border: 2px solid rgba(139, 92, 246, .5);
-    transition: transform .25s var(--ease), border-color .25s;
-    box-shadow: 0 4px 16px rgba(139, 92, 246, .35);
-    overflow: hidden;
+    font-weight: 600; font-size: 13px; cursor: pointer;
+    transition: border-color .2s; overflow: hidden;
 }
 .profile-trigger img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
-.profile-trigger:hover { transform: scale(1.05); border-color: var(--primary); }
+.profile-trigger:hover { border-color: rgba(255,255,255,.3); }
 
 .profile-incomplete-badge {
-    position: absolute; top: -4px; right: -4px;
-    width: 18px; height: 18px;
-    background: #f59e0b; border-radius: 50%;
-    border: 2px solid var(--ink);
+    position: absolute; top: -3px; right: -3px; width: 16px; height: 16px;
+    background: #f59e0b; border-radius: 50%; border: 2px solid var(--ink);
     display: none; align-items: center; justify-content: center;
-    font-size: 10px; color: white; font-weight: 700;
-    z-index: 10;
+    font-size: 9px; color: #1a1000; font-weight: 700; z-index: 10;
 }
 .profile-incomplete-badge.show { display: flex; }
 
 .dropdown-menu {
-    position: absolute; top: 56px; right: 0;
-    background: rgba(18, 12, 28, .78);
+    position: absolute; top: 52px; right: 0;
+    background: rgba(16, 16, 18, .85);
     -webkit-backdrop-filter: var(--glass-blur-strong);
     backdrop-filter: var(--glass-blur-strong);
     border: 1px solid var(--glass-border);
-    box-shadow: inset 0 1px 0 var(--glass-highlight), var(--shadow-glass);
-    border-radius: var(--r-lg); padding: 10px;
-    min-width: 230px;
-    opacity: 0; visibility: hidden; transform: translateY(-8px) scale(.98);
-    transition: opacity .25s var(--ease), transform .25s var(--ease), visibility .25s;
+    box-shadow: var(--shadow-2);
+    border-radius: var(--r-lg); padding: 8px; min-width: 220px;
+    opacity: 0; visibility: hidden; transform: translateY(-6px);
+    transition: opacity .2s var(--ease), transform .2s var(--ease), visibility .2s;
     z-index: 200;
 }
-.profile-dropdown.active .dropdown-menu {
-    opacity: 1; visibility: visible; transform: translateY(0) scale(1);
-}
+.profile-dropdown.active .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
 .dropdown-item {
-    display: flex; align-items: center; gap: 12px;
-    padding: 12px 14px; color: var(--text-2); text-decoration: none;
-    border-radius: var(--r-md); transition: background .2s, color .2s; font-size: 14px; cursor: pointer;
+    display: flex; align-items: center; gap: 12px; padding: 11px 13px;
+    color: var(--text-2); text-decoration: none; border-radius: var(--r-md);
+    transition: background .15s; font-size: 14px; cursor: pointer;
 }
-.dropdown-item:hover { background: var(--glass-fill-strong); color: #c4b5fd; }
-.dropdown-item i { width: 20px; text-align: center; color: var(--primary); }
+.dropdown-item:hover { background: var(--glass-fill-strong); color: var(--text-1); }
+.dropdown-item i { width: 18px; text-align: center; color: var(--text-3); font-size: 13px; }
 .dropdown-item.danger { color: #f87171; }
 .dropdown-item.danger i { color: #f87171; }
-.dropdown-item.danger:hover { background: rgba(239, 68, 68, .12); }
+.dropdown-item.danger:hover { background: rgba(239, 68, 68, .1); }
 .dropdown-item.disabled { opacity: .4; cursor: not-allowed; pointer-events: none; }
-.dropdown-item .badge-soon {
-    margin-left: auto; font-size: 10px; padding: 2px 7px;
-    background: var(--glass-fill-strong);
-    border: 1px solid var(--glass-border);
-    border-radius: var(--r-sm); color: #c4b5fd;
-}
-.dropdown-item .pending-dot { margin-left: auto; width: 8px; height: 8px; background: #f59e0b; border-radius: 50%; display: none; }
+.dropdown-item .badge-soon { margin-left: auto; font-size: 10px; padding: 2px 7px; background: var(--glass-fill-strong); border-radius: var(--r-sm); color: var(--text-2); }
+.dropdown-item .pending-dot { margin-left: auto; width: 7px; height: 7px; background: #f59e0b; border-radius: 50%; display: none; }
 .dropdown-item .pending-dot.show { display: block; }
-.dropdown-divider { height: 1px; background: var(--glass-border); margin: 8px 4px; }
+.dropdown-divider { height: 1px; background: var(--glass-border); margin: 6px 4px; }
 
-/* ── TAB BAR — navegação principal em vidro, fixa embaixo no mobile ──
-   Substitui os links de navegação do header em telas pequenas: no
-   estilo das tab bars nativas do iOS, flutua sobre o conteúdo em vez
-   de empurrá-lo. Cada página inclui o HTML com os 4 itens (Feed,
-   Buscar, Publicar, Perfil) e marca o item ativo com a classe .active. */
+/* ── TAB BAR (mobile) ── */
 .tab-bar {
-    position: fixed;
-    left: 12px; right: 12px; bottom: 12px;
-    z-index: 150;
-
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 8px 6px;
-
-    background: rgba(10, 8, 16, .68);
+    position: fixed; left: 10px; right: 10px; bottom: 10px; z-index: 150;
+    display: flex; justify-content: space-around; align-items: center; padding: 6px;
+    background: rgba(10, 10, 12, .72);
     -webkit-backdrop-filter: var(--glass-blur-strong);
     backdrop-filter: var(--glass-blur-strong);
     border: 1px solid var(--glass-border);
     border-radius: var(--r-full);
-    box-shadow: inset 0 1px 0 var(--glass-highlight), var(--shadow-glass);
-
-    padding-bottom: max(8px, env(safe-area-inset-bottom));
+    box-shadow: var(--shadow-2);
+    padding-bottom: max(6px, env(safe-area-inset-bottom));
 }
 .tab-bar-item {
     display: flex; flex-direction: column; align-items: center; gap: 3px;
-    padding: 8px 14px;
-    border-radius: var(--r-full);
-    color: var(--text-2);
-    text-decoration: none;
-    font-size: 10px;
-    font-weight: 600;
+    padding: 8px 14px; border-radius: var(--r-full);
+    color: var(--text-3); text-decoration: none; font-size: 10px; font-weight: 600;
     background: none; border: none; cursor: pointer;
-    transition: color .2s, background .2s;
-    -webkit-tap-highlight-color: transparent;
+    transition: color .2s, background .2s, transform .18s var(--ease);
 }
-.tab-bar-item i { font-size: 18px; }
+.tab-bar-item i { font-size: 17px; }
 .tab-bar-item.active { color: var(--text-1); background: var(--glass-fill-strong); }
-.tab-bar-item.tab-bar-cta {
-    color: white;
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    box-shadow: 0 4px 16px rgba(139, 92, 246, .5);
-}
+.tab-bar-item.tab-bar-cta { color: var(--ink); background: var(--text-1); }
+.tab-bar-item:active { transform: scale(.94); }
 
-@media (min-width: 768px) {
-    .tab-bar { display: none; }
-}
-
-/* Empurra o conteúdo pra não ficar escondido atrás da tab bar fixa. */
-.tab-bar-spacer { height: 88px; }
-@media (min-width: 768px) {
-    .tab-bar-spacer { display: none; }
-}
+@media (min-width: 768px) { .tab-bar { display: none; } }
+.tab-bar-spacer { height: 84px; }
+@media (min-width: 768px) { .tab-bar-spacer { display: none; } }
 
 /* ── FOOTER ── */
-footer {
-    position: relative; z-index: 1;
-    padding: 24px 0;
-    text-align: center;
-    color: var(--text-2);
-    font-size: 13px;
-    border-top: 1px solid var(--glass-border);
-    margin-top: auto;
-}
+footer { position: relative; z-index: 1; padding: 24px 0; text-align: center; color: var(--text-3); font-size: 13px; border-top: 1px solid var(--glass-border); margin-top: auto; }
 .footer-content { display: flex; flex-direction: column; align-items: center; gap: 10px; }
-.footer-logo-img { height: 30px; width: auto; opacity: .7; }
+.footer-logo-img { height: 26px; width: auto; opacity: .55; }
 
 /* ── UTILITÁRIOS ── */
 .hidden { display: none !important; }
 
-/* Vidro genérico reutilizável — qualquer painel pode virar "material" só
-   adicionando esta classe, em vez de repetir blur/borda em cada página. */
 .glass {
     background: var(--glass-fill);
     -webkit-backdrop-filter: var(--glass-blur);
     backdrop-filter: var(--glass-blur);
     border: 1px solid var(--glass-border);
     border-radius: var(--r-lg);
-    box-shadow: inset 0 1px 0 var(--glass-highlight), var(--shadow-glass);
+    box-shadow: var(--shadow-1);
 }
 .glass-strong {
     background: var(--glass-fill-strong);
@@ -327,132 +227,114 @@ footer {
     backdrop-filter: var(--glass-blur-strong);
     border: 1px solid var(--glass-border);
     border-radius: var(--r-xl);
-    box-shadow: inset 0 1px 0 var(--glass-highlight), var(--shadow-glass);
+    box-shadow: var(--shadow-2);
 }
 
-/* Botão roxo padrão */
+/* Botão principal: cor sólida, não gradiente. Reservado pra UMA ação por
+   tela — é assim que ele continua significando "a ação principal". */
 .btn-primary {
     display: inline-flex; align-items: center; justify-content: center; gap: 8px;
     padding: 13px 24px;
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    border: none; border-radius: var(--r-md); color: white;
-    font-size: 14px; font-weight: 700; cursor: pointer;
-    text-decoration: none; transition: transform .2s var(--ease), box-shadow .2s var(--ease);
-    box-shadow: 0 4px 18px rgba(139, 92, 246, .45), inset 0 1px 0 rgba(255,255,255,.25);
+    background: var(--accent); border: none; border-radius: var(--r-md);
+    color: white; font-size: 14px; font-weight: 600; cursor: pointer;
+    text-decoration: none; transition: background .18s, transform .15s var(--ease);
+    box-shadow: var(--shadow-1);
     font-family: 'Inter', sans-serif;
 }
-.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(139, 92, 246, .6), inset 0 1px 0 rgba(255,255,255,.3); }
-.btn-primary:active { transform: translateY(0); }
+.btn-primary:hover { background: var(--accent-ink); }
+.btn-primary:active { transform: scale(.97); }
 
-/* Botão em vidro (secundário) */
 .btn-outline {
     display: inline-flex; align-items: center; justify-content: center; gap: 8px;
     padding: 12px 22px;
-    background: var(--glass-fill);
+    background: transparent;
     border: 1px solid var(--glass-border);
-    border-radius: var(--r-md); color: #c4b5fd;
+    border-radius: var(--r-md); color: var(--text-1);
     font-size: 14px; font-weight: 600; cursor: pointer;
-    text-decoration: none; transition: background .2s, border-color .2s, color .2s;
+    text-decoration: none; transition: background .18s, border-color .18s;
     font-family: 'Inter', sans-serif;
 }
-.btn-outline:hover { background: var(--glass-fill-strong); border-color: var(--primary); color: white; }
+.btn-outline:hover { background: var(--glass-fill); border-color: rgba(255,255,255,.25); }
+.btn-outline:active { transform: scale(.97); }
 
-/* Botão perigo */
 .btn-danger {
     display: inline-flex; align-items: center; justify-content: center; gap: 8px;
     padding: 13px 24px;
-    background: linear-gradient(135deg, #ef4444, #dc2626);
-    border: none; border-radius: var(--r-md); color: white;
-    font-size: 14px; font-weight: 700; cursor: pointer;
-    font-family: 'Inter', sans-serif; transition: box-shadow .2s, transform .2s var(--ease);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.2);
+    background: #dc2626; border: none; border-radius: var(--r-md); color: white;
+    font-size: 14px; font-weight: 600; cursor: pointer;
+    font-family: 'Inter', sans-serif; transition: background .18s, transform .15s var(--ease);
 }
-.btn-danger:hover { box-shadow: 0 6px 22px rgba(239, 68, 68, .45); transform: translateY(-1px); }
+.btn-danger:hover { background: #b91c1c; }
+.btn-danger:active { transform: scale(.97); }
 
-/* Tags */
 .tag {
     display: inline-flex; align-items: center; gap: 6px;
-    padding: 7px 14px;
+    padding: 6px 13px;
     background: var(--glass-fill);
     border: 1px solid var(--glass-border);
-    border-radius: var(--r-full); font-size: 13px; color: #c4b5fd;
+    border-radius: var(--r-full); font-size: 13px; color: var(--text-2);
 }
-.tags-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+.tags-grid { display: flex; flex-wrap: wrap; gap: 9px; }
 
-/* Cards de conteúdo */
 .content-card {
     background: var(--glass-fill);
     -webkit-backdrop-filter: var(--glass-blur);
     backdrop-filter: var(--glass-blur);
     border: 1px solid var(--glass-border);
-    border-radius: var(--r-lg); padding: 22px; margin-bottom: 18px;
-    box-shadow: inset 0 1px 0 var(--glass-highlight), var(--shadow-glass);
+    border-radius: var(--r-lg); padding: 22px; margin-bottom: 16px;
+    box-shadow: var(--shadow-1);
 }
-.card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+.card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
 .card-header-left { display: flex; align-items: center; gap: 12px; }
 .card-icon {
-    width: 40px; height: 40px;
-    background: var(--glass-fill-strong);
+    width: 36px; height: 36px; background: var(--glass-fill-strong);
     border-radius: var(--r-sm); display: flex; align-items: center; justify-content: center;
-    color: var(--primary); font-size: 18px;
+    color: var(--text-2); font-size: 15px;
 }
-.card-title { font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 700; text-align: left; }
+.card-title { font-family: 'Poppins', sans-serif; font-size: 17px; font-weight: 600; }
 
-/* Mensagens de erro/sucesso */
 .erro-msg {
-    background: rgba(239, 68, 68, .12);
-    border: 1px solid rgba(239, 68, 68, .3);
+    background: rgba(239, 68, 68, .1); border: 1px solid rgba(239, 68, 68, .28);
     color: #f87171; padding: 13px 16px; border-radius: var(--r-md);
     font-size: 14px; margin-bottom: 20px; display: none;
 }
 .sucesso-msg {
-    background: rgba(16, 185, 129, .12);
-    border: 1px solid rgba(16, 185, 129, .3);
+    background: rgba(16, 185, 129, .1); border: 1px solid rgba(16, 185, 129, .28);
     color: #6ee7b7; padding: 13px 16px; border-radius: var(--r-md);
-    font-size: 14px; margin-bottom: 20px; display: none;
-    align-items: center; gap: 10px;
+    font-size: 14px; margin-bottom: 20px; display: none; align-items: center; gap: 10px;
 }
 .btn-filtrar {
-    display: flex; align-items: center; justify-content: center;
-    padding: 0 16px;
-    background: var(--glass-fill);
-    border: none;
-    border-left: 1px solid var(--glass-border);
-    color: #c4b5fd;
-    cursor: pointer;
-    transition: background .2s;
-    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; padding: 0 16px;
+    background: none; border: none; border-left: 1px solid var(--glass-border);
+    color: var(--text-2); cursor: pointer; transition: background .18s; flex-shrink: 0;
 }
 .btn-filtrar:hover { background: var(--glass-fill-strong); }
 
-/* ── RESPONSIVO DO HEADER (mobile-first: já é a base acima; aqui só
-   ajustes finos) ── */
-@media (max-width: 767px) {
-    .header-actions { gap: 8px; }
+/* ── FEEDBACK DE TOQUE — resposta imediata, sutil, não é "flutuar" ── */
+.tab-bar-item, .header-search, .profile-trigger,
+.feed-card, .content-card, .musician-card, .escolha-card {
+    transition: transform .15s var(--ease), background .18s, border-color .18s, box-shadow .18s;
 }
 
 /* ============================================================
-   POSTAGENS (prévias tipo stories) — public/js/postagens.js
+   POSTAGENS (prévias) — public/js/postagens.js
    ============================================================ */
-.stories-bar { display: flex; gap: 18px; overflow-x: auto; padding: 16px 4px; scrollbar-width: thin; }
+.stories-bar { display: flex; gap: 16px; overflow-x: auto; padding: 14px 4px; scrollbar-width: thin; }
 .feed-loading, .feed-vazio { color: var(--text-2); font-size: 14px; padding: 8px 4px; }
 
-.story-bolinha {
-    display: flex; flex-direction: column; align-items: center; gap: 6px;
-    background: none; border: none; cursor: pointer; flex-shrink: 0; width: 76px;
-}
+.story-bolinha { display: flex; flex-direction: column; align-items: center; gap: 6px; background: none; border: none; cursor: pointer; flex-shrink: 0; width: 72px; }
 .story-anel {
-    width: 66px; height: 66px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    display: flex; align-items: center; justify-content: center;
-    padding: 3px; transition: transform .2s var(--ease);
+    width: 62px; height: 62px; border-radius: 50%;
+    background: var(--glass-fill-strong);
+    border: 1.5px solid var(--glass-border);
+    display: flex; align-items: center; justify-content: center; padding: 3px;
+    transition: border-color .18s;
 }
-.story-bolinha:hover .story-anel { transform: scale(1.06); }
+.story-bolinha:hover .story-anel { border-color: rgba(255,255,255,.3); }
 .story-icone { width: 100%; height: 100%; border-radius: 50%; background: var(--ink); display: flex; align-items: center; justify-content: center; }
 .onda-svg { display: block; }
-.story-nome { font-size: 12px; color: var(--text-1); max-width: 76px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.story-nome { font-size: 12px; color: var(--text-2); max-width: 72px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* ── Cards do feed dedicado (feed.html) ── */
 .feed-card {
     display: flex; align-items: center; gap: 16px;
     background: var(--glass-fill);
@@ -460,70 +342,49 @@ footer {
     backdrop-filter: var(--glass-blur);
     border: 1px solid var(--glass-border);
     border-radius: var(--r-lg); padding: 18px;
-    cursor: pointer; text-align: left; transition: transform .25s var(--ease), border-color .25s;
-    box-shadow: inset 0 1px 0 var(--glass-highlight);
+    cursor: pointer; text-align: left; transition: border-color .2s;
 }
-.feed-card:hover { border-color: var(--primary); transform: translateY(-3px); }
+.feed-card:hover { border-color: rgba(255,255,255,.22); }
 .feed-card-icone {
-    flex-shrink: 0; width: 56px; height: 56px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    flex-shrink: 0; width: 50px; height: 50px; border-radius: 50%;
+    background: var(--glass-fill-strong);
     display: flex; align-items: center; justify-content: center;
 }
 .feed-card-texto { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-.feed-card-titulo { color: var(--text-1); font-weight: 700; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.feed-card-titulo { color: var(--text-1); font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .feed-card-autor { color: var(--text-2); font-size: 13px; }
 
 .story-viewer-titulo { color: var(--text-1); font-weight: 600; font-size: 16px; margin-top: 24px; text-align: center; }
 
-/* ── Viewer em tela cheia ── */
-.story-viewer-overlay {
-    position: fixed; inset: 0; background: rgba(0, 0, 0, .92); z-index: 2000;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-}
-.story-viewer-barra { position: absolute; top: 16px; left: 16px; right: 16px; height: 3px; background: rgba(255,255,255,.2); border-radius: var(--r-full); overflow: hidden; }
-.story-viewer-progresso { height: 100%; width: 0%; background: var(--primary); }
+.story-viewer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.94); z-index: 2000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.story-viewer-barra { position: absolute; top: 16px; left: 16px; right: 16px; height: 3px; background: rgba(255,255,255,.15); border-radius: var(--r-full); overflow: hidden; }
+.story-viewer-progresso { height: 100%; width: 0%; background: var(--text-1); }
 .story-viewer-fechar { position: absolute; top: 24px; right: 20px; background: none; border: none; color: var(--text-1); font-size: 32px; line-height: 1; cursor: pointer; }
-.story-viewer-info { position: absolute; top: 34px; left: 20px; color: var(--text-1); font-size: 14px; opacity: .85; }
+.story-viewer-info { position: absolute; top: 34px; left: 20px; color: var(--text-2); font-size: 14px; }
 .story-viewer-area { display: flex; align-items: center; gap: 24px; }
-.story-viewer-icone-grande {
-    width: 160px; height: 160px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 0 60px var(--primary-glow);
-}
-.story-viewer-nav {
-    background: var(--glass-fill-strong); border: 1px solid var(--glass-border); color: var(--text-1);
-    width: 44px; height: 44px; border-radius: 50%; font-size: 22px; cursor: pointer; transition: background .2s;
-}
-.story-viewer-nav:hover { background: rgba(255,255,255,.22); }
+.story-viewer-icone-grande { width: 150px; height: 150px; border-radius: 50%; background: var(--glass-fill-strong); border: 1px solid var(--glass-border); display: flex; align-items: center; justify-content: center; }
+.story-viewer-nav { background: var(--glass-fill-strong); border: 1px solid var(--glass-border); color: var(--text-1); width: 42px; height: 42px; border-radius: 50%; font-size: 20px; cursor: pointer; transition: background .18s; }
+.story-viewer-nav:hover { background: rgba(255,255,255,.16); }
 
 @media (max-width: 540px) {
-    .story-anel { width: 58px; height: 58px; }
-    .story-viewer-icone-grande { width: 120px; height: 120px; font-size: 42px; }
+    .story-anel { width: 54px; height: 54px; }
+    .story-viewer-icone-grande { width: 110px; height: 110px; font-size: 38px; }
     .story-viewer-area { gap: 14px; }
 }
 
 /* ============================================================
-   ACESSIBILIDADE — a HIG da Apple pede que o material de vidro reaja
-   às preferências do sistema em vez de ser sempre igual.
+   ACESSIBILIDADE
    ============================================================ */
-
-/* Menos transparência: o "vidro" fica mais opaco e menos borrado. */
 @media (prefers-reduced-transparency: reduce) {
     .header, .dropdown-menu, .tab-bar, .glass, .glass-strong, .content-card, .feed-card {
-        background: rgba(14, 10, 20, .96);
-        -webkit-backdrop-filter: none;
-        backdrop-filter: none;
+        background: rgba(12, 12, 14, .97);
+        -webkit-backdrop-filter: none; backdrop-filter: none;
     }
 }
-
-/* Mais contraste: bordas sólidas e mais visíveis em vez de sutis. */
 @media (prefers-contrast: more) {
-    :root { --glass-border: rgba(255, 255, 255, .55); --text-2: rgba(245, 245, 247, .85); }
-    .btn-primary, .btn-danger { box-shadow: none; border: 2px solid white; }
+    :root { --glass-border: rgba(255, 255, 255, .5); --text-2: rgba(242, 242, 244, .85); }
+    .btn-primary, .btn-danger { border: 2px solid white; }
 }
-
-/* Menos movimento: tira transições/animações que não sejam essenciais. */
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
         animation-duration: .001ms !important;
@@ -533,24 +394,11 @@ footer {
     }
 }
 
-/* ============================================================
-   FEEDBACK DE TOQUE — todo controle "aperta" ligeiramente ao ser
-   clicado/tocado, pra dar a sensação de resposta imediata que a HIG
-   pede. Uma transição só (transform), no toque, não em tudo o tempo todo.
-   ============================================================ */
-.btn-primary, .btn-outline, .btn-danger,
-.tab-bar-item, .header-search, .profile-trigger,
-.feed-card, .content-card, .musician-card, .escolha-card {
-    transition: transform .18s var(--ease), background .2s, border-color .2s, box-shadow .2s;
-}
-.btn-primary:active, .btn-outline:active, .btn-danger:active,
-.tab-bar-item:active, .header-search:active, .profile-trigger:active { transform: scale(.96); }
-
-/* ============================================================
-   IPHONE — respeita o notch/Dynamic Island e a barra de gestos,
-   além da largura mínima de toque recomendada pela HIG (44×44pt).
-   ============================================================ */
-.header { padding-top: max(10px, env(safe-area-inset-top)); }
-@media (min-width: 768px) { .header { padding-top: max(12px, env(safe-area-inset-top)); } }
 .tab-bar-item, .btn-primary, .btn-outline, .btn-danger, .header-search-btn { min-height: 44px; }
 
+/* Nota: as versões anteriores deste arquivo desenhavam um canvas de
+   partículas ambiente atrás de várias páginas (#bg-canvas). Isso é
+   removido por padrão — é um dos padrões mais reconhecíveis de "layout
+   feito por IA às pressas" (fundo pontilhado/brilhante). #bg-canvas fica
+   com display:none aqui; as páginas que ainda referenciam o elemento
+   continuam funcionando (só não desenham mais nada nele). */

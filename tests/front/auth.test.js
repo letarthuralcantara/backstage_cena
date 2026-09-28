@@ -2,6 +2,7 @@
 
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
+  aplicarErroApiNoCampo,
   authHeaders,
   fazerLogin,
   salvarCadastro,
@@ -59,5 +60,26 @@ describe("cliente da API", () => {
     await expect(fazerLogin("ana@example.com", "123456")).rejects.toMatchObject(
       { status: 409, message: "E-mail duplicado" },
     );
+  });
+
+  it("aplica issues da API ao campo e limpa a validade customizada ao editar", () => {
+    document.body.innerHTML = '<input id="email" type="email">';
+    const email = document.getElementById("email");
+    const error = {
+      issues: [
+        {
+          path: ["body", "email"],
+          message: "E-mail já cadastrado.",
+        },
+      ],
+    };
+
+    expect(aplicarErroApiNoCampo(error)).toBe(true);
+    expect(email.validity.customError).toBe(true);
+    expect(email.getAttribute("aria-invalid")).toBe("true");
+
+    email.dispatchEvent(new Event("input"));
+    expect(email.validity.customError).toBe(false);
+    expect(email.hasAttribute("aria-invalid")).toBe(false);
   });
 });

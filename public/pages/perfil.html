@@ -1,1167 +1,789 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-    />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Backstage | Meu Perfil</title>
-    <meta
-      name="description"
-      content="Gerencie seu perfil, portfólio e disponibilidade no Backstage Cena."
-    />
-    <meta name="robots" content="noindex, nofollow" />
-    <link
-      rel="shortcut icon"
-      href="../images/favicon.ico"
-      type="image/x-icon"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <link rel="stylesheet" href="../css/global.css" />
+    <meta name="description" content="Gerencie seu perfil, portfólio e disponibilidade no Backstage Cena.">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/global.css">
     <style>
-      :root {
-        --primary: #8b5cf6;
-        --primary-glow: rgba(139, 92, 246, 0.4);
-        --secondary: #d946ef;
-        --accent-cyan: #06b6d4;
-        --bg-dark: #050505;
-        --bg-card: rgba(15, 15, 15, 0.6);
-        --glass: rgba(255, 255, 255, 0.03);
-        --glass-border: rgba(255, 255, 255, 0.08);
-        --text-muted: #888;
-      }
+        :root {
+            --primary: #8b5cf6;
+            --primary-glow: rgba(139, 92, 246, 0.4);
+            --secondary: #d946ef;
+            --accent-cyan: #06b6d4;
+            --bg-dark: #050505;
+            --bg-card: rgba(15, 15, 15, 0.6);
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-muted: #888;
+        }
 
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-      body {
-        font-family: "Inter", sans-serif;
-        background-color: var(--bg-dark);
-        color: #fff;
-        min-height: 100vh;
-        overflow-x: hidden;
-        background-image:
-          radial-gradient(
-            circle at 10% 10%,
-            rgba(139, 92, 246, 0.1),
-            transparent 50%
-          ),
-          radial-gradient(
-            circle at 90% 90%,
-            rgba(217, 70, 239, 0.08),
-            transparent 50%
-          );
-        background-attachment: fixed;
-      }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image:
+                radial-gradient(circle at 10% 10%, rgba(139, 92, 246, 0.1), transparent 50%),
+                radial-gradient(circle at 90% 90%, rgba(217, 70, 239, 0.08), transparent 50%);
+            background-attachment: fixed;
+        }
 
-      #bg-canvas {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: -1;
-        opacity: 0.3;
-      }
+        #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.3; }
 
-      .container {
-        position: relative;
-        z-index: 1;
-        max-width: 1200px;
-        margin: 40px auto;
-        padding: 0 24px;
-      }
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 24px;
+        }
 
-      /* ── PROFILE LAYOUT ── */
-      .profile-grid {
-        display: grid;
-        grid-template-columns: 340px 1fr;
-        gap: 32px;
-        align-items: start;
-      }
-
-      /* ── SIDEBAR ── */
-      .sidebar {
-        position: sticky;
-        top: 24px;
-        display: flex;
-        flex-direction: column;
-        gap: 24px;
-      }
-
-      .glass-card {
-        background: var(--bg-card);
-        border: 1px solid var(--glass-border);
-        border-radius: 24px;
-        backdrop-filter: blur(20px);
-        padding: 24px;
-        transition: all 0.3s ease;
-      }
-
-      .glass-card:hover {
-        border-color: rgba(139, 92, 246, 0.3);
-      }
-
-      .profile-header-card {
-        text-align: center;
-        padding-top: 40px;
-      }
-
-      .avatar-wrapper {
-        position: relative;
-        width: 140px;
-        height: 140px;
-        margin: 0 auto 20px;
-      }
-
-      .avatar-main {
-        width: 100%;
-        height: 100%;
-        border-radius: 32px;
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 3rem;
-        font-weight: 800;
-        color: white;
-        box-shadow:
-          0 10px 30px rgba(0, 0, 0, 0.5),
-          0 0 20px var(--primary-glow);
-        border: 2px solid rgba(255, 255, 255, 0.1);
-        overflow: hidden;
-      }
-
-      .avatar-main img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-
-      .status-indicator {
-        position: absolute;
-        bottom: -5px;
-        right: -5px;
-        width: 24px;
-        height: 24px;
-        border-radius: 50%;
-        border: 4px solid #0f0f0f;
-        z-index: 2;
-      }
-      .status-indicator.disponivel {
-        background: #22c55e;
-        box-shadow: 0 0 10px #22c55e;
-      }
-      .status-indicator.ocupado {
-        background: #f59e0b;
-        box-shadow: 0 0 10px #f59e0b;
-      }
-      .status-indicator.nao_perturbe {
-        background: #ef4444;
-        box-shadow: 0 0 10px #ef4444;
-      }
-      .status-indicator.invisivel {
-        background: #6b7280;
-        box-shadow: 0 0 10px #6b7280;
-      }
-
-      .profile-info h1 {
-        font-family: "Poppins", sans-serif;
-        font-size: 24px;
-        font-weight: 800;
-        margin-bottom: 8px;
-        letter-spacing: -0.5px;
-      }
-
-      .artist-area {
-        display: inline-block;
-        padding: 4px 12px;
-        background: rgba(139, 92, 246, 0.1);
-        border: 1px solid rgba(139, 92, 246, 0.2);
-        border-radius: 8px;
-        font-size: 11px;
-        color: var(--primary);
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        margin-bottom: 16px;
-      }
-
-      /* ── STATUS (badge + seletor) ── */
-      .status-badge-wrap {
-        position: relative;
-        display: inline-block;
-        margin-bottom: 16px;
-      }
-      .status-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 7px;
-        padding: 5px 12px;
-        border-radius: 20px;
-        background: var(--glass);
-        border: 1px solid var(--glass-border);
-        font-size: 12px;
-        color: #9ca3af;
-        transition: all 0.2s;
-        font-family: "Inter", sans-serif;
-      }
-      .status-badge.is-editable {
-        cursor: pointer;
-      }
-      .status-badge.is-editable:hover {
-        border-color: var(--primary);
-        color: #e5e7eb;
-      }
-      .status-dot {
-        width: 9px;
-        height: 9px;
-        border-radius: 50%;
-        flex-shrink: 0;
-      }
-      .status-dot.disponivel {
-        background: #22c55e;
-        box-shadow: 0 0 8px #22c55e;
-      }
-      .status-dot.ocupado {
-        background: #f59e0b;
-        box-shadow: 0 0 8px #f59e0b;
-      }
-      .status-dot.nao_perturbe {
-        background: #ef4444;
-        box-shadow: 0 0 8px #ef4444;
-      }
-      .status-dot.invisivel {
-        background: #6b7280;
-        box-shadow: 0 0 8px #6b7280;
-      }
-      .status-chevron {
-        font-size: 9px;
-        margin-left: 2px;
-        color: #666;
-      }
-
-      .status-dropdown {
-        position: absolute;
-        top: calc(100% + 8px);
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(10, 10, 10, 0.97);
-        backdrop-filter: blur(20px);
-        border: 1px solid var(--glass-border);
-        border-radius: 16px;
-        padding: 8px;
-        min-width: 190px;
-        z-index: 200;
-        display: none;
-        flex-direction: column;
-        gap: 2px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
-      }
-      .status-dropdown.open {
-        display: flex;
-      }
-      .status-option {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 10px 14px;
-        border-radius: 10px;
-        cursor: pointer;
-        font-size: 13px;
-        color: #ccc;
-        transition: background 0.2s;
-        border: none;
-        background: transparent;
-        font-family: "Inter", sans-serif;
-        width: 100%;
-        text-align: left;
-      }
-      .status-option:hover {
-        background: rgba(139, 92, 246, 0.12);
-        color: white;
-      }
-      .status-option .dot {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        flex-shrink: 0;
-      }
-
-      .stats-row {
-        display: flex;
-        justify-content: center;
-        gap: 20px;
-        margin: 20px 0;
-        padding: 16px 0;
-        border-top: 1px solid var(--glass-border);
-        border-bottom: 1px solid var(--glass-border);
-      }
-
-      .stat-item {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-      }
-
-      .stat-value {
-        font-weight: 700;
-        font-size: 16px;
-      }
-      .stat-label {
-        font-size: 10px;
-        color: var(--text-muted);
-        text-transform: uppercase;
-        letter-spacing: 1px;
-      }
-
-      .quick-info {
-        list-style: none;
-        text-align: left;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-      }
-
-      .quick-info li {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        font-size: 13px;
-        color: #ccc;
-      }
-
-      .quick-info i {
-        color: var(--primary);
-        width: 16px;
-        text-align: center;
-      }
-
-      /* ── MAIN CONTENT ── */
-      .main-content {
-        display: flex;
-        flex-direction: column;
-        gap: 24px;
-      }
-
-      .section-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 20px;
-      }
-
-      .section-title {
-        font-family: "Poppins", sans-serif;
-        font-size: 18px;
-        font-weight: 700;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      }
-
-      .section-title i {
-        color: var(--primary);
-      }
-
-      /* ── ADD PREVIEW ZONE (BACKSTAGE VIBE) ── */
-      .backstage-panel {
-        background: linear-gradient(
-          135deg,
-          rgba(139, 92, 246, 0.05),
-          rgba(217, 70, 239, 0.05)
-        );
-        border: 1px dashed rgba(139, 92, 246, 0.3);
-        border-radius: 24px;
-        padding: 32px;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .backstage-panel::before {
-        content: "BACKSTAGE ACCESS";
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        font-family: "Space Grotesk", sans-serif;
-        font-size: 40px;
-        font-weight: 900;
-        color: rgba(255, 255, 255, 0.03);
-        pointer-events: none;
-        white-space: nowrap;
-      }
-
-      .upload-zone {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 24px;
-      }
-
-      .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-      }
-
-      .form-group label {
-        font-size: 11px;
-        font-weight: 700;
-        color: var(--primary);
-        text-transform: uppercase;
-        letter-spacing: 1px;
-      }
-
-      .form-control {
-        background: rgba(0, 0, 0, 0.3);
-        border: 1px solid var(--glass-border);
-        border-radius: 12px;
-        padding: 12px 16px;
-        color: white;
-        font-family: "Inter", sans-serif;
-        font-size: 14px;
-        outline: none;
-        transition: all 0.3s;
-      }
-
-      .form-control:focus {
-        border-color: var(--primary);
-        background: rgba(139, 92, 246, 0.05);
-      }
-
-      .file-input-wrapper {
-        position: relative;
-        height: 100%;
-        min-height: 100px;
-        border: 2px dashed var(--glass-border);
-        border-radius: 16px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        cursor: pointer;
-        transition: all 0.3s;
-      }
-
-      .file-input-wrapper:hover {
-        border-color: var(--primary);
-        background: rgba(139, 92, 246, 0.05);
-      }
-
-      .file-input-wrapper i {
-        font-size: 24px;
-        color: var(--text-muted);
-      }
-      .file-input-wrapper span {
-        font-size: 12px;
-        color: var(--text-muted);
-      }
-      .file-input-wrapper input {
-        position: absolute;
-        inset: 0;
-        opacity: 0;
-        cursor: pointer;
-      }
-
-      /* ── TRIMMER (seletor visual do trecho) ── */
-      .trimmer {
-        background: rgba(0, 0, 0, 0.3);
-        border: 1px solid var(--glass-border);
-        border-radius: 16px;
-        padding: 16px;
-      }
-      .trimmer-hint {
-        font-size: 12px;
-        color: var(--text-muted);
-        text-align: center;
-        padding: 26px 10px;
-      }
-      .waveform-wrap {
-        position: relative;
-        width: 100%;
-        height: 72px;
-        touch-action: none;
-      }
-      .waveform-wrap canvas {
-        width: 100%;
-        height: 100%;
-        display: block;
-        border-radius: 8px;
-      }
-      .waveform-selection {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        width: 30%;
-        background: rgba(139, 92, 246, 0.28);
-        border: 2px solid var(--primary);
-        border-radius: 6px;
-        cursor: grab;
-      }
-      .waveform-selection:active {
-        cursor: grabbing;
-      }
-      .waveform-handle {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        width: 16px;
-        background: var(--primary);
-        border-radius: 4px;
-        cursor: ew-resize;
-      }
-      .waveform-handle::after {
-        content: "";
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 2px;
-        height: 14px;
-        background: rgba(255, 255, 255, 0.7);
-        transform: translate(-50%, -50%);
-        border-radius: 2px;
-      }
-      .waveform-handle-left {
-        left: -8px;
-      }
-      .waveform-handle-right {
-        right: -8px;
-      }
-      .trimmer-footer {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        margin-top: 14px;
-        flex-wrap: wrap;
-      }
-      .trimmer-duration-buttons {
-        display: flex;
-        gap: 6px;
-      }
-      .dur-btn {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid var(--glass-border);
-        color: #aaa;
-        border-radius: 8px;
-        padding: 6px 12px;
-        font-size: 12px;
-        cursor: pointer;
-        transition: all 0.2s;
-        font-family: "Inter", sans-serif;
-      }
-      .dur-btn.active,
-      .dur-btn:hover {
-        border-color: var(--primary);
-        color: white;
-        background: rgba(139, 92, 246, 0.15);
-      }
-      .btn-preview-trim {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid var(--glass-border);
-        color: #eee;
-        border-radius: 20px;
-        padding: 8px 16px;
-        font-size: 12px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-family: "Inter", sans-serif;
-        transition: all 0.2s;
-      }
-      .btn-preview-trim:hover {
-        border-color: var(--primary);
-      }
-      .btn-preview-trim:disabled {
-        opacity: 0.4;
-        cursor: not-allowed;
-      }
-
-      .btn-publish {
-        grid-column: 1 / -1;
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
-        border: none;
-        border-radius: 12px;
-        padding: 14px;
-        color: white;
-        font-weight: 700;
-        font-family: "Poppins", sans-serif;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        transition: all 0.3s;
-        box-shadow: 0 10px 20px rgba(139, 92, 246, 0.2);
-      }
-
-      .btn-publish:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 15px 30px rgba(139, 92, 246, 0.4);
-      }
-
-      /* ── PREVIEWS LIST ── */
-      .previews-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-        gap: 16px;
-        margin-top: 20px;
-      }
-
-      .story-thumb {
-        aspect-ratio: 9/16;
-        border-radius: 16px;
-        background: var(--glass);
-        border: 1px solid var(--glass-border);
-        position: relative;
-        overflow: hidden;
-        cursor: pointer;
-        transition: all 0.3s;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0;
-      }
-
-      .story-thumb:hover {
-        transform: scale(1.05);
-        border-color: var(--primary);
-      }
-
-      .story-thumb-icone {
-        width: 52px;
-        height: 52px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .story-thumb-overlay {
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(
-          to bottom,
-          transparent 50%,
-          rgba(0, 0, 0, 0.8)
-        );
-        padding: 12px;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-      }
-
-      .story-thumb-title {
-        font-size: 11px;
-        font-weight: 600;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      .story-thumb-tempo {
-        font-size: 10px;
-        color: rgba(255, 255, 255, 0.55);
-        margin-top: 2px;
-      }
-
-      /* ── SKILLS TAGS ── */
-      .tags-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-      }
-
-      .skill-tag {
-        padding: 6px 14px;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid var(--glass-border);
-        border-radius: 10px;
-        font-size: 13px;
-        color: #eee;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-
-      .skill-tag i {
-        font-size: 12px;
-        color: var(--primary);
-      }
-
-      /* ── RESPONSIVE ── */
-      @media (max-width: 900px) {
+        /* ── PROFILE LAYOUT ── */
         .profile-grid {
-          grid-template-columns: 1fr;
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 32px;
+            align-items: start;
         }
+
+        /* ── SIDEBAR ── */
         .sidebar {
-          position: static;
+            position: sticky;
+            top: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
         }
-      }
 
-      @media (max-width: 600px) {
+        .glass-card {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            backdrop-filter: blur(20px);
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
+        .profile-header-card {
+            text-align: center;
+            padding-top: 40px;
+        }
+
+        .avatar-wrapper {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 20px;
+        }
+
+        .avatar-main {
+            width: 100%;
+            height: 100%;
+            border-radius: 32px;
+            background: var(--glass-fill-strong);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: 800;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+        }
+
+        .avatar-main img { width: 100%; height: 100%; object-fit: cover; }
+
+        .status-indicator {
+            position: absolute;
+            bottom: -5px;
+            right: -5px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 4px solid #0f0f0f;
+            z-index: 2;
+        }
+        .status-indicator.disponivel { background: #22c55e; box-shadow: 0 0 10px #22c55e; }
+        .status-indicator.ocupado { background: #f59e0b; box-shadow: 0 0 10px #f59e0b; }
+        .status-indicator.nao_perturbe { background: #ef4444; box-shadow: 0 0 10px #ef4444; }
+        .status-indicator.invisivel { background: #6b7280; box-shadow: 0 0 10px #6b7280; }
+
+        .profile-info h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .artist-area {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 8px;
+            font-size: 11px;
+            color: var(--primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+
+        /* ── STATUS (badge + seletor) ── */
+        .status-badge-wrap { position: relative; display: inline-block; margin-bottom: 16px; }
+        .status-badge {
+            display: inline-flex; align-items: center; gap: 7px;
+            padding: 5px 12px; border-radius: 20px;
+            background: var(--glass); border: 1px solid var(--glass-border);
+            font-size: 12px; color: #9ca3af;
+            transition: all .2s; font-family: 'Inter', sans-serif;
+        }
+        .status-badge.is-editable { cursor: pointer; }
+        .status-badge.is-editable:hover { border-color: var(--primary); color: #e5e7eb; }
+        .status-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+        .status-dot.disponivel   { background: #22c55e; box-shadow: 0 0 8px #22c55e; }
+        .status-dot.ocupado      { background: #f59e0b; box-shadow: 0 0 8px #f59e0b; }
+        .status-dot.nao_perturbe { background: #ef4444; box-shadow: 0 0 8px #ef4444; }
+        .status-dot.invisivel    { background: #6b7280; box-shadow: 0 0 8px #6b7280; }
+        .status-chevron { font-size: 9px; margin-left: 2px; color: #666; }
+
+        .status-dropdown {
+            position: absolute; top: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+            background: rgba(10,10,10,0.97); backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border); border-radius: 16px;
+            padding: 8px; min-width: 190px; z-index: 200;
+            display: none; flex-direction: column; gap: 2px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.7);
+        }
+        .status-dropdown.open { display: flex; }
+        .status-option {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 14px; border-radius: 10px; cursor: pointer;
+            font-size: 13px; color: #ccc; transition: background .2s;
+            border: none; background: transparent; font-family: 'Inter', sans-serif;
+            width: 100%; text-align: left;
+        }
+        .status-option:hover { background: rgba(139,92,246,.12); color: white; }
+        .status-option .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+            padding: 16px 0;
+            border-top: 1px solid var(--glass-border);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .stat-value { font-weight: 700; font-size: 16px; }
+        .stat-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+
+        .quick-info {
+            list-style: none;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .quick-info li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            color: #ccc;
+        }
+
+        .quick-info i { color: var(--primary); width: 16px; text-align: center; }
+
+        /* ── MAIN CONTENT ── */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title i { color: var(--primary); }
+
+        /* ── ADD PREVIEW ZONE (BACKSTAGE VIBE) ── */
+        .backstage-panel {
+            background: var(--glass-fill);
+            border: 1px dashed rgba(139, 92, 246, 0.3);
+            border-radius: 24px;
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .backstage-panel::before {
+            content: 'BACKSTAGE ACCESS';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 40px;
+            font-weight: 900;
+            color: rgba(255,255,255,0.03);
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
         .upload-zone {
-          grid-template-columns: 1fr;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
         }
-        .trimmer-footer {
-          flex-direction: column;
-          align-items: stretch;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <canvas id="bg-canvas"></canvas>
 
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-control {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            background: rgba(139, 92, 246, 0.05);
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            height: 100%;
+            min-height: 100px;
+            border: 2px dashed var(--glass-border);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-input-wrapper:hover {
+            border-color: var(--primary);
+            background: rgba(139, 92, 246, 0.05);
+        }
+
+        .file-input-wrapper i { font-size: 24px; color: var(--text-muted); }
+        .file-input-wrapper span { font-size: 12px; color: var(--text-muted); }
+        .file-input-wrapper input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+
+        /* ── TRIMMER (seletor visual do trecho) ── */
+        .trimmer {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 16px;
+        }
+        .trimmer-hint {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: center;
+            padding: 26px 10px;
+        }
+        .waveform-wrap {
+            position: relative;
+            width: 100%;
+            height: 72px;
+            touch-action: none;
+        }
+        .waveform-wrap canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            border-radius: 8px;
+        }
+        .waveform-selection {
+            position: absolute;
+            top: 0; bottom: 0; left: 0; width: 30%;
+            background: rgba(139, 92, 246, 0.28);
+            border: 2px solid var(--primary);
+            border-radius: 6px;
+            cursor: grab;
+        }
+        .waveform-selection:active { cursor: grabbing; }
+        .waveform-handle {
+            position: absolute;
+            top: 0; bottom: 0; width: 16px;
+            background: var(--primary);
+            border-radius: 4px;
+            cursor: ew-resize;
+        }
+        .waveform-handle::after {
+            content: '';
+            position: absolute; top: 50%; left: 50%;
+            width: 2px; height: 14px;
+            background: rgba(255,255,255,.7);
+            transform: translate(-50%, -50%);
+            border-radius: 2px;
+        }
+        .waveform-handle-left { left: -8px; }
+        .waveform-handle-right { right: -8px; }
+        .trimmer-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 14px;
+            flex-wrap: wrap;
+        }
+        .trimmer-duration-buttons { display: flex; gap: 6px; }
+        .dur-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            color: #aaa;
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all .2s;
+            font-family: 'Inter', sans-serif;
+        }
+        .dur-btn.active, .dur-btn:hover { border-color: var(--primary); color: white; background: rgba(139,92,246,.15); }
+        .btn-preview-trim {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            color: #eee;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Inter', sans-serif;
+            transition: all .2s;
+        }
+        .btn-preview-trim:hover { border-color: var(--primary); }
+        .btn-preview-trim:disabled { opacity: .4; cursor: not-allowed; }
+
+        .btn-publish {
+            grid-column: 1 / -1;
+            background: var(--accent);
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            color: white;
+            font-weight: 700;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s;
+            box-shadow: 0 10px 20px rgba(139, 92, 246, 0.2);
+        }
+
+        .btn-publish:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(139, 92, 246, 0.4);
+        }
+
+        /* ── PREVIEWS LIST ── */
+        .previews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .story-thumb {
+            aspect-ratio: 9/16;
+            border-radius: 16px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .story-thumb:hover {
+            transform: scale(1.05);
+            border-color: var(--primary);
+        }
+
+        .story-thumb-icone {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: var(--glass-fill-strong);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .story-thumb-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.8));
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .story-thumb-title { font-size: 11px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.story-thumb-tempo { font-size: 10px; color: rgba(255,255,255,.55); margin-top: 2px; }
+
+        /* ── SKILLS TAGS ── */
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .skill-tag {
+            padding: 6px 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            font-size: 13px;
+            color: #eee;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .skill-tag i { font-size: 12px; color: var(--primary); }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 900px) {
+            .profile-grid { grid-template-columns: 1fr; }
+            .sidebar { position: static; }
+        }
+
+        @media (max-width: 600px) {
+            .upload-zone { grid-template-columns: 1fr; }
+            .trimmer-footer { flex-direction: column; align-items: stretch; }
+        }
+    </style>
+</head>
+<body>
     <header class="header">
-      <div class="header-left">
-        <a href="index.html"
-          ><img src="../images/logo.png" alt="Backstage Logo" class="logo-img"
-        /></a>
-      </div>
-      <div class="header-center">
-        <div class="header-search" id="searchBar">
-          <i class="fas fa-search header-search-icon"></i>
-          <input
-            type="text"
-            class="header-search-input"
-            placeholder="Buscar músicos..."
-            readonly
-          />
-          <button class="header-search-btn">Buscar</button>
+        <div class="header-left">
+            <a href="index.html"><img src="../images/logo.png" alt="Backstage Logo" class="logo-img"></a>
         </div>
-      </div>
-      <div class="header-actions">
-        <div class="profile-dropdown" id="profileDropdown">
-          <div class="profile-trigger" id="profileTrigger"></div>
-          <div class="profile-incomplete-badge" id="profileIncompleteBadge">
-            !
-          </div>
-          <div class="dropdown-menu">
-            <a href="perfil.html" class="dropdown-item"
-              ><i class="fas fa-user"></i> Meu Perfil</a
-            >
-            <a href="feed.html" class="dropdown-item"
-              ><i class="fas fa-stream"></i> Feed</a
-            >
-            <a href="publicar.html" class="dropdown-item"
-              ><i class="fas fa-plus-circle"></i> Nova Postagem</a
-            >
-            <a href="config.html" class="dropdown-item"
-              ><i class="fas fa-cog"></i> Configurações</a
-            >
-            <div class="dropdown-divider"></div>
-            <div class="dropdown-item" id="btnSair">
-              <i class="fas fa-sign-out-alt"></i> Sair
+        <div class="header-center">
+            <div class="header-search" id="searchBar">
+                <i class="fas fa-search header-search-icon"></i>
+                <input type="text" class="header-search-input" placeholder="Buscar músicos..." readonly>
+                <button class="header-search-btn">Buscar</button>
             </div>
-          </div>
         </div>
-      </div>
+        <div class="header-actions">
+            <div class="profile-dropdown" id="profileDropdown">
+                <div class="profile-trigger" id="profileTrigger"></div>
+                <div class="profile-incomplete-badge" id="profileIncompleteBadge">!</div>
+                <div class="dropdown-menu">
+                    <a href="perfil.html" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a>
+                    <a href="feed.html" class="dropdown-item"><i class="fas fa-stream"></i> Feed</a>
+                    <a href="publicar.html" class="dropdown-item"><i class="fas fa-plus-circle"></i> Nova Postagem</a>
+                    <a href="config.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações</a>
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-item" id="btnSair"><i class="fas fa-sign-out-alt"></i> Sair</div>
+                </div>
+            </div>
+        </div>
     </header>
 
     <div class="container">
-      <div class="profile-grid">
-        <!-- SIDEBAR -->
-        <aside class="sidebar">
-          <div class="glass-card profile-header-card">
-            <div class="avatar-wrapper">
-              <div class="avatar-main" id="avatar"></div>
-              <div class="status-indicator" id="statusIndicator"></div>
-            </div>
-            <div class="profile-info">
-              <h1 id="nomeExibir">Carregando...</h1>
-              <span class="artist-area" id="areaBadge">Músico</span>
+        <div class="profile-grid">
+            <!-- SIDEBAR -->
+            <aside class="sidebar">
+                <div class="glass-card profile-header-card">
+                    <div class="avatar-wrapper">
+                        <div class="avatar-main" id="avatar"></div>
+                        <div class="status-indicator" id="statusIndicator"></div>
+                    </div>
+                    <div class="profile-info">
+                        <h1 id="nomeExibir">Carregando...</h1>
+                        <span class="artist-area" id="areaBadge">Músico</span>
 
-              <div class="status-badge-wrap">
-                <button type="button" class="status-badge" id="statusBadge">
-                  <span class="status-dot" id="statusDot"></span>
-                  <span id="statusLabel">---</span>
-                  <i
-                    class="fas fa-chevron-down status-chevron hidden"
-                    id="statusChevron"
-                  ></i>
+                        <div class="status-badge-wrap">
+                            <button type="button" class="status-badge" id="statusBadge">
+                                <span class="status-dot" id="statusDot"></span>
+                                <span id="statusLabel">---</span>
+                                <i class="fas fa-chevron-down status-chevron hidden" id="statusChevron"></i>
+                            </button>
+                            <div class="status-dropdown" id="statusDropdown">
+                                <button type="button" class="status-option" data-status="disponivel"><span class="dot" style="background:#22c55e;"></span>Disponível</button>
+                                <button type="button" class="status-option" data-status="ocupado"><span class="dot" style="background:#f59e0b;"></span>Ocupado</button>
+                                <button type="button" class="status-option" data-status="nao_perturbe"><span class="dot" style="background:#ef4444;"></span>Não perturbe</button>
+                                <button type="button" class="status-option" data-status="invisivel"><span class="dot" style="background:#6b7280;"></span>Invisível</button>
+                            </div>
+                        </div>
+
+                        <div class="stats-row">
+                            <div class="stat-item">
+                                <span class="stat-value" id="countPrevias">0</span>
+                                <span class="stat-label">Prévias</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value" id="expValue">0</span>
+                                <span class="stat-label">Anos Exp.</span>
+                            </div>
+                        </div>
+
+                        <ul class="quick-info">
+                            <li><i class="fas fa-envelope"></i> <span id="emailExibir">---</span></li>
+                            <li><i class="fas fa-map-marker-alt"></i> <span id="localExibir">---</span></li>
+                            <li id="telefoneRow" class="hidden"><i class="fas fa-phone"></i> <span id="telefoneExibir">---</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="glass-card">
+                    <h3 class="section-title" style="margin-bottom: 16px;"><i class="fas fa-share-nodes"></i> Redes Sociais</h3>
+                    <div class="tags-container" id="socialLinks">
+                        <!-- Links serão inseridos aqui -->
+                    </div>
+                </div>
+
+                <button class="btn-publish" id="btnEditarPerfil" style="background: var(--glass); border: 1px solid var(--glass-border); box-shadow: none;">
+                    <i class="fas fa-pen-to-square"></i> Editar Perfil
                 </button>
-                <div class="status-dropdown" id="statusDropdown">
-                  <button
-                    type="button"
-                    class="status-option"
-                    data-status="disponivel"
-                  >
-                    <span class="dot" style="background: #22c55e"></span
-                    >Disponível
-                  </button>
-                  <button
-                    type="button"
-                    class="status-option"
-                    data-status="ocupado"
-                  >
-                    <span class="dot" style="background: #f59e0b"></span>Ocupado
-                  </button>
-                  <button
-                    type="button"
-                    class="status-option"
-                    data-status="nao_perturbe"
-                  >
-                    <span class="dot" style="background: #ef4444"></span>Não
-                    perturbe
-                  </button>
-                  <button
-                    type="button"
-                    class="status-option"
-                    data-status="invisivel"
-                  >
-                    <span class="dot" style="background: #6b7280"></span
-                    >Invisível
-                  </button>
+            </aside>
+
+            <!-- MAIN CONTENT -->
+            <main class="main-content">
+                <!-- BIO -->
+                <div class="glass-card">
+                    <div class="section-header">
+                        <h2 class="section-title"><i class="fas fa-quote-left"></i> Sobre</h2>
+                    </div>
+                    <p id="bioExibir" style="color: #ccc; line-height: 1.6; font-size: 15px;"></p>
                 </div>
-              </div>
 
-              <div class="stats-row">
-                <div class="stat-item">
-                  <span class="stat-value" id="countPrevias">0</span>
-                  <span class="stat-label">Prévias</span>
+                <!-- ADD PREVIEW (OWNER ONLY) -->
+                <a href="publicar.html" class="backstage-panel hidden" id="addPreviaPanel" style="display:flex; align-items:center; justify-content:space-between; text-decoration:none; color:inherit; cursor:pointer;">
+                    <div class="section-header" style="margin-bottom:0;">
+                        <h2 class="section-title"><i class="fas fa-bolt"></i> Backstage Pass</h2>
+                        <span style="font-size: 10px; color: var(--primary); font-weight: 800; letter-spacing: 2px;">NOVA POSTAGEM</span>
+                    </div>
+                    <i class="fas fa-arrow-right" style="color: var(--primary); font-size: 20px;"></i>
+                </a>
+
+                <!-- PREVIEWS LIST -->
+                <div class="glass-card">
+                    <div class="section-header">
+                        <h2 class="section-title"><i class="fas fa-music"></i> Prévias Ativas</h2>
+                    </div>
+                    <div id="previasLista" class="previews-grid">
+                        <!-- Stories aqui -->
+                    </div>
                 </div>
-                <div class="stat-item">
-                  <span class="stat-value" id="expValue">0</span>
-                  <span class="stat-label">Anos Exp.</span>
+
+                <!-- SKILLS & GEAR -->
+                <div class="glass-card">
+                    <h2 class="section-title" style="margin-bottom: 24px;"><i class="fas fa-layer-group"></i> Habilidades & Setup</h2>
+
+                    <div style="display: flex; flex-direction: column; gap: 20px;">
+                        <div>
+                            <label style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; display: block; margin-bottom: 12px;">Instrumentos</label>
+                            <div class="tags-container" id="talentosCont"></div>
+                        </div>
+
+                        <div>
+                            <label style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; display: block; margin-bottom: 12px;">Gêneros</label>
+                            <div class="tags-container" id="generosCont"></div>
+                        </div>
+
+                        <div id="dawsSection" class="hidden">
+                            <label style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; display: block; margin-bottom: 12px;">Workstation (DAWs)</label>
+                            <div class="tags-container" id="dawsCont"></div>
+                        </div>
+                    </div>
                 </div>
-              </div>
-
-              <ul class="quick-info">
-                <li>
-                  <i class="fas fa-envelope"></i>
-                  <span id="emailExibir">---</span>
-                </li>
-                <li>
-                  <i class="fas fa-map-marker-alt"></i>
-                  <span id="localExibir">---</span>
-                </li>
-                <li id="telefoneRow" class="hidden">
-                  <i class="fas fa-phone"></i>
-                  <span id="telefoneExibir">---</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="glass-card">
-            <h3 class="section-title" style="margin-bottom: 16px">
-              <i class="fas fa-share-nodes"></i> Redes Sociais
-            </h3>
-            <div class="tags-container" id="socialLinks">
-              <!-- Links serão inseridos aqui -->
-            </div>
-          </div>
-
-          <button
-            class="btn-publish"
-            id="btnEditarPerfil"
-            style="
-              background: var(--glass);
-              border: 1px solid var(--glass-border);
-              box-shadow: none;
-            "
-          >
-            <i class="fas fa-pen-to-square"></i> Editar Perfil
-          </button>
-        </aside>
-
-        <!-- MAIN CONTENT -->
-        <main class="main-content">
-          <!-- BIO -->
-          <div class="glass-card">
-            <div class="section-header">
-              <h2 class="section-title">
-                <i class="fas fa-quote-left"></i> Sobre
-              </h2>
-            </div>
-            <p
-              id="bioExibir"
-              style="color: #ccc; line-height: 1.6; font-size: 15px"
-            ></p>
-          </div>
-
-          <!-- ADD PREVIEW (OWNER ONLY) -->
-          <a
-            href="publicar.html"
-            class="backstage-panel hidden"
-            id="addPreviaPanel"
-            style="
-              display: flex;
-              align-items: center;
-              justify-content: space-between;
-              text-decoration: none;
-              color: inherit;
-              cursor: pointer;
-            "
-          >
-            <div class="section-header" style="margin-bottom: 0">
-              <h2 class="section-title">
-                <i class="fas fa-bolt"></i> Backstage Pass
-              </h2>
-              <span
-                style="
-                  font-size: 10px;
-                  color: var(--primary);
-                  font-weight: 800;
-                  letter-spacing: 2px;
-                "
-                >NOVA POSTAGEM</span
-              >
-            </div>
-            <i
-              class="fas fa-arrow-right"
-              style="color: var(--primary); font-size: 20px"
-            ></i>
-          </a>
-
-          <!-- PREVIEWS LIST -->
-          <div class="glass-card">
-            <div class="section-header">
-              <h2 class="section-title">
-                <i class="fas fa-music"></i> Prévias Ativas
-              </h2>
-            </div>
-            <div id="previasLista" class="previews-grid">
-              <!-- Stories aqui -->
-            </div>
-          </div>
-
-          <!-- SKILLS & GEAR -->
-          <div class="glass-card">
-            <h2 class="section-title" style="margin-bottom: 24px">
-              <i class="fas fa-layer-group"></i> Habilidades & Setup
-            </h2>
-
-            <div style="display: flex; flex-direction: column; gap: 20px">
-              <div>
-                <label
-                  style="
-                    font-size: 10px;
-                    color: var(--text-muted);
-                    text-transform: uppercase;
-                    letter-spacing: 2px;
-                    display: block;
-                    margin-bottom: 12px;
-                  "
-                  >Instrumentos</label
-                >
-                <div class="tags-container" id="talentosCont"></div>
-              </div>
-
-              <div>
-                <label
-                  style="
-                    font-size: 10px;
-                    color: var(--text-muted);
-                    text-transform: uppercase;
-                    letter-spacing: 2px;
-                    display: block;
-                    margin-bottom: 12px;
-                  "
-                  >Gêneros</label
-                >
-                <div class="tags-container" id="generosCont"></div>
-              </div>
-
-              <div id="dawsSection" class="hidden">
-                <label
-                  style="
-                    font-size: 10px;
-                    color: var(--text-muted);
-                    text-transform: uppercase;
-                    letter-spacing: 2px;
-                    display: block;
-                    margin-bottom: 12px;
-                  "
-                  >Workstation (DAWs)</label
-                >
-                <div class="tags-container" id="dawsCont"></div>
-              </div>
-            </div>
-          </div>
-        </main>
-      </div>
+            </main>
+        </div>
     </div>
 
     <footer class="footer">
-      <div class="container">
-        <div class="footer-content">
-          <img
-            src="../images/logo.png"
-            alt="Backstage Logo"
-            class="footer-logo-img"
-          />
-          <p style="color: rgba(255, 255, 255, 0.4); font-size: 13px">
-            A cena musical independente começa aqui. &copy; 2025 Backstage Cena
-          </p>
-          <a
-            href="privacidade.html"
-            style="color: rgba(255, 255, 255, 0.4); font-size: 13px"
-            >Política de Privacidade</a
-          >
+        <div class="container">
+            <div class="footer-content">
+                <img src="../images/logo.png" alt="Backstage Logo" class="footer-logo-img">
+                <p style="color:rgba(255,255,255,0.4);font-size:13px;">A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
+                <a href="privacidade.html" style="color:rgba(255,255,255,0.4);font-size:13px;">Política de Privacidade</a>
+            </div>
         </div>
-      </div>
     </footer>
 
     <script type="module">
-      import { showLoading, hideLoading } from "../js/loading.js";
-      import { initSearchOverlay } from "../js/search-overlay.js";
-      import {
-        verificarAutenticacao,
-        fazerLogout,
-        authHeaders,
-      } from "../js/auth.js";
-      import { renderizarGradePreviasDoUsuario } from "../js/postagens.js";
+        import { showLoading, hideLoading } from '../js/loading.js';
+        import { initSearchOverlay } from '../js/search-overlay.js';
+        import { verificarAutenticacao, fazerLogout, authHeaders } from '../js/auth.js';
+        import { renderizarGradePreviasDoUsuario } from '../js/postagens.js';
 
-      const SOCIAL_ICONS = {
-        instagram: "fa-brands fa-instagram",
-        youtube: "fa-brands fa-youtube",
-        spotify: "fa-brands fa-spotify",
-        soundcloud: "fa-brands fa-soundcloud",
-        tiktok: "fa-brands fa-tiktok",
-        twitter: "fa-brands fa-x-twitter",
-        site: "fa-solid fa-globe",
-      };
+        const SOCIAL_ICONS = {
+            instagram:'fa-brands fa-instagram', youtube:'fa-brands fa-youtube',
+            spotify:'fa-brands fa-spotify', soundcloud:'fa-brands fa-soundcloud',
+            tiktok:'fa-brands fa-tiktok', twitter:'fa-brands fa-x-twitter',
+            site:'fa-solid fa-globe',
+        };
 
-      const STATUS_MAP = {
-        disponivel: { label: "Disponível", cls: "disponivel" },
-        ocupado: { label: "Ocupado", cls: "ocupado" },
-        nao_perturbe: { label: "Não perturbe", cls: "nao_perturbe" },
-        invisivel: { label: "Invisível", cls: "invisivel" },
-      };
+        const STATUS_MAP = {
+            disponivel:   { label: 'Disponível',   cls: 'disponivel' },
+            ocupado:      { label: 'Ocupado',      cls: 'ocupado' },
+            nao_perturbe: { label: 'Não perturbe', cls: 'nao_perturbe' },
+            invisivel:    { label: 'Invisível',    cls: 'invisivel' },
+        };
 
-      function calcularFaltantesPerfil(u) {
-        const faltando = [];
-        if (!u.instrumentos || u.instrumentos.length === 0)
-          faltando.push("pelo menos 1 instrumento");
-        if (!u.generos || u.generos.length === 0)
-          faltando.push("pelo menos 1 gênero");
-        if (!u.estado) faltando.push("estado");
-        const bio = (u.biografia || "").trim();
-        if (bio.length < 20)
-          faltando.push("biografia com mínimo 20 caracteres");
-        const areas = Array.isArray(u.area_atuacao)
-          ? u.area_atuacao
-          : u.area_atuacao
-            ? [u.area_atuacao]
-            : [];
-        if (areas.length === 0) faltando.push("área de atuação");
-        return faltando;
-      }
+        function calcularFaltantesPerfil(u) {
+            const faltando = [];
+            if (!u.instrumentos || u.instrumentos.length === 0) faltando.push('pelo menos 1 instrumento');
+            if (!u.generos || u.generos.length === 0) faltando.push('pelo menos 1 gênero');
+            if (!u.estado) faltando.push('estado');
+            const bio = (u.biografia || '').trim();
+            if (bio.length < 20) faltando.push('biografia com mínimo 20 caracteres');
+            const areas = Array.isArray(u.area_atuacao) ? u.area_atuacao : (u.area_atuacao ? [u.area_atuacao] : []);
+            if (areas.length === 0) faltando.push('área de atuação');
+            return faltando;
+        }
 
-      function aplicarStatus(status) {
-        const s = STATUS_MAP[status] || STATUS_MAP["disponivel"];
-        document.getElementById("statusIndicator").className =
-          "status-indicator " + s.cls;
-        document.getElementById("statusDot").className = "status-dot " + s.cls;
-        document.getElementById("statusLabel").textContent = s.label;
-      }
+        function aplicarStatus(status) {
+            const s = STATUS_MAP[status] || STATUS_MAP['disponivel'];
+            document.getElementById('statusIndicator').className = 'status-indicator ' + s.cls;
+            document.getElementById('statusDot').className = 'status-dot ' + s.cls;
+            document.getElementById('statusLabel').textContent = s.label;
+        }
 
-      let idUsuarioAtual = null;
+        let idUsuarioAtual = null;
 
-      async function iniciarPerfil() {
-        const params = new URLSearchParams(window.location.search);
-        const idParam = params.get("id");
-        const usuarioLogado = verificarAutenticacao(false);
+        async function iniciarPerfil() {
+            const params = new URLSearchParams(window.location.search);
+            const idParam = params.get('id');
+            const usuarioLogado = verificarAutenticacao(false);
 
-        let u;
-        try {
-          if (idParam) {
-            const res = await fetch(`/api/usuarios/${idParam}`);
-            u = await res.json();
-          } else {
-            if (!usuarioLogado) {
-              window.location.href = "login.html";
-              return;
+            let u;
+            try {
+                if (idParam) {
+                    const res = await fetch(`/api/usuarios/${idParam}`);
+                    u = await res.json();
+                } else {
+                    if (!usuarioLogado) { window.location.href = 'login.html'; return; }
+                    const res = await fetch(`/api/usuarios/${usuarioLogado.id_usuario}`);
+                    u = await res.json();
+                }
+            } catch (e) { console.error(e); return; }
+
+            idUsuarioAtual = u.id_usuario;
+            const ehProprio = !idParam || String(usuarioLogado?.id_usuario) === String(u.id_usuario);
+
+            // Render
+            const nome = u.nome_artistico || u.nome_completo;
+            const iniciais = (nome || 'B').substring(0, 2).toUpperCase();
+            document.getElementById('avatar').textContent = iniciais;
+            document.getElementById('profileTrigger').textContent = iniciais;
+            const badge = document.getElementById('profileIncompleteBadge');
+            if (badge) {
+                badge.classList.toggle('show', Number(u.cadastro_completo ?? 0) === 0);
             }
-            const res = await fetch(
-              `/api/usuarios/${usuarioLogado.id_usuario}`,
-            );
-            u = await res.json();
-          }
-        } catch (e) {
-          console.error(e);
-          return;
-        }
+            document.getElementById('nomeExibir').textContent = nome;
+            document.getElementById('emailExibir').textContent = u.email;
+            document.getElementById('localExibir').textContent = [u.cidade, u.estado].filter(Boolean).join(', ') || 'Brasil';
+            document.getElementById('expValue').textContent = u.anos_experiencia || '0';
+            document.getElementById('bioExibir').textContent = u.biografia || 'Este artista ainda não escreveu sua biografia.';
 
-        idUsuarioAtual = u.id_usuario;
-        const ehProprio =
-          !idParam ||
-          String(usuarioLogado?.id_usuario) === String(u.id_usuario);
+            // Status
+            aplicarStatus(u.status || 'disponivel');
+            if (ehProprio) {
+                document.getElementById('statusBadge').classList.add('is-editable');
+                document.getElementById('statusChevron').classList.remove('hidden');
+            }
 
-        // Render
-        const nome = u.nome_artistico || u.nome_completo;
-        const iniciais = (nome || "B").substring(0, 2).toUpperCase();
-        document.getElementById("avatar").textContent = iniciais;
-        document.getElementById("profileTrigger").textContent = iniciais;
-        const badge = document.getElementById("profileIncompleteBadge");
-        if (badge) {
-          badge.classList.toggle(
-            "show",
-            Number(u.cadastro_completo ?? 0) === 0,
-          );
-        }
-        document.getElementById("nomeExibir").textContent = nome;
-        document.getElementById("emailExibir").textContent = u.email;
-        document.getElementById("localExibir").textContent =
-          [u.cidade, u.estado].filter(Boolean).join(", ") || "Brasil";
-        document.getElementById("expValue").textContent =
-          u.anos_experiencia || "0";
-        document.getElementById("bioExibir").textContent =
-          u.biografia || "Este artista ainda não escreveu sua biografia.";
-
-        // Status
-        aplicarStatus(u.status || "disponivel");
-        if (ehProprio) {
-          document.getElementById("statusBadge").classList.add("is-editable");
-          document.getElementById("statusChevron").classList.remove("hidden");
-        }
-
-        if (ehProprio) {
-          const faltando = calcularFaltantesPerfil(u);
-          if (faltando.length > 0) {
-            const container = document.querySelector(".container");
-            if (
-              container &&
-              !document.getElementById("perfilBannerIncompleto")
-            ) {
-              const banner = document.createElement("div");
-              banner.id = "perfilBannerIncompleto";
-              banner.style.cssText = `
+            if (ehProprio) {
+                const faltando = calcularFaltantesPerfil(u);
+                if (faltando.length > 0) {
+                    const container = document.querySelector('.container');
+                    if (container && !document.getElementById('perfilBannerIncompleto')) {
+                        const banner = document.createElement('div');
+                        banner.id = 'perfilBannerIncompleto';
+                        banner.style.cssText = `
                             background: rgba(139,92,246,0.15);
                             border: 1px solid rgba(139,92,246,0.4);
                             border-radius: 12px;
                             padding: 16px 20px;
                             margin: 0 0 24px;
                         `;
-              banner.innerHTML = `
+                        banner.innerHTML = `
                             <div style="display:flex; align-items:flex-start; gap:12px;">
                                 <i class="fas fa-circle-exclamation" style="color:#a78bfa; font-size:20px; margin-top:2px; flex-shrink:0;"></i>
                                 <div style="flex:1;">
                                     <p style="font-weight:600; color:#e5e7eb; margin:0 0 6px;">Seu perfil está incompleto — você não aparece nas buscas</p>
                                     <p style="font-size:13px; color:#9ca3af; margin:0 0 8px;">Para aparecer nas pesquisas, adicione:</p>
                                     <ul style="margin:0; padding-left:18px; color:#9ca3af; font-size:13px;">
-                                        ${faltando.map((item) => `<li>${item}</li>`).join("")}
+                                        ${faltando.map(item => `<li>${item}</li>`).join('')}
                                     </ul>
                                 </div>
                                 <a href="editar.html" style="
                                     white-space: nowrap;
                                     padding: 10px 20px;
-                                    background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+                                    background: var(--accent);
                                     border-radius: 8px;
                                     color: white;
                                     text-decoration: none;
@@ -1171,179 +793,91 @@
                                 ">Completar agora</a>
                             </div>
                         `;
-              container.prepend(banner);
+                        container.prepend(banner);
+                    }
+                }
             }
-          }
-        }
 
-        // Area
-        const areas = Array.isArray(u.area_atuacao) ? u.area_atuacao : [];
-        if (areas.length)
-          document.getElementById("areaBadge").textContent = areas[0];
+            // Area
+            const areas = Array.isArray(u.area_atuacao) ? u.area_atuacao : [];
+            if (areas.length) document.getElementById('areaBadge').textContent = areas[0];
 
-        // Tags
-        const renderTags = (arr, containerId, icon) => {
-          const cont = document.getElementById(containerId);
-          cont.innerHTML = arr.length
-            ? arr
-                .map(
-                  (t) =>
-                    `<span class="skill-tag"><i class="${icon}"></i>${t}</span>`,
-                )
-                .join("")
-            : '<span style="color:#555; font-size:12px;">Nenhum item adicionado</span>';
-        };
-        renderTags(u.instrumentos || [], "talentosCont", "fas fa-music");
-        renderTags(u.generos || [], "generosCont", "fas fa-compact-disc");
+            // Tags
+            const renderTags = (arr, containerId, icon) => {
+                const cont = document.getElementById(containerId);
+                cont.innerHTML = arr.length
+                    ? arr.map(t => `<span class="skill-tag"><i class="${icon}"></i>${t}</span>`).join('')
+                    : '<span style="color:#555; font-size:12px;">Nenhum item adicionado</span>';
+            };
+            renderTags(u.instrumentos || [], 'talentosCont', 'fas fa-music');
+            renderTags(u.generos || [], 'generosCont', 'fas fa-compact-disc');
 
-        if (u.daws?.length) {
-          document.getElementById("dawsSection").classList.remove("hidden");
-          renderTags(u.daws, "dawsCont", "fas fa-sliders");
-        }
+            if (u.daws?.length) {
+                document.getElementById('dawsSection').classList.remove('hidden');
+                renderTags(u.daws, 'dawsCont', 'fas fa-sliders');
+            }
 
-        // Social
-        const sociais = u.redes_sociais || {};
-        const linksHtml = Object.entries(sociais)
-          .filter(([, v]) => v)
-          .map(([k, v]) => {
-            const icon = SOCIAL_ICONS[k] || "fa-solid fa-link";
-            return `<a href="${v}" target="_blank" class="skill-tag" style="text-decoration:none;"><i class="${icon}"></i>${k}</a>`;
-          })
-          .join("");
-        document.getElementById("socialLinks").innerHTML =
-          linksHtml ||
-          '<span style="color:#555; font-size:12px;">Sem redes sociais</span>';
+            // Social
+            const sociais = u.redes_sociais || {};
+            const linksHtml = Object.entries(sociais).filter(([,v])=>v).map(([k,v])=>{
+                const icon = SOCIAL_ICONS[k] || 'fa-solid fa-link';
+                return `<a href="${v}" target="_blank" class="skill-tag" style="text-decoration:none;"><i class="${icon}"></i>${k}</a>`;
+            }).join('');
+            document.getElementById('socialLinks').innerHTML = linksHtml || '<span style="color:#555; font-size:12px;">Sem redes sociais</span>';
 
-        // Previews
-        if (ehProprio)
-          document.getElementById("addPreviaPanel").classList.remove("hidden");
-        renderizarGradePreviasDoUsuario(
-          u.id_usuario,
-          document.getElementById("previasLista"),
-          (count) => {
-            document.getElementById("countPrevias").textContent = count;
-          },
-        );
-
-        hideLoading();
-      }
-
-      // ── Seletor de status ──────────────────────────────────────────────────
-      document.getElementById("statusBadge")?.addEventListener("click", (e) => {
-        if (!e.currentTarget.classList.contains("is-editable")) return;
-        e.stopPropagation();
-        document.getElementById("statusDropdown").classList.toggle("open");
-      });
-      document.addEventListener("click", () => {
-        document.getElementById("statusDropdown")?.classList.remove("open");
-      });
-      document.querySelectorAll(".status-option").forEach((opt) => {
-        opt.addEventListener("click", async () => {
-          const novoStatus = opt.dataset.status;
-          document.getElementById("statusDropdown").classList.remove("open");
-          aplicarStatus(novoStatus);
-          const usuarioLogado = JSON.parse(
-            localStorage.getItem("usuarioLogado") || "{}",
-          );
-          try {
-            await fetch(`/api/usuarios/${usuarioLogado.id_usuario}/status`, {
-              method: "PATCH",
-              headers: authHeaders(),
-              body: JSON.stringify({ status: novoStatus }),
+            // Previews
+            if (ehProprio) document.getElementById('addPreviaPanel').classList.remove('hidden');
+            renderizarGradePreviasDoUsuario(u.id_usuario, document.getElementById('previasLista'), (count) => {
+                document.getElementById('countPrevias').textContent = count;
             });
-            usuarioLogado.status = novoStatus;
-            localStorage.setItem(
-              "usuarioLogado",
-              JSON.stringify(usuarioLogado),
-            );
-          } catch (err) {
-            console.error(err);
-          }
-        });
-      });
 
-      document
-        .getElementById("btnSair")
-        ?.addEventListener("click", fazerLogout);
-      document
-        .getElementById("profileDropdown")
-        ?.addEventListener("click", () =>
-          document.getElementById("profileDropdown").classList.toggle("active"),
-        );
-      initSearchOverlay();
-      document
-        .getElementById("btnEditarPerfil")
-        ?.addEventListener("click", () => {
-          window.location.href = "editar.html";
+            hideLoading();
+        }
+
+        // ── Seletor de status ──────────────────────────────────────────────────
+        document.getElementById('statusBadge')?.addEventListener('click', (e) => {
+            if (!e.currentTarget.classList.contains('is-editable')) return;
+            e.stopPropagation();
+            document.getElementById('statusDropdown').classList.toggle('open');
+        });
+        document.addEventListener('click', () => {
+            document.getElementById('statusDropdown')?.classList.remove('open');
+        });
+        document.querySelectorAll('.status-option').forEach(opt => {
+            opt.addEventListener('click', async () => {
+                const novoStatus = opt.dataset.status;
+                document.getElementById('statusDropdown').classList.remove('open');
+                aplicarStatus(novoStatus);
+                const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado') || '{}');
+                try {
+                    await fetch(`/api/usuarios/${usuarioLogado.id_usuario}/status`, {
+                        method: 'PATCH',
+                        headers: authHeaders(),
+                        body: JSON.stringify({ status: novoStatus })
+                    });
+                    usuarioLogado.status = novoStatus;
+                    localStorage.setItem('usuarioLogado', JSON.stringify(usuarioLogado));
+                } catch (err) { console.error(err); }
+            });
         });
 
-      showLoading("Entrando no Backstage...");
-      iniciarPerfil();
-    </script>
-
-    <script>
-      // Partículas (Consistency)
-      const canvas = document.getElementById("bg-canvas");
-      const ctx = canvas.getContext("2d");
-      let particles = [];
-      function initCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-      }
-      class Particle {
-        constructor() {
-          this.x = Math.random() * canvas.width;
-          this.y = Math.random() * canvas.height;
-          this.size = Math.random() * 2;
-          this.speedX = Math.random() * 0.5 - 0.25;
-          this.speedY = Math.random() * 0.5 - 0.25;
-          this.opacity = Math.random() * 0.5 + 0.1;
-        }
-        update() {
-          this.x += this.speedX;
-          this.y += this.speedY;
-          if (this.x > canvas.width) this.x = 0;
-          if (this.x < 0) this.x = canvas.width;
-          if (this.y > canvas.height) this.y = 0;
-          if (this.y < 0) this.y = canvas.height;
-        }
-        draw() {
-          ctx.fillStyle = `rgba(139,92,246,${this.opacity})`;
-          ctx.beginPath();
-          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      }
-      function createParticles() {
-        for (let i = 0; i < 100; i++) particles.push(new Particle());
-      }
-      function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        particles.forEach((p) => {
-          p.update();
-          p.draw();
+        document.getElementById('btnSair')?.addEventListener('click', fazerLogout);
+        document.getElementById('profileDropdown')?.addEventListener('click', () =>
+            document.getElementById('profileDropdown').classList.toggle('active'));
+        initSearchOverlay();
+        document.getElementById('btnEditarPerfil')?.addEventListener('click', () => {
+            window.location.href = 'editar.html';
         });
-        requestAnimationFrame(animate);
-      }
-      window.addEventListener("resize", initCanvas);
-      initCanvas();
-      createParticles();
-      animate();
+
+        showLoading('Entrando no Backstage...');
+        iniciarPerfil();
     </script>
     <div class="tab-bar-spacer"></div>
     <nav class="tab-bar" aria-label="Navegação principal">
-      <a class="tab-bar-item" href="feed.html"
-        ><i class="fas fa-stream"></i>Feed</a
-      >
-      <button type="button" class="tab-bar-item" id="tabBarBuscar">
-        <i class="fas fa-search"></i>Buscar
-      </button>
-      <a class="tab-bar-item tab-bar-cta" href="publicar.html"
-        ><i class="fas fa-plus"></i>Postar</a
-      >
-      <a class="tab-bar-item active" href="perfil.html"
-        ><i class="fas fa-user"></i>Perfil</a
-      >
+        <a class="tab-bar-item" href="feed.html"><i class="fas fa-stream"></i>Feed</a>
+        <button type="button" class="tab-bar-item" id="tabBarBuscar"><i class="fas fa-search"></i>Buscar</button>
+        <a class="tab-bar-item tab-bar-cta" href="publicar.html"><i class="fas fa-plus"></i>Postar</a>
+        <a class="tab-bar-item active" href="perfil.html"><i class="fas fa-user"></i>Perfil</a>
     </nav>
-  </body>
+</body>
 </html>

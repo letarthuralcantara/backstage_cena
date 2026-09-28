@@ -55,6 +55,7 @@ Use o arquivo `.env.example` como referência. As variáveis essenciais são:
 ```env
 DATABASE_URL="file:./dev.db"
 JWT_SECRET="seu_segredo_aqui"
+RESET_CODE_SECRET="seu_segredo_opcional"
 NODE_ENV=development
 EMAIL_HOST=
 EMAIL_PORT=587
@@ -71,6 +72,7 @@ Observações:
 - em desenvolvimento, se `EMAIL_HOST` estiver vazio, o sistema usa uma conta Ethereal de testes e imprime no terminal a URL da pré-visualização do e-mail;
 - `APP_PROFILE_URL` adiciona o botão de “Completar meu perfil” no e-mail de boas-vindas;
 - os valores reais das credenciais de e-mail devem ficar somente no `.env` local.
+- `RESET_CODE_SECRET` é opcional; sem ele, o HMAC do código usa `JWT_SECRET`.
 
 ## Scripts disponíveis
 
@@ -125,6 +127,8 @@ O envio de e-mail foi centralizado em serviço isolado:
 - `src/services/EmailService.ts`
 
 O cadastro envia e-mail de boas-vindas após criação bem-sucedida. Falha no SMTP não bloqueia a criação e apenas registra o erro no log.
+
+Os limites de login e redefinição usam armazenamento em memória por padrão. Em implantações com mais de uma instância, configure um store compartilhado (por exemplo, Redis com `rate-limit-redis`).
 
 ## Testes
 

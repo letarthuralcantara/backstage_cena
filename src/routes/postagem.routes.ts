@@ -1,5 +1,6 @@
 import { Router } from "express";
 import PostagemController, {
+  limparUpload,
   uploadAudio,
 } from "../controllers/PostagemController.js";
 import { isAuthenticated } from "../middlewares/auth.js";
@@ -23,7 +24,7 @@ router.post(
   "/",
   isAuthenticated,
   uploadAudio,
-  validate(criarPostagemSchema),
+  validate(criarPostagemSchema, { onInvalid: limparUpload }),
   PostagemController.criar,
 );
 // Não usamos o middleware isOwner aqui: nele, `:id` seria interpretado como o

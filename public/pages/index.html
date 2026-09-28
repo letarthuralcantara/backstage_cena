@@ -2,11 +2,11 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="theme-color" content="#000000">
+    <meta name="theme-color" content="#09070d">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Backstage | Conecte-se com Músicos</title>
     <meta name="description" content="Backstage Cena é a rede social que conecta músicos, produtores e artistas independentes para formar bandas, trocar experiências e criar juntos.">
-    <meta property="og:title" content="Backstage Cena — Conecte-se com Músicos">
+    <meta property="og:title" content="Backstage Cena | Conecte-se com Músicos">
     <meta property="og:description" content="A rede social feita para músicos encontrarem parceiros de banda, produtores e colaborações musicais.">
     <meta property="og:type" content="website">
     <meta name="robots" content="index, follow">
@@ -17,299 +17,291 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../css/global.css">
     <style>
+        :root { --home-purple: #7b2ff0; --home-purple-dark: #160927; --home-line: rgba(255,255,255,.18); }
         * { scroll-behavior: smooth; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
-        .reveal { opacity:0; transform:translateY(40px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
-        /* Maior especificidade que qualquer transição própria de cartão (ex.: .mvv-item,
-           .glass-card): assim que revelado, o hover volta a usar a duração rápida
-           do próprio cartão em vez de herdar 1s inteiro da revelação. */
-        .reveal.active { opacity:1; transform:translateY(0); transition: opacity .7s var(--ease), transform .25s var(--ease); }
-        .hero-section { height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; position:relative; }
-        .hero-eyebrow { color:var(--primary); font-weight:800; text-transform:uppercase; letter-spacing:4px; font-size:14px; margin-bottom:20px; display:block; animation:eyebrowSlide 0.8s cubic-bezier(0.2,1,0.3,1); }
-        @keyframes eyebrowSlide { from{opacity:0;transform:translateX(-40px)} to{opacity:1;transform:translateX(0)} }
-        .main-title { font-size: clamp(38px, 9vw, 84px); line-height: .95; margin-bottom: 22px; animation: titleBounce 1s cubic-bezier(0.2,1,0.3,1) 0.2s both; }
-        @keyframes titleBounce { from{opacity:0;transform:scale(0.9) translateY(40px)} to{opacity:1;transform:scale(1) translateY(0)} }
-        .main-title .highlight { display:block; background:linear-gradient(90deg,var(--primary),var(--secondary)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; filter:drop-shadow(0 0 30px var(--primary-glow)); animation:highlightGlow 3s ease-in-out infinite; }
-        @keyframes highlightGlow { 0%,100%{filter:drop-shadow(0 0 30px var(--primary-glow))} 50%{filter:drop-shadow(0 0 60px var(--primary-glow))} }
-        .main-subtitle { font-size: 16px; color: var(--text-2); max-width: 480px; margin-bottom: 36px; animation: subtitleFade 1s cubic-bezier(0.2,1,0.3,1) 0.4s both; }
-        @keyframes subtitleFade { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
-        .hero-actions { display:flex; align-items:center; gap:20px; flex-wrap:wrap; justify-content:center; animation:actionsFade 1s cubic-bezier(0.2,1,0.3,1) 0.6s both; }
-        @keyframes actionsFade { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
-        .btn-cta {
-            display: inline-block; background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white; padding: 16px 36px; border-radius: var(--r-full);
-            font-weight: 700; text-decoration: none; font-size: 14px;
-            box-shadow: 0 4px 22px var(--primary-glow), inset 0 1px 0 rgba(255,255,255,.25);
-            transition: transform .2s var(--ease), box-shadow .2s var(--ease); cursor: pointer; font-family: 'Inter', sans-serif; border: none;
+        body { background: #09070d; overflow-x: hidden; }
+        .container { width: min(1180px, calc(100% - 48px)); margin: 0 auto; }
+        .header { z-index: 20; }
+        .header .logo-img, .footer-logo-img { width: auto; height: 34px; max-width: 180px; object-fit: contain; }
+        .home-main { position: relative; }
+        .home-intro { min-height: calc(100svh - 68px); display: grid; place-items: center; padding: 70px 0 90px; }
+        .intro-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 460px); align-items: center; gap: 70px; }
+        .intro-copy { max-width: 620px; }
+        .eyebrow { display: block; margin-bottom: 22px; color: var(--primary); font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+        .home-title { max-width: 680px; margin: 0; font-family: Poppins, sans-serif; font-size: clamp(48px, 8vw, 94px); line-height: .94; letter-spacing: -.07em; text-transform: uppercase; }
+        .home-title span { color: var(--primary); }
+        .home-lede { max-width: 470px; margin: 28px 0 32px; color: var(--text-2); font-size: 17px; line-height: 1.6; }
+        .home-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+        .home-actions .btn-cta, .home-actions .btn-ghost { min-height: 50px; }
+        .home-actions .btn-cta { display: inline-flex; align-items: center; justify-content: center; padding: 0 24px; border: 1px solid rgba(255,255,255,.2); border-radius: 9px; background: var(--primary); color: #fff; box-shadow: 0 10px 28px rgba(139,92,246,.28); font-weight: 700; text-decoration: none; transition: transform .22s ease, background .22s ease, box-shadow .22s ease; }
+        .home-actions .btn-cta:hover { transform: translateY(-2px); background: #9a6cff; box-shadow: 0 14px 32px rgba(139,92,246,.38); }
+        .home-actions .btn-ghost { display: inline-flex; align-items: center; gap: 9px; padding: 0 20px; border: 1px solid rgba(255,255,255,.24); border-radius: 9px; background: rgba(255,255,255,.035); color: var(--text-1); transition: transform .22s ease, border-color .22s ease, background .22s ease; }
+        .home-actions .btn-ghost:hover { transform: translateY(-2px); border-color: rgba(255,255,255,.55); background: rgba(255,255,255,.09); }
+        .home-visual { position: relative; min-height: 440px; display: grid; place-items: center; }
+        .home-visual::before { content: ''; position: absolute; width: 360px; height: 360px; border: 1px solid rgba(139,92,246,.35); border-radius: 50%; }
+        .home-visual::after { content: ''; position: absolute; width: 270px; height: 270px; border: 1px solid rgba(255,255,255,.12); border-radius: 50%; transform: rotate(24deg) scaleX(1.4); }
+        .home-bear { position: relative; z-index: 1; width: min(360px, 85%); filter: drop-shadow(0 26px 38px rgba(0,0,0,.46)); animation: home-breathe 6s ease-in-out infinite; }
+        @keyframes home-breathe { 0%,100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-16px) rotate(1deg); } }
+        .scroll-cue { position: absolute; bottom: 25px; left: 50%; display: flex; flex-direction: column; align-items: center; gap: 10px; color: var(--text-3); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; transform: translateX(-50%); }
+        .scroll-cue::after { content: ''; width: 1px; height: 36px; background: var(--primary); animation: cue-line 1.8s ease-in-out infinite; transform-origin: top; }
+        @keyframes cue-line { 0%,100% { transform: scaleY(.35); opacity: .35; } 50% { transform: scaleY(1); opacity: 1; } }
+
+        .journey { position: relative; height: 420vh; background: #09070d; }
+        .journey-stage { position: sticky; top: 0; height: 100svh; min-height: 620px; overflow: hidden; display: grid; place-items: center; background: #09070d; }
+        .journey-stage::after { content: ''; position: absolute; inset: 0; z-index: 0; background: var(--home-purple); opacity: var(--journey-purple-opacity, 0); pointer-events: none; }
+        .journey-stage::before { content: ''; position: absolute; inset: 0; background: rgba(9,7,13,.1); pointer-events: none; }
+        .journey-stage.is-purple { background: var(--home-purple); }
+        .journey-stage.is-purple::before { background: rgba(36,9,77,.12); }
+        .journey-inner { position: relative; z-index: 1; width: min(1180px, calc(100% - 48px)); height: 100%; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 70px; }
+        .journey-copy { max-width: 430px; opacity: 0; transform: translate3d(0, 28px, 0); transition: opacity .42s ease, transform .58s cubic-bezier(.2,.8,.2,1); }
+        .journey-copy.is-active { opacity: 1; transform: translateY(0); }
+        .journey-index { display: none; }
+        .journey-copy h2 { margin: 0 0 18px; color: #fff; font-family: Poppins, sans-serif; font-size: clamp(38px, 5vw, 68px); line-height: .98; letter-spacing: -.06em; text-transform: uppercase; }
+        .journey-copy p { margin: 0; color: rgba(255,255,255,.78); font-size: 16px; line-height: 1.65; }
+        .journey-art { position: relative; min-height: 520px; display: grid; place-items: center; }
+        .journey-object { position: relative; z-index: 3; display: grid; place-items: center; width: 360px; height: 360px; color: #fff; filter: drop-shadow(0 24px 38px rgba(0,0,0,.24)); transform: translate3d(calc(var(--journey-drift, 0) * 1px), calc(var(--journey-lift, 0) * 1px), 0) rotate(var(--journey-rotate, 0deg)); transition: transform .08s linear, opacity .4s ease; }
+        .journey-object i { position: relative; z-index: 2; font-size: 122px; }
+        .journey-object img { display: none; position: relative; z-index: 2; width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 24px 38px rgba(0,0,0,.24)); }
+        .journey-object.has-image img { display: block; }
+        .journey-object.has-image i { display: none; }
+        .journey-stack { position: relative; z-index: 3; width: 430px; height: 430px; transform: translate3d(calc(var(--journey-drift, 0) * 1px), calc(var(--journey-lift, 0) * 1px), 0); }
+        .journey-layer { position: absolute; inset: 35px; display: grid; place-items: center; opacity: 0; transform: translate3d(0, 0, 0) rotate(0deg) scale(.72); transform-origin: 50% 55%; filter: drop-shadow(0 24px 38px rgba(0,0,0,.25)); will-change: transform, opacity; }
+        .journey-layer::before { content: ''; position: absolute; inset: 26px; border: 1px solid rgba(255,255,255,.4); border-radius: 44% 56% 52% 48%; transform: rotate(-16deg); }
+        .journey-layer::after { content: ''; position: absolute; width: 190px; height: 190px; border-radius: 50%; background: rgba(255,255,255,.09); }
+        .journey-layer i { position: relative; z-index: 2; font-size: 124px; color: #fff; }
+        .journey-layer img { display: none; position: relative; z-index: 2; width: 100%; height: 100%; object-fit: contain; }
+        .journey-layer.has-image img { display: block; }
+        .journey-layer.has-image i { display: none; }
+        .journey-layer.layer-search { z-index: 1; }
+        .journey-layer.layer-profile { z-index: 2; }
+        .journey-layer.layer-create { z-index: 3; }
+        .journey-layer.layer-search i { color: #fff; }
+        .journey-layer.layer-profile i { color: #f3eaff; }
+        .journey-layer.layer-create i { color: #fff; }
+        .journey-object::before { content: ''; position: absolute; inset: 22px; border: 1px solid rgba(255,255,255,.44); border-radius: 42% 58% 55% 45%; transform: rotate(-18deg); }
+        .journey-object::after { content: ''; position: absolute; width: 170px; height: 170px; border-radius: 50%; background: rgba(255,255,255,.08); }
+        .object-search { --journey-object-color: #fff; }
+        .object-search i { color: #fff; }
+        .object-profile i { color: #f3eaff; }
+        .object-create i { color: #fff; }
+        .journey-orbit { position: absolute; z-index: 1; width: 440px; height: 440px; border: 1px solid rgba(255,255,255,.25); border-radius: 50%; transform: rotate(-16deg) scaleX(1.45); }
+        .journey-orbit::before, .journey-orbit::after { content: ''; position: absolute; width: 62px; height: 62px; border: 1px solid rgba(255,255,255,.28); border-radius: 50%; background: rgba(255,255,255,.1); }
+        .journey-orbit::before { top: 20px; left: 82px; }
+        .journey-orbit::after { right: 18px; bottom: 58px; }
+        .journey-progress { position: absolute; z-index: 2; right: 26px; top: 50%; display: flex; flex-direction: column; gap: 10px; transform: translateY(-50%); }
+        .journey-progress i { display: block; width: 4px; height: 22px; border-radius: 4px; background: rgba(255,255,255,.3); transition: height .25s, background .25s; }
+        .journey-progress i.active { height: 44px; background: #fff; }
+        .journey-next { display: none; }
+        .header { transition: opacity .5s ease, transform .7s cubic-bezier(.2,.8,.2,1), visibility .5s ease; }
+        .header-center { max-width: 460px; transition: opacity .35s ease, max-width .5s ease, transform .45s ease, visibility .35s ease; }
+        .header.journey-fading { opacity: 0; transform: translateY(-100%); visibility: hidden; pointer-events: none; }
+        .home-final .btn-cta { display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 0 28px; border: 1px solid rgba(255,255,255,.2); border-radius: 9px; background: var(--primary); color: #fff; box-shadow: 0 10px 28px rgba(139,92,246,.28); font-weight: 700; transition: transform .22s ease, background .22s ease, box-shadow .22s ease; }
+        .home-final .btn-cta:hover { transform: translateY(-2px); background: #9a6cff; box-shadow: 0 14px 32px rgba(139,92,246,.38); }
+
+        .home-proof { padding: 130px 0; background: #0d0a12; }
+        .proof-heading { max-width: 650px; margin-bottom: 54px; }
+        .proof-heading h2 { margin: 0; font-family: Poppins, sans-serif; font-size: clamp(34px, 5vw, 58px); line-height: 1; letter-spacing: -.06em; }
+        .proof-heading p { margin: 20px 0 0; color: var(--text-2); line-height: 1.6; }
+        .proof-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--home-line); border: 1px solid var(--home-line); }
+        .proof-item { min-height: 210px; padding: 28px; background: #0d0a12; }
+        .proof-number { display: block; margin-bottom: 54px; color: var(--primary); font: 700 13px Inter, sans-serif; }
+        .proof-item h3 { margin: 0 0 10px; font: 700 20px Poppins, sans-serif; }
+        .proof-item p { margin: 0; color: var(--text-2); font-size: 14px; line-height: 1.6; }
+        .home-final { padding: 150px 0; text-align: center; }
+        .home-final h2 { margin: 0 0 32px; font: 700 clamp(42px, 8vw, 86px)/.95 Poppins, sans-serif; letter-spacing: -.07em; text-transform: uppercase; }
+        .home-final h2 span { color: var(--primary); }
+        .footer { padding-top: 50px; }
+        @media (max-width: 800px) {
+            .container, .journey-inner { width: min(100% - 32px, 620px); }
+            .intro-grid, .journey-inner { grid-template-columns: 1fr; gap: 24px; }
+            .home-intro { padding-top: 55px; }
+            .intro-copy { text-align: center; }
+            .home-lede { margin-left: auto; margin-right: auto; }
+            .home-actions { justify-content: center; }
+            .home-visual { min-height: 280px; }
+            .home-visual::before { width: 230px; height: 230px; }
+            .home-visual::after { width: 180px; height: 180px; }
+            .home-bear { width: 220px; }
+            .scroll-cue { display: none; }
+            .journey { height: auto; background: var(--home-purple); }
+            .journey-stage { position: relative; height: auto; min-height: 0; padding: 90px 0 110px; display: block; }
+            .journey-inner { display: flex; flex-direction: column; gap: 32px; }
+            .journey-copy { opacity: 1; transform: none; }
+            .journey-art { min-height: 260px; order: -1; }
+            .journey-object { width: 280px; height: 280px; }
+            .journey-object i { font-size: 94px; }
+            .journey-stack { width: 340px; height: 340px; }
+            .journey-layer { inset: 28px; }
+            .journey-layer i { font-size: 94px; }
+            .journey-orbit { width: 320px; height: 320px; }
+            .journey-progress, .journey-next { display: none; }
+            .proof-grid { grid-template-columns: 1fr; }
         }
-        .btn-cta:hover { transform: translateY(-2px); box-shadow: 0 6px 30px var(--primary-glow); }
-        .btn-cta:active { transform: scale(.96); }
-        .btn-ghost {
-            color: var(--text-2); padding: 16px 32px; border-radius: var(--r-full);
-            font-weight: 600; text-decoration: none; font-size: 14px;
-            border: 1px solid var(--glass-border); transition: all .25s; display: inline-flex; align-items: center; gap: 8px;
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: .001ms !important; scroll-behavior: auto !important; transition-duration: .001ms !important; }
         }
-        .btn-ghost:hover { color: #fff; border-color: rgba(255,255,255,.35); background: var(--glass-fill); }
-        .btn-ghost:active { transform: scale(.96); }
-        .scroll-indicator { position:absolute; bottom:40px; width:30px; height:50px; border:2px solid #555; border-radius:20px; animation:scrollPulse 2s ease-in-out infinite; }
-        .scroll-indicator::after { content:''; position:absolute; top:10px; left:50%; width:6px; height:6px; background:var(--primary); border-radius:50%; transform:translateX(-50%); animation:scrollDown 2s infinite; }
-        @keyframes scrollDown { 0%{top:10px;opacity:1} 100%{top:30px;opacity:0} }
-        @keyframes scrollPulse { 0%,100%{opacity:0.6} 50%{opacity:1} }
-        .hero-visual-wrap { position:relative; width:380px; height:380px; margin:60px auto 0; animation:visualFade 1s cubic-bezier(0.2,1,0.3,1) 0.8s both; }
-        @keyframes visualFade { from{opacity:0;transform:scale(0.8) translateY(40px)} to{opacity:1;transform:scale(1) translateY(0)} }
-        .hero-glow { position:absolute; inset:0; background:radial-gradient(circle,rgba(139,92,246,0.35) 0%,transparent 70%); border-radius:50%; animation:glowPulse 4s ease-in-out infinite; }
-        .hero-ring { position:absolute; inset:0; border-radius:50%; border:1px solid rgba(139,92,246,0.2); animation:ringRotate 20s linear infinite; }
-        .hero-ring::before { content:''; position:absolute; top:-4px; left:50%; width:8px; height:8px; background:#8b5cf6; border-radius:50%; box-shadow:0 0 12px rgba(139,92,246,0.9); }
-        .bear-image { width:300px; height:auto; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:1; filter:drop-shadow(0 20px 40px rgba(139,92,246,0.4)); animation: bearFloatWave 6s ease-in-out infinite; }
-        @keyframes glowPulse { 0%,100%{transform:scale(1);opacity:.6} 50%{transform:scale(1.15);opacity:1} }
-        @keyframes ringRotate { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
-        /* Antes eram duas @keyframes separadas (bearFloat + bearWave) animando
-           "transform" ao mesmo tempo, fora de fase (6s vs 4s) — cada uma
-           sobrescrevia a outra a cada frame, causando o "engasgo" visual.
-           Uma única animação combinando flutuação + balanço resolve isso. */
-        @keyframes bearFloatWave {
-            0%, 100% { transform:translate(-50%,-50%) translateY(0) rotateZ(0deg); }
-            25%      { transform:translate(-50%,-50%) translateY(-20px) rotateZ(-2deg); }
-            50%      { transform:translate(-50%,-50%) translateY(-14px) rotateZ(0deg); }
-            75%      { transform:translate(-50%,-50%) translateY(-20px) rotateZ(2deg); }
-        }
-        .bear-particles { position:absolute; width:100%; height:100%; z-index:0; }
-        .particle { position:absolute; width:8px; height:8px; background:var(--primary); border-radius:50%; animation:particleFloat 8s infinite; opacity:0.6; box-shadow:0 0 8px var(--primary-glow); }
-        @keyframes particleFloat { 0%{transform:translateY(0) translateX(0);opacity:0} 10%{opacity:0.8} 90%{opacity:0.8} 100%{transform:translateY(-400px) translateX(100px);opacity:0} }
-        .section { padding:150px 0; position:relative; }
-        .section-label { color: var(--primary); font-weight: 700; letter-spacing: 1px; font-size: 12px; text-transform: uppercase; margin-bottom: 14px; display: block; text-align: center; }
-        .section-title { font-size: clamp(28px, 5vw, 40px); margin-bottom: 24px; line-height: 1.2; text-align: center; }
-        .features-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:40px; margin-top:80px; }
-        .feature-card {
-            background: var(--glass-fill); -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
-            border: 1px solid var(--glass-border); border-radius: var(--r-xl); padding: 36px 30px;
-            box-shadow: inset 0 1px 0 var(--glass-highlight);
-            position: relative; transition: border-color .25s, transform .25s var(--ease); overflow: hidden;
-        }
-        .feature-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,rgba(139,92,246,0.6),transparent); opacity:0; transition:opacity 0.4s; }
-        .feature-card:hover { border-color: rgba(139,92,246,.4); transform: translateY(-4px); }
-        .feature-card:hover::before { opacity:1; }
-        .feature-icon-circle { width: 56px; height: 56px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: var(--r-md); display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 20px; transition: transform .3s; }
-        .feature-card:nth-child(2) .feature-icon-circle { animation-delay:0.3s; }
-        .feature-card:nth-child(3) .feature-icon-circle { animation-delay:0.6s; }
-        @keyframes iconFloat { 0%,100%{transform:translateY(0) rotate(0deg)} 50%{transform:translateY(-12px) rotate(5deg)} }
-        .feature-card:hover .feature-icon-circle { transform:scale(1.1) rotate(-5deg); }
-        .feature-title { font-family:'Poppins',sans-serif; font-size:22px; font-weight:700; margin-bottom:14px; }
-        .feature-desc { font-size: 15px; color: var(--text-2); line-height: 1.7; }
-        .stats-section { padding:100px 0; position:relative; }
-        .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:40px; margin-top:60px; }
-        .stat-card {
-            background: var(--glass-fill); -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
-            border: 1px solid var(--glass-border); border-radius: var(--r-lg); padding: 30px 20px; text-align: center;
-            box-shadow: inset 0 1px 0 var(--glass-highlight);
-            transition: border-color .25s, transform .25s var(--ease); position: relative; overflow: hidden;
-        }
-        .stat-card::before { content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%; background:radial-gradient(circle,rgba(139,92,246,0.1),transparent); animation:statShine 3s ease-in-out infinite; }
-        @keyframes statShine { 0%,100%{transform:translate(0,0)} 50%{transform:translate(50%,50%)} }
-        .stat-card:hover { border-color: rgba(139,92,246,.4); transform: translateY(-4px); }
-        .stat-number { font-family:'Poppins',sans-serif; font-size:42px; font-weight:900; background:linear-gradient(135deg,var(--primary),var(--secondary)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:12px; position:relative; z-index:1; }
-        .stat-label { color: var(--text-2); font-size: 13px; position: relative; z-index: 1; }
-        .cta-section { padding:150px 0; text-align:center; }
-        .cta-title { font-family:'Poppins',sans-serif; font-size:clamp(40px,8vw,80px); font-weight:900; margin-bottom:50px; line-height:1; }
-        .footer { padding:60px 0 40px; text-align:center; border-top:1px solid var(--glass-border); }
-        .footer-logo-img { height:36px; width:auto; opacity:0.5; transition:0.3s; margin-bottom:16px; }
-        .footer-logo-img:hover { opacity:1; }
-        @media (max-width:900px) { .features-grid{grid-template-columns:1fr;gap:24px} .stats-grid{grid-template-columns:repeat(2,1fr)} .main-title{font-size:60px} .section-title{font-size:34px} .hero-visual-wrap{width:280px;height:280px} .bear-image{width:220px} }
-        @media (max-width:600px) { .stats-grid{grid-template-columns:1fr} .hero-visual-wrap{width:200px;height:200px} .bear-image{width:160px} }
     </style>
 </head>
 <body>
-    <canvas id="bg-canvas"></canvas>
-
     <header class="header">
-        <div class="header-left">
-            <a href="index.html"><img src="../images/logo.png" alt="Backstage Logo" class="logo-img"></a>
-        </div>
+        <div class="header-left"><a href="index.html"><img src="../images/logo.png" alt="Backstage Logo" class="logo-img"></a></div>
         <div class="header-center">
-            <div class="header-search" id="searchBar">
-                <i class="fas fa-search header-search-icon"></i>
-                <input type="text" class="header-search-input" placeholder="Buscar músicos..." readonly>
-                <button class="header-search-btn">Buscar</button>
-            </div>
+            <div class="header-search" id="searchBar"><i class="fas fa-search header-search-icon"></i><input type="text" class="header-search-input" placeholder="Buscar músicos..." readonly><button class="header-search-btn" type="button">Buscar</button></div>
         </div>
-        <div class="header-actions" id="headerActions">
-            <!-- preenchido pelo JS -->
-        </div>
+        <div class="header-actions" id="headerActions"></div>
     </header>
 
-    <main>
-        <section class="hero-section">
-            <span class="hero-eyebrow reveal">Plataforma Musical Independente</span>
-            <h1 class="main-title reveal">CONECTE-SE<br><span class="highlight">COM MÚSICOS</span></h1>
-            <p class="main-subtitle reveal">Encontre parceiros. Crie projetos. Faça história.</p>
-            <div class="hero-actions reveal">
-                <button class="btn-cta" id="btnComecar">Começar agora</button>
-                <a href="sobrenos.html" class="btn-ghost">Saiba mais <i class="fas fa-arrow-right"></i></a>
-            </div>
-            <div class="hero-visual-wrap reveal">
-                <div class="bear-particles" id="bearParticles"></div>
-                <div class="hero-glow"></div>
-                <div class="hero-ring"></div>
-                <img src="../images/urso.png" alt="Mascote Backstage" class="bear-image">
-            </div>
-        </section>
-
-        <section class="section">
-            <div class="container">
-                <span class="section-label reveal">O que oferecemos</span>
-                <h2 class="section-title reveal">Tudo que você precisa para <span style="color:var(--primary)">decolar</span></h2>
-                <div class="features-grid">
-                    <div class="feature-card reveal" style="transition-delay:0.1s">
-                        <div class="feature-icon-circle"><i class="fas fa-search"></i></div>
-                        <h3 class="feature-title">Encontre Músicos</h3>
-                        <p class="feature-desc">Busque por instrumento, gênero, localização e disponibilidade para achar o parceiro ideal para seu projeto.</p>
-                    </div>
-                    <div class="feature-card reveal" style="transition-delay:0.2s">
-                        <div class="feature-icon-circle"><i class="fas fa-user-circle"></i></div>
-                        <h3 class="feature-title">Seu Perfil Musical</h3>
-                        <p class="feature-desc">Mostre seus talentos, gêneros favoritos, DAWs e redes sociais para ser encontrado pela cena certa.</p>
-                    </div>
-                    <div class="feature-card reveal" style="transition-delay:0.3s">
-                        <div class="feature-icon-circle"><i class="fas fa-handshake"></i></div>
-                        <h3 class="feature-title">Colabore e Crie</h3>
-                        <p class="feature-desc">Conecte-se com produtores, vocalistas e compositores da cena independente brasileira.</p>
-                    </div>
+    <main class="home-main">
+        <section class="home-intro">
+            <div class="container intro-grid">
+                <div class="intro-copy">
+                    <span class="eyebrow">Backstage Cena</span>
+                    <h1 class="home-title">Conecte-se<br><span>com músicos</span></h1>
+                    <p class="home-lede">Encontre parceiros, mostre seu som e faça parte das colaborações que movimentam a cena independente.</p>
+                    <div class="home-actions"><button class="btn-cta" id="btnComecar" type="button">Começar agora</button><a href="sobrenos.html" class="btn-ghost">Saiba mais <i class="fas fa-arrow-right"></i></a></div>
                 </div>
+                <div class="home-visual"><img src="../images/urso.png" alt="Mascote Backstage" class="home-bear"></div>
             </div>
+            <div class="scroll-cue">deslize</div>
         </section>
 
-        <section class="stats-section">
-            <div class="container">
-                <span class="section-label reveal">Faça acontecer</span>
-                <div class="stats-grid">
-                    <div class="stat-card reveal" style="transition-delay:0.1s">
-                        <div class="stat-number">1</div>
-                        <div class="stat-label">Crie seu perfil e linke suas redes</div>
-                    </div>
-                    <div class="stat-card reveal" style="transition-delay:0.2s">
-                        <div class="stat-number">2</div>
-                        <div class="stat-label">Faça conexões com pessoas do mundo todo</div>
-                    </div>
-                    <div class="stat-card reveal" style="transition-delay:0.3s">
-                        <div class="stat-number">3</div>
-                        <div class="stat-label">Solte o som e faça acontecer</div>
-                    </div>
-                    <div class="stat-card reveal" style="transition-delay:0.4s">
-                        <div class="stat-number">100%</div>
-                        <div class="stat-label">Gratuito</div>
-                    </div>
+        <section class="journey" id="journey" aria-label="Como o Backstage funciona">
+            <div class="journey-stage" id="journeyStage">
+                <div class="journey-inner">
+                    <div class="journey-copy is-active" id="journeyCopy"><h2 id="journeyTitle">Encontre sua formação</h2><p id="journeyText">Busque por instrumento, gênero, cidade e disponibilidade. A pessoa certa para a próxima ideia pode estar mais perto do que parece.</p></div>
+                    <div class="journey-art"><span class="journey-orbit" aria-hidden="true"></span><div class="journey-stack" id="journeyStack" aria-hidden="true"><div class="journey-layer layer-search" data-image="../images/cena-busca.png"><img alt=""><i class="fas fa-magnifying-glass"></i></div><div class="journey-layer layer-profile" data-image="../images/cena-identidade.png"><img alt=""><i class="fas fa-compass"></i></div><div class="journey-layer layer-create" data-image="../images/cena-criacao.png"><img alt=""><i class="fas fa-handshake"></i></div></div></div>
                 </div>
+                <div class="journey-progress" aria-hidden="true"><i class="active"></i><i></i><i></i></div>
+            </div>
+            <div class="journey-data" hidden>
+                <article data-title="Encontre sua formação" data-text="Busque por instrumento, gênero, cidade e disponibilidade. A pessoa certa para a próxima ideia pode estar mais perto do que parece." data-purple="false" data-icon="fa-magnifying-glass" data-object="object-search" data-image="../images/cena-busca.png"></article>
+                <article data-title="Mostre quem você é" data-text="Compartilhe uma ideia ou um projeto em andamento. Seu perfil deixa claro o que você faz e que tipo de parceria procura." data-purple="true" data-icon="fa-compass" data-object="object-profile" data-image="../images/cena-identidade.png"></article>
+                <article data-title="Crie algo que continue" data-text="Conecte-se com produtores, bandas e artistas independentes para transformar uma conversa em música." data-purple="true" data-icon="fa-handshake" data-object="object-create" data-image="../images/cena-criacao.png"></article>
             </div>
         </section>
 
-        <section class="cta-section">
-            <div class="container reveal">
-                <h2 class="cta-title">VOCÊ ESTÁ <br><span style="color:var(--primary)">PRONTO?</span></h2>
-                <button class="btn-cta" id="btnComecar2" style="padding:22px 60px;font-size:18px;">Criar minha conta</button>
-            </div>
-        </section>
+        <section class="home-proof"><div class="container"><div class="proof-heading"><span class="eyebrow">Feito para a cena</span><h2>Uma rede para quem quer fazer, não só aparecer.</h2><p>O Backstage junta descoberta, perfil e colaboração em um lugar simples de usar.</p></div><div class="proof-grid"><article class="proof-item"><span class="proof-number">01</span><h3>Descubra músicos</h3><p>Filtros que ajudam você a encontrar pessoas compatíveis com seu som e momento.</p></article><article class="proof-item"><span class="proof-number">02</span><h3>Apresente seu som</h3><p>Um perfil musical com seus instrumentos, gêneros, experiência e links.</p></article><article class="proof-item"><span class="proof-number">03</span><h3>Comece a conversa</h3><p>De uma prévia compartilhada a uma parceria que vira projeto.</p></article></div></div></section>
+        <section class="home-final"><div class="container"><h2>Pronto para<br><span>começar?</span></h2><button class="btn-cta" id="btnComecar2" type="button">Criar minha conta</button></div></section>
     </main>
 
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <img src="../images/logo.png" alt="Backstage Logo" class="footer-logo-img">
-                <p style="color:rgba(255,255,255,0.4);font-size:13px;">A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
-                <a href="privacidade.html" style="color:rgba(255,255,255,0.4);font-size:13px;">Política de Privacidade</a>
-            </div>
-        </div>
-    </footer>
+    <footer class="footer"><div class="container"><div class="footer-content"><img src="../images/logo.png" alt="Backstage Logo" class="footer-logo-img"><p style="color:rgba(255,255,255,0.4);font-size:13px;">A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p><a href="privacidade.html" style="color:rgba(255,255,255,0.4);font-size:13px;">Política de Privacidade</a></div></div></footer>
 
     <script type="module">
         import { verificarAutenticacao, fazerLogout } from '../js/auth.js';
         import { initSearchOverlay } from '../js/search-overlay.js';
 
-        // ── HEADER DINÂMICO ──
         const usuario = verificarAutenticacao(false);
         const headerActions = document.getElementById('headerActions');
-
         if (usuario) {
             const nome = usuario.nome_artistico || usuario.nome_completo;
             const iniciais = (nome || 'B').substring(0, 2).toUpperCase();
             const incompleto = Number(usuario.cadastro_completo ?? 0) === 0;
-            headerActions.innerHTML = `
-                <div class="profile-dropdown" id="profileDropdown">
-                    <div class="profile-trigger" id="profileTrigger">${iniciais}</div>
-                    ${incompleto ? '<div class="profile-incomplete-badge show" id="profileIncompleteBadge">!</div>' : '<div class="profile-incomplete-badge" id="profileIncompleteBadge">!</div>'}
-                    <div class="dropdown-menu">
-                        <a href="perfil.html" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a>
-                        <a href="config.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações</a>
-                        <div class="dropdown-divider"></div>
-                        <div class="dropdown-item" id="btnSair"><i class="fas fa-sign-out-alt"></i> Sair</div>
-                    </div>
-                </div>`;
-            document.getElementById('profileDropdown').addEventListener('click', (e) => {
-                e.stopPropagation();
-                document.getElementById('profileDropdown').classList.toggle('active');
-            });
-            document.addEventListener('click', () => {
-                document.getElementById('profileDropdown')?.classList.remove('active');
-            });
+            headerActions.innerHTML = `<div class="profile-dropdown" id="profileDropdown"><div class="profile-trigger" id="profileTrigger">${iniciais}</div>${incompleto ? '<div class="profile-incomplete-badge show">!</div>' : ''}<div class="dropdown-menu"><a href="perfil.html" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a><a href="config.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações</a><div class="dropdown-divider"></div><div class="dropdown-item" id="btnSair"><i class="fas fa-sign-out-alt"></i> Sair</div></div></div>`;
+            document.getElementById('profileDropdown').addEventListener('click', event => { event.stopPropagation(); document.getElementById('profileDropdown').classList.toggle('active'); });
+            document.addEventListener('click', () => document.getElementById('profileDropdown')?.classList.remove('active'));
             document.getElementById('btnSair').addEventListener('click', fazerLogout);
         } else {
-            headerActions.innerHTML = `
-                <a href="login.html" class="btn-outline btn-auth">Login</a>
-                <a href="cadastro.html" class="btn-primary btn-auth">Registrar-se</a>`;
+            headerActions.innerHTML = '<a href="login.html" class="btn-outline btn-auth">Login</a><a href="cadastro.html" class="btn-primary btn-auth">Registrar-se</a>';
         }
-
         initSearchOverlay();
 
-        // ── BOTÕES CTA ──
-        function irParaCadastro() {
-            window.location.href = usuario ? 'perfil.html' : 'cadastro.html';
-        }
+        const irParaCadastro = () => { window.location.href = usuario ? 'perfil.html' : 'cadastro.html'; };
         document.getElementById('btnComecar').addEventListener('click', irParaCadastro);
         document.getElementById('btnComecar2').addEventListener('click', irParaCadastro);
 
-        // ── REVEAL (respeita "reduzir movimento") ──
         const reduzMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        function reveal() {
-            document.querySelectorAll('.reveal').forEach(el => {
-                if (el.getBoundingClientRect().top < window.innerHeight - 100) el.classList.add('active');
+        const header = document.querySelector('.header');
+        const journey = document.getElementById('journey');
+        const stage = document.getElementById('journeyStage');
+        const copy = document.getElementById('journeyCopy');
+        const title = document.getElementById('journeyTitle');
+        const text = document.getElementById('journeyText');
+        const stack = document.getElementById('journeyStack');
+        const layers = [...stack.querySelectorAll('.journey-layer')];
+        layers.forEach(layer => {
+            const image = layer.querySelector('img');
+            image.onload = () => layer.classList.add('has-image');
+            image.onerror = () => { image.removeAttribute('src'); };
+            image.src = layer.dataset.image;
+        });
+        const data = [...document.querySelectorAll('.journey-data article')];
+        const progressMarks = [...document.querySelectorAll('.journey-progress i')];
+        let activeStep = -1;
+        let ticking = false;
+
+        function setStep(step) {
+            if (step === activeStep) return;
+            activeStep = step;
+            const next = data[step];
+            title.textContent = next.dataset.title;
+            text.textContent = next.dataset.text;
+            progressMarks.forEach((mark, position) => mark.classList.toggle('active', position === step));
+            copy.classList.remove('is-active');
+            requestAnimationFrame(() => copy.classList.add('is-active'));
+        }
+
+        function readJourney() {
+            const rect = journey.getBoundingClientRect();
+            const range = Math.max(1, rect.height - window.innerHeight);
+            const raw = Math.min(1, Math.max(0, -rect.top / range));
+            const eased = raw * raw * (3 - 2 * raw);
+            const step = Math.min(data.length - 1, Math.floor(raw * data.length));
+            const purple = Math.max(0, Math.min(1, raw * 1.55));
+            stage.style.setProperty('--journey-purple-opacity', purple.toFixed(3));
+            stage.style.setProperty('--journey-drift', `${Math.sin(eased * Math.PI * 2) * 18}`);
+            stage.style.setProperty('--journey-lift', `${Math.sin(eased * Math.PI) * -18}`);
+            stage.style.setProperty('--journey-rotate', `${Math.sin(eased * Math.PI * 2) * 4}deg`);
+            header.classList.toggle('journey-fading', raw > .015 || window.scrollY > window.innerHeight * .72);
+            const layerProgress = raw * (layers.length - 1);
+            const current = Math.min(layers.length - 1, Math.floor(layerProgress));
+            const local = layerProgress - current;
+            const ease = value => value * value * (3 - 2 * value);
+            layers.forEach((layer, position) => {
+                let opacity = 0;
+                let x = position < current ? -320 : 320;
+                let y = position < current ? -18 : 18;
+                let rotate = position < current ? -16 : 16;
+                let scale = .86;
+
+                if (position === current && current < layers.length - 1) {
+                    const exit = Math.min(1, local / .58);
+                    opacity = 1 - exit;
+                    x = -320 * ease(exit);
+                    y = -24 * ease(exit);
+                    rotate = -16 * ease(exit);
+                    scale = 1 - (.08 * ease(exit));
+                } else if (position === current && current === layers.length - 1) {
+                    opacity = 1;
+                    x = 0;
+                    y = 0;
+                    rotate = 0;
+                    scale = 1;
+                } else if (position === current + 1) {
+                    const enter = Math.max(0, Math.min(1, (local - .74) / .26));
+                    opacity = enter;
+                    x = 320 * (1 - ease(enter));
+                    y = 24 * (1 - ease(enter));
+                    rotate = 16 * (1 - ease(enter));
+                    scale = .92 + (.08 * ease(enter));
+                }
+
+                layer.style.opacity = opacity.toFixed(3);
+                layer.style.visibility = opacity > 0 ? 'visible' : 'hidden';
+                layer.style.transform = `translate3d(${x}px, ${y}px, 0) rotate(${rotate}deg) scale(${scale})`;
+                layer.style.zIndex = String(position + 1);
             });
-        }
-        if (reduzMovimento) {
-            document.querySelectorAll('.reveal').forEach(el => el.classList.add('active'));
-        } else {
-            window.addEventListener('scroll', reveal);
-            reveal();
+            setStep(step);
+            ticking = false;
         }
 
-        // ── PARTÍCULAS ──
-        const canvas = document.getElementById('bg-canvas');
-        if (canvas && !reduzMovimento) {
-            const ctx = canvas.getContext('2d');
-            let particles = [];
-            function initCanvas() { canvas.width=window.innerWidth; canvas.height=window.innerHeight; }
-            class Particle {
-                constructor() { this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.size=Math.random()*2; this.speedX=Math.random()*0.5-0.25; this.speedY=Math.random()*0.5-0.25; this.opacity=Math.random()*0.5+0.1; }
-                update() { this.x+=this.speedX; this.y+=this.speedY; if(this.x>canvas.width)this.x=0; if(this.x<0)this.x=canvas.width; if(this.y>canvas.height)this.y=0; if(this.y<0)this.y=canvas.height; }
-                draw() { ctx.fillStyle=`rgba(139,92,246,${this.opacity})`; ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill(); }
-            }
-            function createParticles() { for(let i=0;i<120;i++) particles.push(new Particle()); }
-            function animate() { ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{p.update();p.draw()}); requestAnimationFrame(animate); }
-            window.addEventListener('resize', initCanvas);
-            initCanvas(); createParticles(); animate();
+        function onScroll() {
+            if (ticking) return;
+            ticking = true;
+            requestAnimationFrame(readJourney);
         }
-
-        function createBearParticles() {
-            const container = document.getElementById('bearParticles');
-            for(let i=0;i<15;i++) {
-                const p = document.createElement('div');
-                p.className = 'particle';
-                p.style.left = Math.random()*100+'%';
-                p.style.top = Math.random()*100+'%';
-                p.style.animationDelay = Math.random()*3+'s';
-                p.style.animationDuration = (7+Math.random()*5)+'s';
-                container.appendChild(p);
-            }
-        }
-        if (!reduzMovimento) createBearParticles();
+        window.addEventListener('scroll', onScroll, { passive: true });
+        window.addEventListener('resize', onScroll, { passive: true });
+        readJourney();
     </script>
 </body>
 </html>

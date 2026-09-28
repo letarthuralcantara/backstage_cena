@@ -2,6 +2,8 @@ import { Router } from "express";
 import UsuarioController from "../controllers/UsuarioController.js";
 import { isAuthenticated, isOwner } from "../middlewares/auth.js";
 import { validate } from "../middlewares/validate.js";
+import { HttpError } from "../errors/HttpError.js";
+import { rateLimit } from "express-rate-limit";
 import {
   cadastroSchema,
   loginSchema,
@@ -19,6 +21,29 @@ import {
 } from "../schema/usuario.schema.js";
 
 const router = Router();
+
+function criarLimitador(max: number, message: string) {
+  return rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: max,
+    standardHeaders: true,
+    legacyHeaders: false,
+    handler: (_req, _res, next) => next(new HttpError(429, message)),
+  });
+}
+
+const limitarLogin = criarLimitador(
+  10,
+  "Muitas tentativas de login. Tente novamente em 15 minutos.",
+);
+const limitarSolicitacaoReset = criarLimitador(
+  5,
+  "Muitas solicitações de redefinição. Tente novamente em 15 minutos.",
+);
+const limitarTentativaReset = criarLimitador(
+  5,
+  "Muitas tentativas de código. Solicite um novo código mais tarde.",
+);
 
 router.get(
   "/estados",
@@ -43,14 +68,21 @@ router.get(
   UsuarioController.listarDisponibilidades,
 );
 
-router.post("/login", validate(loginSchema), UsuarioController.login);
+router.post(
+  "/login",
+  limitarLogin,
+  validate(loginSchema),
+  UsuarioController.login,
+);
 router.post(
   "/esqueci-senha",
+  limitarSolicitacaoReset,
   validate(esqueciSenhaSchema),
   UsuarioController.esqueciSenha,
 );
 router.post(
   "/redefinir-senha",
+  limitarTentativaReset,
   validate(redefinirSenhaSchema),
   UsuarioController.redefinirSenha,
 );

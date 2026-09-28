@@ -49,6 +49,19 @@ Content-Type: application/json
 ### Esperado: 400 Bad Request com `issues` apontando para `body.email`.
 
 
+### 1.3) CADASTRO — formato de e-mail inválido
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+  "nome_completo": "E-mail Inválido",
+  "email": "nao-e-email",
+  "senha": "123456"
+}
+
+### Esperado: 400 Bad Request com issue em `body.email`; nenhum e-mail deve ser enviado.
+
+
 ### 2) LOGIN — credenciais válidas
 # @name login
 POST {{baseUrl}}/login
@@ -100,8 +113,8 @@ Content-Type: application/json
 
 ### Esperado: 200 OK — mensagem genérica. Com SMTP de desenvolvimento (Ethereal),
 ### o link de prévia do e-mail aparece no console do servidor.
-### O código em si só existe no banco (coluna codigo_reset_senha) ou no e-mail
-### enviado — a API nunca devolve ele na resposta, de propósito.
+### O código em si só é enviado por e-mail; o banco guarda apenas seu HMAC
+### na coluna codigo_reset_senha. A API nunca devolve o código na resposta.
 
 
 ### 2.4) ESQUECI MINHA SENHA — e-mail inexistente responde igualzinho

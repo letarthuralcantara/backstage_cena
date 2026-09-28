@@ -15,17 +15,16 @@
         .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
         .btn-cta {
             display: inline-block;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: var(--accent);
             color: white; padding: 14px 30px; border-radius: var(--r-full);
-            font-weight: 700; text-decoration: none; font-size: 14px;
-            box-shadow: 0 4px 20px var(--primary-glow), inset 0 1px 0 rgba(255,255,255,.25);
-            transition: transform .2s var(--ease), box-shadow .2s var(--ease); cursor: pointer;
+            font-weight: 600; text-decoration: none; font-size: 14px;
+            transition: background .18s; cursor: pointer;
         }
-        .btn-cta:hover { transform: translateY(-2px); box-shadow: 0 6px 28px var(--primary-glow); }
+        .btn-cta:hover { background: var(--accent-ink); }
         .btn-cta:active { transform: scale(.96); }
         .hero { height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; position:relative; }
         .hero-title { font-size: clamp(40px, 9vw, 84px); line-height: .95; margin-bottom: 20px; }
-        .hero-title span { display: block; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero-title span { display: block; color: var(--accent); }
         .hero-subtitle { font-size: 17px; color: var(--text-2); max-width: 480px; margin-bottom: 40px; }
         .scroll-indicator { position:absolute; bottom:40px; width:30px; height:50px; border:2px solid #555; border-radius:20px; }
         .scroll-indicator::after { content:''; position:absolute; top:10px; left:50%; width:6px; height:6px; background:var(--primary); border-radius:50%; transform:translateX(-50%); animation:scrollDown 2s infinite; }
@@ -48,9 +47,9 @@
         .glass-card:hover { border-color: rgba(139,92,246,.4); }
         .icon-circle {
             width: 64px; height: 64px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: var(--glass-fill-strong); border: 1px solid var(--glass-border);
             border-radius: var(--r-md); display: flex; align-items: center; justify-content: center;
-            font-size: 24px; margin-bottom: 22px;
+            font-size: 22px; color: var(--text-2); margin-bottom: 20px;
         }
         .mvv-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
         @media (min-width: 700px) { .mvv-grid { grid-template-columns: repeat(3, 1fr); gap: 20px; } }

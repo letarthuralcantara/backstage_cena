@@ -534,7 +534,10 @@ export async function criarPostagem(
   });
   if (!res.ok) {
     const erro = await res.json().catch(() => ({}));
-    throw new Error(erro.erro || "Não foi possível publicar a prévia.");
+    const error = new Error(erro.erro || "Não foi possível publicar a prévia.");
+    error.status = res.status;
+    error.issues = Array.isArray(erro.issues) ? erro.issues : [];
+    throw error;
   }
   return res.json();
 }
@@ -554,7 +557,10 @@ export async function criarTweet(texto, expirar) {
   });
   if (!res.ok) {
     const erro = await res.json().catch(() => ({}));
-    throw new Error(erro.erro || "Não foi possível publicar o tweet.");
+    const error = new Error(erro.erro || "Não foi possível publicar o tweet.");
+    error.status = res.status;
+    error.issues = Array.isArray(erro.issues) ? erro.issues : [];
+    throw error;
   }
   return res.json();
 }

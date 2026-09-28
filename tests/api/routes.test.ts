@@ -43,6 +43,20 @@ describe("rotas da API sem abrir porta", () => {
     expect(response.body.erro).toBeDefined();
   });
 
+  it("retorna 400 com issue no body para JSON malformado", async () => {
+    const response = await request(app)
+      .post("/api/usuarios")
+      .set("Content-Type", "application/json")
+      .send("{");
+
+    expect(response.status).toBe(400);
+    expect(response.body.issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ path: ["body"] }),
+      ]),
+    );
+  });
+
   it("retorna 400 com issues para cadastro inválido", async () => {
     vi.mocked(EmailService.enviarBoasVindas).mockClear();
     const response = await request(app)
@@ -89,11 +103,44 @@ describe("rotas da API sem abrir porta", () => {
     expect(response.body.issues.length).toBeGreaterThan(0);
   });
 
+  it("retorna 409 com issue no e-mail ao atualizar para endereço duplicado", async () => {
+    const outroEmail = `outro-${Date.now()}@example.com`;
+    const outro = await request(app).post("/api/usuarios").send({
+      nome_completo: "Outro Usuario",
+      email: outroEmail,
+      senha: "123456",
+      instrumentos: ["Guitarra"],
+    });
+
+    const response = await request(app)
+      .put(`/api/usuarios/${outro.body.usuario.id_usuario}`)
+      .set("Authorization", `Bearer ${outro.body.token}`)
+      .send({ email, instrumentos: [] });
+
+    expect(response.status).toBe(409);
+    expect(response.body.issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ path: ["body", "email"] }),
+      ]),
+    );
+
+    const perfil = await request(app).get(
+      `/api/usuarios/${outro.body.usuario.id_usuario}`,
+    );
+    expect(perfil.body.instrumentos).toContain("Guitarra");
+
+    await request(app)
+      .delete(`/api/usuarios/${outro.body.usuario.id_usuario}`)
+      .set("Authorization", `Bearer ${outro.body.token}`);
+  });
+
   it("exercita CRUD e conflito de e-mail de forma repetível", async () => {
+    vi.mocked(EmailService.enviarBoasVindas).mockClear();
     const duplicate = await request(app)
       .post("/api/usuarios")
       .send({ nome_completo: "Duplicado", email, senha: "123456" });
     expect(duplicate.status).toBe(409);
+    expect(EmailService.enviarBoasVindas).not.toHaveBeenCalled();
 
     const found = await request(app).get(`/api/usuarios/${userId}`);
     expect(found.status).toBe(200);
@@ -113,6 +160,20 @@ describe("rotas da API sem abrir porta", () => {
       .set("Authorization", "Bearer token-invalido")
       .send({ nome_completo: "Nao autorizado" });
     expect(response.status).toBe(401);
+  });
+
+  it("não permite alterar a senha pelo endpoint de perfil", async () => {
+    const response = await request(app)
+      .put(`/api/usuarios/${userId}`)
+      .set("Authorization", `Bearer ${token}`)
+      .send({ senha: "senha-nova-123" });
+
+    expect(response.status).toBe(400);
+    expect(response.body.issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ path: ["body", "senha"] }),
+      ]),
+    );
   });
 
   it("bloqueia um usuario autenticado de editar o perfil de outro (IDOR)", async () => {

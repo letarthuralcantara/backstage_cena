@@ -89,8 +89,7 @@
         .tab-btn.active {
             color: white;
             border-color: var(--primary);
-            background: linear-gradient(135deg, rgba(139,92,246,.3), rgba(217,70,239,.2));
-            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2);
+            background: rgba(139,92,246,.16);
         }
         .tab-panel { display: none; }
         .tab-panel.active { display: block; animation: fadeIn 0.3s ease; }
@@ -221,22 +220,21 @@
 
         .btn-publish {
             width: 100%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: var(--primary);
             border: none;
             border-radius: 12px;
             padding: 14px;
             color: white;
-            font-weight: 700;
+            font-weight: 600;
             font-family: 'Poppins', sans-serif;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
-            transition: all 0.3s;
-            box-shadow: 0 10px 20px rgba(139, 92, 246, 0.2);
+            transition: background .18s;
         }
-        .btn-publish:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(139, 92, 246, 0.4); }
+        .btn-publish:hover { background: #6d28d9; }
         .btn-publish:disabled { opacity: .6; cursor: not-allowed; }
 
         .msg-feedback {
@@ -250,6 +248,16 @@
         .msg-feedback.erro { color: #ef4444; background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.3); }
 
         .hidden { display: none !important; }
+        .api-toast {
+            position: fixed; right: 20px; bottom: 20px; z-index: 1000;
+            max-width: min(360px, calc(100vw - 40px)); padding: 14px 18px;
+            border: 1px solid rgba(255,255,255,.18); border-radius: 8px;
+            background: #171717; color: #fff; box-shadow: 0 8px 28px rgba(0,0,0,.4);
+            opacity: 0; transform: translateY(10px); pointer-events: none;
+            transition: opacity .2s ease, transform .2s ease;
+        }
+        .api-toast.show { opacity: 1; transform: translateY(0); }
+        .api-toast.erro { border-color: rgba(239,68,68,.6); color: #fecaca; }
 
         @media (max-width: 560px) {
             .tabs { flex-direction: column; }
@@ -364,9 +372,23 @@
     </footer>
 
     <script type="module">
-        import { verificarAutenticacao, fazerLogout } from '../js/auth.js';
+        import { verificarAutenticacao, fazerLogout, aplicarErroApiNoCampo } from '../js/auth.js';
         import { initSearchOverlay } from '../js/search-overlay.js';
         import { criarPostagem, criarTweet } from '../js/postagens.js';
+
+        const toastApi = document.createElement('div');
+        toastApi.className = 'api-toast';
+        toastApi.setAttribute('role', 'status');
+        document.body.appendChild(toastApi);
+        let toastApiTimer;
+
+        function mostrarToastApi(message, erro = false) {
+            clearTimeout(toastApiTimer);
+            toastApi.textContent = message;
+            toastApi.classList.toggle('erro', erro);
+            toastApi.classList.add('show');
+            toastApiTimer = setTimeout(() => toastApi.classList.remove('show'), 4500);
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
             const usuarioLogado = verificarAutenticacao();
@@ -409,6 +431,7 @@
             const tweetTextarea = document.getElementById('tweetTexto');
             const tweetContador = document.getElementById('tweetContador');
             tweetTextarea?.addEventListener('input', () => {
+                tweetTextarea.setCustomValidity('');
                 const restante = 280 - tweetTextarea.value.length;
                 tweetContador.textContent = restante;
             });
@@ -434,8 +457,10 @@
                     msgEl.textContent = 'Tweet publicado com sucesso!';
                     msgEl.className = 'msg-feedback sucesso';
                 } catch (err) {
+                    aplicarErroApiNoCampo(err, { texto: 'tweetTexto' });
                     msgEl.textContent = err.message || 'Erro ao publicar tweet.';
                     msgEl.className = 'msg-feedback erro';
+                    mostrarToastApi(err.message || 'Erro ao publicar tweet.', true);
                 } finally {
                     btn.disabled = false;
                     btn.innerHTML = '<i class="fas fa-paper-plane"></i> PUBLICAR TWEET';
@@ -451,6 +476,7 @@
             const inputDuracao = document.getElementById('previaDuracao');
 
             inputArquivo?.addEventListener('change', () => {
+                inputArquivo.setCustomValidity('');
                 const arquivo = inputArquivo.files[0];
                 if (!arquivo) return;
 
@@ -649,8 +675,15 @@
                     msgEl.textContent = 'Prévia publicada com sucesso!';
                     msgEl.className = 'msg-feedback sucesso';
                 } catch (err) {
+                    aplicarErroApiNoCampo(err, {
+                        audio: 'previaArquivo',
+                        titulo: 'previaNome',
+                        inicio_seg: 'trimmerDuracao',
+                        duracao_seg: 'trimmerDuracao',
+                    });
                     msgEl.textContent = err.message || 'Erro ao publicar prévia.';
                     msgEl.className = 'msg-feedback erro';
+                    mostrarToastApi(err.message || 'Erro ao publicar prévia.', true);
                 } finally {
                     btn.disabled = false;
                     btn.innerHTML = '<i class="fas fa-upload"></i> PUBLICAR NA CENA';

@@ -1,13 +1,26 @@
 import prisma from "../database/prisma.js";
 import { HttpError } from "../errors/HttpError.js";
 import { hash as argon2Hash, verify as argon2Verify } from "argon2";
-import { randomInt } from "node:crypto";
+import { createHmac, randomInt, timingSafeEqual } from "node:crypto";
 import type {
   Usuario,
   CreateUsuarioInput,
   UpdateUsuarioInput,
 } from "../types/index.js";
 import { cadastroCompleto, sanitizeUsuario } from "../utils/usuario.js";
+
+const mensagemEmailDuplicado =
+  "Este e-mail já está cadastrado. Tente fazer login.";
+
+function erroEmailDuplicado(): HttpError {
+  return new HttpError(409, mensagemEmailDuplicado, [
+    {
+      code: "custom",
+      path: ["body", "email"],
+      message: mensagemEmailDuplicado,
+    },
+  ]);
+}
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function parseArea(raw: string | null | undefined): string[] {
@@ -118,11 +131,7 @@ async function create(dados: CreateUsuarioInput): Promise<Usuario> {
   const existente = await prisma.usuario.findUnique({
     where: { email: dados.email },
   });
-  if (existente)
-    throw new HttpError(
-      409,
-      "Este e-mail já está cadastrado. Tente fazer login.",
-    );
+  if (existente) throw erroEmailDuplicado();
 
   const senhaHash = await argon2Hash(dados.senha);
 
@@ -179,10 +188,7 @@ async function create(dados: CreateUsuarioInput): Promise<Usuario> {
     });
   } catch (error: any) {
     if (error?.code === "P2002") {
-      throw new HttpError(
-        409,
-        "Este e-mail já está cadastrado. Tente fazer login.",
-      );
+      throw erroEmailDuplicado();
     }
     throw error;
   }
@@ -204,6 +210,14 @@ async function update({
   });
   if (!existe)
     throw new HttpError(404, `Usuário com id ${id_usuario} não encontrado.`);
+
+  if (dados.email !== undefined && dados.email !== existe.email) {
+    const emailEmUso = await prisma.usuario.findUnique({
+      where: { email: dados.email },
+      select: { id_usuario: true },
+    });
+    if (emailEmUso) throw erroEmailDuplicado();
+  }
 
   // O front-end nunca deve mais enviar um hash de volta (ver sanitizeUsuario).
   // Se "senha" vier no corpo, é sempre senha em texto puro digitada pelo usuário.
@@ -281,6 +295,11 @@ async function update({
         : {}),
     },
     include,
+  }).catch((error: any) => {
+    if (error?.code === "P2002" && dados.email !== undefined) {
+      throw erroEmailDuplicado();
+    }
+    throw error;
   });
   const mapped = mapUsuario(atualizado);
   await prisma.usuario.update({
@@ -294,13 +313,6 @@ async function updateStatus(
   id_usuario: number,
   status: string,
 ): Promise<Usuario> {
-  const statusValidos = ["disponivel", "ocupado", "nao_perturbe", "invisivel"];
-  if (!statusValidos.includes(status)) {
-    throw new HttpError(
-      400,
-      `Status inválido. Use: ${statusValidos.join(", ")}`,
-    );
-  }
   const existe = await prisma.usuario.findUnique({ where: { id_usuario } });
   if (!existe)
     throw new HttpError(404, `Usuário com id ${id_usuario} não encontrado.`);
@@ -368,7 +380,14 @@ async function alterarSenha(
   const usuario = await prisma.usuario.findUnique({ where: { id_usuario } });
   if (!usuario) throw new HttpError(404, "Usuário não encontrado.");
   const senhaCorreta = await argon2Verify(usuario.senha, senhaAtual);
-  if (!senhaCorreta) throw new HttpError(401, "Senha atual incorreta.");
+  if (!senhaCorreta)
+    throw new HttpError(401, "Senha atual incorreta.", [
+      {
+        code: "custom",
+        path: ["body", "senha_atual"],
+        message: "Senha atual incorreta.",
+      },
+    ]);
   const novoHash = await argon2Hash(novaSenha);
   await prisma.usuario.update({
     where: { id_usuario },
@@ -382,6 +401,19 @@ const RESET_CODIGO_VALIDADE_MIN = 15;
 function gerarCodigoNumerico(): string {
   // 6 dígitos, sempre com zero à esquerda quando necessário (ex.: "004821").
   return String(randomInt(0, 1_000_000)).padStart(6, "0");
+}
+
+function gerarHashCodigoReset(id_usuario: number, codigo: string): string {
+  const secret = process.env.RESET_CODE_SECRET || process.env.JWT_SECRET;
+  if (!secret) {
+    throw new HttpError(
+      500,
+      "Configuração de redefinição de senha ausente no servidor.",
+    );
+  }
+  return createHmac("sha256", secret)
+    .update(`${id_usuario}:${codigo}`)
+    .digest("hex");
 }
 
 /**
@@ -404,11 +436,12 @@ async function gerarCodigoRedefinicao(
   if (!usuario) return null;
 
   const codigo = gerarCodigoNumerico();
+  const codigoHash = gerarHashCodigoReset(usuario.id_usuario, codigo);
   const expiraEm = new Date(Date.now() + RESET_CODIGO_VALIDADE_MIN * 60 * 1000);
 
   await prisma.usuario.update({
     where: { id_usuario: usuario.id_usuario },
-    data: { codigo_reset_senha: codigo, codigo_reset_expira_em: expiraEm },
+    data: { codigo_reset_senha: codigoHash, codigo_reset_expira_em: expiraEm },
   });
 
   return { usuario, codigo };
@@ -427,7 +460,13 @@ async function redefinirSenhaComCodigo(
   // errado/expirado — não dá pra um atacante descobrir por tentativa e erro
   // se o e-mail existe só observando a resposta.
   const codigoInvalido = () =>
-    new HttpError(400, "Código inválido ou expirado.");
+    new HttpError(400, "Código inválido ou expirado.", [
+      {
+        code: "custom",
+        path: ["body", "codigo"],
+        message: "Código inválido ou expirado.",
+      },
+    ]);
 
   if (
     !usuario ||
@@ -436,7 +475,12 @@ async function redefinirSenhaComCodigo(
   ) {
     throw codigoInvalido();
   }
-  if (usuario.codigo_reset_senha !== codigo) {
+  const hashInformado = gerarHashCodigoReset(usuario.id_usuario, codigo);
+  const hashSalvo = usuario.codigo_reset_senha;
+  if (
+    !/^[a-f0-9]{64}$/.test(hashSalvo) ||
+    !timingSafeEqual(Buffer.from(hashSalvo, "hex"), Buffer.from(hashInformado, "hex"))
+  ) {
     throw codigoInvalido();
   }
   if (usuario.codigo_reset_expira_em.getTime() < Date.now()) {

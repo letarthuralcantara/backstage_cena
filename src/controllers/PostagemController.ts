@@ -6,20 +6,16 @@ import { promises as fsPromises } from "node:fs";
 import crypto from "node:crypto";
 import postagemService from "../models/PostagemModel.js";
 import { HttpError } from "../errors/HttpError.js";
+import {
+  TAMANHO_AUDIO_MAX_BYTES,
+  TIPOS_AUDIO_PERMITIDOS,
+} from "../schema/conteudo.schema.js";
 
 // ── Upload de áudio ────────────────────────────────────────────────────────────
 const PASTA_UPLOADS_AUDIO = "public/uploads/audio";
 fs.mkdirSync(PASTA_UPLOADS_AUDIO, { recursive: true }); // garante que a pasta exista, mesmo em um clone novo do repo
 
-const TIPOS_PERMITIDOS = new Set([
-  "audio/mpeg", // mp3
-  "audio/mp4", // m4a
-  "audio/wav",
-  "audio/x-wav",
-  "audio/ogg",
-  "audio/webm",
-]);
-const TAMANHO_MAXIMO_BYTES = 15 * 1024 * 1024; // 15MB é de sobra pra uma prévia de até 60s
+const TIPOS_PERMITIDOS = new Set<string>(TIPOS_AUDIO_PERMITIDOS);
 
 function audioTemAssinaturaValida(bytes: Buffer): boolean {
   const ascii = bytes.toString("ascii", 0, 12);
@@ -44,13 +40,20 @@ const storage = multer.diskStorage({
 
 export const uploadAudio = multer({
   storage,
-  limits: { fileSize: TAMANHO_MAXIMO_BYTES },
+  limits: { fileSize: TAMANHO_AUDIO_MAX_BYTES },
   fileFilter: (_req, file, cb) => {
     if (!TIPOS_PERMITIDOS.has(file.mimetype)) {
       cb(
         new HttpError(
           400,
           "Formato de áudio não suportado. Use mp3, wav, m4a ou ogg.",
+          [
+            {
+              code: "custom",
+              path: ["body", "audio"],
+              message: "Formato de áudio não suportado.",
+            },
+          ],
         ),
       );
       return;
@@ -59,17 +62,25 @@ export const uploadAudio = multer({
   },
 }).single("audio");
 
+export async function limparUpload(req: Request): Promise<void> {
+  if (req.file) await fsPromises.unlink(req.file.path).catch(() => undefined);
+}
+
 // ── Controller ───────────────────────────────────────────────────────────────
 const PostagemController = {
   async criar(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      if (!req.file)
-        throw new HttpError(400, "Arquivo de áudio é obrigatório.");
-
-      const bytes = await fsPromises.readFile(req.file.path);
+      const arquivo = req.file as Express.Multer.File;
+      const bytes = await fsPromises.readFile(arquivo.path);
       if (!audioTemAssinaturaValida(bytes)) {
-        await fsPromises.unlink(req.file.path).catch(() => undefined);
-        throw new HttpError(400, "O conteúdo do arquivo de áudio é inválido.");
+        await fsPromises.unlink(arquivo.path).catch(() => undefined);
+          throw new HttpError(400, "O conteúdo do arquivo de áudio é inválido.", [
+            {
+              code: "custom",
+              path: ["body", "audio"],
+              message: "O conteúdo do arquivo de áudio é inválido.",
+            },
+          ]);
       }
 
       const id_usuario = req.userId;
@@ -83,15 +94,14 @@ const PostagemController = {
       const postagem = await postagemService.create({
         id_usuario,
         titulo: req.body.titulo,
-        audio_url: `/uploads/audio/${req.file.filename}`,
+        audio_url: `/uploads/audio/${arquivo.filename}`,
         inicio_seg,
         duracao_seg,
       });
 
       res.status(201).json(postagem);
     } catch (error) {
-      if (req.file)
-        await fsPromises.unlink(req.file.path).catch(() => undefined);
+      await limparUpload(req);
       next(error);
     }
   },

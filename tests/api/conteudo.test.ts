@@ -1,4 +1,5 @@
 import request from "supertest";
+import { readdir, unlink } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
@@ -11,6 +12,7 @@ const { default: app } = await import("../../src/app.js");
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const arquivoAudioValido = path.join(__dirname, "..", "fixtures", "sample.mp3");
+const pastaUploads = path.join(process.cwd(), "public", "uploads", "audio");
 
 let donoId = 0;
 let donoToken = "";
@@ -69,6 +71,41 @@ describe("rotas de postagem (upload de audio)", () => {
         contentType: "text/plain",
       });
     expect(response.status).toBe(400);
+  });
+
+  it("rejeita postagem sem arquivo com issue no campo audio", async () => {
+    const response = await request(app)
+      .post("/api/postagens")
+      .set("Authorization", `Bearer ${donoToken}`)
+      .field("titulo", "Sem arquivo");
+
+    expect(response.status).toBe(400);
+    expect(response.body.issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ path: ["body", "audio"] }),
+      ]),
+    );
+  });
+
+  it("remove o arquivo quando os campos da postagem falham na validacao", async () => {
+    const arquivosAntes = new Set(await readdir(pastaUploads));
+    const response = await request(app)
+      .post("/api/postagens")
+      .set("Authorization", `Bearer ${donoToken}`)
+      .field("duracao_seg", "90")
+      .attach("audio", arquivoAudioValido);
+    const arquivosNovos = (await readdir(pastaUploads)).filter(
+      (arquivo) => !arquivosAntes.has(arquivo),
+    );
+
+    try {
+      expect(response.status).toBe(400);
+      expect(arquivosNovos).toHaveLength(0);
+    } finally {
+      await Promise.all(
+        arquivosNovos.map((arquivo) => unlink(path.join(pastaUploads, arquivo))),
+      );
+    }
   });
 
   it("cria uma postagem com audio valido", async () => {

@@ -1,8 +1,6 @@
 import prisma from "../database/prisma.js";
 import { HttpError } from "../errors/HttpError.js";
 
-const TEXTO_MAX_CHARS = 280;
-
 const includeAutor = {
   usuario: {
     select: {
@@ -33,8 +31,7 @@ async function create(dados: {
   texto: string;
   expirar?: boolean;
 }) {
-  const texto = (dados.texto || "").trim().slice(0, TEXTO_MAX_CHARS);
-  if (!texto) throw new HttpError(400, "O tweet não pode ficar vazio.");
+  const texto = dados.texto.trim();
 
   const criado_em = new Date();
   const expira_em = dados.expirar

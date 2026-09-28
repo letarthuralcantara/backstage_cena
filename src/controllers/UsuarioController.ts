@@ -32,14 +32,14 @@ class UsuarioController {
 
   async criar(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const novoUsuario = await usuarioService.create(req.body);
-
       const secret = process.env.JWT_SECRET;
       if (!secret)
         throw new HttpError(
           500,
           "Configuração de autenticação ausente no servidor.",
         );
+
+      const novoUsuario = await usuarioService.create(req.body);
 
       // Emite token já no cadastro para permitir completar o perfil
       // (etapa 2 do onboarding) sem exigir um novo login.

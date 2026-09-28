@@ -1,376 +1,130 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-    />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Login - Backstage Cena</title>
-    <meta
-      name="description"
-      content="Entre na sua conta Backstage Cena e continue se conectando com músicos e artistas."
-    />
-    <meta name="robots" content="index, follow" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link
-      rel="shortcut icon"
-      href="../images/favicon.ico"
-      type="image/x-icon"
-    />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <link rel="stylesheet" href="../css/global.css" />
+    <meta name="description" content="Entre na sua conta Backstage Cena e continue se conectando com músicos e artistas.">
+    <meta name="robots" content="index, follow">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/global.css">
     <style>
-      /* Só o que é específico desta página — o material, tipografia,
-           cores e responsivo genéricos já vêm do global.css. */
-      body {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 24px;
-      }
+        body { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; }
+        .container { position: relative; z-index: 1; width: 100%; max-width: 400px; }
 
-      .container {
-        position: relative;
-        z-index: 1;
-        width: 100%;
-        max-width: 440px;
-      }
+        .login-card { padding: 40px 30px; animation: cardIn .5s var(--ease) both; }
+        @keyframes cardIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 
-      .login-card {
-        padding: 44px 32px;
-        animation: cardIn 0.6s var(--ease) both;
-      }
-      @keyframes cardIn {
-        from {
-          opacity: 0;
-          transform: translateY(24px);
+        .logo-container { margin-bottom: 28px; }
+        .login-card .logo-img { width: 100px; height: auto; }
+
+        .form-title { font-size: 22px; margin-bottom: 5px; }
+        .form-subtitle { color: var(--text-2); font-size: 14px; margin-bottom: 28px; }
+
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; color: var(--text-2); font-size: 13px; font-weight: 500; margin-bottom: 7px; }
+        input[type="email"], input[type="password"] {
+            width: 100%; padding: 13px 16px;
+            background: var(--glass-fill);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--r-md);
+            color: var(--text-1); font-size: 15px; font-family: 'Inter', sans-serif;
+            transition: border-color .18s;
+            outline: none;
         }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
+        input[type="email"]:focus, input[type="password"]:focus { border-color: var(--text-1); }
 
-      .logo-container {
-        margin-bottom: 32px;
-        display: flex;
-        justify-content: center;
-      }
-      .login-card .logo-img {
-        width: 120px;
-        height: auto;
-        filter: drop-shadow(0 0 20px var(--primary-glow));
-      }
+        .checkbox-group { display: flex; align-items: center; gap: 9px; margin-bottom: 22px; }
+        input[type="checkbox"] { width: 17px; height: 17px; accent-color: var(--accent); cursor: pointer; }
+        .checkbox-group label { color: var(--text-2); font-size: 13px; cursor: pointer; }
 
-      .form-title {
-        font-size: 28px;
-        margin-bottom: 6px;
-        text-align: left;
-      }
-      .form-subtitle {
-        color: var(--text-2);
-        font-size: 15px;
-        margin-bottom: 32px;
-      }
+        .esqueci-link { text-align: center; margin-top: 14px; }
+        .esqueci-link a { color: var(--text-2); font-size: 13px; text-decoration: none; }
+        .esqueci-link a:hover { color: var(--text-1); }
 
-      .form-group {
-        margin-bottom: 20px;
-        position: relative;
-      }
-      .form-group label {
-        display: block;
-        color: var(--text-2);
-        font-size: 13px;
-        font-weight: 600;
-        margin-bottom: 8px;
-      }
-      .input-wrapper {
-        position: relative;
-      }
-      input[type="email"],
-      input[type="password"] {
-        width: 100%;
-        padding: 15px 18px;
-        background: var(--glass-fill);
-        border: 1px solid var(--glass-border);
-        border-radius: var(--r-md);
-        color: var(--text-1);
-        font-size: 15px;
-        font-family: "Inter", sans-serif;
-        transition:
-          background 0.25s,
-          border-color 0.25s,
-          box-shadow 0.25s;
-        outline: none;
-      }
-      input[type="email"]:focus,
-      input[type="password"]:focus {
-        background: rgba(139, 92, 246, 0.08);
-        border-color: var(--primary);
-        box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15);
-      }
+        .divider { text-align: center; margin: 24px 0; position: relative; }
+        .divider::before { content: ''; position: absolute; left: 0; top: 50%; width: 100%; height: 1px; background: var(--glass-border); }
+        .divider span { background: var(--ink); padding: 0 12px; color: var(--text-3); font-size: 12px; position: relative; z-index: 1; }
 
-      .checkbox-group {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 24px;
-      }
-      input[type="checkbox"] {
-        width: 18px;
-        height: 18px;
-        accent-color: var(--primary);
-        cursor: pointer;
-      }
-      .checkbox-group label {
-        color: var(--text-2);
-        font-size: 14px;
-        cursor: pointer;
-      }
+        .signup-link { text-align: center; color: var(--text-2); font-size: 14px; }
+        .signup-link a { color: var(--text-1); text-decoration: none; font-weight: 600; border-bottom: 1px solid var(--glass-border); }
+        .signup-link a:hover { border-color: var(--text-1); }
 
-      .esqueci-link {
-        text-align: center;
-        margin-top: 16px;
-      }
-      .esqueci-link a {
-        color: var(--text-2);
-        font-size: 13px;
-        text-decoration: none;
-      }
-      .esqueci-link a:hover {
-        color: var(--primary);
-      }
+        .back-home { text-align: center; margin-top: 18px; }
+        .back-home a { color: var(--text-3); text-decoration: none; font-size: 13px; }
+        .back-home a:hover { color: var(--text-2); }
 
-      .divider {
-        text-align: center;
-        margin: 28px 0;
-        position: relative;
-      }
-      .divider::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        top: 50%;
-        width: 100%;
-        height: 1px;
-        background: var(--glass-border);
-      }
-      .divider span {
-        background: var(--ink);
-        padding: 0 14px;
-        color: var(--text-3);
-        font-size: 13px;
-        position: relative;
-        z-index: 1;
-      }
-
-      .signup-link {
-        text-align: center;
-        color: var(--text-2);
-        font-size: 14px;
-      }
-      .signup-link a {
-        color: var(--primary);
-        text-decoration: none;
-        font-weight: 700;
-      }
-      .signup-link a:hover {
-        color: #a78bfa;
-      }
-
-      .back-home {
-        text-align: center;
-        margin-top: 20px;
-      }
-      .back-home a {
-        color: var(--text-3);
-        text-decoration: none;
-        font-size: 13px;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-      }
-      .back-home a:hover {
-        color: var(--primary);
-      }
-
-      @media (min-width: 480px) {
-        .login-card {
-          padding: 56px 48px;
-        }
-      }
+        @media (min-width: 480px) { .login-card { padding: 48px 40px; } }
     </style>
-  </head>
-  <body>
-    <canvas id="bg-canvas"></canvas>
-
+</head>
+<body>
     <div class="container">
-      <div class="login-card glass-strong">
-        <div class="logo-container">
-          <a href="index.html"
-            ><img
-              src="../images/logo.png"
-              alt="Backstage Logo"
-              class="logo-img"
-          /></a>
-        </div>
-
-        <h1 class="form-title">Bem-vindo de volta</h1>
-        <p class="form-subtitle">Entre para continuar sua jornada</p>
-
-        <div class="erro-msg" id="erroMsg"></div>
-
-        <form id="loginForm">
-          <div class="form-group">
-            <label for="email">E-mail</label>
-            <div class="input-wrapper">
-              <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="seu@email.com"
-                required
-              />
+        <div class="login-card glass-strong">
+            <div class="logo-container">
+                <a href="index.html"><img src="../images/logo.png" alt="Backstage Logo" class="logo-img"></a>
             </div>
-          </div>
 
-          <div class="form-group">
-            <label for="senha">Senha</label>
-            <div class="input-wrapper">
-              <input
-                type="password"
-                id="senha"
-                name="senha"
-                placeholder="••••••••"
-                required
-                minlength="6"
-                maxlength="128"
-              />
-            </div>
-          </div>
+            <h1 class="form-title">Entrar</h1>
+            <p class="form-subtitle">Continue de onde parou</p>
 
-          <div class="checkbox-group">
-            <input type="checkbox" id="lembrar" name="lembrar" />
-            <label for="lembrar">Lembrar-me</label>
-          </div>
+            <div class="erro-msg" id="erroMsg"></div>
 
-          <button type="submit" class="btn-primary" style="width: 100%">
-            Entrar
-          </button>
-        </form>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" name="email" placeholder="seu@email.com" required maxlength="255">
+                </div>
 
-        <p class="esqueci-link">
-          <a href="esqueci-senha.html">Esqueci minha senha</a>
-        </p>
+                <div class="form-group">
+                    <label for="senha">Senha</label>
+                    <input type="password" id="senha" name="senha" placeholder="••••••••" required minlength="6" maxlength="128">
+                </div>
 
-        <div class="divider"><span>ou</span></div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="lembrar" name="lembrar">
+                    <label for="lembrar">Lembrar-me</label>
+                </div>
 
-        <div class="signup-link">
-          Não tem uma conta? <a href="cadastro.html">Cadastre-se</a>
+                <button type="submit" class="btn-primary" style="width:100%;">Entrar</button>
+            </form>
+
+            <p class="esqueci-link"><a href="esqueci-senha.html">Esqueci minha senha</a></p>
+
+            <div class="divider"><span>ou</span></div>
+
+            <div class="signup-link">Não tem uma conta? <a href="cadastro.html">Cadastre-se</a></div>
+
+            <div class="back-home"><a href="index.html">Voltar para home</a></div>
         </div>
-
-        <div class="back-home">
-          <a href="index.html">Voltar para home</a>
-        </div>
-      </div>
     </div>
 
     <script type="module">
-      import { showLoading, hideLoading } from "../js/loading.js";
-      import { fazerLogin } from "../js/auth.js";
-      const form = document.getElementById("loginForm");
-      const erroMsg = document.getElementById("erroMsg");
+        import { showLoading, hideLoading } from '../js/loading.js';
+        import { fazerLogin, aplicarErroApiNoCampo } from '../js/auth.js';
+        const form = document.getElementById('loginForm');
+        const erroMsg = document.getElementById('erroMsg');
 
-      form.addEventListener("submit", async (event) => {
-        event.preventDefault();
-        erroMsg.style.display = "none";
-        const email = document.getElementById("email").value.trim();
-        const senha = document.getElementById("senha").value;
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            erroMsg.style.display = 'none';
+            const email = document.getElementById('email').value.trim();
+            const senha = document.getElementById('senha').value;
 
-        try {
-          await fazerLogin(email, senha);
-          window.location.href = "perfil.html";
-        } catch (erro) {
-          erroMsg.textContent = erro.message || "Erro ao fazer login.";
-          erroMsg.style.display = "block";
-        }
-      });
-      showLoading("Carregando...");
-      hideLoading();
-    </script>
-
-    <script>
-      /* ── CANVAS PARTÍCULAS ── */
-      const canvas = document.getElementById("bg-canvas");
-      const ctx = canvas.getContext("2d");
-      let particles = [];
-      const reduzMovimento = window.matchMedia(
-        "(prefers-reduced-motion: reduce)",
-      ).matches;
-
-      function initCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-      }
-
-      class Particle {
-        constructor() {
-          this.x = Math.random() * canvas.width;
-          this.y = Math.random() * canvas.height;
-          this.size = Math.random() * 2;
-          this.speedX = Math.random() * 0.5 - 0.25;
-          this.speedY = Math.random() * 0.5 - 0.25;
-          this.opacity = Math.random() * 0.5 + 0.1;
-        }
-        update() {
-          this.x += this.speedX;
-          this.y += this.speedY;
-          if (this.x > canvas.width) this.x = 0;
-          if (this.x < 0) this.x = canvas.width;
-          if (this.y > canvas.height) this.y = 0;
-          if (this.y < 0) this.y = canvas.height;
-        }
-        draw() {
-          ctx.fillStyle = `rgba(139, 92, 246, ${this.opacity})`;
-          ctx.beginPath();
-          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      }
-
-      function createParticles() {
-        for (let i = 0; i < 100; i++) particles.push(new Particle());
-      }
-
-      function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        particles.forEach((p) => {
-          p.update();
-          p.draw();
+            try {
+                await fazerLogin(email, senha);
+                window.location.href = 'perfil.html';
+            } catch (erro) {
+                aplicarErroApiNoCampo(erro);
+                erroMsg.textContent = erro.message || 'Erro ao fazer login.';
+                erroMsg.style.display = 'block';
+            }
         });
-        if (!reduzMovimento) requestAnimationFrame(animate);
-      }
-
-      window.addEventListener("resize", initCanvas);
-      initCanvas();
-      createParticles();
-      // Respeita "reduzir movimento": desenha uma vez e para, em vez de
-      // manter as partículas se mexendo para sempre.
-      if (reduzMovimento) {
-        particles.forEach((p) => p.draw());
-      } else {
-        animate();
-      }
+        showLoading('Carregando...');
+        hideLoading();
     </script>
-  </body>
+</body>
 </html>
