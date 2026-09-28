@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="theme-color" content="#09070d">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Backstage | Conecte-se com Músicos</title>
-    <meta name="description" content="Backstage Cena é a rede social que conecta músicos, produtores e artistas independentes para formar bandas, trocar experiências e criar juntos.">
-    <meta property="og:title" content="Backstage Cena | Conecte-se com Músicos">
-    <meta property="og:description" content="A rede social feita para músicos encontrarem parceiros de banda, produtores e colaborações musicais.">
+    <title>Backstage | Encontre músicos para criar junto</title>
+    <meta name="description" content="Backstage Cena conecta músicos, produtores e artistas independentes para encontrar parceiros, apresentar seus trabalhos e transformar ideias em projetos musicais.">
+    <meta property="og:title" content="Backstage Cena | Encontre músicos para criar junto">
+    <meta property="og:description" content="Encontre músicos, produtores e artistas para formar bandas, compartilhar ideias e desenvolver novos projetos musicais.">
     <meta property="og:type" content="website">
     <meta name="robots" content="index, follow">
     <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
@@ -16,13 +16,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../css/global.css">
+
     <style>
         :root { --home-purple: #7b2ff0; --home-purple-dark: #160927; --home-line: rgba(255,255,255,.18); }
         * { scroll-behavior: smooth; }
         body { background: #09070d; overflow-x: hidden; }
         .container { width: min(1180px, calc(100% - 48px)); margin: 0 auto; }
-        .header { z-index: 20; }
-        .header .logo-img, .footer-logo-img { width: auto; height: 34px; max-width: 180px; object-fit: contain; }
+        .header { z-index: 100; }
+        .footer-logo-img { width: auto; height: 34px; max-width: 180px; object-fit: contain; }
         .home-main { position: relative; }
         .home-intro { min-height: calc(100svh - 68px); display: grid; place-items: center; padding: 70px 0 90px; }
         .intro-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 460px); align-items: center; gap: 70px; }
@@ -40,8 +41,11 @@
         .home-visual { position: relative; min-height: 440px; display: grid; place-items: center; }
         .home-visual::before { content: ''; position: absolute; width: 360px; height: 360px; border: 1px solid rgba(139,92,246,.35); border-radius: 50%; }
         .home-visual::after { content: ''; position: absolute; width: 270px; height: 270px; border: 1px solid rgba(255,255,255,.12); border-radius: 50%; transform: rotate(24deg) scaleX(1.4); }
-        .home-bear { position: relative; z-index: 1; width: min(360px, 85%); filter: drop-shadow(0 26px 38px rgba(0,0,0,.46)); animation: home-breathe 6s ease-in-out infinite; }
-        @keyframes home-breathe { 0%,100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-16px) rotate(1deg); } }
+        .home-bear { position: relative; z-index: 2; width: min(360px, 85%); filter: drop-shadow(0 26px 38px rgba(0,0,0,.46)); transform: translate3d(var(--bear-pointer-x, 0px), var(--bear-pointer-y, 0px), 0) rotate(var(--bear-tilt, 0deg)) scale(var(--bear-scale, 1)); transition: transform .16s cubic-bezier(.2,.8,.2,1), opacity .18s ease; will-change: transform, opacity; }
+        .bear-fragments { position: absolute; z-index: 3; inset: 0; pointer-events: none; }
+        .bear-fragments span { position: absolute; left: 50%; top: 50%; width: 34px; height: 54px; opacity: 0; border: 1px solid rgba(255,255,255,.78); background: linear-gradient(145deg, rgba(255,255,255,.86), rgba(139,92,246,.38)); box-shadow: 0 0 28px rgba(139,92,246,.58); transform: translate(-50%, -50%) rotate(0deg) scale(.2); clip-path: polygon(50% 0, 100% 28%, 78% 100%, 18% 78%, 0 24%); will-change: transform, opacity; }
+        .bear-fragments span:nth-child(2n) { width: 18px; height: 30px; background: rgba(217,70,239,.64); }
+        .bear-fragments span:nth-child(3n) { width: 14px; height: 52px; background: rgba(255,255,255,.54); }
         .scroll-cue { position: absolute; bottom: 25px; left: 50%; display: flex; flex-direction: column; align-items: center; gap: 10px; color: var(--text-3); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; transform: translateX(-50%); }
         .scroll-cue::after { content: ''; width: 1px; height: 36px; background: var(--primary); animation: cue-line 1.8s ease-in-out infinite; transform-origin: top; }
         @keyframes cue-line { 0%,100% { transform: scaleY(.35); opacity: .35; } 50% { transform: scaleY(1); opacity: 1; } }
@@ -56,7 +60,7 @@
         .journey-copy { max-width: 430px; opacity: 0; transform: translate3d(0, 28px, 0); transition: opacity .42s ease, transform .58s cubic-bezier(.2,.8,.2,1); }
         .journey-copy.is-active { opacity: 1; transform: translateY(0); }
         .journey-index { display: none; }
-        .journey-copy h2 { margin: 0 0 18px; color: #fff; font-family: Poppins, sans-serif; font-size: clamp(38px, 5vw, 68px); line-height: .98; letter-spacing: -.06em; text-transform: uppercase; }
+        .journey-copy h2 { max-width: 680px; margin: 0 0 18px; color: #fff; font-family: Poppins, sans-serif; font-size: clamp(48px, 8vw, 94px); line-height: .94; letter-spacing: -.07em; text-transform: uppercase; }
         .journey-copy p { margin: 0; color: rgba(255,255,255,.78); font-size: 16px; line-height: 1.65; }
         .journey-art { position: relative; min-height: 520px; display: grid; place-items: center; }
         .journey-object { position: relative; z-index: 3; display: grid; place-items: center; width: 360px; height: 360px; color: #fff; filter: drop-shadow(0 24px 38px rgba(0,0,0,.24)); transform: translate3d(calc(var(--journey-drift, 0) * 1px), calc(var(--journey-lift, 0) * 1px), 0) rotate(var(--journey-rotate, 0deg)); transition: transform .08s linear, opacity .4s ease; }
@@ -64,8 +68,8 @@
         .journey-object img { display: none; position: relative; z-index: 2; width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 24px 38px rgba(0,0,0,.24)); }
         .journey-object.has-image img { display: block; }
         .journey-object.has-image i { display: none; }
-        .journey-stack { position: relative; z-index: 3; width: 430px; height: 430px; transform: translate3d(calc(var(--journey-drift, 0) * 1px), calc(var(--journey-lift, 0) * 1px), 0); }
-        .journey-layer { position: absolute; inset: 35px; display: grid; place-items: center; opacity: 0; transform: translate3d(0, 0, 0) rotate(0deg) scale(.72); transform-origin: 50% 55%; filter: drop-shadow(0 24px 38px rgba(0,0,0,.25)); will-change: transform, opacity; }
+        .journey-stack { position: relative; z-index: 3; width: 580px; height: 580px; transform: translate3d(calc(var(--journey-drift, 0) * 1px), calc(var(--journey-lift, 0) * 1px), 0); }
+        .journey-layer { position: absolute; inset: 0; display: grid; place-items: center; opacity: 0; transform: translate3d(0, 0, 0) rotate(0deg) scale(.72); transform-origin: 50% 55%; filter: drop-shadow(0 24px 38px rgba(0,0,0,.25)); will-change: transform, opacity; }
         .journey-layer::before { content: ''; position: absolute; inset: 26px; border: 1px solid rgba(255,255,255,.4); border-radius: 44% 56% 52% 48%; transform: rotate(-16deg); }
         .journey-layer::after { content: ''; position: absolute; width: 190px; height: 190px; border-radius: 50%; background: rgba(255,255,255,.09); }
         .journey-layer i { position: relative; z-index: 2; font-size: 124px; color: #fff; }
@@ -93,7 +97,6 @@
         .journey-progress i.active { height: 44px; background: #fff; }
         .journey-next { display: none; }
         .header { transition: opacity .5s ease, transform .7s cubic-bezier(.2,.8,.2,1), visibility .5s ease; }
-        .header-center { max-width: 460px; transition: opacity .35s ease, max-width .5s ease, transform .45s ease, visibility .35s ease; }
         .header.journey-fading { opacity: 0; transform: translateY(-100%); visibility: hidden; pointer-events: none; }
         .home-final .btn-cta { display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 0 28px; border: 1px solid rgba(255,255,255,.2); border-radius: 9px; background: var(--primary); color: #fff; box-shadow: 0 10px 28px rgba(139,92,246,.28); font-weight: 700; transition: transform .22s ease, background .22s ease, box-shadow .22s ease; }
         .home-final .btn-cta:hover { transform: translateY(-2px); background: #9a6cff; box-shadow: 0 14px 32px rgba(139,92,246,.38); }
@@ -107,10 +110,40 @@
         .proof-number { display: block; margin-bottom: 54px; color: var(--primary); font: 700 13px Inter, sans-serif; }
         .proof-item h3 { margin: 0 0 10px; font: 700 20px Poppins, sans-serif; }
         .proof-item p { margin: 0; color: var(--text-2); font-size: 14px; line-height: 1.6; }
+
+        .home-arc { padding: 170px 0; background: #09070d; }
+        .arc-layout { display: grid; grid-template-columns: .82fr 1.18fr; gap: 100px; align-items: start; }
+        .arc-copy { max-width: 440px; }
+        .arc-copy h2 { margin: 0; font: 800 clamp(42px, 6vw, 76px)/.94 Poppins, sans-serif; letter-spacing: -.07em; text-transform: uppercase; }
+        .arc-copy p { max-width: 380px; margin: 24px 0 0; color: var(--text-2); font-size: 16px; line-height: 1.7; }
+        .arc-list { border-top: 1px solid var(--home-line); }
+        .arc-row { display: grid; grid-template-columns: 58px 1fr auto; gap: 20px; align-items: center; min-height: 110px; border-bottom: 1px solid var(--home-line); transition: padding .45s var(--ease), background .45s ease; }
+        .arc-row:hover { padding: 0 18px; background: rgba(139,92,246,.08); }
+        .arc-row strong { color: var(--primary); font: 700 13px Inter, sans-serif; }
+        .arc-row h3 { margin: 0; font: 700 22px Poppins, sans-serif; }
+        .arc-row p { margin: 5px 0 0; color: var(--text-2); font-size: 14px; }
+        .arc-row i { color: rgba(255,255,255,.42); font-size: 14px; transition: transform .3s ease, color .3s ease; }
+        .arc-row:hover i { color: #fff; transform: translateX(6px); }
+
+        .home-studio { padding: 150px 0; background: var(--home-purple); overflow: hidden; }
+        .studio-shell { display: grid; grid-template-columns: 1fr .8fr; gap: 80px; align-items: center; }
+        .studio-copy h2 { max-width: 650px; margin: 0; color: #fff; font: 800 clamp(44px, 7vw, 88px)/.92 Poppins, sans-serif; letter-spacing: -.075em; text-transform: uppercase; }
+        .studio-copy p { max-width: 440px; margin: 26px 0 0; color: rgba(255,255,255,.75); font-size: 17px; line-height: 1.65; }
+        .studio-signal { position: relative; height: 250px; display: flex; align-items: center; justify-content: center; gap: 9px; transform: rotate(-8deg); }
+        .studio-signal::before { content: ''; position: absolute; width: 310px; height: 150px; border: 1px solid rgba(255,255,255,.32); border-radius: 50%; transform: rotate(-18deg); }
+        .studio-bar { width: 9px; height: 60px; border-radius: 9px; background: rgba(255,255,255,.9); transform: scaleY(.25); transform-origin: center; }
+        .is-visible .studio-bar { animation: signal-rise 1.25s var(--ease) infinite alternate; animation-delay: calc(var(--bar-index) * 90ms); }
+        @keyframes signal-rise { to { transform: scaleY(var(--bar-height)); } }
+        .reveal-on-scroll { opacity: 0; transform: translateY(34px); transition: opacity .8s var(--ease), transform .9s var(--ease); }
+        .reveal-on-scroll.is-visible { opacity: 1; transform: translateY(0); }
+        .reveal-on-scroll[data-delay="1"] { transition-delay: 100ms; }
+        .reveal-on-scroll[data-delay="2"] { transition-delay: 180ms; }
+        .reveal-on-scroll[data-delay="3"] { transition-delay: 260ms; }
         .home-final { padding: 150px 0; text-align: center; }
         .home-final h2 { margin: 0 0 32px; font: 700 clamp(42px, 8vw, 86px)/.95 Poppins, sans-serif; letter-spacing: -.07em; text-transform: uppercase; }
         .home-final h2 span { color: var(--primary); }
         .footer { padding-top: 50px; }
+
         @media (max-width: 800px) {
             .container, .journey-inner { width: min(100% - 32px, 620px); }
             .intro-grid, .journey-inner { grid-template-columns: 1fr; gap: 24px; }
@@ -130,178 +163,1035 @@
             .journey-art { min-height: 260px; order: -1; }
             .journey-object { width: 280px; height: 280px; }
             .journey-object i { font-size: 94px; }
-            .journey-stack { width: 340px; height: 340px; }
-            .journey-layer { inset: 28px; }
+            .journey-stack { width: 430px; height: 430px; }
+            .journey-layer { inset: 0; }
             .journey-layer i { font-size: 94px; }
             .journey-orbit { width: 320px; height: 320px; }
             .journey-progress, .journey-next { display: none; }
             .proof-grid { grid-template-columns: 1fr; }
+            .arc-layout, .studio-shell { grid-template-columns: 1fr; gap: 52px; }
+            .home-arc, .home-studio { padding: 100px 0; }
+            .arc-row { grid-template-columns: 40px 1fr auto; gap: 12px; min-height: 100px; }
+            .arc-row h3 { font-size: 18px; }
+            .arc-row p { font-size: 13px; }
+            .studio-signal { height: 190px; }
         }
+
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after { animation-duration: .001ms !important; scroll-behavior: auto !important; transition-duration: .001ms !important; }
         }
     </style>
 </head>
+
 <body>
-    <header class="header">
-        <div class="header-left"><a href="index.html"><img src="../images/logo.png" alt="Backstage Logo" class="logo-img"></a></div>
-        <div class="header-center">
-            <div class="header-search" id="searchBar"><i class="fas fa-search header-search-icon"></i><input type="text" class="header-search-input" placeholder="Buscar músicos..." readonly><button class="header-search-btn" type="button">Buscar</button></div>
+
+<header class="header">
+    <div class="header-left">
+        <a href="index.html">
+            <img src="../images/logo.png" alt="Backstage Logo" class="logo-img">
+        </a>
+    </div>
+
+    <div class="header-center">
+        <div class="header-search" id="searchBar">
+            <i class="fas fa-search header-search-icon"></i>
+            <input type="text" class="header-search-input" placeholder="Buscar músicos..." readonly>
+            <button class="header-search-btn" type="button">Buscar</button>
         </div>
-        <div class="header-actions" id="headerActions"></div>
-    </header>
+    </div>
 
-    <main class="home-main">
-        <section class="home-intro">
-            <div class="container intro-grid">
-                <div class="intro-copy">
-                    <span class="eyebrow">Backstage Cena</span>
-                    <h1 class="home-title">Conecte-se<br><span>com músicos</span></h1>
-                    <p class="home-lede">Encontre parceiros, mostre seu som e faça parte das colaborações que movimentam a cena independente.</p>
-                    <div class="home-actions"><button class="btn-cta" id="btnComecar" type="button">Começar agora</button><a href="sobrenos.html" class="btn-ghost">Saiba mais <i class="fas fa-arrow-right"></i></a></div>
+    <div class="header-actions" id="headerActions"></div>
+</header>
+
+<main class="home-main">
+
+    <!-- INTRODUÇÃO -->
+    <section class="home-intro">
+        <div class="container intro-grid">
+
+            <div class="intro-copy">
+                <span class="eyebrow">Backstage Cena</span>
+
+                <h1 class="home-title">
+                    Encontre<br>
+                    <span>quem cria com você</span>
+                </h1>
+
+                <p class="home-lede">
+                    Encontre músicos, artistas e produtores que combinam com seu som,
+                    apresente seu trabalho e transforme uma conexão em uma nova parceria musical.
+                </p>
+
+                <div class="home-actions">
+                    <button class="btn-cta" id="btnComecar" type="button">
+                        Começar agora
+                    </button>
+
+                    <a href="sobrenos.html" class="btn-ghost">
+                        Conheça o Backstage
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
                 </div>
-                <div class="home-visual"><img src="../images/urso.png" alt="Mascote Backstage" class="home-bear"></div>
             </div>
-            <div class="scroll-cue">deslize</div>
-        </section>
 
-        <section class="journey" id="journey" aria-label="Como o Backstage funciona">
-            <div class="journey-stage" id="journeyStage">
-                <div class="journey-inner">
-                    <div class="journey-copy is-active" id="journeyCopy"><h2 id="journeyTitle">Encontre sua formação</h2><p id="journeyText">Busque por instrumento, gênero, cidade e disponibilidade. A pessoa certa para a próxima ideia pode estar mais perto do que parece.</p></div>
-                    <div class="journey-art"><span class="journey-orbit" aria-hidden="true"></span><div class="journey-stack" id="journeyStack" aria-hidden="true"><div class="journey-layer layer-search" data-image="../images/cena-busca.png"><img alt=""><i class="fas fa-magnifying-glass"></i></div><div class="journey-layer layer-profile" data-image="../images/cena-identidade.png"><img alt=""><i class="fas fa-compass"></i></div><div class="journey-layer layer-create" data-image="../images/cena-criacao.png"><img alt=""><i class="fas fa-handshake"></i></div></div></div>
+            <div class="home-visual">
+                <img src="../images/urso.png" alt="Mascote Backstage" class="home-bear">
+
+                <div class="bear-fragments" aria-hidden="true">
+                    <span data-x="-520" data-y="-360" data-r="-210"></span>
+                    <span data-x="-320" data-y="-520" data-r="-120"></span>
+                    <span data-x="-40" data-y="-570" data-r="80"></span>
+                    <span data-x="280" data-y="-500" data-r="170"></span>
+                    <span data-x="520" data-y="-280" data-r="260"></span>
+                    <span data-x="580" data-y="30" data-r="140"></span>
+                    <span data-x="430" data-y="350" data-r="-90"></span>
+                    <span data-x="160" data-y="540" data-r="-230"></span>
+                    <span data-x="-160" data-y="560" data-r="-40"></span>
+                    <span data-x="-470" data-y="390" data-r="-170"></span>
+                    <span data-x="-590" data-y="90" data-r="-280"></span>
+                    <span data-x="-570" data-y="-190" data-r="-330"></span>
                 </div>
-                <div class="journey-progress" aria-hidden="true"><i class="active"></i><i></i><i></i></div>
             </div>
-            <div class="journey-data" hidden>
-                <article data-title="Encontre sua formação" data-text="Busque por instrumento, gênero, cidade e disponibilidade. A pessoa certa para a próxima ideia pode estar mais perto do que parece." data-purple="false" data-icon="fa-magnifying-glass" data-object="object-search" data-image="../images/cena-busca.png"></article>
-                <article data-title="Mostre quem você é" data-text="Compartilhe uma ideia ou um projeto em andamento. Seu perfil deixa claro o que você faz e que tipo de parceria procura." data-purple="true" data-icon="fa-compass" data-object="object-profile" data-image="../images/cena-identidade.png"></article>
-                <article data-title="Crie algo que continue" data-text="Conecte-se com produtores, bandas e artistas independentes para transformar uma conversa em música." data-purple="true" data-icon="fa-handshake" data-object="object-create" data-image="../images/cena-criacao.png"></article>
+
+        </div>
+
+        <div class="scroll-cue">deslize</div>
+    </section>
+
+
+    <!-- COMO FUNCIONA -->
+    <section class="journey" id="journey" aria-label="Como o Backstage funciona">
+
+        <div class="journey-stage" id="journeyStage">
+
+            <div class="journey-inner">
+
+                <div class="journey-copy is-active" id="journeyCopy">
+
+                    <h2 id="journeyTitle">
+                        Encontre os músicos que você procura
+                    </h2>
+
+                    <p id="journeyText">
+                        Pesquise por instrumento, gênero, cidade e disponibilidade.
+                        Encontre pessoas que tenham o perfil certo para a banda,
+                        produção ou projeto que você quer colocar em prática.
+                    </p>
+
+                </div>
+
+                <div class="journey-art">
+
+                    <span class="journey-orbit" aria-hidden="true"></span>
+
+                    <div class="journey-stack" id="journeyStack" aria-hidden="true">
+
+                        <div class="journey-layer layer-search"
+                             data-image="../images/cena-busca.png">
+                            <img alt="">
+                            <i class="fas fa-magnifying-glass"></i>
+                        </div>
+
+                        <div class="journey-layer layer-profile"
+                             data-image="../images/cena-identidade.png">
+                            <img alt="">
+                            <i class="fas fa-compass"></i>
+                        </div>
+
+                        <div class="journey-layer layer-create"
+                             data-image="../images/cena-criacao.png">
+                            <img alt="">
+                            <i class="fas fa-handshake"></i>
+                        </div>
+
+                    </div>
+                </div>
+
             </div>
-        </section>
 
-        <section class="home-proof"><div class="container"><div class="proof-heading"><span class="eyebrow">Feito para a cena</span><h2>Uma rede para quem quer fazer, não só aparecer.</h2><p>O Backstage junta descoberta, perfil e colaboração em um lugar simples de usar.</p></div><div class="proof-grid"><article class="proof-item"><span class="proof-number">01</span><h3>Descubra músicos</h3><p>Filtros que ajudam você a encontrar pessoas compatíveis com seu som e momento.</p></article><article class="proof-item"><span class="proof-number">02</span><h3>Apresente seu som</h3><p>Um perfil musical com seus instrumentos, gêneros, experiência e links.</p></article><article class="proof-item"><span class="proof-number">03</span><h3>Comece a conversa</h3><p>De uma prévia compartilhada a uma parceria que vira projeto.</p></article></div></div></section>
-        <section class="home-final"><div class="container"><h2>Pronto para<br><span>começar?</span></h2><button class="btn-cta" id="btnComecar2" type="button">Criar minha conta</button></div></section>
-    </main>
+            <div class="journey-progress" aria-hidden="true">
+                <i class="active"></i>
+                <i></i>
+                <i></i>
+            </div>
 
-    <footer class="footer"><div class="container"><div class="footer-content"><img src="../images/logo.png" alt="Backstage Logo" class="footer-logo-img"><p style="color:rgba(255,255,255,0.4);font-size:13px;">A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p><a href="privacidade.html" style="color:rgba(255,255,255,0.4);font-size:13px;">Política de Privacidade</a></div></div></footer>
+        </div>
 
-    <script type="module">
-        import { verificarAutenticacao, fazerLogout } from '../js/auth.js';
-        import { initSearchOverlay } from '../js/search-overlay.js';
 
-        const usuario = verificarAutenticacao(false);
-        const headerActions = document.getElementById('headerActions');
-        if (usuario) {
-            const nome = usuario.nome_artistico || usuario.nome_completo;
-            const iniciais = (nome || 'B').substring(0, 2).toUpperCase();
-            const incompleto = Number(usuario.cadastro_completo ?? 0) === 0;
-            headerActions.innerHTML = `<div class="profile-dropdown" id="profileDropdown"><div class="profile-trigger" id="profileTrigger">${iniciais}</div>${incompleto ? '<div class="profile-incomplete-badge show">!</div>' : ''}<div class="dropdown-menu"><a href="perfil.html" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a><a href="config.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações</a><div class="dropdown-divider"></div><div class="dropdown-item" id="btnSair"><i class="fas fa-sign-out-alt"></i> Sair</div></div></div>`;
-            document.getElementById('profileDropdown').addEventListener('click', event => { event.stopPropagation(); document.getElementById('profileDropdown').classList.toggle('active'); });
-            document.addEventListener('click', () => document.getElementById('profileDropdown')?.classList.remove('active'));
-            document.getElementById('btnSair').addEventListener('click', fazerLogout);
-        } else {
-            headerActions.innerHTML = '<a href="login.html" class="btn-outline btn-auth">Login</a><a href="cadastro.html" class="btn-primary btn-auth">Registrar-se</a>';
-        }
-        initSearchOverlay();
+        <div class="journey-data" hidden>
 
-        const irParaCadastro = () => { window.location.href = usuario ? 'perfil.html' : 'cadastro.html'; };
-        document.getElementById('btnComecar').addEventListener('click', irParaCadastro);
-        document.getElementById('btnComecar2').addEventListener('click', irParaCadastro);
+            <article
+                data-title="Encontre os músicos que você procura"
+                data-text="Pesquise por instrumento, gênero, cidade e disponibilidade. Encontre pessoas que tenham o perfil certo para a banda, produção ou projeto que você quer colocar em prática."
+                data-purple="false"
+                data-icon="fa-magnifying-glass"
+                data-object="object-search"
+                data-image="../images/cena-busca.png">
+            </article>
 
-        const reduzMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        const header = document.querySelector('.header');
-        const journey = document.getElementById('journey');
-        const stage = document.getElementById('journeyStage');
-        const copy = document.getElementById('journeyCopy');
-        const title = document.getElementById('journeyTitle');
-        const text = document.getElementById('journeyText');
-        const stack = document.getElementById('journeyStack');
-        const layers = [...stack.querySelectorAll('.journey-layer')];
-        layers.forEach(layer => {
-            const image = layer.querySelector('img');
-            image.onload = () => layer.classList.add('has-image');
-            image.onerror = () => { image.removeAttribute('src'); };
-            image.src = layer.dataset.image;
-        });
-        const data = [...document.querySelectorAll('.journey-data article')];
-        const progressMarks = [...document.querySelectorAll('.journey-progress i')];
-        let activeStep = -1;
-        let ticking = false;
+            <article
+                data-title="Apresente sua identidade musical"
+                data-text="Monte um perfil que mostre quem você é, o que você toca, quais estilos fazem parte do seu trabalho e que tipo de colaboração você está procurando."
+                data-purple="true"
+                data-icon="fa-compass"
+                data-object="object-profile"
+                data-image="../images/cena-identidade.png">
+            </article>
 
-        function setStep(step) {
-            if (step === activeStep) return;
-            activeStep = step;
-            const next = data[step];
-            title.textContent = next.dataset.title;
-            text.textContent = next.dataset.text;
-            progressMarks.forEach((mark, position) => mark.classList.toggle('active', position === step));
-            copy.classList.remove('is-active');
-            requestAnimationFrame(() => copy.classList.add('is-active'));
-        }
+            <article
+                data-title="Transforme conexões em projetos"
+                data-text="Compartilhe suas ideias, mostre seu trabalho e conecte-se com outros músicos, produtores e artistas. Uma conversa pode ser o primeiro passo para criar algo novo."
+                data-purple="true"
+                data-icon="fa-handshake"
+                data-object="object-create"
+                data-image="../images/cena-criacao.png">
+            </article>
 
-        function readJourney() {
-            const rect = journey.getBoundingClientRect();
-            const range = Math.max(1, rect.height - window.innerHeight);
-            const raw = Math.min(1, Math.max(0, -rect.top / range));
-            const eased = raw * raw * (3 - 2 * raw);
-            const step = Math.min(data.length - 1, Math.floor(raw * data.length));
-            const purple = Math.max(0, Math.min(1, raw * 1.55));
-            stage.style.setProperty('--journey-purple-opacity', purple.toFixed(3));
-            stage.style.setProperty('--journey-drift', `${Math.sin(eased * Math.PI * 2) * 18}`);
-            stage.style.setProperty('--journey-lift', `${Math.sin(eased * Math.PI) * -18}`);
-            stage.style.setProperty('--journey-rotate', `${Math.sin(eased * Math.PI * 2) * 4}deg`);
-            header.classList.toggle('journey-fading', raw > .015 || window.scrollY > window.innerHeight * .72);
-            const layerProgress = raw * (layers.length - 1);
-            const current = Math.min(layers.length - 1, Math.floor(layerProgress));
-            const local = layerProgress - current;
-            const ease = value => value * value * (3 - 2 * value);
-            layers.forEach((layer, position) => {
-                let opacity = 0;
-                let x = position < current ? -320 : 320;
-                let y = position < current ? -18 : 18;
-                let rotate = position < current ? -16 : 16;
-                let scale = .86;
+        </div>
 
-                if (position === current && current < layers.length - 1) {
-                    const exit = Math.min(1, local / .58);
-                    opacity = 1 - exit;
-                    x = -320 * ease(exit);
-                    y = -24 * ease(exit);
-                    rotate = -16 * ease(exit);
-                    scale = 1 - (.08 * ease(exit));
-                } else if (position === current && current === layers.length - 1) {
-                    opacity = 1;
-                    x = 0;
-                    y = 0;
-                    rotate = 0;
-                    scale = 1;
-                } else if (position === current + 1) {
-                    const enter = Math.max(0, Math.min(1, (local - .74) / .26));
-                    opacity = enter;
-                    x = 320 * (1 - ease(enter));
-                    y = 24 * (1 - ease(enter));
-                    rotate = 16 * (1 - ease(enter));
-                    scale = .92 + (.08 * ease(enter));
-                }
+    </section>
 
-                layer.style.opacity = opacity.toFixed(3);
-                layer.style.visibility = opacity > 0 ? 'visible' : 'hidden';
-                layer.style.transform = `translate3d(${x}px, ${y}px, 0) rotate(${rotate}deg) scale(${scale})`;
-                layer.style.zIndex = String(position + 1);
+
+    <!-- PRINCIPAIS RECURSOS -->
+    <section class="home-proof">
+
+        <div class="container">
+
+            <div class="proof-heading">
+
+                <span class="eyebrow">Feito para quem faz música</span>
+
+                <h2>
+                    Menos tempo procurando.
+                    Mais tempo criando.
+                </h2>
+
+                <p>
+                    O Backstage reúne descoberta, perfil e colaboração em um só lugar
+                    para facilitar o encontro entre pessoas que querem fazer música juntas.
+                </p>
+
+            </div>
+
+            <div class="proof-grid">
+
+                <article class="proof-item">
+
+                    <span class="proof-number">01</span>
+
+                    <h3>Encontre músicos</h3>
+
+                    <p>
+                        Pesquise por instrumentos, gêneros, cidade e disponibilidade
+                        para encontrar pessoas que podem fazer parte do seu próximo projeto.
+                    </p>
+
+                </article>
+
+
+                <article class="proof-item">
+
+                    <span class="proof-number">02</span>
+
+                    <h3>Mostre o que você faz</h3>
+
+                    <p>
+                        Crie um perfil musical com suas habilidades, experiências,
+                        estilos, instrumentos e referências para que outras pessoas
+                        conheçam seu trabalho.
+                    </p>
+
+                </article>
+
+
+                <article class="proof-item">
+
+                    <span class="proof-number">03</span>
+
+                    <h3>Encontre oportunidades</h3>
+
+                    <p>
+                        Compartilhe ideias, conheça novos artistas e transforme
+                        contatos em parcerias, bandas, produções e projetos musicais.
+                    </p>
+
+                </article>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- JORNADA -->
+    <section class="home-arc" aria-label="Como encontrar colaboradores no Backstage">
+
+        <div class="container arc-layout">
+
+            <div class="arc-copy reveal-on-scroll">
+
+                <span class="eyebrow">Do perfil ao projeto</span>
+
+                <h2>
+                    A próxima parceria pode começar aqui.
+                </h2>
+
+                <p>
+                    Você pode chegar ao Backstage procurando um músico,
+                    apresentando uma ideia ou simplesmente querendo conhecer
+                    novas pessoas da cena. A plataforma ajuda a transformar
+                    essa intenção em uma oportunidade de colaboração.
+                </p>
+
+            </div>
+
+
+            <div class="arc-list">
+
+                <article class="arc-row reveal-on-scroll" data-delay="1">
+
+                    <strong>01</strong>
+
+                    <div>
+
+                        <h3>Defina o que você procura</h3>
+
+                        <p>
+                            Encontre pessoas por instrumento, gênero, cidade
+                            e disponibilidade.
+                        </p>
+
+                    </div>
+
+                    <i class="fas fa-arrow-right" aria-hidden="true"></i>
+
+                </article>
+
+
+                <article class="arc-row reveal-on-scroll" data-delay="2">
+
+                    <strong>02</strong>
+
+                    <div>
+
+                        <h3>Apresente seu trabalho</h3>
+
+                        <p>
+                            Mostre suas habilidades, experiências, referências
+                            e o tipo de projeto que deseja construir.
+                        </p>
+
+                    </div>
+
+                    <i class="fas fa-arrow-right" aria-hidden="true"></i>
+
+                </article>
+
+
+                <article class="arc-row reveal-on-scroll" data-delay="3">
+
+                    <strong>03</strong>
+
+                    <div>
+
+                        <h3>Comece uma colaboração</h3>
+
+                        <p>
+                            Uma conexão pode evoluir para uma conversa,
+                            um ensaio, uma faixa ou um novo projeto.
+                        </p>
+
+                    </div>
+
+                    <i class="fas fa-arrow-right" aria-hidden="true"></i>
+
+                </article>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- CRIAÇÃO -->
+    <section class="home-studio" aria-label="Criação coletiva">
+
+        <div class="container studio-shell">
+
+            <div class="studio-copy reveal-on-scroll">
+
+                <span class="eyebrow" style="color:rgba(255,255,255,.72)">
+                    Da conexão para a criação
+                </span>
+
+                <h2>
+                    Toda música começa com uma ideia.
+                </h2>
+
+                <p>
+                    Talvez seja uma composição, uma gravação, uma banda
+                    que ainda não existe ou apenas vontade de fazer algo novo.
+                    O Backstage aproxima as pessoas que podem transformar
+                    essa ideia em música.
+                </p>
+
+            </div>
+
+
+            <div class="studio-signal reveal-on-scroll" aria-hidden="true">
+
+                <span class="studio-bar" style="--bar-index:1;--bar-height:1.1"></span>
+                <span class="studio-bar" style="--bar-index:2;--bar-height:1.7"></span>
+                <span class="studio-bar" style="--bar-index:3;--bar-height:.7"></span>
+                <span class="studio-bar" style="--bar-index:4;--bar-height:2.15"></span>
+                <span class="studio-bar" style="--bar-index:5;--bar-height:1.35"></span>
+                <span class="studio-bar" style="--bar-index:6;--bar-height:1.9"></span>
+                <span class="studio-bar" style="--bar-index:7;--bar-height:.85"></span>
+                <span class="studio-bar" style="--bar-index:8;--bar-height:1.55"></span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- CTA FINAL -->
+    <section class="home-final">
+
+        <div class="container">
+
+            <h2>
+                Tem uma ideia?
+                <br>
+                <span>Encontre quem cria com você.</span>
+            </h2>
+
+            <button class="btn-cta" id="btnComecar2" type="button">
+                Criar minha conta
+            </button>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer class="footer">
+
+    <div class="container">
+
+        <div class="footer-content">
+
+            <img
+                src="../images/logo.png"
+                alt="Backstage Logo"
+                class="footer-logo-img"
+            >
+
+            <p style="color:rgba(255,255,255,0.4);font-size:13px;">
+                Conectando pessoas para transformar ideias em música.
+                &copy; 2025 Backstage Cena
+            </p>
+
+            <a
+                href="privacidade.html"
+                style="color:rgba(255,255,255,0.4);font-size:13px;"
+            >
+                Política de Privacidade
+            </a>
+
+        </div>
+
+    </div>
+
+</footer>
+
+
+<script type="module">
+    import { verificarAutenticacao, fazerLogout } from '../js/auth.js';
+    import { initSearchOverlay } from '../js/search-overlay.js';
+
+    const usuario = verificarAutenticacao(false);
+    const headerActions = document.getElementById('headerActions');
+
+    if (usuario) {
+
+        const nome = usuario.nome_artistico || usuario.nome_completo;
+        const iniciais = (nome || 'B').substring(0, 2).toUpperCase();
+        const incompleto = Number(usuario.cadastro_completo ?? 0) === 0;
+
+        headerActions.innerHTML = `
+            <div class="profile-dropdown" id="profileDropdown">
+                <div class="profile-trigger" id="profileTrigger">${iniciais}</div>
+                ${incompleto ? '<div class="profile-incomplete-badge show">!</div>' : ''}
+                <div class="dropdown-menu">
+                    <a href="perfil.html" class="dropdown-item">
+                        <i class="fas fa-user"></i> Meu Perfil
+                    </a>
+                    <a href="config.html" class="dropdown-item">
+                        <i class="fas fa-cog"></i> Configurações
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-item" id="btnSair">
+                        <i class="fas fa-sign-out-alt"></i> Sair
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document
+            .getElementById('profileDropdown')
+            .addEventListener('click', event => {
+                event.stopPropagation();
+                document
+                    .getElementById('profileDropdown')
+                    .classList.toggle('active');
             });
-            setStep(step);
-            ticking = false;
+
+        document.addEventListener('click', () =>
+            document
+                .getElementById('profileDropdown')
+                ?.classList.remove('active')
+        );
+
+        document
+            .getElementById('btnSair')
+            .addEventListener('click', fazerLogout);
+
+    } else {
+
+        headerActions.innerHTML = `
+            <a href="login.html" class="btn-outline btn-auth">Login</a>
+            <a href="cadastro.html" class="btn-primary btn-auth">Registrar-se</a>
+        `;
+
+    }
+
+    initSearchOverlay();
+
+    const irParaCadastro = () => {
+        window.location.href = usuario ? 'perfil.html' : 'cadastro.html';
+    };
+
+    document
+        .getElementById('btnComecar')
+        .addEventListener('click', irParaCadastro);
+
+    document
+        .getElementById('btnComecar2')
+        .addEventListener('click', irParaCadastro);
+
+
+    const reduzMovimento =
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const header = document.querySelector('.header');
+    const journey = document.getElementById('journey');
+    const stage = document.getElementById('journeyStage');
+    const copy = document.getElementById('journeyCopy');
+    const title = document.getElementById('journeyTitle');
+    const text = document.getElementById('journeyText');
+    const intro = document.querySelector('.home-intro');
+    const homeVisual = document.querySelector('.home-visual');
+    const homeBear = document.querySelector('.home-bear');
+    const bearFragments = [
+        ...document.querySelectorAll('.bear-fragments span')
+    ];
+    const stack = document.getElementById('journeyStack');
+    const layers = [
+        ...stack.querySelectorAll('.journey-layer')
+    ];
+
+    layers.forEach(layer => {
+
+        const image = layer.querySelector('img');
+
+        image.onload = () =>
+            layer.classList.add('has-image');
+
+        image.onerror = () => {
+            image.removeAttribute('src');
+        };
+
+        image.src = layer.dataset.image;
+
+    });
+
+
+    const data = [
+        ...document.querySelectorAll('.journey-data article')
+    ];
+
+    const progressMarks = [
+        ...document.querySelectorAll('.journey-progress i')
+    ];
+
+    let activeStep = -1;
+    let ticking = false;
+
+
+    if (!reduzMovimento && homeVisual && homeBear) {
+
+        homeVisual.addEventListener('pointermove', event => {
+
+            const bounds =
+                homeVisual.getBoundingClientRect();
+
+            const x =
+                ((event.clientX - bounds.left) / bounds.width - .5) * 34;
+
+            const y =
+                ((event.clientY - bounds.top) / bounds.height - .5) * 24;
+
+            homeBear.style.setProperty(
+                '--bear-pointer-x',
+                `${x.toFixed(1)}px`
+            );
+
+            homeBear.style.setProperty(
+                '--bear-pointer-y',
+                `${y.toFixed(1)}px`
+            );
+
+            homeBear.style.setProperty(
+                '--bear-tilt',
+                `${(x / 13).toFixed(2)}deg`
+            );
+
+        });
+
+
+        homeVisual.addEventListener('pointerleave', () => {
+
+            homeBear.style.setProperty(
+                '--bear-pointer-x',
+                '0px'
+            );
+
+            homeBear.style.setProperty(
+                '--bear-pointer-y',
+                '0px'
+            );
+
+            homeBear.style.setProperty(
+                '--bear-tilt',
+                '0deg'
+            );
+
+        });
+
+    }
+
+
+    function setStep(step) {
+
+        if (step === activeStep) return;
+
+        activeStep = step;
+
+        const next = data[step];
+
+        title.textContent = next.dataset.title;
+        text.textContent = next.dataset.text;
+
+        progressMarks.forEach((mark, position) =>
+            mark.classList.toggle(
+                'active',
+                position === step
+            )
+        );
+
+        copy.classList.remove('is-active');
+
+        requestAnimationFrame(() =>
+            copy.classList.add('is-active')
+        );
+
+    }
+
+
+    function readJourney() {
+
+        if (intro && homeBear) {
+
+            const introRect =
+                intro.getBoundingClientRect();
+
+            const fallProgress =
+                Math.max(
+                    0,
+                    Math.min(
+                        1,
+                        -introRect.top /
+                        Math.max(
+                            1,
+                            window.innerHeight * .72
+                        )
+                    )
+                );
+
+            const fallEase =
+                fallProgress *
+                fallProgress *
+                (3 - 2 * fallProgress);
+
+            const burst =
+                Math.max(
+                    0,
+                    Math.min(
+                        1,
+                        (fallProgress - .16) / .62
+                    )
+                );
+
+            const burstEase =
+                burst *
+                burst *
+                (3 - 2 * burst);
+
+            homeBear.style.setProperty(
+                '--bear-scale',
+                (1 - burstEase * .88).toFixed(3)
+            );
+
+            homeBear.style.opacity =
+                String(
+                    Math.max(
+                        0,
+                        1 - burst * 1.35
+                    )
+                );
+
+            bearFragments.forEach(fragment => {
+
+                const x =
+                    Number(fragment.dataset.x) *
+                    burstEase;
+
+                const y =
+                    Number(fragment.dataset.y) *
+                    burstEase;
+
+                const rotation =
+                    Number(fragment.dataset.r) *
+                    burstEase;
+
+                const fragmentFade =
+                    Math.max(
+                        0,
+                        1 -
+                        Math.max(
+                            0,
+                            burst - .7
+                        ) / .3
+                    );
+
+                fragment.style.opacity =
+                    String(
+                        Math.max(
+                            0,
+                            Math.min(
+                                1,
+                                burstEase *
+                                fragmentFade
+                            )
+                        )
+                    );
+
+                fragment.style.transform =
+                    `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))
+                     rotate(${rotation}deg)
+                     scale(${.2 + burstEase * 1.2})`;
+
+            });
         }
 
-        function onScroll() {
-            if (ticking) return;
-            ticking = true;
-            requestAnimationFrame(readJourney);
-        }
-        window.addEventListener('scroll', onScroll, { passive: true });
-        window.addEventListener('resize', onScroll, { passive: true });
-        readJourney();
-    </script>
+
+        const rect =
+            journey.getBoundingClientRect();
+
+        const range =
+            Math.max(
+                1,
+                rect.height - window.innerHeight
+            );
+
+        const raw =
+            Math.min(
+                1,
+                Math.max(
+                    0,
+                    -rect.top / range
+                )
+            );
+
+        const eased =
+            raw *
+            raw *
+            (3 - 2 * raw);
+
+        const step =
+            Math.min(
+                data.length - 1,
+                Math.floor(
+                    raw * data.length
+                )
+            );
+
+        const purple =
+            Math.max(
+                0,
+                Math.min(
+                    1,
+                    raw * 1.55
+                )
+            );
+
+        stage.style.setProperty(
+            '--journey-purple-opacity',
+            purple.toFixed(3)
+        );
+
+        stage.style.setProperty(
+            '--journey-drift',
+            `${Math.sin(eased * Math.PI * 2) * 18}`
+        );
+
+        stage.style.setProperty(
+            '--journey-lift',
+            `${Math.sin(eased * Math.PI) * -18}`
+        );
+
+        stage.style.setProperty(
+            '--journey-rotate',
+            `${Math.sin(eased * Math.PI * 2) * 4}deg`
+        );
+
+        header.classList.toggle(
+            'journey-fading',
+            raw > .015 ||
+            window.scrollY > window.innerHeight * .72
+        );
+
+        const layerProgress =
+            raw * (layers.length - 1);
+
+        const current =
+            Math.min(
+                layers.length - 1,
+                Math.floor(layerProgress)
+            );
+
+        const local =
+            layerProgress - current;
+
+        const ease = value =>
+            value *
+            value *
+            (3 - 2 * value);
+
+
+        layers.forEach((layer, position) => {
+
+            let opacity = 0;
+            let x =
+                position < current
+                    ? -320
+                    : 320;
+
+            let y =
+                position < current
+                    ? -18
+                    : 18;
+
+            let rotate =
+                position < current
+                    ? -16
+                    : 16;
+
+            let scale = .86;
+
+
+            if (
+                position === current &&
+                current < layers.length - 1
+            ) {
+
+                const exit =
+                    Math.min(
+                        1,
+                        local / .58
+                    );
+
+                opacity = 1 - exit;
+
+                x =
+                    -320 *
+                    ease(exit);
+
+                y =
+                    -24 *
+                    ease(exit);
+
+                rotate =
+                    -16 *
+                    ease(exit);
+
+                scale =
+                    1 -
+                    (.08 * ease(exit));
+
+            } else if (
+                position === current &&
+                current === layers.length - 1
+            ) {
+
+                opacity = 1;
+                x = 0;
+                y = 0;
+                rotate = 0;
+                scale = 1;
+
+            } else if (
+                position === current + 1
+            ) {
+
+                const enter =
+                    Math.max(
+                        0,
+                        Math.min(
+                            1,
+                            (local - .74) / .26
+                        )
+                    );
+
+                opacity = enter;
+
+                x =
+                    320 *
+                    (1 - ease(enter));
+
+                y =
+                    24 *
+                    (1 - ease(enter));
+
+                rotate =
+                    16 *
+                    (1 - ease(enter));
+
+                scale =
+                    .92 +
+                    (.08 * ease(enter));
+
+            }
+
+
+            layer.style.opacity =
+                opacity.toFixed(3);
+
+            layer.style.visibility =
+                opacity > 0
+                    ? 'visible'
+                    : 'hidden';
+
+            layer.style.transform =
+                `translate3d(${x}px, ${y}px, 0)
+                 rotate(${rotate}deg)
+                 scale(${scale})`;
+
+            layer.style.zIndex =
+                String(position + 1);
+
+        });
+
+
+        setStep(step);
+
+        ticking = false;
+
+    }
+
+
+    function onScroll() {
+
+        if (ticking) return;
+
+        ticking = true;
+
+        requestAnimationFrame(readJourney);
+
+    }
+
+
+    const revealItems = [
+        ...document.querySelectorAll('.reveal-on-scroll')
+    ];
+
+
+    if (
+        reduzMovimento ||
+        !('IntersectionObserver' in window)
+    ) {
+
+        revealItems.forEach(item =>
+            item.classList.add('is-visible')
+        );
+
+    } else {
+
+        const revealObserver =
+            new IntersectionObserver(
+                entries => {
+
+                    entries.forEach(entry => {
+
+                        if (!entry.isIntersecting)
+                            return;
+
+                        entry.target.classList.add(
+                            'is-visible'
+                        );
+
+                        revealObserver.unobserve(
+                            entry.target
+                        );
+
+                    });
+
+                },
+                {
+                    threshold: .16,
+                    rootMargin: '0px 0px -8% 0px'
+                }
+            );
+
+        revealItems.forEach(item =>
+            revealObserver.observe(item)
+        );
+
+    }
+
+
+    window.addEventListener(
+        'scroll',
+        onScroll,
+        { passive: true }
+    );
+
+    window.addEventListener(
+        'resize',
+        onScroll,
+        { passive: true }
+    );
+
+    readJourney();
+
+</script>
+
 </body>
 </html>
+```
