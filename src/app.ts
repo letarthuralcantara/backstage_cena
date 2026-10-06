@@ -23,7 +23,7 @@ app.use(express.static("public"));
 
 app.use("/api/usuarios", requireJson, usuarioRouter);
 app.use("/api/postagens", postagemRouter);
-app.use("/api/tweets", requireJson, tweetRouter);
+app.use("/api/tweet
 
 app.get("/", (_req: Request, res: Response) => {
   res.json({ mensagem: "API Backstage Cena rodando" });
