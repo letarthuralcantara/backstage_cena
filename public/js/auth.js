@@ -205,3 +205,71 @@ export function verificarAutenticacao(redirecionar = true) {
   }
   return JSON.parse(usuario);
 }
+
+// ── Foto de perfil ────────────────────────────────────────────────────────────
+export const FOTO_TIPOS_PERMITIDOS = ["image/jpeg", "image/png", "image/gif"];
+export const FOTO_TAMANHO_MAX_BYTES = 2 * 1024 * 1024;
+
+/** Troca o conteúdo do elemento (iniciais) por <img>; sem caminho, mantém o texto. */
+export function aplicarFotoNoElemento(elemento, caminho, alt = "Foto de perfil") {
+  if (!elemento || !caminho) return;
+  const img = document.createElement("img");
+  img.src = caminho;
+  img.alt = alt;
+  elemento.textContent = "";
+  elemento.appendChild(img);
+}
+
+export async function aplicarAvatarNaNavbar(elemento, usuario) {
+  if (!elemento || !usuario?.id_usuario) return;
+
+  let imagem = usuario.imagem;
+  if (!imagem?.caminho) {
+    try {
+      const res = await fetch(`/api/usuarios/${usuario.id_usuario}`);
+      if (!res.ok) return;
+      const usuarioAtualizado = await res.json();
+      imagem = usuarioAtualizado.imagem;
+
+      const usuarioSalvo = JSON.parse(localStorage.getItem("usuarioLogado") || "null");
+      if (usuarioSalvo?.id_usuario === usuario.id_usuario) {
+        localStorage.setItem(
+          "usuarioLogado",
+          JSON.stringify({ ...usuarioSalvo, imagem }),
+        );
+      }
+    } catch {
+      return;
+    }
+  }
+
+  aplicarFotoNoElemento(
+    elemento,
+    imagem?.caminho,
+    usuario.nome_artistico || usuario.nome_completo || "Foto de perfil",
+  );
+}
+
+/**
+ * Envia a foto como multipart/form-data. Sem Content-Type manual: só o navegador
+ * conhece o boundary. POST no primeiro envio, PUT para substituir.
+ */
+export async function enviarFotoPerfil(arquivo, jaTemFoto) {
+  const form = new FormData();
+  form.append("image", arquivo);
+  const res = await fetch("/api/usuarios/imagem", {
+    method: jaTemFoto ? "PUT" : "POST",
+    headers: authHeaders({}, false),
+    body: form,
+  });
+  if (!res.ok) await respostaComErro(res, "Não foi possível enviar a foto.");
+  const dados = await res.json();
+  const usuario = JSON.parse(localStorage.getItem("usuarioLogado") || "null");
+  if (usuario) {
+    localStorage.setItem(
+      "usuarioLogado",
+      JSON.stringify({ ...usuario, imagem: dados.imagem }),
+    );
+  }
+  return dados.imagem;
+}

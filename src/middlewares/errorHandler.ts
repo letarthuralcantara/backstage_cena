@@ -24,12 +24,14 @@ export function errorHandler(
       err.code === "LIMIT_FILE_SIZE"
         ? "O arquivo excede o limite permitido."
         : "Falha no upload.";
+    // O campo vem do próprio Multer (ex.: "audio" ou "image"), em vez de fixo.
+    const campo = err.field || "arquivo";
     res.status(400).json({
       erro: message,
       issues: [
         {
           code: "custom",
-          path: ["body", "audio"],
+          path: ["body", campo],
           message,
         },
       ],

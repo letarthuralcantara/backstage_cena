@@ -3,9 +3,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   aplicarErroApiNoCampo,
+  aplicarAvatarNaNavbar,
   authHeaders,
   fazerLogin,
   salvarCadastro,
+  enviarFotoPerfil,
 } from "../../public/js/auth.js";
 
 describe("cliente da API", () => {
@@ -20,6 +22,64 @@ describe("cliente da API", () => {
       "Content-Type": "application/json",
       Authorization: "Bearer abc123",
     });
+  });
+
+  it("exibe na navbar a foto salva no usuário autenticado", async () => {
+    const trigger = document.createElement("div");
+    await aplicarAvatarNaNavbar(trigger, {
+      id_usuario: 2,
+      nome_completo: "Ana",
+      imagem: { caminho: "/uploads/avatars/ana.png" },
+    });
+
+    expect(trigger.querySelector("img").getAttribute("src")).toBe(
+      "/uploads/avatars/ana.png",
+    );
+    expect(trigger.querySelector("img").alt).toBe("Ana");
+  });
+
+  it("busca e salva na sessão um avatar ausente no estado local", async () => {
+    const usuario = { id_usuario: 3, nome_completo: "Bia", imagem: null };
+    localStorage.setItem("usuarioLogado", JSON.stringify(usuario));
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        new Response(
+          JSON.stringify({ imagem: { caminho: "/uploads/avatars/bia.png" } }),
+          { status: 200 },
+        ),
+      ),
+    );
+    const trigger = document.createElement("div");
+
+    await aplicarAvatarNaNavbar(trigger, usuario);
+
+    expect(trigger.querySelector("img").getAttribute("src")).toBe(
+      "/uploads/avatars/bia.png",
+    );
+    expect(JSON.parse(localStorage.getItem("usuarioLogado")).imagem.caminho).toBe(
+      "/uploads/avatars/bia.png",
+    );
+  });
+
+  it("atualiza a sessão local após enviar uma nova foto", async () => {
+    localStorage.setItem("usuarioLogado", JSON.stringify({ id_usuario: 4 }));
+    localStorage.setItem("token", "token");
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        new Response(
+          JSON.stringify({ imagem: { caminho: "/uploads/avatars/nova.png" } }),
+          { status: 201 },
+        ),
+      ),
+    );
+
+    await enviarFotoPerfil(new File(["png"], "avatar.png", { type: "image/png" }), false);
+
+    expect(JSON.parse(localStorage.getItem("usuarioLogado")).imagem.caminho).toBe(
+      "/uploads/avatars/nova.png",
+    );
   });
 
   it("salva usuario e token após cadastro", async () => {

@@ -20,6 +20,7 @@ const includeAutor = {
       id_usuario: true,
       nome_artistico: true,
       nome_completo: true,
+      imagem: { select: { caminho: true } },
     },
   },
 } as const;
@@ -37,6 +38,7 @@ function mapPostagem(p: any) {
     autor: {
       id_usuario: p.usuario.id_usuario,
       nome: p.usuario.nome_artistico || p.usuario.nome_completo,
+      imagem: p.usuario.imagem?.caminho ?? null,
     },
   };
 }

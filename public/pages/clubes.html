@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Backstage | Clubes</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/clubes.css">
+    <style>
+        .container { max-width: 820px; margin: 24px auto; padding: 0 16px; position: relative; z-index: 1; }
+        .page-header { margin-bottom: 26px; display: flex; align-items: flex-end; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+        .hero-title { font-size: clamp(28px, 6vw, 40px); line-height: 1.1; text-align: left; }
+        .hero-title span { color: var(--accent); }
+        .hero-subtitle { color: var(--text-2); margin-top: 8px; font-size: 15px; }
+        .section-block { margin-bottom: 32px; }
+        .section-heading { font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+        .section-heading i { color: var(--primary); font-size: 13px; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <a href="index.html"><img src="../images/logo.png" alt="Backstage Logo" class="logo-img"></a>
+        </div>
+        <div class="header-center"></div>
+        <div class="header-actions">
+            <div class="profile-dropdown" id="profileDropdown"></div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <div>
+                <h1 class="hero-title">Clubes da <span>Cena</span></h1>
+                <p class="hero-subtitle">Encontre sua turma por gênero, instrumento ou DAW e converse no chat.</p>
+            </div>
+            <button type="button" class="btn-primary" id="btnNovoClube"><i class="fas fa-plus"></i> Criar clube</button>
+        </div>
+
+        <div class="section-block">
+            <h2 class="section-heading"><i class="fas fa-wand-magic-sparkles"></i> Recomendados para você</h2>
+            <div class="clubes-grid" id="gridRecomendados"><p class="clubes-loading">Carregando...</p></div>
+        </div>
+
+        <div class="section-block">
+            <h2 class="section-heading"><i class="fas fa-star"></i> Meus clubes</h2>
+            <div class="clubes-grid" id="gridMeus"><p class="clubes-loading">Carregando...</p></div>
+        </div>
+
+        <div class="section-block">
+            <h2 class="section-heading"><i class="fas fa-compass"></i> Explorar</h2>
+            <div class="clubes-toolbar">
+                <select id="filtroTipo" aria-label="Filtrar por tipo">
+                    <option value="">Todos os tipos</option>
+                    <option value="genero">Gênero</option>
+                    <option value="instrumento">Instrumento</option>
+                    <option value="daw">DAW</option>
+                    <option value="geral">Geral</option>
+                </select>
+            </div>
+            <div class="clubes-grid" id="gridExplorar"><p class="clubes-loading">Carregando...</p></div>
+        </div>
+    </div>
+
+    <dialog class="dialog-clube" id="dialogNovoClube">
+        <form class="form-clube" id="formNovoClube" novalidate>
+            <h2 class="section-heading" style="margin-bottom:4px;"><i class="fas fa-people-group"></i> Novo clube</h2>
+            <label>Nome
+                <input type="text" id="clubeNome" maxlength="40" required placeholder="Ex.: Guitarristas de Garagem">
+            </label>
+            <label>Descrição (opcional)
+                <textarea id="clubeDescricao" maxlength="200" placeholder="Sobre o que é este clube?"></textarea>
+            </label>
+            <label>Tipo
+                <select id="clubeTipo">
+                    <option value="genero">Gênero</option>
+                    <option value="instrumento">Instrumento</option>
+                    <option value="daw">DAW</option>
+                    <option value="geral">Geral (sem tag)</option>
+                </select>
+            </label>
+            <label id="labelTag">Qual?
+                <select id="clubeTag"></select>
+            </label>
+            <label>Foto do clube (opcional)
+                <input type="file" id="clubeImagem" accept="image/jpeg,image/png,image/gif">
+            </label>
+            <img class="clube-foto-preview" id="clubeImagemPreview" alt="Prévia da foto do clube" hidden>
+            <p class="form-erro" id="clubeErro" role="alert"></p>
+            <div class="linha-botoes">
+                <button type="button" class="btn-outline" id="btnCancelarClube">Cancelar</button>
+                <button type="submit" class="btn-primary" id="btnSalvarClube">Criar</button>
+            </div>
+        </form>
+    </dialog>
+
+    <div class="tab-bar-spacer"></div>
+    <nav class="tab-bar" aria-label="Navegação principal"></nav>
+
+    <script type="module">
+        import { ClubesAPI, criarCardClube, prepararCabecalho } from '../js/clubes.js';
+        import { fetchDados } from '../js/dados.js';
+
+        const usuario = await prepararCabecalho(true, { escopo: 'clubes' });
+
+        const gridRecomendados = document.getElementById('gridRecomendados');
+        const gridMeus = document.getElementById('gridMeus');
+        const gridExplorar = document.getElementById('gridExplorar');
+        const buscaClube = document.getElementById('headerSearchInput');
+
+        function preencher(grid, clubes, vazio, opcoes) {
+            grid.innerHTML = '';
+            if (!clubes.length) {
+                grid.innerHTML = `<p class="clubes-vazio">${vazio}</p>`;
+                return;
+            }
+            clubes.forEach((c) => grid.appendChild(criarCardClube(c, opcoes)));
+        }
+
+        async function entrar(clube, botao) {
+            botao.disabled = true;
+            try {
+                await ClubesAPI.entrar(clube.id_clube);
+                window.location.href = `clube.html?id=${clube.id_clube}`;
+            } catch (e) {
+                botao.disabled = false;
+                alert(e.message);
+            }
+        }
+
+        async function carregarRecomendados() {
+            try {
+                preencher(gridRecomendados, await ClubesAPI.recomendados(6),
+                    'Você já participa de tudo por aqui. Crie um clube novo!', { aoEntrar: entrar });
+            } catch (e) { gridRecomendados.innerHTML = `<p class="clubes-vazio">${e.message}</p>`; }
+        }
+        async function carregarMeus() {
+            try {
+                preencher(gridMeus, await ClubesAPI.meus(),
+                    'Você ainda não entrou em nenhum clube. Comece pelos recomendados.', {});
+            } catch (e) { gridMeus.innerHTML = `<p class="clubes-vazio">${e.message}</p>`; }
+        }
+        async function carregarExplorar() {
+            try {
+                const clubes = await ClubesAPI.listar({
+                    q: buscaClube.value.trim(),
+                    tipo: document.getElementById('filtroTipo').value,
+                });
+                preencher(gridExplorar, clubes, 'Nenhum clube encontrado.', { aoEntrar: entrar });
+            } catch (e) { gridExplorar.innerHTML = `<p class="clubes-vazio">${e.message}</p>`; }
+        }
+
+        let timerBusca;
+        buscaClube.addEventListener('input', () => {
+            clearTimeout(timerBusca);
+            timerBusca = setTimeout(carregarExplorar, 300);
+        });
+        document.getElementById('headerSearchSubmit').addEventListener('click', carregarExplorar);
+        buscaClube.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') carregarExplorar();
+        });
+        document.getElementById('filtroTipo').addEventListener('change', carregarExplorar);
+
+        if (usuario) {
+            carregarRecomendados();
+            carregarMeus();
+            carregarExplorar();
+        }
+
+        // ── Criar clube ──────────────────────────────────────────────────
+        const dialog = document.getElementById('dialogNovoClube');
+        const tipoSel = document.getElementById('clubeTipo');
+        const tagSel = document.getElementById('clubeTag');
+        const labelTag = document.getElementById('labelTag');
+        const erro = document.getElementById('clubeErro');
+        const inputImagem = document.getElementById('clubeImagem');
+        const previewImagem = document.getElementById('clubeImagemPreview');
+        let catalogo = null;
+        let urlPreview = null;
+        let clubeCriado = null;
+
+        inputImagem.addEventListener('change', () => {
+            if (urlPreview) URL.revokeObjectURL(urlPreview);
+            const arquivo = inputImagem.files?.[0];
+            if (!arquivo) {
+                previewImagem.hidden = true;
+                previewImagem.removeAttribute('src');
+                urlPreview = null;
+                return;
+            }
+            urlPreview = URL.createObjectURL(arquivo);
+            previewImagem.src = urlPreview;
+            previewImagem.hidden = false;
+        });
+
+        async function atualizarTags() {
+            const tipo = tipoSel.value;
+            labelTag.style.display = tipo === 'geral' ? 'none' : '';
+            if (tipo === 'geral') return;
+            catalogo ??= await fetchDados();
+            const lista = { genero: catalogo.generos, instrumento: catalogo.instrumentos, daw: catalogo.daws }[tipo] || [];
+            tagSel.innerHTML = '';
+            lista.forEach((item) => {
+                const nome = item.nome || item;
+                const opt = document.createElement('option');
+                opt.value = nome;
+                opt.textContent = nome;
+                tagSel.appendChild(opt);
+            });
+        }
+        tipoSel.addEventListener('change', atualizarTags);
+
+        document.getElementById('btnNovoClube').addEventListener('click', async () => {
+            erro.textContent = '';
+            clubeCriado = null;
+            document.getElementById('formNovoClube').reset();
+            document.getElementById('btnSalvarClube').textContent = 'Criar';
+            inputImagem.dispatchEvent(new Event('change'));
+            await atualizarTags();
+            dialog.showModal();
+        });
+        document.getElementById('btnCancelarClube').addEventListener('click', () => dialog.close());
+
+        document.getElementById('formNovoClube').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            erro.textContent = '';
+            const tipo = tipoSel.value;
+            const dados = {
+                nome: document.getElementById('clubeNome').value.trim(),
+                tipo,
+            };
+            const descricao = document.getElementById('clubeDescricao').value.trim();
+            if (descricao) dados.descricao = descricao;
+            if (tipo !== 'geral') dados.tag = tagSel.value;
+
+            const botao = document.getElementById('btnSalvarClube');
+            botao.disabled = true;
+            try {
+                clubeCriado ??= await ClubesAPI.criar(dados);
+                const arquivo = inputImagem.files?.[0];
+                if (arquivo) await ClubesAPI.enviarImagem(clubeCriado.id_clube, arquivo);
+                window.location.href = `clube.html?id=${clubeCriado.id_clube}`;
+            } catch (err) {
+                erro.textContent = clubeCriado
+                    ? `Clube criado. Não foi possível enviar a foto: ${err.issues?.[0]?.message || err.message}. Tente novamente.`
+                    : err.issues?.[0]?.message || err.message;
+                if (clubeCriado) botao.textContent = 'Tentar novamente';
+            } finally {
+                botao.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

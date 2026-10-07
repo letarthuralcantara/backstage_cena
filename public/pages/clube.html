@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Backstage | Clube</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/clubes.css">
+    <style>
+        .container { max-width: 820px; margin: 24px auto; padding: 0 16px; position: relative; z-index: 1; }
+        .page-header { margin-bottom: 26px; display: flex; align-items: flex-end; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+        .hero-title { font-size: clamp(28px, 6vw, 40px); line-height: 1.1; text-align: left; }
+        .hero-title span { color: var(--accent); }
+        .hero-subtitle { color: var(--text-2); margin-top: 8px; font-size: 15px; }
+        .section-block { margin-bottom: 32px; }
+        .section-heading { font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+        .section-heading i { color: var(--primary); font-size: 13px; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <a href="index.html"><img src="../images/logo.png" alt="Backstage Logo" class="logo-img"></a>
+        </div>
+        <div class="header-center"></div>
+        <div class="header-actions">
+            <div class="profile-dropdown" id="profileDropdown"></div>
+        </div>
+    </header>
+
+    <div class="container">
+        <a href="clubes.html" class="section-link" style="margin:0 0 14px; display:inline-block;"><i class="fas fa-arrow-left"></i> Todos os clubes</a>
+
+        <div class="clube-topo" id="clubeTopo"><p class="clubes-loading">Carregando...</p></div>
+        <div class="membros-faixa" id="membrosFaixa"></div>
+
+        <h2 class="section-heading"><i class="fas fa-comments"></i> Chat do clube</h2>
+        <div id="chatArea"></div>
+    </div>
+
+    <div class="tab-bar-spacer"></div>
+    <nav class="tab-bar" aria-label="Navegação principal"></nav>
+
+    <script type="module">
+        import { ClubesAPI, escaparHtml, iniciais, visualClubeHtml, rotuloTipo, textoMembros, prepararCabecalho } from '../js/clubes.js';
+
+        const idClube = Number(new URLSearchParams(location.search).get('id'));
+        const usuario = await prepararCabecalho(true, {
+            escopo: 'clube',
+            idClube,
+            buscar: (q) => ClubesAPI.buscar(idClube, q),
+        });
+        const topo = document.getElementById('clubeTopo');
+        const faixa = document.getElementById('membrosFaixa');
+        const chatArea = document.getElementById('chatArea');
+
+        let clube = null;
+        let ultimoId = 0;
+        let timerChat = null;
+        let carregandoMensagens = false;
+
+        function avatarHtml(nome, foto) {
+            return foto
+                ? `<span class="avatar-mini"><img src="${escaparHtml(foto)}" alt=""></span>`
+                : `<span class="avatar-mini">${escaparHtml(iniciais(nome))}</span>`;
+        }
+
+        function renderTopo() {
+            document.title = `Backstage | ${clube.nome}`;
+            const tag = clube.tag ? `<span class="clube-tag">${escaparHtml(clube.tag)}</span>` : '';
+            topo.innerHTML = `
+                ${visualClubeHtml(clube)}
+                <div class="clube-topo-info">
+                    <h1>${escaparHtml(clube.nome)}</h1>
+                    <div class="clube-meta">${tag}<span>${rotuloTipo(clube.tipo)}</span><span>${textoMembros(clube.total_membros)}</span></div>
+                    ${clube.descricao ? `<p class="clube-desc">${escaparHtml(clube.descricao)}</p>` : ''}
+                </div>
+                <div class="clube-topo-acoes" id="acoesClube"></div>`;
+
+            const acoes = document.getElementById('acoesClube');
+            if (!clube.participa) {
+                const b = document.createElement('button');
+                b.className = 'btn-primary'; b.textContent = 'Entrar no clube';
+                b.addEventListener('click', async () => {
+                    b.disabled = true;
+                    try { clube = await ClubesAPI.entrar(idClube); iniciar(); }
+                    catch (e) { b.disabled = false; alert(e.message); }
+                });
+                acoes.appendChild(b);
+            } else if (clube.eh_dono) {
+                const b = document.createElement('button');
+                b.className = 'btn-danger'; b.textContent = 'Excluir clube';
+                b.addEventListener('click', async () => {
+                    if (!confirm('Excluir este clube e todo o chat? Isso não pode ser desfeito.')) return;
+                    try { await ClubesAPI.remover(idClube); location.href = 'clubes.html'; }
+                    catch (e) { alert(e.message); }
+                });
+                acoes.appendChild(b);
+            } else {
+                const b = document.createElement('button');
+                b.className = 'btn-outline'; b.textContent = 'Sair do clube';
+                b.addEventListener('click', async () => {
+                    if (!confirm('Sair deste clube?')) return;
+                    try { await ClubesAPI.sair(idClube); location.reload(); }
+                    catch (e) { alert(e.message); }
+                });
+                acoes.appendChild(b);
+            }
+
+            faixa.innerHTML = '';
+            clube.membros.forEach((m) => {
+                const a = document.createElement('a');
+                a.className = 'membro-pill';
+                a.href = `perfil.html?id=${m.id_usuario}`;
+                a.innerHTML = `${avatarHtml(m.nome, m.foto)}<span>${escaparHtml(m.nome)}${m.papel === 'dono' ? ' · dono' : ''}</span>`;
+                faixa.appendChild(a);
+            });
+        }
+
+        function hora(iso) {
+            return new Date(iso).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function adicionarMensagens(lista, area) {
+            const proximoDoFim = area.scrollHeight - area.scrollTop - area.clientHeight < 80;
+            lista.forEach((m) => {
+                if (m.id_mensagem <= ultimoId) return;
+                ultimoId = m.id_mensagem;
+                const el = document.createElement('div');
+                el.className = `msg${m.minha ? ' minha' : ''}`;
+                el.dataset.mensagemId = m.id_mensagem;
+                el.innerHTML = `
+                    ${avatarHtml(m.autor.nome, m.autor.foto)}
+                    <div class="msg-corpo">
+                        ${m.minha ? '' : `<div class="msg-autor">${escaparHtml(m.autor.nome)}</div>`}
+                        <div class="msg-texto">${escaparHtml(m.texto)}</div>
+                        <div class="msg-hora">${hora(m.criado_em)}</div>
+                    </div>`;
+                area.appendChild(el);
+            });
+            if (lista.length && (proximoDoFim || lista.some((m) => m.minha))) area.scrollTop = area.scrollHeight;
+        }
+
+        function montarChat() {
+            chatArea.innerHTML = `
+                <div class="chat">
+                    <div class="chat-mensagens" id="chatMensagens" aria-live="polite"></div>
+                    <div class="chat-aviso" id="chatAviso" role="alert"></div>
+                    <form class="chat-form" id="chatForm" autocomplete="off">
+                        <input type="text" id="chatTexto" maxlength="500" placeholder="Escreva uma mensagem..." aria-label="Mensagem">
+                        <button type="submit" class="btn-primary clube-btn"><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                </div>`;
+            const area = document.getElementById('chatMensagens');
+            const aviso = document.getElementById('chatAviso');
+
+            async function buscar(inicial = false) {
+                if (carregandoMensagens || document.hidden) return;
+                carregandoMensagens = true;
+                try {
+                    const lista = await ClubesAPI.mensagens(idClube, inicial ? undefined : ultimoId);
+                    if (inicial && !lista.length) area.innerHTML = '<p class="clubes-vazio">Nenhuma mensagem ainda. Puxe o assunto!</p>';
+                    else if (lista.length) { area.querySelector('.clubes-vazio')?.remove(); adicionarMensagens(lista, area); }
+                    aviso.textContent = '';
+                } catch (e) {
+                    if (e.status === 403 || e.status === 404) { clearInterval(timerChat); location.reload(); }
+                    else aviso.textContent = 'Sem conexão com o chat. Tentando de novo...';
+                } finally { carregandoMensagens = false; }
+            }
+
+            document.getElementById('chatForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const campo = document.getElementById('chatTexto');
+                const texto = campo.value.trim();
+                if (!texto) return;
+                campo.disabled = true;
+                try {
+                    const m = await ClubesAPI.enviar(idClube, texto);
+                    campo.value = '';
+                    area.querySelector('.clubes-vazio')?.remove();
+                    adicionarMensagens([m], area);
+                    aviso.textContent = '';
+                } catch (err) {
+                    aviso.textContent = err.issues?.[0]?.message || err.message;
+                } finally { campo.disabled = false; campo.focus(); }
+            });
+
+            buscar(true);
+            clearInterval(timerChat);
+            timerChat = setInterval(() => buscar(false), 3000);
+            document.addEventListener('visibilitychange', () => { if (!document.hidden) buscar(false); });
+        }
+
+        function iniciar() {
+            renderTopo();
+            if (clube.participa) montarChat();
+            else {
+                clearInterval(timerChat);
+                chatArea.innerHTML = `<div class="chat"><div class="chat-bloqueado"><i class="fas fa-lock"></i>Entre no clube para ler e participar do chat.</div></div>`;
+            }
+        }
+
+        if (usuario) {
+            if (!Number.isInteger(idClube) || idClube <= 0) location.href = 'clubes.html';
+            else ClubesAPI.detalhe(idClube).then((c) => { clube = c; iniciar(); })
+                .catch((e) => { topo.innerHTML = `<p class="clubes-vazio">${escaparHtml(e.message)}</p>`; });
+        }
+    </script>
+</body>
+</html>

@@ -18,6 +18,12 @@ export interface ConfiguracaoUsuario {
   perfil_publico: number;
 }
 
+export interface ImagemUsuario {
+  id_imagem: number;
+  id_usuario: number;
+  caminho: string;
+}
+
 export interface Usuario {
   id_usuario: number;
   nome_completo: string;
@@ -39,6 +45,7 @@ export interface Usuario {
   daws?: string[];
   disponibilidades?: string[];
   configuracoes?: ConfiguracaoUsuario | null;
+  imagem?: ImagemUsuario | null;
 }
 
 // ── Inputs de criação e atualização ───────────────────────────────────────

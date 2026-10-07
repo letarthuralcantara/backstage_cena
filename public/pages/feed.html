@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/clubes.css">
     <style>
         /* Só o que é específico do feed — o resto (header, glass, cores,
            raios) já vem do global.css. */
@@ -92,18 +93,7 @@
             </div>
         </div>
         <div class="header-actions">
-            <div class="profile-dropdown" id="profileDropdown">
-                <div class="profile-trigger" id="profileTrigger"></div>
-                <div class="profile-incomplete-badge" id="profileIncompleteBadge">!</div>
-                <div class="dropdown-menu">
-                    <a href="perfil.html" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a>
-                    <a href="feed.html" class="dropdown-item"><i class="fas fa-stream"></i> Feed</a>
-                    <a href="publicar.html" class="dropdown-item"><i class="fas fa-plus-circle"></i> Nova Postagem</a>
-                    <a href="config.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações</a>
-                    <div class="dropdown-divider"></div>
-                    <div class="dropdown-item" id="btnSair"><i class="fas fa-sign-out-alt"></i> Sair</div>
-                </div>
-            </div>
+            <div class="profile-dropdown" id="profileDropdown"></div>
         </div>
     </header>
 
@@ -119,6 +109,11 @@
             <div class="stories-bar" id="storiesBar"></div>
         </div>
 
+        <div class="section-block" id="blocoClubes" hidden>
+            <h2 class="section-heading"><i class="fas fa-people-group"></i> Clubes para você <a class="section-link" href="clubes.html">Ver todos</a></h2>
+            <div class="clubes-grid" id="feedClubes"></div>
+        </div>
+
         <div class="section-block">
             <h2 class="section-heading">Geral</h2>
             <div class="feed-timeline" id="feedTimeline"></div>
@@ -126,36 +121,14 @@
     </div>
 
     <div class="tab-bar-spacer"></div>
-    <nav class="tab-bar" aria-label="Navegação principal">
-        <a class="tab-bar-item active" href="feed.html"><i class="fas fa-stream"></i>Feed</a>
-        <button type="button" class="tab-bar-item" id="tabBarBuscar"><i class="fas fa-search"></i>Buscar</button>
-        <a class="tab-bar-item tab-bar-cta" href="publicar.html"><i class="fas fa-plus"></i>Postar</a>
-        <a class="tab-bar-item" href="perfil.html"><i class="fas fa-user"></i>Perfil</a>
-    </nav>
+    <nav class="tab-bar" aria-label="Navegação principal"></nav>
 
     <script type="module">
-        import { verificarAutenticacao, fazerLogout } from '../js/auth.js';
-        import { renderizarFeedPostagens, buscarTweetsFeed, tempoRelativo, tempoRestante } from '../js/postagens.js';
-        import { initSearchOverlay } from '../js/search-overlay.js';
+        import { renderizarFeedPostagens, buscarTweetsFeed, tempoRelativo, tempoRestante, adicionarImagemTweet, renderizarAvatarAutor } from '../js/postagens.js';
+        import { ClubesAPI, criarCardClube, prepararCabecalho } from '../js/clubes.js';
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const usuario = verificarAutenticacao();
-            if (usuario) {
-                const nome = usuario.nome_artistico || usuario.nome_completo;
-                const trigger = document.getElementById('profileTrigger');
-                if (trigger) trigger.textContent = (nome || 'B').substring(0, 2).toUpperCase();
-                const badge = document.getElementById('profileIncompleteBadge');
-                if (badge) badge.classList.toggle('show', Number(usuario.cadastro_completo ?? 0) === 0);
-            }
-
-            const profileDropdown = document.getElementById('profileDropdown');
-            profileDropdown?.addEventListener('click', (e) => {
-                e.stopPropagation();
-                profileDropdown.classList.toggle('active');
-            });
-            document.addEventListener('click', () => profileDropdown?.classList.remove('active'));
-
-            document.getElementById('btnSair')?.addEventListener('click', fazerLogout);
+        document.addEventListener('DOMContentLoaded', async () => {
+            await prepararCabecalho();
 
             function iniciais(nome) {
                 const partes = nome.trim().split(/\s+/).filter(Boolean);
@@ -186,6 +159,8 @@
                     </div>
                     <div class="tweet-body">${escaparHtml(t.texto)}</div>
                 `;
+                renderizarAvatarAutor(item.querySelector('.author-avatar'), t.autor);
+                adicionarImagemTweet(item, t);
                 return item;
             }
 
@@ -213,12 +188,36 @@
                 }
             }
 
+            // Clubes recomendados pela afinidade (gêneros, instrumentos e DAWs do perfil).
+            async function iniciarClubesRecomendados() {
+                const bloco = document.getElementById('blocoClubes');
+                const grid = document.getElementById('feedClubes');
+                if (!bloco || !grid) return;
+                try {
+                    const clubes = await ClubesAPI.recomendados(4);
+                    if (!clubes.length) return;
+                    clubes.forEach((c) => grid.appendChild(criarCardClube(c, {
+                        compacto: true,
+                        aoEntrar: async (clube, botao) => {
+                            botao.disabled = true;
+                            try {
+                                await ClubesAPI.entrar(clube.id_clube);
+                                window.location.href = `clube.html?id=${clube.id_clube}`;
+                            } catch (e) { botao.disabled = false; alert(e.message); }
+                        },
+                    })));
+                    bloco.hidden = false;
+                } catch (err) {
+                    console.error('Clubes recomendados:', err);
+                }
+            }
+
             // Inicializa componentes
             const storiesBar = document.getElementById('storiesBar');
             if (storiesBar) renderizarFeedPostagens(storiesBar);
             iniciarFeedGeral();
+            iniciarClubesRecomendados();
 
-            initSearchOverlay();
         });
     </script>
 

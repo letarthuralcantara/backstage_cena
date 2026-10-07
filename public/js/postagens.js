@@ -1,5 +1,18 @@
 import { authHeaders, verificarAutenticacao } from "./auth.js";
 
+const TIPOS_IMAGEM_TWEET = ["image/jpeg", "image/png", "image/gif"];
+const TAMANHO_IMAGEM_TWEET_MAX_BYTES = 2 * 1024 * 1024;
+
+export function validarImagemTweet(arquivo) {
+  if (!TIPOS_IMAGEM_TWEET.includes(arquivo.type)) {
+    return "Formato de imagem não suportado. Use JPEG, PNG ou GIF.";
+  }
+  if (arquivo.size > TAMANHO_IMAGEM_TWEET_MAX_BYTES) {
+    return "A imagem deve ter no máximo 2 MB.";
+  }
+  return null;
+}
+
 // ── Ícone ────────────────────────────────────────────────────────────────────
 // Ondinha de áudio em SVG (branca), sem depender de fontes de ícone externas.
 function svgOnda(tamanho = 22) {
@@ -112,81 +125,94 @@ export async function renderizarGradeFeedPostagens(container) {
  * Busca e desenha só as prévias ativas de UM usuário (usado na página de perfil).
  * Clicar na bolinha abre o viewer passando por todas as prévias dele em sequência.
  */
-export async function renderizarGradePreviasDoUsuario(
-  idUsuario,
-  container,
-  onContagem,
-) {
+export async function renderizarPostagensDoUsuario(idUsuario, container) {
   if (!container) return;
-  container.innerHTML = "";
-
-  let postagens = [];
+  container.innerHTML = '<p class="feed-loading">Carregando postagens...</p>';
   try {
-    const res = await fetch(`/api/postagens/usuario/${idUsuario}`);
-    if (!res.ok) throw new Error("Falha ao buscar prévias do usuário");
-    postagens = await res.json();
+    const [resPostagens, resTweets] = await Promise.all([
+      fetch(`/api/postagens/usuario/${idUsuario}`),
+      fetch(`/api/tweets/usuario/${idUsuario}`),
+    ]);
+    if (!resPostagens.ok) throw new Error("Falha ao buscar prévias do usuário");
+    if (!resTweets.ok) throw new Error("Falha ao buscar tweets do usuário");
+
+    const [postagens, tweets] = await Promise.all([
+      resPostagens.json(),
+      resTweets.json(),
+    ]);
+    const itens = [
+      ...postagens.map((postagem) => ({ tipo: "previa", dado: postagem })),
+      ...tweets.map((tweet) => ({ tipo: "tweet", dado: tweet })),
+    ].sort(
+      (a, b) =>
+        new Date(b.dado.criado_em).getTime() -
+        new Date(a.dado.criado_em).getTime(),
+    );
+
+    container.innerHTML = "";
+    if (itens.length === 0) {
+      container.innerHTML =
+        '<p class="feed-vazio">Essa pessoa ainda não fez postagens.</p>';
+      return;
+    }
+
+    for (const item of itens) {
+      container.appendChild(
+        item.tipo === "tweet"
+          ? criarPostagemTweet(item.dado)
+          : criarPostagemPrevia(item.dado),
+      );
+    }
   } catch (err) {
     console.error(err);
-    onContagem?.(0);
-    return;
-  }
-
-  onContagem?.(postagens.length);
-
-  if (postagens.length === 0) {
     container.innerHTML =
-      '<p class="feed-vazio" style="grid-column:1/-1;">Nenhuma prévia ativa no momento.</p>';
-    return;
+      '<p class="feed-vazio">Não foi possível carregar as postagens.</p>';
   }
-
-  postagens.forEach((p, indice) => {
-    const thumb = document.createElement("button");
-    thumb.type = "button";
-    thumb.className = "story-thumb";
-    thumb.setAttribute(
-      "aria-label",
-      `Ouvir prévia: ${p.titulo || "sem título"}`,
-    );
-    thumb.innerHTML = `
-      <div class="story-thumb-icone">${svgOnda(30)}</div>
-      <div class="story-thumb-overlay">
-        <span class="story-thumb-title">${escaparHtml(p.titulo || "Sem título")}</span>
-        <span class="story-thumb-tempo">${tempoRelativo(p.criado_em)}</span>
-      </div>
-    `;
-    thumb.addEventListener("click", () => abrirViewer(postagens, indice));
-    container.appendChild(thumb);
-  });
 }
 
-export async function renderizarPostagensDoUsuario(
-  idUsuario,
-  container,
-  onContagem,
-) {
-  if (!container) return;
-  container.innerHTML = "";
+function criarPostagemTweet(tweet) {
+  const item = document.createElement("article");
+  item.className = "perfil-post perfil-post--tweet";
+  item.innerHTML = `
+    <div class="perfil-post-cabecalho">
+      <div class="perfil-post-avatar"></div>
+      <div class="perfil-post-autor">
+        <strong>${escaparHtml(tweet.autor.nome)}</strong>
+        <span>há ${tempoRelativo(tweet.criado_em)}</span>
+      </div>
+    </div>
+    <p class="perfil-post-texto">${escaparHtml(tweet.texto)}</p>
+  `;
+  renderizarAvatarAutor(item.querySelector(".perfil-post-avatar"), tweet.autor);
+  adicionarImagemTweet(item, tweet);
+  return item;
+}
 
-  let postagens = [];
-  try {
-    const res = await fetch(`/api/postagens/usuario/${idUsuario}`);
-    if (!res.ok) throw new Error("Falha ao buscar prévias do usuário");
-    postagens = await res.json();
-  } catch (err) {
-    console.error(err);
-    onContagem?.(0);
-    return;
-  }
-
-  onContagem?.(postagens.length);
-
-  if (postagens.length === 0) {
-    container.innerHTML =
-      '<p class="feed-vazio">Nenhuma prévia ativa no momento.</p>';
-    return;
-  }
-
-  container.appendChild(criarBolinha(postagens, () => abrirViewer(postagens)));
+function criarPostagemPrevia(postagem) {
+  const item = document.createElement("article");
+  item.className = "perfil-post perfil-post--previa";
+  item.innerHTML = `
+    <div class="perfil-post-cabecalho">
+      <div class="perfil-post-avatar"></div>
+      <div class="perfil-post-autor">
+        <strong>${escaparHtml(postagem.autor.nome)}</strong>
+        <span>há ${tempoRelativo(postagem.criado_em)}</span>
+      </div>
+    </div>
+    <button class="perfil-post-audio" type="button" aria-label="Ouvir prévia: ${escaparHtml(postagem.titulo || "sem título")}">
+      <span class="perfil-post-audio-icone">${svgOnda(16)}</span>
+      <span class="perfil-post-audio-titulo">${escaparHtml(postagem.titulo || "Prévia sem título")}</span>
+      <span class="perfil-post-audio-duracao">${postagem.duracao_seg}s</span>
+    </button>
+  `;
+  renderizarAvatarAutor(
+    item.querySelector(".perfil-post-avatar"),
+    postagem.autor,
+  );
+  item
+    .querySelector(".perfil-post-audio")
+    .addEventListener("click", () => abrirViewer([postagem], 0));
+  return item;
 }
 
 async function buscarFeed() {
@@ -247,7 +273,7 @@ function criarItemTweet(t) {
   const div = document.createElement("div");
   div.className = "timeline-item timeline-item--tweet";
   div.innerHTML = `
-    <div class="timeline-avatar">${escaparHtml(iniciais(t.autor.nome))}</div>
+    <div class="timeline-avatar"></div>
     <div class="timeline-content">
       <div class="timeline-header">
         <span class="timeline-autor">${escaparHtml(t.autor.nome)}</span>
@@ -256,7 +282,49 @@ function criarItemTweet(t) {
       <p class="timeline-texto">${escaparHtml(t.texto)}</p>
     </div>
   `;
+  renderizarAvatarAutor(div.querySelector(".timeline-avatar"), t.autor);
+  adicionarImagemTweet(div.querySelector(".timeline-content"), t);
   return div;
+}
+
+export function renderizarAvatarAutor(container, autor, iniciaisClassName = "") {
+  if (!container) return;
+  const nome = autor?.nome || "Artista";
+  container.textContent = iniciais(nome);
+  container.setAttribute("aria-label", `Foto de perfil de ${nome}`);
+  if (iniciaisClassName) container.classList.add(iniciaisClassName);
+
+  const caminho = autor?.imagem;
+  if (
+    typeof caminho !== "string" ||
+    !/^\/uploads\/avatars\/[a-f0-9]{32}\.(jpg|png|gif)$/.test(caminho)
+  ) {
+    return;
+  }
+
+  const imagem = document.createElement("img");
+  imagem.className = "avatar-publicacao-foto";
+  imagem.setAttribute("src", caminho);
+  imagem.setAttribute("alt", `Foto de perfil de ${nome}`);
+  imagem.addEventListener("error", () => imagem.remove(), { once: true });
+  container.appendChild(imagem);
+}
+
+export function adicionarImagemTweet(container, tweet) {
+  if (!tweet.imagem) return;
+  const link = document.createElement("a");
+  link.className = "tweet-imagem-link";
+  link.href = tweet.imagem;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+
+  const imagem = document.createElement("img");
+  imagem.className = "tweet-imagem";
+  imagem.setAttribute("src", tweet.imagem);
+  imagem.setAttribute("alt", `Imagem anexada ao tweet de ${tweet.autor.nome}`);
+  imagem.loading = "lazy";
+  link.appendChild(imagem);
+  container.appendChild(link);
 }
 
 function criarItemPrevia(p) {
@@ -546,14 +614,24 @@ export async function criarPostagem(
  * Publica um tweet (texto curto). `expirar` = true faz ele sumir em 24h,
  * false deixa permanente no perfil/feed.
  */
-export async function criarTweet(texto, expirar) {
+export async function criarTweet(texto, expirar, imagem = null) {
   const usuarioLocal = verificarAutenticacao();
   if (!usuarioLocal) return null;
 
+  let corpo;
+  if (imagem) {
+    corpo = new FormData();
+    corpo.append("texto", texto);
+    corpo.append("expirar", String(Boolean(expirar)));
+    corpo.append("image", imagem);
+  } else {
+    corpo = JSON.stringify({ texto, expirar: Boolean(expirar) });
+  }
+
   const res = await fetch("/api/tweets", {
     method: "POST",
-    headers: authHeaders(),
-    body: JSON.stringify({ texto, expirar: Boolean(expirar) }),
+    headers: imagem ? authHeaders({}, false) : authHeaders(),
+    body: corpo,
   });
   if (!res.ok) {
     const erro = await res.json().catch(() => ({}));

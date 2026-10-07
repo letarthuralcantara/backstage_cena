@@ -92,6 +92,7 @@ const include = {
   daws: { include: { daw: true } },
   disponibilidades: { include: { disponibilidade: true } },
   configuracoes: true,
+  imagem: true,
 };
 
 // ── CRUD ──────────────────────────────────────────────────────────────────────

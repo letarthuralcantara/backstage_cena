@@ -116,6 +116,7 @@
             display: flex; align-items: center; justify-content: center;
             font-weight: 600; font-size: .95rem; color: var(--text-1);
         }
+        .musician-photo img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; display: block; }
         .musician-info { flex: 1; min-width: 0; }
         .musician-name {
             font-family: 'Poppins', sans-serif;
@@ -184,7 +185,7 @@
         </div>
 
         <div class="header-center">
-            <div class="header-search">
+            <div class="header-search" id="searchBar">
                 <i class="fas fa-search header-search-icon"></i>
                 <input type="text" class="header-search-input" id="searchInput" placeholder="Buscar músicos...">
                 <button class="btn-filtrar" id="btnFiltrar" title="Filtros">
@@ -196,18 +197,7 @@
         </div>
 
         <div class="header-actions">
-            <div class="profile-dropdown" id="profileDropdown">
-                <div class="profile-trigger" id="profileTrigger"></div>
-                <div class="profile-incomplete-badge" id="profileIncompleteBadge">!</div>
-                <div class="dropdown-menu">
-                    <a href="perfil.html" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a>
-                    <a href="feed.html" class="dropdown-item"><i class="fas fa-stream"></i> Feed</a>
-                    <a href="publicar.html" class="dropdown-item"><i class="fas fa-plus-circle"></i> Nova Postagem</a>
-                    <a href="config.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações</a>
-                    <div class="dropdown-divider"></div>
-                    <div class="dropdown-item" id="btnSair"><i class="fas fa-sign-out-alt"></i> Sair</div>
-                </div>
-            </div>
+            <div class="profile-dropdown" id="profileDropdown"></div>
         </div>
     </header>
 
@@ -270,24 +260,10 @@
     </footer>
 
     <script type="module">
-        import { verificarAutenticacao, fazerLogout } from '../js/auth.js';
-        import { initSearchOverlay } from '../js/search-overlay.js';
+        import { aplicarFotoNoElemento } from '../js/auth.js';
+        import { initNavbar } from '../js/navbar.js';
 
-        const usuario = verificarAutenticacao();
-        if (usuario) {
-            const nome = usuario.nome_artistico || usuario.nome_completo;
-            document.getElementById('profileTrigger').textContent = (nome || 'B').substring(0, 2).toUpperCase();
-            const badge = document.getElementById('profileIncompleteBadge');
-            if (badge) badge.classList.toggle('show', Number(usuario.cadastro_completo ?? 0) === 0);
-        }
-        document.getElementById('profileDropdown')?.addEventListener('click', (e) => {
-            e.stopPropagation();
-            document.getElementById('profileDropdown').classList.toggle('active');
-        });
-        document.addEventListener('click', () => {
-            document.getElementById('profileDropdown')?.classList.remove('active');
-        });
-        initSearchOverlay();
+        await initNavbar({ escopo: 'busca' });
 
         // Delegação: os cards de músico são recriados a cada filtro (innerHTML),
         // então o listener fica no container (que não muda) em vez de em cada
@@ -298,8 +274,6 @@
                 window.location.href = `perfil.html?id=${card.dataset.userId}`;
             }
         });
-        document.getElementById('btnSair')?.addEventListener('click', fazerLogout);
-
         const btnFiltrar = document.getElementById('btnFiltrar');
         const filtersPanel = document.getElementById('filtersPanel');
         const filtrarCount = document.getElementById('filtrarCount');
@@ -471,6 +445,12 @@
                     ${tags ? `<div class="musician-tags">${tags}</div>` : ''}
                 </div>`;
             }).join('');
+
+            grid.querySelectorAll('.musician-photo').forEach((avatar, index) => {
+                const musico = visiveis[index];
+                const nome = musico.nome_artistico || musico.nome_completo;
+                aplicarFotoNoElemento(avatar, musico.imagem?.caminho, nome);
+            });
         }
 
         function filtrar() {
@@ -592,11 +572,6 @@
         }
     </script>
     <div class="tab-bar-spacer"></div>
-    <nav class="tab-bar" aria-label="Navegação principal">
-        <a class="tab-bar-item" href="feed.html"><i class="fas fa-stream"></i>Feed</a>
-        <button type="button" class="tab-bar-item active" id="tabBarBuscar"><i class="fas fa-search"></i>Buscar</button>
-        <a class="tab-bar-item tab-bar-cta" href="publicar.html"><i class="fas fa-plus"></i>Postar</a>
-        <a class="tab-bar-item" href="perfil.html"><i class="fas fa-user"></i>Perfil</a>
-    </nav>
+    <nav class="tab-bar" aria-label="Navegação principal"></nav>
 </body>
 </html>

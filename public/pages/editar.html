@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/cropper.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         .app-layout { position:relative; z-index:1; display:flex; min-height:100vh; padding-top:56px; }
@@ -51,7 +52,13 @@
         .foto-info p { color:var(--text-1); font-size:15px; margin-bottom:6px; font-weight:600; }
         .foto-info small { color:var(--text-3); font-size:13px; line-height:1.6; display:block; }
         .em-breve { display:inline-block; background:var(--glass-fill-strong); color:var(--text-2); font-size:10px; padding:3px 10px; border-radius:var(--r-sm); margin-left:8px; font-weight:600; }
-        .btn-upload { display:inline-flex; align-items:center; gap:8px; padding:9px 16px; background:var(--glass-fill); border:1px solid var(--glass-border); border-radius:var(--r-full); color:var(--text-3); font-size:13px; cursor:not-allowed; margin-top:10px; opacity:0.6; }
+        .btn-upload { display:inline-flex; align-items:center; gap:8px; padding:9px 16px; background:var(--glass-fill); border:1px solid var(--glass-border); border-radius:var(--r-full); color:var(--text-3); font-size:13px; cursor:pointer; margin-top:10px; }
+        .btn-upload:hover:not(:disabled) { color:var(--text-1); }
+        .btn-upload:disabled { cursor:not-allowed; opacity:0.6; }
+        .foto-avatar-big img, .sidebar-avatar img, .profile-trigger img { width:100%; height:100%; object-fit:cover; border-radius:inherit; display:block; }
+        .sidebar-avatar, .profile-trigger { overflow:hidden; }
+        #fotoMsg { margin-top:8px; }
+        #fotoMsg.erro { color:#f87171; }
 
         /* Forms */
         .form-section { margin-bottom:26px; }
@@ -129,16 +136,7 @@
             </div>
         </div>
         <div class="header-actions">
-            <div class="profile-dropdown" id="profileDropdown">
-                <div class="profile-trigger" id="profileTrigger"></div>
-                <div class="profile-incomplete-badge" id="profileIncompleteBadge">!</div>
-                <div class="dropdown-menu">
-                    <a href="perfil.html" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a>
-                    <a href="config.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações</a>
-                    <div class="dropdown-divider"></div>
-                    <div class="dropdown-item" id="btnSair"><i class="fas fa-sign-out-alt"></i> Sair</div>
-                </div>
-            </div>
+            <div class="profile-dropdown" id="profileDropdown"></div>
         </div>
     </header>
 
@@ -174,9 +172,11 @@
                 <div class="foto-section">
                     <div class="foto-avatar-big" id="fotoAvatarBig"></div>
                     <div class="foto-info">
-                        <p>Foto de Perfil <span class="em-breve">Em breve</span></p>
-                        <small>Upload de foto estará disponível em breve.<br>Por enquanto, suas iniciais são exibidas no perfil.</small>
-                        <button class="btn-upload" disabled><i class="fas fa-upload"></i> Alterar foto</button>
+                        <p>Foto de Perfil</p>
+                        <small>Envie uma imagem JPEG, PNG ou GIF de até 15 MB; o recorte final deve caber em 2 MB.<br>Sem foto, suas iniciais são exibidas no perfil.</small>
+                        <input type="file" id="fotoInput" name="image" accept="image/jpeg,image/png,image/gif" hidden>
+                        <button type="button" class="btn-upload" id="btnAlterarFoto"><i class="fas fa-upload"></i> Alterar foto</button>
+                        <small id="fotoMsg" role="status" aria-live="polite"></small>
                     </div>
                 </div>
             </div>
@@ -316,8 +316,9 @@
 
     <script type="module">
         import { showLoading, hideLoading } from '../js/loading.js';
-        import { initSearchOverlay } from '../js/search-overlay.js';
-        import { verificarAutenticacao, fazerLogout, authHeaders, aplicarErroApiNoCampo } from '../js/auth.js';
+        import { initNavbar } from '../js/navbar.js';
+        import { verificarAutenticacao, authHeaders, aplicarErroApiNoCampo, aplicarFotoNoElemento, enviarFotoPerfil, FOTO_TIPOS_PERMITIDOS, FOTO_TAMANHO_MAX_BYTES } from '../js/auth.js';
+        import { abrirRecorte, validarImagemOriginal } from '../js/image-cropper.js';
         import { fetchDados } from '../js/dados.js';
 
         showLoading('Carregando dados...');
@@ -340,15 +341,63 @@
 
         const res = await fetch(`/api/usuarios/${usuario.id_usuario}`);
         const u = await res.json();
+        await initNavbar({ usuarioServidor: u });
 
         const nome = u.nome_artistico || u.nome_completo;
         const iniciais = (nome || 'B').substring(0,2).toUpperCase();
         document.getElementById('sidebarAvatar').textContent = iniciais;
         document.getElementById('sidebarNome').textContent = nome;
-        document.getElementById('profileTrigger').textContent = iniciais;
-        const badge = document.getElementById('profileIncompleteBadge');
-        if (badge) badge.classList.toggle('show', Number(u.cadastro_completo ?? 0) === 0);
         document.getElementById('fotoAvatarBig').textContent = iniciais;
+
+        // ── Foto de perfil ───────────────────────────────────────────────
+        let jaTemFoto = Boolean(u.imagem?.caminho);
+        const mostrarFoto = (caminho) => {
+            aplicarFotoNoElemento(document.getElementById('fotoAvatarBig'), caminho);
+            aplicarFotoNoElemento(document.getElementById('sidebarAvatar'), caminho);
+            aplicarFotoNoElemento(document.getElementById('profileTrigger'), caminho);
+        };
+        mostrarFoto(u.imagem?.caminho);
+
+        const fotoInput = document.getElementById('fotoInput');
+        const btnFoto = document.getElementById('btnAlterarFoto');
+        const fotoMsg = document.getElementById('fotoMsg');
+        const avisoFoto = (texto, erro = false) => {
+            fotoMsg.textContent = texto;
+            fotoMsg.classList.toggle('erro', erro);
+        };
+        btnFoto.addEventListener('click', () => fotoInput.click());
+        fotoInput.addEventListener('change', async () => {
+            const arquivo = fotoInput.files[0];
+            if (!arquivo) return;
+            const erroArquivo = validarImagemOriginal(arquivo);
+            if (erroArquivo) {
+                avisoFoto(erroArquivo, true);
+                fotoInput.value = '';
+                return;
+            }
+            btnFoto.disabled = true;
+            try {
+                const arquivoRecortado = await abrirRecorte(arquivo, {
+                    proporcao: 1,
+                    saidaMax: 512,
+                    circular: true
+                });
+                if (!arquivoRecortado) return;
+                if (!FOTO_TIPOS_PERMITIDOS.includes(arquivoRecortado.type) || arquivoRecortado.size > FOTO_TAMANHO_MAX_BYTES) {
+                    throw new Error('A imagem final deve ser JPEG, PNG ou GIF de até 2 MB.');
+                }
+                avisoFoto('Enviando...');
+                const imagem = await enviarFotoPerfil(arquivoRecortado, jaTemFoto);
+                jaTemFoto = true;
+                mostrarFoto(imagem.caminho);
+                avisoFoto('Foto atualizada.');
+            } catch (e) {
+                avisoFoto(e.message || 'Não foi possível enviar a foto.', true);
+            } finally {
+                btnFoto.disabled = false;
+                fotoInput.value = '';
+            }
+        });
 
         document.getElementById('nome_completo').value  = u.nome_completo || '';
         document.getElementById('nome_artistico').value = u.nome_artistico || '';
@@ -531,23 +580,9 @@
             }
         };
 
-        document.getElementById('profileDropdown')?.addEventListener('click', (e) => {
-            e.stopPropagation();
-            document.getElementById('profileDropdown').classList.toggle('active');
-        });
-        document.addEventListener('click', () => {
-            document.getElementById('profileDropdown')?.classList.remove('active');
-        });
-        initSearchOverlay();
-        document.getElementById('btnSair')?.addEventListener('click', fazerLogout);
         document.querySelectorAll('.btn-salvar').forEach(btn => btn.addEventListener('click', () => window.salvarPerfil()));
     </script>
     <div class="tab-bar-spacer"></div>
-    <nav class="tab-bar" aria-label="Navegação principal">
-        <a class="tab-bar-item" href="feed.html"><i class="fas fa-stream"></i>Feed</a>
-        <button type="button" class="tab-bar-item" id="tabBarBuscar"><i class="fas fa-search"></i>Buscar</button>
-        <a class="tab-bar-item tab-bar-cta" href="publicar.html"><i class="fas fa-plus"></i>Postar</a>
-        <a class="tab-bar-item active" href="perfil.html"><i class="fas fa-user"></i>Perfil</a>
-    </nav>
+    <nav class="tab-bar" aria-label="Navegação principal"></nav>
 </body>
 </html>

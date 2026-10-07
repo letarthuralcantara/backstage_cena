@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/cropper.css">
     <style>
         :root {
             --primary: #8b5cf6;
@@ -217,6 +218,21 @@
         .tweet-expira-toggle input { accent-color: var(--primary); width: 16px; height: 16px; cursor: pointer; }
         .tweet-contador { font-size: 12px; color: var(--text-muted); }
         .tweet-contador.no-limite { color: #ef4444; }
+        .tweet-imagem-acoes { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .tweet-imagem-btn, .tweet-imagem-remover {
+            border: 1px solid var(--glass-border); border-radius: 10px;
+            background: var(--glass); color: #fff; padding: 9px 12px;
+            font: inherit; font-size: 13px; cursor: pointer;
+        }
+        .tweet-imagem-btn:hover, .tweet-imagem-remover:hover { border-color: var(--primary); }
+        .tweet-imagem-editar {
+            border: 1px solid var(--glass-border); border-radius: 10px;
+            background: var(--glass); color: #fff; padding: 9px 12px;
+            font: inherit; font-size: 13px; cursor: pointer;
+        }
+        .tweet-imagem-editar:hover { border-color: var(--primary); }
+        .tweet-imagem-preview { display: block; max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 12px; margin-top: 12px; }
+        .tweet-imagem-erro { color: #f87171; font-size: 13px; margin-top: 8px; }
 
         .btn-publish {
             width: 100%;
@@ -278,18 +294,7 @@
             </div>
         </div>
         <div class="header-actions">
-            <div class="profile-dropdown" id="profileDropdown">
-                <div class="profile-trigger" id="profileTrigger"></div>
-                <div class="profile-incomplete-badge" id="profileIncompleteBadge">!</div>
-                <div class="dropdown-menu">
-                    <a href="perfil.html" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a>
-                    <a href="feed.html" class="dropdown-item"><i class="fas fa-stream"></i> Feed</a>
-                    <a href="publicar.html" class="dropdown-item"><i class="fas fa-plus-circle"></i> Nova Postagem</a>
-                    <a href="config.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações</a>
-                    <div class="dropdown-divider"></div>
-                    <div class="dropdown-item" id="btnSair"><i class="fas fa-sign-out-alt"></i> Sair</div>
-                </div>
-            </div>
+            <div class="profile-dropdown" id="profileDropdown"></div>
         </div>
     </header>
 
@@ -344,6 +349,19 @@
                         <textarea id="tweetTexto" class="tweet-textarea" maxlength="280" placeholder="Fala pra cena o que você tá pensando, gravando, procurando..."></textarea>
                     </div>
 
+                    <div class="form-group">
+                        <div class="tweet-imagem-acoes">
+                            <button type="button" class="tweet-imagem-btn" id="tweetImagemEscolher">
+                                <i class="fas fa-image"></i> Adicionar imagem
+                            </button>
+                            <input type="file" id="tweetImagem" accept="image/jpeg,image/png,image/gif" hidden>
+                            <button type="button" class="tweet-imagem-editar hidden" id="tweetImagemEditar">Editar recorte</button>
+                            <button type="button" class="tweet-imagem-remover hidden" id="tweetImagemRemover">Remover imagem</button>
+                        </div>
+                        <img id="tweetImagemPreview" class="tweet-imagem-preview hidden" alt="Pré-visualização da imagem do tweet">
+                        <p id="tweetImagemErro" class="tweet-imagem-erro hidden" role="alert"></p>
+                    </div>
+
                     <div class="tweet-footer">
                         <label class="tweet-expira-toggle">
                             <input type="checkbox" id="tweetExpira">
@@ -372,9 +390,10 @@
     </footer>
 
     <script type="module">
-        import { verificarAutenticacao, fazerLogout, aplicarErroApiNoCampo } from '../js/auth.js';
-        import { initSearchOverlay } from '../js/search-overlay.js';
-        import { criarPostagem, criarTweet } from '../js/postagens.js';
+        import { verificarAutenticacao, aplicarErroApiNoCampo } from '../js/auth.js';
+        import { initNavbar } from '../js/navbar.js';
+        import { criarPostagem, criarTweet, validarImagemTweet } from '../js/postagens.js';
+        import { abrirRecorte, validarImagemOriginal } from '../js/image-cropper.js';
 
         const toastApi = document.createElement('div');
         toastApi.className = 'api-toast';
@@ -390,24 +409,10 @@
             toastApiTimer = setTimeout(() => toastApi.classList.remove('show'), 4500);
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             const usuarioLogado = verificarAutenticacao();
             if (!usuarioLogado) { window.location.href = 'login.html'; }
-            
-            const nomeUsuario = usuarioLogado?.nome_artistico || usuarioLogado?.nome_completo || '';
-            const profileTrigger = document.getElementById('profileTrigger');
-            if (profileTrigger) profileTrigger.textContent = (nomeUsuario || 'B').substring(0, 2).toUpperCase();
-            const badge = document.getElementById('profileIncompleteBadge');
-            if (badge) badge.classList.toggle('show', Number(usuarioLogado?.cadastro_completo ?? 0) === 0);
-
-            document.getElementById('btnSair')?.addEventListener('click', fazerLogout);
-            
-            const profileDropdown = document.getElementById('profileDropdown');
-            profileDropdown?.addEventListener('click', (e) => {
-                e.stopPropagation();
-                profileDropdown.classList.toggle('active');
-            });
-            document.addEventListener('click', () => profileDropdown?.classList.remove('active'));
+            await initNavbar();
 
             // Lógica de Abas
             const tabBtns = document.querySelectorAll('.tab-btn');
@@ -436,6 +441,96 @@
                 tweetContador.textContent = restante;
             });
 
+            const inputImagemTweet = document.getElementById('tweetImagem');
+            const previewImagemTweet = document.getElementById('tweetImagemPreview');
+            const botaoEditarImagemTweet = document.getElementById('tweetImagemEditar');
+            const botaoRemoverImagemTweet = document.getElementById('tweetImagemRemover');
+            const erroImagemTweet = document.getElementById('tweetImagemErro');
+            let urlPreviewImagemTweet = null;
+            let imagemTweetSelecionada = null;
+            let imagemTweetOriginal = null;
+
+            function limparImagemTweet() {
+                if (urlPreviewImagemTweet) URL.revokeObjectURL(urlPreviewImagemTweet);
+                urlPreviewImagemTweet = null;
+                imagemTweetSelecionada = null;
+                imagemTweetOriginal = null;
+                inputImagemTweet.value = '';
+                previewImagemTweet.removeAttribute('src');
+                previewImagemTweet.classList.add('hidden');
+                botaoEditarImagemTweet.classList.add('hidden');
+                botaoRemoverImagemTweet.classList.add('hidden');
+                erroImagemTweet.textContent = '';
+                erroImagemTweet.classList.add('hidden');
+            }
+
+            document.getElementById('tweetImagemEscolher')?.addEventListener('click', () => inputImagemTweet.click());
+            botaoRemoverImagemTweet?.addEventListener('click', limparImagemTweet);
+            async function editarRecorteTweet(arquivo) {
+                const recortado = await abrirRecorte(arquivo, {
+                    proporcao: 'seletor',
+                    saidaMax: 1600,
+                    circular: false
+                });
+                if (!recortado) return null;
+                const erro = validarImagemTweet(recortado);
+                if (erro) throw new Error(erro);
+                return recortado;
+            }
+
+            function mostrarImagemTweet(arquivo) {
+                if (urlPreviewImagemTweet) URL.revokeObjectURL(urlPreviewImagemTweet);
+                imagemTweetSelecionada = arquivo;
+                urlPreviewImagemTweet = URL.createObjectURL(arquivo);
+                previewImagemTweet.src = urlPreviewImagemTweet;
+                previewImagemTweet.classList.remove('hidden');
+                botaoEditarImagemTweet.classList.remove('hidden');
+                botaoRemoverImagemTweet.classList.remove('hidden');
+            }
+
+            botaoEditarImagemTweet?.addEventListener('click', async () => {
+                if (!imagemTweetOriginal) return;
+                try {
+                    const recortado = await editarRecorteTweet(imagemTweetOriginal);
+                    if (recortado) mostrarImagemTweet(recortado);
+                } catch (erro) {
+                    erroImagemTweet.textContent = erro.message || 'Não foi possível recortar a imagem.';
+                    erroImagemTweet.classList.remove('hidden');
+                }
+            });
+
+            inputImagemTweet?.addEventListener('change', async () => {
+                const imagem = inputImagemTweet.files[0];
+                erroImagemTweet.textContent = '';
+                erroImagemTweet.classList.add('hidden');
+                if (!imagem) {
+                    limparImagemTweet();
+                    return;
+                }
+
+                const erro = validarImagemOriginal(imagem);
+                if (erro) {
+                    limparImagemTweet();
+                    erroImagemTweet.textContent = erro;
+                    erroImagemTweet.classList.remove('hidden');
+                    return;
+                }
+
+                imagemTweetOriginal = imagem;
+                try {
+                    const recortado = await editarRecorteTweet(imagem);
+                    if (!recortado) {
+                        limparImagemTweet();
+                        return;
+                    }
+                    mostrarImagemTweet(recortado);
+                } catch (erroRecorte) {
+                    limparImagemTweet();
+                    erroImagemTweet.textContent = erroRecorte.message || 'Não foi possível recortar a imagem.';
+                    erroImagemTweet.classList.remove('hidden');
+                }
+            });
+
             // Submit Tweet
             document.getElementById('formNovoTweet')?.addEventListener('submit', async (e) => {
                 e.preventDefault();
@@ -443,16 +538,24 @@
                 const msgEl = document.getElementById('tweetMsg');
                 const texto = tweetTextarea.value.trim();
                 const expira = document.getElementById('tweetExpira').checked;
+                const imagem = imagemTweetSelecionada;
 
                 if (!texto) return;
+                const erroImagem = imagem && validarImagemTweet(imagem);
+                if (erroImagem) {
+                    erroImagemTweet.textContent = erroImagem;
+                    erroImagemTweet.classList.remove('hidden');
+                    return;
+                }
                 
                 btn.disabled = true;
                 btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> PUBLICANDO...';
                 msgEl.className = 'msg-feedback hidden';
 
                 try {
-                    await criarTweet(texto, expira);
+                    await criarTweet(texto, expira, imagem);
                     e.target.reset();
+                    limparImagemTweet();
                     tweetContador.textContent = '280';
                     msgEl.textContent = 'Tweet publicado com sucesso!';
                     msgEl.className = 'msg-feedback sucesso';
@@ -690,15 +793,9 @@
                 }
             });
 
-            initSearchOverlay();
         });
     </script>
     <div class="tab-bar-spacer"></div>
-    <nav class="tab-bar" aria-label="Navegação principal">
-        <a class="tab-bar-item" href="feed.html"><i class="fas fa-stream"></i>Feed</a>
-        <button type="button" class="tab-bar-item" id="tabBarBuscar"><i class="fas fa-search"></i>Buscar</button>
-        <a class="tab-bar-item tab-bar-cta active" href="publicar.html"><i class="fas fa-plus"></i>Postar</a>
-        <a class="tab-bar-item" href="perfil.html"><i class="fas fa-user"></i>Perfil</a>
-    </nav>
+    <nav class="tab-bar" aria-label="Navegação principal"></nav>
 </body>
 </html>

@@ -1,7 +1,9 @@
 import { Router } from "express";
 import TweetController from "../controllers/TweetController.js";
+import { uploadImagemTweet } from "../config/multer-tweet.js";
 import { isAuthenticated } from "../middlewares/auth.js";
 import { validate } from "../middlewares/validate.js";
+import { removerUploadTemporario } from "../utils/upload.js";
 import {
   tweetParamsSchema,
   tweetUsuarioSchema,
@@ -20,7 +22,10 @@ router.get(
 router.post(
   "/",
   isAuthenticated,
-  validate(criarTweetSchema),
+  uploadImagemTweet,
+  validate(criarTweetSchema, {
+    onInvalid: (req) => removerUploadTemporario(req.file),
+  }),
   TweetController.criar,
 );
 // isOwner não se aplica aqui pelo mesmo motivo do postagem.routes.ts: `:id` é

@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/clubes.css">
     <style>
         :root {
             --primary: #8b5cf6;
@@ -106,6 +107,8 @@
         }
 
         .avatar-main img { width: 100%; height: 100%; object-fit: cover; }
+        .profile-trigger { overflow: hidden; }
+        .profile-trigger img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; display: block; }
 
         .status-indicator {
             position: absolute;
@@ -181,23 +184,29 @@
         .status-option:hover { background: rgba(139,92,246,.12); color: white; }
         .status-option .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 
-        .stats-row {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin: 20px 0;
+        .perfil-bio {
+            display: grid;
+            gap: 8px;
+            margin-top: 4px;
+            text-align: left;
+        }
+
+        .perfil-bio p {
+            color: #ccc;
+            line-height: 1.6;
+            font-size: 13px;
+            overflow-wrap: anywhere;
+        }
+
+        .perfil-clubes {
+            display: grid;
+            gap: 10px;
+            margin: 4px 0 20px;
             padding: 16px 0;
             border-top: 1px solid var(--glass-border);
             border-bottom: 1px solid var(--glass-border);
         }
 
-        .stat-item {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .stat-value { font-weight: 700; font-size: 16px; }
         .stat-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
 
         .quick-info {
@@ -439,56 +448,75 @@
             box-shadow: 0 15px 30px rgba(139, 92, 246, 0.4);
         }
 
-        /* ── PREVIEWS LIST ── */
+        /* ── PROFILE POSTS ── */
         .previews-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
             margin-top: 20px;
         }
 
-        .story-thumb {
-            aspect-ratio: 9/16;
-            border-radius: 16px;
+        .perfil-post {
+            display: grid;
+            gap: 12px;
+            padding: 16px;
+            text-align: left;
             background: var(--glass);
             border: 1px solid var(--glass-border);
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.3s;
+            border-radius: 16px;
+        }
+
+        .perfil-post-cabecalho {
             display: flex;
             align-items: center;
-            justify-content: center;
-            padding: 0;
+            gap: 10px;
         }
 
-        .story-thumb:hover {
-            transform: scale(1.05);
-            border-color: var(--primary);
-        }
-
-        .story-thumb-icone {
-            width: 52px;
-            height: 52px;
+        .perfil-post-avatar {
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
-            background: var(--glass-fill-strong);
+            background: rgba(139, 92, 246, 0.2);
+            color: #c4b5fd;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            flex-shrink: 0;
+            overflow: hidden;
         }
 
-        .story-thumb-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.8));
-            padding: 12px;
+        .perfil-post-autor {
             display: flex;
             flex-direction: column;
-            justify-content: flex-end;
+            gap: 2px;
+            min-width: 0;
         }
 
-        .story-thumb-title { font-size: 11px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.story-thumb-tempo { font-size: 10px; color: rgba(255,255,255,.55); margin-top: 2px; }
+        .perfil-post-autor strong { font-size: 13px; }
+        .perfil-post-autor span { color: var(--text-muted); font-size: 11px; }
+        .perfil-post-texto { color: #eee; font-size: 14px; line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+        .perfil-post-audio {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 11px 12px;
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            background: var(--glass-fill-strong);
+            color: #fff;
+            font: inherit;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .perfil-post-audio:hover { border-color: var(--primary); }
+        .perfil-post-audio-icone { display: flex; flex-shrink: 0; }
+        .perfil-post-audio-titulo { flex: 1; min-width: 0; font-size: 13px; font-weight: 600; overflow-wrap: anywhere; }
+        .perfil-post-audio-duracao { color: var(--text-muted); font-size: 12px; flex-shrink: 0; }
 
         /* ── SKILLS TAGS ── */
         .tags-container {
@@ -536,18 +564,7 @@
             </div>
         </div>
         <div class="header-actions">
-            <div class="profile-dropdown" id="profileDropdown">
-                <div class="profile-trigger" id="profileTrigger"></div>
-                <div class="profile-incomplete-badge" id="profileIncompleteBadge">!</div>
-                <div class="dropdown-menu">
-                    <a href="perfil.html" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a>
-                    <a href="feed.html" class="dropdown-item"><i class="fas fa-stream"></i> Feed</a>
-                    <a href="publicar.html" class="dropdown-item"><i class="fas fa-plus-circle"></i> Nova Postagem</a>
-                    <a href="config.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações</a>
-                    <div class="dropdown-divider"></div>
-                    <div class="dropdown-item" id="btnSair"><i class="fas fa-sign-out-alt"></i> Sair</div>
-                </div>
-            </div>
+            <div class="profile-dropdown" id="profileDropdown"></div>
         </div>
     </header>
 
@@ -578,15 +595,14 @@
                             </div>
                         </div>
 
-                        <div class="stats-row">
-                            <div class="stat-item">
-                                <span class="stat-value" id="countPrevias">0</span>
-                                <span class="stat-label">Prévias</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="stat-value" id="expValue">0</span>
-                                <span class="stat-label">Anos Exp.</span>
-                            </div>
+                        <div class="perfil-bio">
+                            <span class="stat-label">Biografia</span>
+                            <p id="bioExibir"></p>
+                        </div>
+
+                        <div class="perfil-clubes">
+                            <span class="stat-label">Clubes</span>
+                            <div class="clube-chips" id="clubesLista"></div>
                         </div>
 
                         <ul class="quick-info">
@@ -594,6 +610,23 @@
                             <li><i class="fas fa-map-marker-alt"></i> <span id="localExibir">---</span></li>
                             <li id="telefoneRow" class="hidden"><i class="fas fa-phone"></i> <span id="telefoneExibir">---</span></li>
                         </ul>
+
+                        <div class="perfil-habilidades" style="display: flex; flex-direction: column; gap: 20px; margin-top: 20px; text-align: left;">
+                            <div>
+                                <label style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; display: block; margin-bottom: 12px;">Instrumentos</label>
+                                <div class="tags-container" id="talentosCont"></div>
+                            </div>
+
+                            <div>
+                                <label style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; display: block; margin-bottom: 12px;">Gêneros</label>
+                                <div class="tags-container" id="generosCont"></div>
+                            </div>
+
+                            <div id="dawsSection" class="hidden">
+                                <label style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; display: block; margin-bottom: 12px;">Workstation (DAWs)</label>
+                                <div class="tags-container" id="dawsCont"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -604,26 +637,18 @@
                     </div>
                 </div>
 
-                <button class="btn-publish" id="btnEditarPerfil" style="background: var(--glass); border: 1px solid var(--glass-border); box-shadow: none;">
+                <button class="btn-publish hidden" id="btnEditarPerfil" style="background: var(--glass); border: 1px solid var(--glass-border); box-shadow: none;">
                     <i class="fas fa-pen-to-square"></i> Editar Perfil
                 </button>
             </aside>
 
             <!-- MAIN CONTENT -->
             <main class="main-content">
-                <!-- BIO -->
-                <div class="glass-card">
-                    <div class="section-header">
-                        <h2 class="section-title"><i class="fas fa-quote-left"></i> Sobre</h2>
-                    </div>
-                    <p id="bioExibir" style="color: #ccc; line-height: 1.6; font-size: 15px;"></p>
-                </div>
-
                 <!-- ADD PREVIEW (OWNER ONLY) -->
                 <a href="publicar.html" class="backstage-panel hidden" id="addPreviaPanel" style="display:flex; align-items:center; justify-content:space-between; text-decoration:none; color:inherit; cursor:pointer;">
                     <div class="section-header" style="margin-bottom:0;">
-                        <h2 class="section-title"><i class="fas fa-bolt"></i> Backstage Pass</h2>
-                        <span style="font-size: 10px; color: var(--primary); font-weight: 800; letter-spacing: 2px;">NOVA POSTAGEM</span>
+                        <h2 class="section-title"><i class="fas fa-plus"></i> Backstage Post</h2>
+                        <span style="font-size: 10px; color: var(--primary); font-weight: 800; letter-spacing: 2px;"></span>
                     </div>
                     <i class="fas fa-arrow-right" style="color: var(--primary); font-size: 20px;"></i>
                 </a>
@@ -631,34 +656,13 @@
                 <!-- PREVIEWS LIST -->
                 <div class="glass-card">
                     <div class="section-header">
-                        <h2 class="section-title"><i class="fas fa-music"></i> Prévias Ativas</h2>
+                        <h2 class="section-title"><i class="fas fa-stream"></i> Postagens</h2>
                     </div>
                     <div id="previasLista" class="previews-grid">
                         <!-- Stories aqui -->
                     </div>
                 </div>
 
-                <!-- SKILLS & GEAR -->
-                <div class="glass-card">
-                    <h2 class="section-title" style="margin-bottom: 24px;"><i class="fas fa-layer-group"></i> Habilidades & Setup</h2>
-
-                    <div style="display: flex; flex-direction: column; gap: 20px;">
-                        <div>
-                            <label style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; display: block; margin-bottom: 12px;">Instrumentos</label>
-                            <div class="tags-container" id="talentosCont"></div>
-                        </div>
-
-                        <div>
-                            <label style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; display: block; margin-bottom: 12px;">Gêneros</label>
-                            <div class="tags-container" id="generosCont"></div>
-                        </div>
-
-                        <div id="dawsSection" class="hidden">
-                            <label style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; display: block; margin-bottom: 12px;">Workstation (DAWs)</label>
-                            <div class="tags-container" id="dawsCont"></div>
-                        </div>
-                    </div>
-                </div>
             </main>
         </div>
     </div>
@@ -675,9 +679,10 @@
 
     <script type="module">
         import { showLoading, hideLoading } from '../js/loading.js';
-        import { initSearchOverlay } from '../js/search-overlay.js';
-        import { verificarAutenticacao, fazerLogout, authHeaders } from '../js/auth.js';
-        import { renderizarGradePreviasDoUsuario } from '../js/postagens.js';
+        import { authHeaders } from '../js/auth.js';
+        import { ClubesAPI, iconeTipo } from '../js/clubes.js';
+        import { carregarUsuariosPerfil, renderizarIdentidadePerfil } from '../js/perfil.js';
+        import { renderizarPostagensDoUsuario } from '../js/postagens.js';
 
         const SOCIAL_ICONS = {
             instagram:'fa-brands fa-instagram', youtube:'fa-brands fa-youtube',
@@ -693,14 +698,14 @@
             invisivel:    { label: 'Invisível',    cls: 'invisivel' },
         };
 
-        function calcularFaltantesPerfil(u) {
+        function calcularFaltantesPerfil(usuarioVisto) {
             const faltando = [];
-            if (!u.instrumentos || u.instrumentos.length === 0) faltando.push('pelo menos 1 instrumento');
-            if (!u.generos || u.generos.length === 0) faltando.push('pelo menos 1 gênero');
-            if (!u.estado) faltando.push('estado');
-            const bio = (u.biografia || '').trim();
+            if (!usuarioVisto.instrumentos || usuarioVisto.instrumentos.length === 0) faltando.push('pelo menos 1 instrumento');
+            if (!usuarioVisto.generos || usuarioVisto.generos.length === 0) faltando.push('pelo menos 1 gênero');
+            if (!usuarioVisto.estado) faltando.push('estado');
+            const bio = (usuarioVisto.biografia || '').trim();
             if (bio.length < 20) faltando.push('biografia com mínimo 20 caracteres');
-            const areas = Array.isArray(u.area_atuacao) ? u.area_atuacao : (u.area_atuacao ? [u.area_atuacao] : []);
+            const areas = Array.isArray(usuarioVisto.area_atuacao) ? usuarioVisto.area_atuacao : (usuarioVisto.area_atuacao ? [usuarioVisto.area_atuacao] : []);
             if (areas.length === 0) faltando.push('área de atuação');
             return faltando;
         }
@@ -717,47 +722,58 @@
         async function iniciarPerfil() {
             const params = new URLSearchParams(window.location.search);
             const idParam = params.get('id');
-            const usuarioLogado = verificarAutenticacao(false);
-
-            let u;
+            let usuarioVisto;
+            let ehProprio;
             try {
-                if (idParam) {
-                    const res = await fetch(`/api/usuarios/${idParam}`);
-                    u = await res.json();
-                } else {
-                    if (!usuarioLogado) { window.location.href = 'login.html'; return; }
-                    const res = await fetch(`/api/usuarios/${usuarioLogado.id_usuario}`);
-                    u = await res.json();
-                }
+                ({ usuarioVisto, ehProprio } = await carregarUsuariosPerfil(idParam));
             } catch (e) { console.error(e); return; }
+            if (!usuarioVisto) { window.location.href = 'login.html'; return; }
 
-            idUsuarioAtual = u.id_usuario;
-            const ehProprio = !idParam || String(usuarioLogado?.id_usuario) === String(u.id_usuario);
+            idUsuarioAtual = usuarioVisto.id_usuario;
+            document.getElementById('btnEditarPerfil')?.classList.toggle('hidden', !ehProprio);
 
             // Render
-            const nome = u.nome_artistico || u.nome_completo;
-            const iniciais = (nome || 'B').substring(0, 2).toUpperCase();
-            document.getElementById('avatar').textContent = iniciais;
-            document.getElementById('profileTrigger').textContent = iniciais;
-            const badge = document.getElementById('profileIncompleteBadge');
-            if (badge) {
-                badge.classList.toggle('show', Number(u.cadastro_completo ?? 0) === 0);
-            }
-            document.getElementById('nomeExibir').textContent = nome;
-            document.getElementById('emailExibir').textContent = u.email;
-            document.getElementById('localExibir').textContent = [u.cidade, u.estado].filter(Boolean).join(', ') || 'Brasil';
-            document.getElementById('expValue').textContent = u.anos_experiencia || '0';
-            document.getElementById('bioExibir').textContent = u.biografia || 'Este artista ainda não escreveu sua biografia.';
+            renderizarIdentidadePerfil(usuarioVisto);
+
+            // Clubes de que a pessoa participa (dado público, como o resto do perfil).
+            (async () => {
+                const lista = document.getElementById('clubesLista');
+                const clubes = await ClubesAPI.doUsuario(usuarioVisto.id_usuario).catch(() => []);
+                if (!clubes.length) {
+                    lista.innerHTML = '<p style="color: var(--text-2); font-size: 14px;">Ainda não participa de nenhum clube.</p>';
+                    return;
+                }
+                clubes.forEach((c) => {
+                    const a = document.createElement('a');
+                    a.className = 'clube-chip';
+                    a.href = `clube.html?id=${c.id_clube}`;
+                    if (c.imagem) {
+                        const imagem = document.createElement('img');
+                        imagem.className = 'clube-chip-imagem';
+                        imagem.src = c.imagem;
+                        imagem.alt = '';
+                        a.appendChild(imagem);
+                    } else {
+                        const icone = document.createElement('i');
+                        icone.className = `fas ${iconeTipo(c.tipo)}`;
+                        a.appendChild(icone);
+                    }
+                    a.appendChild(document.createTextNode(c.nome));
+                    lista.appendChild(a);
+                });
+            })();
+            document.getElementById('localExibir').textContent = [usuarioVisto.cidade, usuarioVisto.estado].filter(Boolean).join(', ') || 'Brasil';
+            document.getElementById('bioExibir').textContent = usuarioVisto.biografia || 'Este artista ainda não escreveu sua biografia.';
 
             // Status
-            aplicarStatus(u.status || 'disponivel');
+            aplicarStatus(usuarioVisto.status || 'disponivel');
             if (ehProprio) {
                 document.getElementById('statusBadge').classList.add('is-editable');
                 document.getElementById('statusChevron').classList.remove('hidden');
             }
 
             if (ehProprio) {
-                const faltando = calcularFaltantesPerfil(u);
+                const faltando = calcularFaltantesPerfil(usuarioVisto);
                 if (faltando.length > 0) {
                     const container = document.querySelector('.container');
                     if (container && !document.getElementById('perfilBannerIncompleto')) {
@@ -799,7 +815,7 @@
             }
 
             // Area
-            const areas = Array.isArray(u.area_atuacao) ? u.area_atuacao : [];
+            const areas = Array.isArray(usuarioVisto.area_atuacao) ? usuarioVisto.area_atuacao : [];
             if (areas.length) document.getElementById('areaBadge').textContent = areas[0];
 
             // Tags
@@ -809,16 +825,16 @@
                     ? arr.map(t => `<span class="skill-tag"><i class="${icon}"></i>${t}</span>`).join('')
                     : '<span style="color:#555; font-size:12px;">Nenhum item adicionado</span>';
             };
-            renderTags(u.instrumentos || [], 'talentosCont', 'fas fa-music');
-            renderTags(u.generos || [], 'generosCont', 'fas fa-compact-disc');
+            renderTags(usuarioVisto.instrumentos || [], 'talentosCont', 'fas fa-music');
+            renderTags(usuarioVisto.generos || [], 'generosCont', 'fas fa-compact-disc');
 
-            if (u.daws?.length) {
+            if (usuarioVisto.daws?.length) {
                 document.getElementById('dawsSection').classList.remove('hidden');
-                renderTags(u.daws, 'dawsCont', 'fas fa-sliders');
+                renderTags(usuarioVisto.daws, 'dawsCont', 'fas fa-sliders');
             }
 
             // Social
-            const sociais = u.redes_sociais || {};
+            const sociais = usuarioVisto.redes_sociais || {};
             const linksHtml = Object.entries(sociais).filter(([,v])=>v).map(([k,v])=>{
                 const icon = SOCIAL_ICONS[k] || 'fa-solid fa-link';
                 return `<a href="${v}" target="_blank" class="skill-tag" style="text-decoration:none;"><i class="${icon}"></i>${k}</a>`;
@@ -827,9 +843,7 @@
 
             // Previews
             if (ehProprio) document.getElementById('addPreviaPanel').classList.remove('hidden');
-            renderizarGradePreviasDoUsuario(u.id_usuario, document.getElementById('previasLista'), (count) => {
-                document.getElementById('countPrevias').textContent = count;
-            });
+            renderizarPostagensDoUsuario(usuarioVisto.id_usuario, document.getElementById('previasLista'));
 
             hideLoading();
         }
@@ -861,11 +875,8 @@
             });
         });
 
-        document.getElementById('btnSair')?.addEventListener('click', fazerLogout);
-        document.getElementById('profileDropdown')?.addEventListener('click', () =>
-            document.getElementById('profileDropdown').classList.toggle('active'));
-        initSearchOverlay();
         document.getElementById('btnEditarPerfil')?.addEventListener('click', () => {
+            if (document.getElementById('btnEditarPerfil').classList.contains('hidden')) return;
             window.location.href = 'editar.html';
         });
 
@@ -873,11 +884,6 @@
         iniciarPerfil();
     </script>
     <div class="tab-bar-spacer"></div>
-    <nav class="tab-bar" aria-label="Navegação principal">
-        <a class="tab-bar-item" href="feed.html"><i class="fas fa-stream"></i>Feed</a>
-        <button type="button" class="tab-bar-item" id="tabBarBuscar"><i class="fas fa-search"></i>Buscar</button>
-        <a class="tab-bar-item tab-bar-cta" href="publicar.html"><i class="fas fa-plus"></i>Postar</a>
-        <a class="tab-bar-item active" href="perfil.html"><i class="fas fa-user"></i>Perfil</a>
-    </nav>
+    <nav class="tab-bar" aria-label="Navegação principal"></nav>
 </body>
 </html>

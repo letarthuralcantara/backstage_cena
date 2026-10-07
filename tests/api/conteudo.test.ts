@@ -13,11 +13,17 @@ const { default: app } = await import("../../src/app.js");
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const arquivoAudioValido = path.join(__dirname, "..", "fixtures", "sample.mp3");
 const pastaUploads = path.join(process.cwd(), "public", "uploads", "audio");
+const pastaAvatares = path.join(process.cwd(), "public", "uploads", "avatars");
+const PNG = Buffer.from(
+  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==",
+  "base64",
+);
 
 let donoId = 0;
 let donoToken = "";
 let intrusoId = 0;
 let intrusoToken = "";
+let avatarCriado: string | null = null;
 
 beforeAll(async () => {
   const dono = await request(app)
@@ -42,6 +48,11 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
+  if (avatarCriado) {
+    await unlink(path.join(pastaAvatares, path.basename(avatarCriado))).catch(
+      () => undefined,
+    );
+  }
   if (donoId && donoToken)
     await request(app)
       .delete(`/api/usuarios/${donoId}`)
@@ -109,6 +120,13 @@ describe("rotas de postagem (upload de audio)", () => {
   });
 
   it("cria uma postagem com audio valido", async () => {
+    const avatar = await request(app)
+      .post("/api/usuarios/imagem")
+      .set("Authorization", `Bearer ${donoToken}`)
+      .attach("image", PNG, { filename: "avatar.png", contentType: "image/png" });
+    expect(avatar.status).toBe(201);
+    avatarCriado = avatar.body.imagem.caminho;
+
     const response = await request(app)
       .post("/api/postagens")
       .set("Authorization", `Bearer ${donoToken}`)
@@ -117,17 +135,18 @@ describe("rotas de postagem (upload de audio)", () => {
 
     expect(response.status).toBe(201);
     expect(response.body.audio_url).toMatch(/^\/uploads\/audio\//);
+    expect(response.body.autor.imagem).toBe(avatarCriado);
     postagemId = response.body.id_postagem;
   });
 
   it("lista a postagem recem-criada no feed", async () => {
     const response = await request(app).get("/api/postagens/feed");
     expect(response.status).toBe(200);
-    expect(
-      response.body.some(
-        (p: { id_postagem: number }) => p.id_postagem === postagemId,
-      ),
-    ).toBe(true);
+    const postagem = response.body.find(
+      (p: { id_postagem: number }) => p.id_postagem === postagemId,
+    );
+    expect(postagem).toBeDefined();
+    expect(postagem.autor.imagem).toBe(avatarCriado);
   });
 
   it("impede que outro usuario remova a postagem de outra pessoa (IDOR)", async () => {

@@ -20,6 +20,10 @@ src/generated/
 # Uploads locais
 /public/uploads/audio/*
 !/public/uploads/audio/.gitkeep
+/public/uploads/avatars/*
+!/public/uploads/avatars/.gitkeep
+/public/uploads/tweets/*
+!/public/uploads/tweets/.gitkeep
 
 # Outros temporários
 .DS_Store

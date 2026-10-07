@@ -122,16 +122,7 @@
             </div>
         </div>
         <div class="header-actions">
-            <div class="profile-dropdown" id="profileDropdown">
-                <div class="profile-trigger" id="profileTrigger"></div>
-                <div class="profile-incomplete-badge" id="incompleteBadge">!</div>
-                <div class="dropdown-menu">
-                    <a href="perfil.html" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a>
-                    <a href="config.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações</a>
-                    <div class="dropdown-divider"></div>
-                    <div class="dropdown-item" id="btnSair"><i class="fas fa-sign-out-alt"></i> Sair</div>
-                </div>
-            </div>
+            <div class="profile-dropdown" id="profileDropdown"></div>
         </div>
     </header>
 
@@ -332,8 +323,8 @@
     </div>
 
     <script type="module">
-        import { verificarAutenticacao, fazerLogout, authHeaders, aplicarErroApiNoCampo } from '../js/auth.js';
-        import { initSearchOverlay } from '../js/search-overlay.js';
+        import { verificarAutenticacao, authHeaders, aplicarErroApiNoCampo, aplicarFotoNoElemento } from '../js/auth.js';
+        import { initNavbar } from '../js/navbar.js';
 
         const usuario = verificarAutenticacao();
         if (!usuario) { window.location.href = 'login.html'; }
@@ -341,14 +332,14 @@
         // Carrega dados do usuário
         const res = await fetch(`/api/usuarios/${usuario.id_usuario}`);
         const u = await res.json();
+        await initNavbar({ usuarioServidor: u });
         const nome = u.nome_artistico || u.nome_completo;
         document.getElementById('sidebarAvatar').textContent = nome.substring(0,2).toUpperCase();
         document.getElementById('sidebarNome').textContent = nome;
         document.getElementById('sidebarEmail').textContent = u.email;
-        document.getElementById('profileTrigger').textContent = nome.substring(0,2).toUpperCase();
+        aplicarFotoNoElemento(document.getElementById('sidebarAvatar'), u.imagem?.caminho, nome);
 
         if (u.cadastro_completo == 0) {
-            document.getElementById('incompleteBadge')?.classList.add('show');
             document.getElementById('cadastroBadge')?.classList.add('show');
             document.getElementById('pendingBanner').style.display = 'flex';
         }
@@ -512,15 +503,6 @@
             });
         });
 
-        document.getElementById('profileDropdown')?.addEventListener('click', (e) => {
-            e.stopPropagation();
-            document.getElementById('profileDropdown').classList.toggle('active');
-        });
-        document.addEventListener('click', () => {
-            document.getElementById('profileDropdown')?.classList.remove('active');
-        });
-        initSearchOverlay();
-        document.getElementById('btnSair')?.addEventListener('click', fazerLogout);
         document.getElementById('btnSalvarSenha')?.addEventListener('click', () => window.alterarSenha());
         document.getElementById('btnAbrirModalExclusao')?.addEventListener('click', () => window.abrirModalExclusao());
         document.getElementById('btnFecharModalExclusao')?.addEventListener('click', () => window.fecharModalExclusao());
@@ -528,11 +510,6 @@
     </script>
 
     <div class="tab-bar-spacer"></div>
-    <nav class="tab-bar" aria-label="Navegação principal">
-        <a class="tab-bar-item" href="feed.html"><i class="fas fa-stream"></i>Feed</a>
-        <button type="button" class="tab-bar-item" id="tabBarBuscar"><i class="fas fa-search"></i>Buscar</button>
-        <a class="tab-bar-item tab-bar-cta" href="publicar.html"><i class="fas fa-plus"></i>Postar</a>
-        <a class="tab-bar-item active" href="perfil.html"><i class="fas fa-user"></i>Perfil</a>
-    </nav>
+    <nav class="tab-bar" aria-label="Navegação principal"></nav>
 </body>
 </html>

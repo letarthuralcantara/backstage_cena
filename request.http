@@ -358,3 +358,113 @@ Content-Type: audio/mpeg
 --no-auth-boundary--
 
 ### Esperado: 401 Unauthorized sem processar o arquivo.
+
+
+### 11) AVATAR — enviar imagem de perfil (primeiro envio: 201; novo envio: 200)
+POST http://localhost:3000/api/usuarios/imagem
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="image"; filename="avatar.png"
+Content-Type: image/png
+
+< ./public/images/user_photo.png
+--boundary--
+
+### 11.1) AVATAR — substituir imagem (PUT)
+PUT http://localhost:3000/api/usuarios/imagem
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="image"; filename="avatar.png"
+Content-Type: image/png
+
+< ./public/images/user_photo.png
+--boundary--
+
+### 11.2) AVATAR — sem autenticação (401)
+POST http://localhost:3000/api/usuarios/imagem
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="image"; filename="avatar.png"
+Content-Type: image/png
+
+< ./public/images/user_photo.png
+--boundary--
+
+### 11.3) AVATAR — tipo não permitido (400)
+POST http://localhost:3000/api/usuarios/imagem
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="image"; filename="nota.txt"
+Content-Type: text/plain
+
+conteudo qualquer
+--boundary--
+
+
+### 12) CLUBES — recomendados para o usuário logado (por gênero, instrumento e DAW do perfil)
+GET http://localhost:3000/api/clubes/recomendados?limite=6
+Authorization: Bearer {{token}}
+
+### 12.1) CLUBES — listar/filtrar (q e tipo são opcionais)
+GET http://localhost:3000/api/clubes?q=rock&tipo=genero
+Authorization: Bearer {{token}}
+
+### 12.2) CLUBES — meus clubes
+GET http://localhost:3000/api/clubes/meus
+Authorization: Bearer {{token}}
+
+### 12.3) CLUBES — criar (tipo: genero | instrumento | daw | geral; tag obrigatória, exceto em "geral")
+# @name criarClube
+POST http://localhost:3000/api/clubes
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "nome": "Beatmakers do FL",
+  "descricao": "Troca de beats e feedback",
+  "tipo": "daw",
+  "tag": "FL Studio"
+}
+
+### 12.4) CLUBES — detalhe, entrar e sair
+@clubeId = {{criarClube.response.body.id_clube}}
+
+GET http://localhost:3000/api/clubes/{{clubeId}}
+Authorization: Bearer {{token}}
+
+###
+POST http://localhost:3000/api/clubes/{{clubeId}}/entrar
+Authorization: Bearer {{token}}
+
+###
+DELETE http://localhost:3000/api/clubes/{{clubeId}}/sair
+Authorization: Bearer {{token}}
+
+### 12.5) CLUBES — chat (só membros). `depois` devolve apenas o que chegou após esse id
+GET http://localhost:3000/api/clubes/{{clubeId}}/mensagens
+Authorization: Bearer {{token}}
+
+###
+GET http://localhost:3000/api/clubes/{{clubeId}}/mensagens?depois=0
+Authorization: Bearer {{token}}
+
+###
+POST http://localhost:3000/api/clubes/{{clubeId}}/mensagens
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "texto": "Fala, galera!" }
+
+### 12.6) CLUBES — clubes de um usuário (público, usado no perfil)
+GET http://localhost:3000/api/clubes/usuario/{{userId}}
+
+### 12.7) CLUBES — excluir (só o dono)
+DELETE http://localhost:3000/api/clubes/{{clubeId}}
+Authorization: Bearer {{token}}

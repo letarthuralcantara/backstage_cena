@@ -58,7 +58,14 @@ export const criarTweetSchema = z.object({
         .trim()
         .min(1, "O tweet não pode ficar vazio.")
         .max(280, "O tweet deve ter no máximo 280 caracteres"),
-      expirar: z.boolean().optional().default(false),
+      expirar: z.preprocess(
+        (value) => {
+          if (value === "true" || value === "1") return true;
+          if (value === "false" || value === "0" || value === "") return false;
+          return value;
+        },
+        z.boolean().default(false),
+      ),
     })
     .strict(),
 });

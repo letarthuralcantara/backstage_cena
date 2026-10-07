@@ -1,4 +1,8 @@
-import { authHeaders, verificarAutenticacao, fazerLogout } from "./auth.js";
+import {
+  authHeaders,
+  aplicarFotoNoElemento,
+} from "./auth.js";
+import { prepararCabecalho } from "./clubes.js";
 
 // ── Helpers de status ─────────────────────────────────────────────────────────
 const STATUS_INFO = {
@@ -30,67 +34,98 @@ function criarBolinhaStatus(status) {
 }
 
 // ── Helper de cadastro completo ───────────────────────────────────────────────
-function calcularFaltando(u) {
+function calcularFaltando(usuarioVisto) {
   const faltando = [];
-  if (!u.instrumentos || u.instrumentos.length === 0)
+  if (!usuarioVisto.instrumentos || usuarioVisto.instrumentos.length === 0)
     faltando.push("pelo menos 1 instrumento");
-  if (!u.generos || u.generos.length === 0)
+  if (!usuarioVisto.generos || usuarioVisto.generos.length === 0)
     faltando.push("pelo menos 1 gênero");
-  if (!u.estado) faltando.push("estado");
-  const bio = (u.biografia || "").trim();
+  if (!usuarioVisto.estado) faltando.push("estado");
+  const bio = (usuarioVisto.biografia || "").trim();
   if (bio.length < 20) faltando.push("biografia com mínimo 20 caracteres");
-  const areas = Array.isArray(u.area_atuacao)
-    ? u.area_atuacao
-    : u.area_atuacao
-      ? [u.area_atuacao]
+  const areas = Array.isArray(usuarioVisto.area_atuacao)
+    ? usuarioVisto.area_atuacao
+    : usuarioVisto.area_atuacao
+      ? [usuarioVisto.area_atuacao]
       : [];
   if (areas.length === 0) faltando.push("área de atuação");
   return faltando;
 }
 
+export async function carregarUsuariosPerfil(idParam, redirecionar = false) {
+  const usuarioLogado = await prepararCabecalho(redirecionar);
+  if (!idParam && !usuarioLogado) return { usuarioLogado, usuarioVisto: null, ehProprio: false };
+
+  if (
+    usuarioLogado &&
+    (!idParam || String(idParam) === String(usuarioLogado.id_usuario))
+  ) {
+    return {
+      usuarioLogado,
+      usuarioVisto: usuarioLogado,
+      ehProprio: true,
+    };
+  }
+
+  const res = await fetch(`/api/usuarios/${idParam}`);
+  if (!res.ok) throw new Error("Não foi possível carregar este perfil.");
+  const usuarioVisto = await res.json();
+  return {
+    usuarioLogado,
+    usuarioVisto,
+    ehProprio:
+      String(usuarioLogado?.id_usuario) === String(usuarioVisto.id_usuario),
+  };
+}
+
+export function renderizarIdentidadePerfil(usuarioVisto) {
+  const nome = usuarioVisto.nome_artistico || usuarioVisto.nome_completo;
+  const iniciais = nome.substring(0, 2).toUpperCase();
+
+  const avatar = document.getElementById("avatar");
+  if (avatar) {
+    avatar.textContent = iniciais;
+    aplicarFotoNoElemento(avatar, usuarioVisto.imagem?.caminho, nome);
+  }
+  const nomeExibir = document.getElementById("nomeExibir");
+  if (nomeExibir) nomeExibir.textContent = nome;
+  const emailExibir = document.getElementById("emailExibir");
+  if (emailExibir) emailExibir.textContent = usuarioVisto.email;
+}
+
 export async function iniciarPerfil() {
   const params = new URLSearchParams(window.location.search);
   const idParam = params.get("id");
-  let u;
+  const { usuarioVisto, ehProprio } = await carregarUsuariosPerfil(
+    idParam,
+    !idParam,
+  );
+  if (!usuarioVisto) return;
 
-  if (idParam) {
-    const res = await fetch(`/api/usuarios/${idParam}`);
-    u = await res.json();
-  } else {
-    const usuarioLocal = verificarAutenticacao();
-    if (!usuarioLocal) return;
-    const res = await fetch(`/api/usuarios/${usuarioLocal.id_usuario}`);
-    u = await res.json();
-  }
+  document
+    .getElementById("btnEditarPerfil")
+    ?.classList.toggle("hidden", !ehProprio);
 
-  const nome = u.nome_artistico || u.nome_completo;
-  const iniciais = nome.substring(0, 2).toUpperCase();
-
-  document.getElementById("avatar").textContent = iniciais;
-  document.getElementById("nomeExibir").textContent = nome;
-  document.getElementById("emailExibir").textContent = u.email;
+  renderizarIdentidadePerfil(usuarioVisto);
   document.getElementById("localExibir").textContent =
-    `${u.cidade || ""}, ${u.estado || ""}`;
+    `${usuarioVisto.cidade || ""}, ${usuarioVisto.estado || ""}`;
   document.getElementById("bioExibir").textContent =
-    u.biografia || "Sem descrição ainda.";
-
-  const profileTrigger = document.getElementById("profileTrigger");
-  if (profileTrigger) profileTrigger.textContent = iniciais;
+    usuarioVisto.biografia || "Sem descrição ainda.";
 
   // ── Bolinha de status no avatar ───────────────────────────────────────────
   const avatarContainer = document.querySelector(".avatar-container");
   if (avatarContainer) {
     // Garantir position: relative no container
     avatarContainer.style.position = "relative";
-    const bolinha = criarBolinhaStatus(u.status || "disponivel");
+    const bolinha = criarBolinhaStatus(usuarioVisto.status || "disponivel");
     avatarContainer.appendChild(bolinha);
   }
 
   // ── Área de atuação ───────────────────────────────────────────────────────
-  const areas = Array.isArray(u.area_atuacao)
-    ? u.area_atuacao
-    : u.area_atuacao
-      ? [u.area_atuacao]
+  const areas = Array.isArray(usuarioVisto.area_atuacao)
+    ? usuarioVisto.area_atuacao
+    : usuarioVisto.area_atuacao
+      ? [usuarioVisto.area_atuacao]
       : [];
   if (areas.length > 0) {
     const badge = document.getElementById("areaBadge");
@@ -98,22 +133,22 @@ export async function iniciarPerfil() {
     badge.classList.remove("hidden");
   }
 
-  if (u.telefone) {
-    document.getElementById("telefoneExibir").textContent = u.telefone;
+  if (usuarioVisto.telefone) {
+    document.getElementById("telefoneExibir").textContent = usuarioVisto.telefone;
     document.getElementById("telefoneRow").classList.remove("hidden");
   }
-  if (u.bairro) {
-    document.getElementById("bairroExibir").textContent = u.bairro;
+  if (usuarioVisto.bairro) {
+    document.getElementById("bairroExibir").textContent = usuarioVisto.bairro;
     document.getElementById("bairroRow").classList.remove("hidden");
   }
-  if (u.anos_experiencia) {
+  if (usuarioVisto.anos_experiencia) {
     document.getElementById("expExibir").textContent =
-      `${u.anos_experiencia} anos de experiência`;
+      `${usuarioVisto.anos_experiencia} anos de experiência`;
     document.getElementById("expRow").classList.remove("hidden");
   }
 
   // ── Redes sociais ─────────────────────────────────────────────────────────
-  const redes = u.redes_sociais || {};
+  const redes = usuarioVisto.redes_sociais || {};
   const socialSection = document.getElementById("socialSection");
   const socialLinks = document.getElementById("socialLinks");
   if (socialSection && socialLinks) {
@@ -144,8 +179,8 @@ export async function iniciarPerfil() {
 
   // ── Instrumentos e gêneros ────────────────────────────────────────────────
   const talentosCont = document.getElementById("talentosCont");
-  if (u.instrumentos?.length) {
-    talentosCont.innerHTML = `<div class="tags-grid">${u.instrumentos
+  if (usuarioVisto.instrumentos?.length) {
+    talentosCont.innerHTML = `<div class="tags-grid">${usuarioVisto.instrumentos
       .map((i) => `<span class="tag"><i class="fas fa-guitar"></i>${i}</span>`)
       .join("")}</div>`;
   } else {
@@ -154,8 +189,8 @@ export async function iniciarPerfil() {
   }
 
   const generosCont = document.getElementById("generosCont");
-  if (u.generos?.length) {
-    generosCont.innerHTML = `<div class="tags-grid">${u.generos
+  if (usuarioVisto.generos?.length) {
+    generosCont.innerHTML = `<div class="tags-grid">${usuarioVisto.generos
       .map((g) => `<span class="tag">${g}</span>`)
       .join("")}</div>`;
   } else {
@@ -166,8 +201,8 @@ export async function iniciarPerfil() {
   // ── Agenda/Disponibilidade por horário ────────────────────────────────────
   const agendaCont = document.getElementById("agendaCont");
   if (agendaCont) {
-    if (u.disponibilidades?.length) {
-      agendaCont.innerHTML = `<div class="tags-grid">${u.disponibilidades
+    if (usuarioVisto.disponibilidades?.length) {
+      agendaCont.innerHTML = `<div class="tags-grid">${usuarioVisto.disponibilidades
         .map(
           (d) =>
             `<span class="tag"><i class="fas fa-calendar-alt"></i>${d}</span>`,
@@ -180,8 +215,8 @@ export async function iniciarPerfil() {
   }
 
   // ── Banner de cadastro incompleto (só no perfil próprio) ──────────────────
-  if (!idParam) {
-    const faltando = calcularFaltando(u);
+  if (ehProprio) {
+    const faltando = calcularFaltando(usuarioVisto);
     if (faltando.length > 0) {
       const banner = document.createElement("div");
       banner.style.cssText = `
@@ -218,17 +253,11 @@ export async function iniciarPerfil() {
     }
 
     // ── Dropdown de status no avatar (só no perfil próprio) ───────────────
-    _adicionarDropdownStatus(u);
+    _adicionarDropdownStatus(usuarioVisto);
   }
-
-  // ── Dropdown e logout ─────────────────────────────────────────────────────
-  document.getElementById("profileDropdown")?.addEventListener("click", () => {
-    document.getElementById("profileDropdown").classList.toggle("active");
-  });
-  document.getElementById("btnSair")?.addEventListener("click", fazerLogout);
 }
 
-function _adicionarDropdownStatus(u) {
+function _adicionarDropdownStatus(usuarioVisto) {
   const avatarEl = document.getElementById("avatar");
   if (!avatarEl) return;
 
@@ -265,11 +294,11 @@ function _adicionarDropdownStatus(u) {
       padding: 10px 12px; border-radius: 8px; cursor: pointer;
       color: #e5e7eb; font-size: 14px;
       transition: background 0.2s;
-      ${(u.status || "disponivel") === s.value ? "background: rgba(139,92,246,0.2);" : ""}
+      ${(usuarioVisto.status || "disponivel") === s.value ? "background: rgba(139,92,246,0.2);" : ""}
     ">
       <span>${s.emoji}</span>
       <span>${s.label}</span>
-      ${(u.status || "disponivel") === s.value ? '<i class="fas fa-check" style="margin-left:auto; color:#a78bfa;"></i>' : ""}
+      ${(usuarioVisto.status || "disponivel") === s.value ? '<i class="fas fa-check" style="margin-left:auto; color:#a78bfa;"></i>' : ""}
     </div>
   `,
     )
@@ -281,7 +310,7 @@ function _adicionarDropdownStatus(u) {
       item.style.background = "rgba(139,92,246,0.15)";
     });
     item.addEventListener("mouseleave", () => {
-      if (item.dataset.status !== (u.status || "disponivel")) {
+      if (item.dataset.status !== (usuarioVisto.status || "disponivel")) {
         item.style.background = "";
       }
     });
@@ -347,7 +376,7 @@ function _adicionarDropdownStatus(u) {
           );
         }
       });
-      u.status = novoStatus;
+      usuarioVisto.status = novoStatus;
       menu.style.display = "none";
     } catch (err) {
       console.error("Erro ao atualizar status:", err);

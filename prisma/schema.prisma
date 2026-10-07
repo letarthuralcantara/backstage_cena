@@ -35,8 +35,12 @@ model Usuario {
   daws             UsuarioDaw[]
   disponibilidades UsuarioDisponibilidade[]
   configuracoes    ConfiguracaoUsuario?
+  imagem           ImagemUsuario?
   postagens        Postagem[]
   tweets           Tweet[]
+  clubesCriados    Clube[]         @relation("ClubeCriador")
+  clubes           ClubeMembro[]
+  mensagensClube   ClubeMensagem[]
 
   @@map("usuario")
 }
@@ -54,6 +58,66 @@ model Postagem {
   usuario Usuario @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
 
   @@map("postagem")
+}
+
+// O banco guarda só o caminho público do avatar; o arquivo vive em public/uploads/avatars.
+// id_usuario @unique => no máximo uma imagem por usuário.
+model ImagemUsuario {
+  id_imagem  Int    @id @default(autoincrement())
+  id_usuario Int    @unique
+  caminho    String
+
+  usuario Usuario @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
+
+  @@map("imagem_usuario")
+}
+
+// ── Clubes ────────────────────────────────────────────────────────────────────
+// Um clube é um grupo ligado a uma "tag" de afinidade (gênero, instrumento ou DAW)
+// ou "geral". id_criador nulo = clube padrão, criado a partir do catálogo.
+model Clube {
+  id_clube   Int      @id @default(autoincrement())
+  nome       String   @unique
+  descricao  String?
+  tipo       String   @default("geral") // genero, instrumento, daw, geral
+  tag        String?
+  imagem     String?
+  id_criador Int?
+  criado_em  DateTime @default(now())
+
+  criador   Usuario?        @relation("ClubeCriador", fields: [id_criador], references: [id_usuario], onDelete: SetNull)
+  membros   ClubeMembro[]
+  mensagens ClubeMensagem[]
+
+  @@map("clube")
+}
+
+model ClubeMembro {
+  id_clube   Int
+  id_usuario Int
+  papel      String   @default("membro") // dono, membro
+  entrou_em  DateTime @default(now())
+
+  clube   Clube   @relation(fields: [id_clube], references: [id_clube], onDelete: Cascade)
+  usuario Usuario @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
+
+  @@id([id_clube, id_usuario])
+  @@index([id_usuario])
+  @@map("clube_membro")
+}
+
+model ClubeMensagem {
+  id_mensagem Int      @id @default(autoincrement())
+  id_clube    Int
+  id_usuario  Int
+  texto       String
+  criado_em   DateTime @default(now())
+
+  clube   Clube   @relation(fields: [id_clube], references: [id_clube], onDelete: Cascade)
+  usuario Usuario @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
+
+  @@index([id_clube, id_mensagem])
+  @@map("clube_mensagem")
 }
 
 model Disponibilidade {
@@ -151,6 +215,7 @@ model Tweet {
   id_tweet   Int       @id @default(autoincrement())
   id_usuario Int
   texto      String
+  imagem     String?
   criado_em  DateTime  @default(now())
   expira_em  DateTime? // null = permanece pra sempre; preenchido = some quando passar dessa data
 

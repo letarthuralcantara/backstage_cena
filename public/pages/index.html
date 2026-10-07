@@ -612,7 +612,7 @@
 
 
 <script type="module">
-    import { verificarAutenticacao, fazerLogout } from '../js/auth.js';
+    import { verificarAutenticacao, fazerLogout, aplicarAvatarNaNavbar } from '../js/auth.js';
     import { initSearchOverlay } from '../js/search-overlay.js';
 
     const usuario = verificarAutenticacao(false);
@@ -642,6 +642,7 @@
                 </div>
             </div>
         `;
+        aplicarAvatarNaNavbar(document.getElementById('profileTrigger'), usuario);
 
         document
             .getElementById('profileDropdown')
