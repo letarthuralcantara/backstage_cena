@@ -8,6 +8,7 @@
 ### ============================================================================
 
 @baseUrl = http://localhost:3000/api/usuarios
+@musicaBaseUrl = http://localhost:3000/api/musica
 
 
 ### 1) CADASTRO — cria um usuário novo (rota pública)
@@ -467,4 +468,57 @@ GET http://localhost:3000/api/clubes/usuario/{{userId}}
 
 ### 12.7) CLUBES — excluir (só o dono)
 DELETE http://localhost:3000/api/clubes/{{clubeId}}
+Authorization: Bearer {{token}}
+
+
+### 13) MÚSICA — estado da conexão atual
+GET {{musicaBaseUrl}}/minha
+Authorization: Bearer {{token}}
+
+### Esperado: { conectado: false } ou dados da conexão sem tokens.
+
+
+### 13.1) MÚSICA — conectar Last.fm (o nome é validado por user.getInfo)
+POST {{musicaBaseUrl}}/lastfm/conectar
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "username": "seu_usuario_lastfm"
+}
+
+### Esperado: conexão Last.fm validada e salva; atividade pública é necessária.
+
+
+### 13.2) MÚSICA — alterar visibilidade
+PATCH {{musicaBaseUrl}}/minha
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "visibilidade": "clubes"
+}
+
+### Valores permitidos: publico, clubes, oculto.
+
+
+### 13.3) MÚSICA — iniciar conexão Spotify
+POST {{musicaBaseUrl}}/spotify/conectar
+Authorization: Bearer {{token}}
+
+### Esperado: { url }. Abra a URL no navegador para autorizar via PKCE.
+
+
+### 13.4) MÚSICA — faixa atual de um perfil (sem token: somente se pública)
+GET {{musicaBaseUrl}}/usuario/{{userId}}/agora
+
+
+### 13.5) MÚSICA — top de faixas (também aceita tipo=artistas)
+GET {{musicaBaseUrl}}/usuario/{{userId}}/top?tipo=faixas&periodo=curto&limite=10
+
+### curto = ~4 semanas / 1 mês; medio = ~6 meses; longo = ~12 meses.
+
+
+### 13.6) MÚSICA — desconectar
+DELETE {{musicaBaseUrl}}/minha
 Authorization: Bearer {{token}}

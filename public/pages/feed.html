@@ -74,6 +74,14 @@
         .author-name { font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 700; }
         .post-meta { font-size: 12px; color: var(--text-2); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
         .tweet-body { font-size: 15px; line-height: 1.6; color: var(--text-1); white-space: pre-wrap; word-break: break-word; }
+        .feed-filters { display:flex; gap:8px; margin:18px 0 24px; }
+        .feed-filters button { padding:9px 14px; border:1px solid var(--glass-border); border-radius:var(--r-full); color:var(--text-2); background:var(--glass-fill); cursor:pointer; font:600 13px Inter,sans-serif; }
+        .feed-filters button.active { background:var(--accent-soft); color:var(--text-1); border-color:var(--accent); }
+        .workon-feed-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px; }
+        .workon-feed-card { display:block; border:1px solid var(--glass-border); border-radius:var(--r-lg); background:var(--glass-fill); color:inherit; text-decoration:none; overflow:hidden; }
+        .workon-feed-card img,.workon-feed-placeholder { width:100%; height:110px; display:grid; place-items:center; object-fit:cover; background:var(--glass-fill-strong); color:var(--text-2); font-size:24px; }
+        .workon-feed-card div { display:grid; gap:4px; padding:12px; }
+        .workon-feed-card small { color:var(--text-2); }
 
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -99,12 +107,16 @@
 
     <div class="container">
         <div class="page-header">
-            <div class="hero-badge">Ao vivo agora</div>
             <h1 class="hero-title">Feed da <span>Cena</span></h1>
             <p class="hero-subtitle">Prévias e tweets da comunidade</p>
         </div>
 
-        <div class="section-block">
+        <nav class="feed-filters" aria-label="Filtrar feed">
+            <button type="button" class="active" data-feed-filter="todos" aria-pressed="true">Tudo</button>
+            <button type="button" data-feed-filter="workons" aria-pressed="false">Work Ons</button>
+        </nav>
+
+        <div class="section-block" id="blocoPrevias">
             <h2 class="section-heading">Prévias</h2>
             <div class="stories-bar" id="storiesBar"></div>
         </div>
@@ -118,6 +130,10 @@
             <h2 class="section-heading">Geral</h2>
             <div class="feed-timeline" id="feedTimeline"></div>
         </div>
+        <div class="section-block" id="blocoWorkOns" hidden>
+            <h2 class="section-heading"><i class="fas fa-compact-disc"></i> Work Ons públicos</h2>
+            <div class="workon-feed-grid" id="feedWorkOns" aria-live="polite"></div>
+        </div>
     </div>
 
     <div class="tab-bar-spacer"></div>
@@ -126,6 +142,7 @@
     <script type="module">
         import { renderizarFeedPostagens, buscarTweetsFeed, tempoRelativo, tempoRestante, adicionarImagemTweet, renderizarAvatarAutor } from '../js/postagens.js';
         import { ClubesAPI, criarCardClube, prepararCabecalho } from '../js/clubes.js';
+        import { authHeaders } from '../js/auth.js';
 
         document.addEventListener('DOMContentLoaded', async () => {
             await prepararCabecalho();
@@ -211,6 +228,51 @@
                     console.error('Clubes recomendados:', err);
                 }
             }
+
+            let workOnsCarregados = false;
+            async function carregarWorkOns() {
+                const grid = document.getElementById('feedWorkOns');
+                grid.innerHTML = '<p class="feed-loading">Carregando Work Ons...</p>';
+                try {
+                    const res = await fetch('/api/workons?limite=30', { headers: authHeaders({}, false) });
+                    if (!res.ok) throw new Error('Falha ao carregar Work Ons.');
+                    const workOns = await res.json();
+                    grid.innerHTML = '';
+                    if (!workOns.length) {
+                        grid.innerHTML = '<p class="feed-vazio">Nenhum Work On público encontrado.</p>';
+                        return;
+                    }
+                    workOns.forEach((workOn) => {
+                        const card = document.createElement('a');
+                        card.className = 'workon-feed-card';
+                        card.href = `workon.html?id=${encodeURIComponent(workOn.id_workon)}`;
+                        const imagem = workOn.capa
+                            ? `<img src="${escaparHtml(workOn.capa)}" alt="" loading="lazy">`
+                            : '<span class="workon-feed-placeholder"><i class="fas fa-music"></i></span>';
+                        card.innerHTML = `${imagem}<div><strong>${escaparHtml(workOn.titulo)}</strong><small>${escaparHtml(workOn.tipo)} · ${escaparHtml(workOn.status)}</small><small>por ${escaparHtml(workOn.dono.nome)}</small></div>`;
+                        grid.appendChild(card);
+                    });
+                    workOnsCarregados = true;
+                } catch (error) {
+                    grid.textContent = error.message;
+                }
+            }
+
+            document.querySelectorAll('[data-feed-filter]').forEach((button) => {
+                button.addEventListener('click', async () => {
+                    const workOns = button.dataset.feedFilter === 'workons';
+                    document.querySelectorAll('[data-feed-filter]').forEach((item) => {
+                        const active = item === button;
+                        item.classList.toggle('active', active);
+                        item.setAttribute('aria-pressed', String(active));
+                    });
+                    document.getElementById('blocoPrevias').hidden = workOns;
+                    document.getElementById('blocoClubes').hidden = workOns || !document.getElementById('feedClubes').children.length;
+                    document.getElementById('feedTimeline').parentElement.hidden = workOns;
+                    document.getElementById('blocoWorkOns').hidden = !workOns;
+                    if (workOns && !workOnsCarregados) await carregarWorkOns();
+                });
+            });
 
             // Inicializa componentes
             const storiesBar = document.getElementById('storiesBar');

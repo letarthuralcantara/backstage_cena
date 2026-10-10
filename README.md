@@ -74,6 +74,32 @@ Observações:
 - os valores reais das credenciais de e-mail devem ficar somente no `.env` local.
 - `RESET_CODE_SECRET` é opcional; sem ele, o HMAC do código usa `JWT_SECRET`.
 
+## Integração musical
+
+O perfil pode exibir a faixa atual e os artistas/faixas mais ouvidos usando Spotify ou Last.fm. A conexão e a visibilidade são gerenciadas em **Configurações → Música**.
+
+### Spotify
+
+1. Crie um app no [Spotify Developer Dashboard](https://developer.spotify.com/dashboard) e copie o Client ID para `SPOTIFY_CLIENT_ID`.
+2. Adicione em Redirect URIs a URI exata configurada em `SPOTIFY_REDIRECT_URI`, incluindo caminho e porta. Em desenvolvimento, use `http://127.0.0.1:3000/api/musica/spotify/callback`; `localhost` não é aceito para HTTP. Fora de desenvolvimento, use HTTPS e mantenha o mesmo valor no Dashboard e no `.env`.
+3. Configure `MUSICA_TOKEN_KEY` como uma chave Base64 de exatamente 32 bytes (por exemplo, `openssl rand -base64 32`). Ela protege os refresh tokens com AES-256-GCM e também assina o `state` temporário do OAuth.
+4. No Spotify Development Mode, o proprietário do app precisa ter Premium e só pode autorizar até 5 usuários cadastrados como usuários de teste no Dashboard. Contas fora dessa lista recebem HTTP 403; a interface informa que a conta não está autorizada e não exibe uma falha técnica.
+
+A autorização usa Authorization Code com PKCE (S256), `state` assinado com validade de 10 minutos e URI de redirecionamento validada exatamente. O app solicita somente `user-read-currently-playing` e `user-top-read`. As telas usam `GET /me/player/currently-playing` e `GET /me/top/{artists|tracks}`; os dados de top de curto prazo (`short_term`) representam aproximadamente quatro semanas e são rotulados **Últimas 4 semanas**. Respostas HTTP 429 preservam o `Retry-After`; o perfil aguarda esse intervalo antes da próxima consulta de faixa atual.
+
+### Last.fm e privacidade
+
+Configure `LASTFM_API_KEY`. A pessoa informa o próprio nome de usuário e a aplicação valida a conta com `user.getInfo`. Last.fm não é uma reprodução em tempo real universal: a interface informa que só mostra faixas/artistas scrobblados e que a atividade do perfil Last.fm precisa estar pública. Os tops usam `1month`, `6month` e `12month`.
+
+Cada conexão permite `publico` (todos), `clubes` (somente membros que compartilham ao menos um clube) ou `oculto` (somente o próprio usuário). Essa regra é aplicada pela API, não apenas escondida no navegador. Consultas de faixa atual são armazenadas em cache por 10 segundos, tops por 6 horas e chamadas simultâneas idênticas são agrupadas; não há polling no servidor.
+
+Rotas principais, sob `/api/musica`:
+
+- `POST /spotify/conectar` inicia o OAuth; `GET /spotify/callback` é o callback público.
+- `POST /lastfm/conectar` valida e conecta `{ "username": "..." }`.
+- `GET /minha`, `PATCH /minha` com `{ "visibilidade": "publico|clubes|oculto" }` e `DELETE /minha` gerenciam a conexão autenticada.
+- `GET /usuario/:id/agora` e `GET /usuario/:id/top?tipo=artistas|faixas&periodo=curto|medio|longo&limite=10` leem o perfil respeitando a visibilidade.
+
 ## Scripts disponíveis
 
 ```bash

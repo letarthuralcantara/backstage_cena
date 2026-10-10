@@ -9,6 +9,7 @@ const MENU_ITEMS = [
   { href: "perfil.html", icon: "fa-user", label: "Meu Perfil" },
   { href: "feed.html", icon: "fa-stream", label: "Feed" },
   { href: "clubes.html", icon: "fa-people-group", label: "Clubes" },
+  { href: "workons.html", icon: "fa-compact-disc", label: "Work On" },
   { href: "publicar.html", icon: "fa-plus-circle", label: "Nova Postagem" },
   { href: "config.html", icon: "fa-cog", label: "Configurações" },
 ];

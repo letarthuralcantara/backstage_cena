@@ -140,6 +140,7 @@
                 <div class="nav-divider"></div>
                 <div class="nav-section-title">Privacidade</div>
                 <button class="nav-item" data-panel="privacidade"><i class="fas fa-lock"></i> Privacidade</button>
+                <button class="nav-item" data-panel="musica"><i class="fas fa-music"></i> Música</button>
                 <div class="nav-divider"></div>
                 <div class="nav-section-title">Conta</div>
                 <button class="nav-item" data-panel="senha"><i class="fas fa-key"></i> Alterar Senha</button>
@@ -244,6 +245,44 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="settings-panel" id="panel-musica">
+                <div class="panel-header">
+                    <h1 class="panel-title">Música</h1>
+                    <p class="panel-subtitle">Compartilhe o que está ouvindo e seus artistas mais escutados.</p>
+                </div>
+                <div class="pending-banner">
+                    <i class="fas fa-circle-info"></i>
+                    <span>Last.fm é recomendado: mostra apenas músicas scrobbladas e exige que sua atividade esteja pública. O Spotify está limitado aos testadores autorizados do app.</span>
+                </div>
+                <div class="settings-section">
+                    <span class="section-label">CONTA CONECTADA</span>
+                    <div class="settings-card" style="padding:22px;">
+                        <p id="musicaConnectionInfo" class="row-desc" aria-live="polite">Carregando conexão...</p>
+                        <div class="form-group" style="margin-top:18px;">
+                            <label for="lastFmUsername">Nome de usuário do Last.fm</label>
+                            <input id="lastFmUsername" type="text" autocomplete="off" maxlength="80" placeholder="seu_usuario">
+                        </div>
+                        <div style="display:flex; flex-wrap:wrap; gap:10px;">
+                            <button class="btn-link" type="button" id="btnConectarLastFm"><i class="fa-brands fa-lastfm"></i> Conectar Last.fm</button>
+                            <button class="btn-link" type="button" id="btnConectarSpotify"><i class="fa-brands fa-spotify"></i> Conectar Spotify (testadores)</button>
+                            <button class="btn-link" type="button" id="btnDesconectarMusica" hidden><i class="fas fa-link-slash"></i> Desconectar</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="settings-section">
+                    <span class="section-label">VISIBILIDADE</span>
+                    <div class="settings-card" style="padding:18px 22px;">
+                        <label for="musicaVisibilidade" class="row-label">Quem pode ver sua atividade musical?</label>
+                        <select id="musicaVisibilidade" style="display:block; width:100%; max-width:360px; margin-top:12px; padding:11px 13px; border-radius:var(--r-md); border:1px solid var(--glass-border); background:#111; color:var(--text-1);">
+                            <option value="publico">Todos</option>
+                            <option value="clubes">Pessoas dos meus clubes</option>
+                            <option value="oculto">Somente eu</option>
+                        </select>
+                    </div>
+                </div>
+                <p class="senha-msg" id="musicaStatusMessage" role="status" aria-live="polite"></p>
             </div>
 
             <!-- ALTERAR SENHA -->
@@ -507,6 +546,115 @@
         document.getElementById('btnAbrirModalExclusao')?.addEventListener('click', () => window.abrirModalExclusao());
         document.getElementById('btnFecharModalExclusao')?.addEventListener('click', () => window.fecharModalExclusao());
         document.getElementById('btnConfirmarExclusao')?.addEventListener('click', () => window.confirmarExclusao());
+
+        const musicaInfo = document.getElementById('musicaConnectionInfo');
+        const musicaMensagem = document.getElementById('musicaStatusMessage');
+        const musicaVisibilidade = document.getElementById('musicaVisibilidade');
+        const btnDesconectarMusica = document.getElementById('btnDesconectarMusica');
+
+        function mostrarMensagemMusica(texto, erro = false) {
+            musicaMensagem.textContent = texto;
+            musicaMensagem.className = `senha-msg ${erro ? 'erro' : 'sucesso'}`;
+            musicaMensagem.style.display = 'block';
+        }
+
+        async function requisicaoMusica(url, options = {}) {
+            const response = await fetch(url, {
+                ...options,
+                headers: authHeaders(options.headers || {}),
+            });
+            const body = await response.json().catch(() => ({}));
+            if (!response.ok) throw new Error(body.erro || 'Não foi possível atualizar a conexão musical.');
+            return body;
+        }
+
+        async function carregarConexaoMusica() {
+            try {
+                const conexao = await requisicaoMusica('/api/musica/minha');
+                if (!conexao.conectado) {
+                    musicaInfo.textContent = 'Nenhum provedor musical conectado.';
+                    musicaVisibilidade.disabled = true;
+                    btnDesconectarMusica.hidden = true;
+                    return;
+                }
+                musicaInfo.textContent = `Conectado a ${conexao.nome_exibicao} via ${conexao.provedor === 'spotify' ? 'Spotify' : 'Last.fm'}.`;
+                musicaVisibilidade.value = conexao.visibilidade;
+                musicaVisibilidade.disabled = false;
+                btnDesconectarMusica.hidden = false;
+                if (conexao.provedor === 'lastfm') {
+                    document.getElementById('lastFmUsername').value = conexao.id_externo;
+                }
+            } catch (error) {
+                musicaInfo.textContent = error.message;
+                musicaVisibilidade.disabled = true;
+                btnDesconectarMusica.hidden = true;
+            }
+        }
+
+        document.getElementById('btnConectarLastFm').addEventListener('click', async () => {
+            const username = document.getElementById('lastFmUsername').value.trim();
+            try {
+                const conexao = await requisicaoMusica('/api/musica/lastfm/conectar', {
+                    method: 'POST',
+                    body: JSON.stringify({ username }),
+                });
+                musicaInfo.textContent = `Conectado a ${conexao.nome_exibicao} via Last.fm.`;
+                musicaVisibilidade.value = conexao.visibilidade;
+                musicaVisibilidade.disabled = false;
+                btnDesconectarMusica.hidden = false;
+                mostrarMensagemMusica('Last.fm conectado. Apenas scrobbles públicos são exibidos.');
+            } catch (error) {
+                mostrarMensagemMusica(error.message, true);
+            }
+        });
+
+        document.getElementById('btnConectarSpotify').addEventListener('click', async (event) => {
+            const button = event.currentTarget;
+            button.disabled = true;
+            try {
+                const resposta = await requisicaoMusica('/api/musica/spotify/conectar', { method: 'POST' });
+                window.location.assign(resposta.url);
+            } catch (error) {
+                mostrarMensagemMusica(error.message, true);
+                button.disabled = false;
+            }
+        });
+
+        musicaVisibilidade.addEventListener('change', async () => {
+            try {
+                await requisicaoMusica('/api/musica/minha', {
+                    method: 'PATCH',
+                    body: JSON.stringify({ visibilidade: musicaVisibilidade.value }),
+                });
+                mostrarMensagemMusica('Visibilidade musical atualizada.');
+            } catch (error) {
+                mostrarMensagemMusica(error.message, true);
+                await carregarConexaoMusica();
+            }
+        });
+
+        btnDesconectarMusica.addEventListener('click', async () => {
+            if (!window.confirm('Deseja desconectar seu provedor musical?')) return;
+            try {
+                await requisicaoMusica('/api/musica/minha', { method: 'DELETE' });
+                await carregarConexaoMusica();
+                mostrarMensagemMusica('Provedor musical desconectado.');
+            } catch (error) {
+                mostrarMensagemMusica(error.message, true);
+            }
+        });
+
+        const callbackMusica = new URLSearchParams(window.location.search);
+        if (callbackMusica.get('musica') === 'ok') mostrarMensagemMusica('Spotify conectado com sucesso.');
+        if (callbackMusica.get('musica') === 'erro') {
+            const mensagens = {
+                nao_autorizado: 'Este app está em Development Mode e sua conta Spotify não está na lista de testadores.',
+                limite: 'O Spotify limitou as tentativas. Aguarde antes de tentar novamente.',
+                state_invalido: 'A autorização expirou ou não pôde ser validada. Tente novamente.',
+            };
+            mostrarMensagemMusica(mensagens[callbackMusica.get('motivo')] || 'Não foi possível conectar ao Spotify.', true);
+        }
+        carregarConexaoMusica();
     </script>
 
     <div class="tab-bar-spacer"></div>

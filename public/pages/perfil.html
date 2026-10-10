@@ -486,6 +486,42 @@
             flex-shrink: 0;
             overflow: hidden;
         }
+        .profile-section-tabs { display:flex; gap:8px; margin-bottom:14px; }
+        .profile-section-tabs button { padding:9px 13px; border:1px solid var(--glass-border); border-radius:999px; background:var(--glass); color:#aaa; cursor:pointer; }
+        .profile-section-tabs button.active { color:white; border-color:var(--primary); background:rgba(139,92,246,.15); }
+        .profile-workons { display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:12px; }
+        .profile-workons .workon-card { display:block; overflow:hidden; color:inherit; text-decoration:none; border:1px solid var(--glass-border); border-radius:14px; background:var(--glass); }
+        .profile-workons .workon-card img,.profile-workons .workon-card-placeholder { width:100%; height:105px; display:grid; place-items:center; object-fit:cover; background:rgba(255,255,255,.05); }
+        .profile-workons .workon-card-info { display:grid; gap:5px; padding:11px; }
+        .profile-workons .workon-card-info span { color:#999; font-size:11px; }
+        .music-profile-card { padding:20px; }
+        .music-profile-section + .music-profile-section { margin-top:24px; padding-top:20px; border-top:1px solid var(--glass-border); }
+        .music-profile-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; }
+        .music-profile-heading h3 { font-family:'Poppins',sans-serif; font-size:16px; }
+        .music-profile-heading select { max-width:190px; padding:8px 10px; border:1px solid var(--glass-border); border-radius:10px; background:#111; color:white; }
+        .music-now-playing { display:flex; align-items:center; gap:14px; }
+        .music-cover-wrap { position:relative; width:68px; height:68px; flex:none; overflow:hidden; border-radius:10px; background:rgba(255,255,255,.06); display:grid; place-items:center; }
+        .music-cover { width:100%; height:100%; object-fit:cover; }
+        .music-cover-placeholder { color:#a78bfa; font-size:30px; }
+        .music-equalizer { position:absolute; right:4px; bottom:4px; display:flex; align-items:end; gap:2px; height:18px; padding:3px; border-radius:5px; background:rgba(0,0,0,.7); }
+        .music-equalizer i { width:3px; height:6px; background:#a78bfa; animation:music-wave .7s ease-in-out infinite alternate; }
+        .music-equalizer i:nth-child(2) { height:12px; animation-delay:.2s; }
+        .music-equalizer i:nth-child(3) { height:8px; animation-delay:.4s; }
+        @keyframes music-wave { to { transform:scaleY(.35); } }
+        .music-now-info { min-width:0; flex:1; display:grid; gap:4px; }
+        .music-track-title { color:white; overflow-wrap:anywhere; }
+        .music-track-artist,.music-track-album,.music-attribution { color:#999; font-size:12px; overflow-wrap:anywhere; }
+        .music-progress { height:4px; margin-top:6px; overflow:hidden; border-radius:4px; background:rgba(255,255,255,.12); }
+        .music-progress-bar { display:block; height:100%; background:#a78bfa; }
+        .music-open-link { color:#c4b5fd; font-size:12px; text-decoration:none; white-space:nowrap; }
+        .music-empty-state { color:#aaa; font-size:13px; padding:8px 0; }
+        .music-top-list { display:grid; gap:10px; }
+        .music-top-item { display:flex; align-items:center; gap:10px; min-width:0; }
+        .music-top-rank { color:#999; width:20px; text-align:center; }
+        .music-top-image { width:42px; height:42px; flex:none; overflow:hidden; display:grid; place-items:center; border-radius:8px; background:rgba(255,255,255,.06); color:#a78bfa; }
+        .music-top-image .music-cover { width:100%; height:100%; }
+        .music-top-text { display:grid; gap:3px; min-width:0; flex:1; overflow-wrap:anywhere; font-size:13px; }
+        .music-top-text span { color:#999; font-size:11px; }
 
         .perfil-post-autor {
             display: flex;
@@ -644,6 +680,30 @@
 
             <!-- MAIN CONTENT -->
             <main class="main-content">
+                <section class="glass-card music-profile-card" aria-label="Música">
+                    <div class="music-profile-section">
+                        <div class="music-profile-heading">
+                            <h3><i class="fas fa-wave-square"></i> Ouvindo agora</h3>
+                        </div>
+                        <div id="musicaAgora" aria-live="polite"><p class="music-empty-state">Carregando atividade musical...</p></div>
+                    </div>
+                    <div class="music-profile-section">
+                        <div class="music-profile-heading">
+                            <h3>Mais ouvidos</h3>
+                            <select id="periodoMusica" aria-label="Período dos mais ouvidos">
+                                <option value="curto">Últimas 4 semanas</option>
+                                <option value="medio">Últimos 6 meses</option>
+                                <option value="longo">Últimos 12 meses</option>
+                            </select>
+                        </div>
+                        <div class="profile-section-tabs" role="tablist" aria-label="Mais ouvidos">
+                            <button type="button" class="active" role="tab" aria-selected="true" data-music-type="artistas">Artistas</button>
+                            <button type="button" role="tab" aria-selected="false" data-music-type="faixas">Músicas</button>
+                        </div>
+                        <div id="musicaTop" aria-live="polite"><p class="music-empty-state">Carregando mais ouvidos...</p></div>
+                    </div>
+                </section>
+
                 <!-- ADD PREVIEW (OWNER ONLY) -->
                 <a href="publicar.html" class="backstage-panel hidden" id="addPreviaPanel" style="display:flex; align-items:center; justify-content:space-between; text-decoration:none; color:inherit; cursor:pointer;">
                     <div class="section-header" style="margin-bottom:0;">
@@ -653,14 +713,25 @@
                     <i class="fas fa-arrow-right" style="color: var(--primary); font-size: 20px;"></i>
                 </a>
 
+                <div class="profile-section-tabs" role="tablist" aria-label="Conteúdo do perfil">
+                    <button type="button" class="active" role="tab" aria-selected="true" data-profile-tab="postagens">Postagens</button>
+                    <button type="button" role="tab" aria-selected="false" data-profile-tab="workons">Work Ons</button>
+                </div>
+
                 <!-- PREVIEWS LIST -->
-                <div class="glass-card">
+                <div class="glass-card" id="painelPostagens">
                     <div class="section-header">
                         <h2 class="section-title"><i class="fas fa-stream"></i> Postagens</h2>
                     </div>
                     <div id="previasLista" class="previews-grid">
                         <!-- Stories aqui -->
                     </div>
+                </div>
+                <div class="glass-card" id="painelWorkOns" hidden>
+                    <div class="section-header">
+                        <h2 class="section-title"><i class="fas fa-compact-disc"></i> Work Ons</h2>
+                    </div>
+                    <div id="workOnsPerfil" class="profile-workons" aria-live="polite"></div>
                 </div>
 
             </main>
@@ -683,6 +754,14 @@
         import { ClubesAPI, iconeTipo } from '../js/clubes.js';
         import { carregarUsuariosPerfil, renderizarIdentidadePerfil } from '../js/perfil.js';
         import { renderizarPostagensDoUsuario } from '../js/postagens.js';
+        import { renderizarWorkOnsDoUsuario } from '../js/workon.js';
+        import {
+            atrasoRetryAfter,
+            atualizarBarraProgressoMusica,
+            consultasMusicaisAtivas,
+            renderizarAgoraMusica,
+            renderizarTopMusica,
+        } from '../js/musica.js';
 
         const SOCIAL_ICONS = {
             instagram:'fa-brands fa-instagram', youtube:'fa-brands fa-youtube',
@@ -719,6 +798,102 @@
 
         let idUsuarioAtual = null;
 
+        function iniciarMusicaPerfil(idUsuario) {
+            const card = document.querySelector('.music-profile-card');
+            const container = document.getElementById('musicaAgora');
+            let cardVisivel = false;
+            let carregando = false;
+            let temporizador = null;
+            let progressoTimer = null;
+            let proximoIntervalo = 15_000;
+
+            const ativa = () => consultasMusicaisAtivas(document.visibilityState === 'visible', cardVisivel);
+            const pararTimers = () => {
+                clearTimeout(temporizador);
+                clearInterval(progressoTimer);
+                temporizador = null;
+                progressoTimer = null;
+            };
+            const agendar = () => {
+                if (!ativa() || carregando || temporizador) return;
+                temporizador = setTimeout(() => {
+                    temporizador = null;
+                    carregarAgora();
+                }, proximoIntervalo);
+            };
+            async function carregarAgora() {
+                if (!ativa() || carregando) return;
+                carregando = true;
+                try {
+                    const response = await fetch(`/api/musica/usuario/${idUsuario}/agora`, { headers: authHeaders() });
+                    if (response.status === 429) {
+                        proximoIntervalo = atrasoRetryAfter(response.headers.get('Retry-After'));
+                        renderizarAgoraMusica(container, { conectado: true, estado: 'limite_atingido' });
+                    } else {
+                        const dados = await response.json();
+                        if (!response.ok) throw new Error(dados.erro || 'Não foi possível carregar a atividade musical.');
+                        proximoIntervalo = 15_000;
+                        renderizarAgoraMusica(container, dados);
+                    }
+                    clearInterval(progressoTimer);
+                    progressoTimer = ativa()
+                        ? setInterval(() => atualizarBarraProgressoMusica(container), 1000)
+                        : null;
+                } catch (error) {
+                    container.textContent = error.message || 'Não foi possível carregar a atividade musical.';
+                } finally {
+                    carregando = false;
+                    agendar();
+                }
+            }
+            const sincronizar = () => {
+                if (!ativa()) {
+                    pararTimers();
+                    return;
+                }
+                if (!progressoTimer) {
+                    progressoTimer = setInterval(() => atualizarBarraProgressoMusica(container), 1000);
+                }
+                if (!carregando && !temporizador) carregarAgora();
+            };
+
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver((entries) => {
+                    cardVisivel = Boolean(entries[0]?.isIntersecting);
+                    sincronizar();
+                });
+                observer.observe(card);
+                window.addEventListener('pagehide', () => observer.disconnect(), { once: true });
+            } else {
+                cardVisivel = card.getBoundingClientRect().bottom > 0 && card.getBoundingClientRect().top < window.innerHeight;
+                sincronizar();
+            }
+            document.addEventListener('visibilitychange', sincronizar);
+            window.addEventListener('pagehide', pararTimers, { once: true });
+        }
+
+        async function carregarMaisOuvidos(idUsuario) {
+            const tipo = document.querySelector('[data-music-type].active')?.dataset.musicType || 'artistas';
+            const periodo = document.getElementById('periodoMusica').value;
+            const container = document.getElementById('musicaTop');
+            container.textContent = 'Carregando mais ouvidos...';
+            try {
+                const query = new URLSearchParams({ tipo, periodo, limite: '10' });
+                const response = await fetch(`/api/musica/usuario/${idUsuario}/top?${query}`, { headers: authHeaders() });
+                const dados = await response.json();
+                if (!response.ok) {
+                    if (response.status === 429) {
+                        renderizarTopMusica(container, { conectado: true, estado: 'limite_atingido' });
+                        return;
+                    }
+                    throw new Error(dados.erro || 'Não foi possível carregar os mais ouvidos.');
+                }
+                renderizarTopMusica(container, dados);
+            } catch (error) {
+                container.textContent = error.message || 'Não foi possível carregar os mais ouvidos.';
+            }
+        }
+
         async function iniciarPerfil() {
             const params = new URLSearchParams(window.location.search);
             const idParam = params.get('id');
@@ -730,6 +905,8 @@
             if (!usuarioVisto) { window.location.href = 'login.html'; return; }
 
             idUsuarioAtual = usuarioVisto.id_usuario;
+            iniciarMusicaPerfil(idUsuarioAtual);
+            carregarMaisOuvidos(idUsuarioAtual);
             document.getElementById('btnEditarPerfil')?.classList.toggle('hidden', !ehProprio);
 
             // Render
@@ -844,9 +1021,37 @@
             // Previews
             if (ehProprio) document.getElementById('addPreviaPanel').classList.remove('hidden');
             renderizarPostagensDoUsuario(usuarioVisto.id_usuario, document.getElementById('previasLista'));
+            renderizarWorkOnsDoUsuario(usuarioVisto.id_usuario, document.getElementById('workOnsPerfil'));
 
             hideLoading();
         }
+
+        document.querySelectorAll('[data-profile-tab]').forEach((button) => {
+            button.addEventListener('click', () => {
+                const workOns = button.dataset.profileTab === 'workons';
+                document.getElementById('painelPostagens').hidden = workOns;
+                document.getElementById('painelWorkOns').hidden = !workOns;
+                document.querySelectorAll('[data-profile-tab]').forEach((tab) => {
+                    const active = tab === button;
+                    tab.classList.toggle('active', active);
+                    tab.setAttribute('aria-selected', String(active));
+                });
+
+                document.querySelectorAll('[data-music-type]').forEach((button) => {
+                    button.addEventListener('click', () => {
+                        document.querySelectorAll('[data-music-type]').forEach((tab) => {
+                            const active = tab === button;
+                            tab.classList.toggle('active', active);
+                            tab.setAttribute('aria-selected', String(active));
+                        });
+                        if (idUsuarioAtual) carregarMaisOuvidos(idUsuarioAtual);
+                    });
+                });
+                document.getElementById('periodoMusica').addEventListener('change', () => {
+                    if (idUsuarioAtual) carregarMaisOuvidos(idUsuarioAtual);
+                });
+            });
+        });
 
         // ── Seletor de status ──────────────────────────────────────────────────
         document.getElementById('statusBadge')?.addEventListener('click', (e) => {

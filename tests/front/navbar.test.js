@@ -65,6 +65,7 @@ describe("navbar interna", () => {
       ["Meu Perfil", "perfil.html"],
       ["Feed", "feed.html"],
       ["Clubes", "clubes.html"],
+      ["Work On", "workons.html"],
       ["Nova Postagem", "publicar.html"],
       ["Configurações", "config.html"],
     ]);

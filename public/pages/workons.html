@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Backstage | Work On</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/global.css">
+  <style>
+    .page { max-width: 1180px; margin: 36px auto; padding: 0 20px 60px; }
+    .page-heading { display:flex; justify-content:space-between; align-items:end; gap:20px; margin-bottom:24px; }
+    .page-heading p,.workon-empty { color:var(--text-2); margin-top:8px; }
+    .workon-tabs,.workon-views { display:flex; flex-wrap:wrap; gap:8px; }
+    .workon-tabs { border-bottom:1px solid var(--glass-border); margin-bottom:18px; }
+    .workon-tabs button,.workon-views button,.workon-create button {
+      color:var(--text-2); background:transparent; border:1px solid transparent;
+      border-radius:var(--r-full); padding:10px 15px; font:600 13px Inter,sans-serif; cursor:pointer;
+    }
+    .workon-tabs button.active,.workon-views button.active { color:var(--text-1); background:var(--accent-soft); border-color:var(--glass-border); }
+    .toolbar { display:flex; justify-content:space-between; gap:16px; align-items:center; margin-bottom:16px; }
+    .workon-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:16px; }
+    .workon-grid.is-list { grid-template-columns:1fr; }
+    .workon-card { display:flex; flex-direction:column; overflow:hidden; min-height:210px; text-decoration:none; color:inherit; border:1px solid var(--glass-border); border-radius:var(--r-lg); background:var(--glass-fill); transition:transform .2s,border-color .2s; }
+    .workon-card:hover { transform:translateY(-2px); border-color:var(--accent); }
+    .workon-card img,.workon-card-placeholder { display:grid; place-items:center; width:100%; height:130px; object-fit:cover; background:var(--glass-fill-strong); color:var(--text-2); font-size:28px; }
+    .workon-card-info { display:grid; gap:5px; padding:13px 15px; }
+    .workon-card-info strong { font:700 15px Poppins,sans-serif; }
+    .workon-card-info span { color:var(--text-2); font-size:12px; }
+    .workon-grid.is-list .workon-card { min-height:0; display:grid; grid-template-columns:130px 1fr; align-items:center; }
+    .workon-grid.is-list .workon-card img,.workon-grid.is-list .workon-card-placeholder { height:100%; min-height:110px; }
+    .workon-board { display:grid; grid-auto-columns:minmax(240px,1fr); grid-auto-flow:column; gap:14px; overflow-x:auto; padding-bottom:12px; }
+    .workon-board-column { min-width:240px; padding:12px; border:1px solid var(--glass-border); border-radius:var(--r-lg); background:var(--glass-fill); }
+    .workon-board-column h3 { font-size:14px; margin-bottom:12px; }
+    .workon-board-column h3 span { color:var(--text-2); font:500 12px Inter,sans-serif; margin-left:6px; }
+    .workon-board-column .workon-card { margin-bottom:10px; min-height:0; }
+    .workon-board-column .workon-card img,.workon-board-column .workon-card-placeholder { height:85px; }
+    .workon-create { margin-top:30px; padding:18px; border:1px solid var(--glass-border); border-radius:var(--r-lg); background:var(--glass-fill); }
+    .workon-create h2 { font-size:16px; margin-bottom:12px; }
+    .workon-create form { display:flex; flex-wrap:wrap; align-items:end; gap:10px; }
+    .workon-create label { display:grid; gap:6px; color:var(--text-2); font-size:12px; }
+    .workon-create input,.workon-create select { min-height:40px; padding:9px 11px; border-radius:var(--r-sm); border:1px solid var(--glass-border); background:#101014; color:var(--text-1); }
+    .workon-create button { background:var(--accent-ink); color:white; }
+    #workonErro { min-height:22px; color:#fca5a5; }
+    @media(max-width:600px) { .page-heading,.toolbar { align-items:flex-start; flex-direction:column; } }
+  </style>
+</head>
+<body>
+  <canvas id="bg-canvas"></canvas>
+  <header class="header">
+    <div class="header-left"><a href="feed.html"><img src="../images/logo.png" alt="Backstage Logo" class="logo-img"></a></div>
+    <div class="header-center"></div>
+    <div class="header-actions"><div class="profile-dropdown" id="profileDropdown"></div></div>
+  </header>
+  <main class="page">
+    <div class="page-heading">
+      <div><p class="hero-badge"><i class="fas fa-compact-disc"></i> Estúdio colaborativo</p><h1>Work On</h1><p>Organize projetos, faixas e pessoas em um só lugar.</p></div>
+    </div>
+    <div class="workon-tabs" role="tablist" aria-label="Biblioteca de Work Ons">
+      <button type="button" role="tab" aria-selected="true" class="active" data-workon-tab="meus">Meus</button>
+      <button type="button" role="tab" aria-selected="false" data-workon-tab="compartilhados">Compartilhados comigo</button>
+      <button type="button" role="tab" aria-selected="false" data-workon-tab="explorar">Explorar</button>
+    </div>
+    <div class="toolbar">
+      <span>Seus projetos e colaborações</span>
+      <div class="workon-views" aria-label="Visualização">
+        <button type="button" class="active" data-workon-view="galeria" aria-pressed="true"><i class="fas fa-grip"></i> Galeria</button>
+        <button type="button" data-workon-view="lista" aria-pressed="false"><i class="fas fa-list"></i> Lista</button>
+        <button type="button" data-workon-view="quadro" aria-pressed="false"><i class="fas fa-table-columns"></i> Quadro</button>
+      </div>
+    </div>
+    <p id="workonErro" role="status"></p>
+    <div id="workonGrid" class="workon-grid" aria-live="polite"></div>
+    <section class="workon-create">
+      <h2><i class="fas fa-plus"></i> Criar Work On</h2>
+      <form id="criarWorkOn">
+        <label>Título<input name="titulo" required minlength="3" maxlength="80"></label>
+        <label>Tipo<select name="tipo"><option value="album">Álbum</option><option value="ep">EP</option><option value="single">Single</option><option value="beat_tape">Beat tape</option><option value="outro">Outro</option></select></label>
+        <label>Visibilidade<select name="visibilidade"><option value="publico">Público</option><option value="link">Por link</option></select></label>
+        <button type="submit">Criar projeto</button>
+      </form>
+    </section>
+  </main>
+  <div class="tab-bar-spacer"></div><nav class="tab-bar" aria-label="Navegação principal"></nav>
+  <script type="module">
+    import { initNavbar } from "../js/navbar.js";
+    import { iniciarBibliotecaWorkOn } from "../js/workon.js";
+    await initNavbar();
+    await iniciarBibliotecaWorkOn();
+  </script>
+</body>
+</html>

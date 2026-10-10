@@ -38,7 +38,13 @@ model Usuario {
   imagem           ImagemUsuario?
   postagens        Postagem[]
   tweets           Tweet[]
-  clubesCriados    Clube[]         @relation("ClubeCriador")
+  workOns          WorkOn[]        @relation("WorkOnDono")
+  workOnMembros    WorkOnMembro[]
+  workOnVersoes    WorkOnVersao[]   @relation("WorkOnVersaoAutor")
+  workOnTarefas    WorkOnTarefa[]   @relation("WorkOnTarefaResponsavel")
+  workOnFotos      WorkOnFoto[]     @relation("WorkOnFotoAutor")
+  conexaoMusica    ConexaoMusica?
+  clubesCriados    Clube[]          @relation("ClubeCriador")
   clubes           ClubeMembro[]
   mensagensClube   ClubeMensagem[]
 
@@ -70,6 +76,138 @@ model ImagemUsuario {
   usuario Usuario @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
 
   @@map("imagem_usuario")
+}
+
+model WorkOn {
+  id_workon       Int       @id @default(autoincrement())
+  id_dono         Int
+  titulo          String
+  descricao       String?
+  tipo            String    @default("outro")
+  status          String    @default("ideia")
+  visibilidade    String    @default("publico")
+  token_convite   String?   @unique
+  icone           String?
+  capa            String?
+  daw             String?
+  genero          String?
+  prazo           DateTime?
+  notas           String?
+  criado_em       DateTime  @default(now())
+  atualizado_em   DateTime  @updatedAt
+
+  dono            Usuario   @relation("WorkOnDono", fields: [id_dono], references: [id_usuario], onDelete: Cascade)
+  membros         WorkOnMembro[]
+  faixas          WorkOnFaixa[]
+  tarefas         WorkOnTarefa[]
+  fotos           WorkOnFoto[]
+
+  @@index([id_dono])
+  @@index([visibilidade, atualizado_em])
+  @@map("work_on")
+}
+
+model WorkOnMembro {
+  id_workon Int
+  id_usuario Int
+  papel String @default("ouvinte")
+  entrou_em DateTime @default(now())
+
+  workOn WorkOn @relation(fields: [id_workon], references: [id_workon], onDelete: Cascade)
+  usuario Usuario @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
+
+  @@id([id_workon, id_usuario])
+  @@index([id_workon])
+  @@index([id_usuario])
+  @@map("work_on_membro")
+}
+
+model WorkOnFaixa {
+  id_faixa  Int      @id @default(autoincrement())
+  id_workon Int
+  titulo    String
+  ordem     Int
+  bpm       Int?
+  tom       String?
+  notas     String?
+  criado_em DateTime @default(now())
+
+  workOn    WorkOn         @relation(fields: [id_workon], references: [id_workon], onDelete: Cascade)
+  versoes   WorkOnVersao[]
+
+  @@index([id_workon])
+  @@map("work_on_faixa")
+}
+
+model WorkOnVersao {
+  id_versao    Int      @id @default(autoincrement())
+  id_faixa     Int
+  numero       Int
+  rotulo       String?
+  observacao   String?
+  arquivo      String
+  mime         String
+  tamanho_bytes Int
+  id_autor     Int
+  criado_em    DateTime @default(now())
+
+  faixa        WorkOnFaixa @relation(fields: [id_faixa], references: [id_faixa], onDelete: Cascade)
+  autor        Usuario     @relation("WorkOnVersaoAutor", fields: [id_autor], references: [id_usuario], onDelete: Cascade)
+
+  @@unique([id_faixa, numero])
+  @@index([id_faixa])
+  @@index([id_autor])
+  @@map("work_on_versao")
+}
+
+model WorkOnTarefa {
+  id_tarefa      Int       @id @default(autoincrement())
+  id_workon      Int
+  texto          String
+  feita          Boolean   @default(false)
+  prazo          DateTime?
+  ordem          Int       @default(0)
+  id_responsavel Int?
+
+  workOn         WorkOn          @relation(fields: [id_workon], references: [id_workon], onDelete: Cascade)
+  responsavel    Usuario?        @relation("WorkOnTarefaResponsavel", fields: [id_responsavel], references: [id_usuario], onDelete: SetNull)
+
+  @@index([id_workon])
+  @@index([id_responsavel])
+  @@map("work_on_tarefa")
+}
+
+model WorkOnFoto {
+  id_foto    Int      @id @default(autoincrement())
+  id_workon  Int
+  caminho    String
+  legenda    String?
+  ordem      Int      @default(0)
+  id_autor   Int
+
+  workOn     WorkOn   @relation(fields: [id_workon], references: [id_workon], onDelete: Cascade)
+  autor      Usuario  @relation("WorkOnFotoAutor", fields: [id_autor], references: [id_usuario], onDelete: Cascade)
+
+  @@index([id_workon])
+  @@index([id_autor])
+  @@map("work_on_foto")
+}
+
+model ConexaoMusica {
+  id_conexao           Int      @id @default(autoincrement())
+  id_usuario           Int      @unique
+  provedor             String
+  id_externo           String
+  nome_exibicao        String
+  refresh_token_cifrado String?
+  visibilidade         String   @default("publico")
+  criado_em            DateTime @default(now())
+  atualizado_em        DateTime @updatedAt
+
+  usuario Usuario @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
+
+  @@index([visibilidade])
+  @@map("conexao_musica")
 }
 
 // ── Clubes ────────────────────────────────────────────────────────────────────

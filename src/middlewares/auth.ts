@@ -30,6 +30,27 @@ export function isAuthenticated(
   }
 }
 
+export function optionalAuthentication(
+  req: Request,
+  _res: Response,
+  next: NextFunction,
+): void {
+  const authorization = req.headers.authorization;
+  const secret = process.env.JWT_SECRET;
+  if (authorization && secret) {
+    const [scheme, token] = authorization.split(" ");
+    if (/^Bearer$/i.test(scheme) && token) {
+      try {
+        const payload = jwt.verify(token, secret) as { userId: number };
+        req.userId = payload.userId;
+      } catch {
+        // Public music profiles remain available to anonymous visitors.
+      }
+    }
+  }
+  next();
+}
+
 // Use isOwner SOMENTE em rotas onde `req.params.id` é o id do próprio
 // usuário (ex.: PUT/DELETE /api/usuarios/:id). Para recursos como
 // postagem/tweet, onde `:id` é o id do recurso (não do usuário), a
