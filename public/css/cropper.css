@@ -6,23 +6,23 @@
     padding: 0;
     overflow: auto;
     color: var(--text-1);
-    background: rgba(13, 13, 16, .97);
-    border: 1px solid var(--glass-border);
+    background: var(--surface-2);
+    border: 1px solid var(--line-strong);
     border-radius: var(--r-xl);
     box-shadow: var(--shadow-2);
 }
-.image-cropper-dialog::backdrop { background: rgba(0, 0, 0, .76); backdrop-filter: blur(6px); }
+.image-cropper-dialog::backdrop { background: var(--scrim); }
 .image-cropper { display: grid; justify-items: center; gap: 16px; padding: 24px; }
 .image-cropper h2 { justify-self: stretch; font-size: 20px; }
 .image-cropper-gif { justify-self: stretch; color: var(--text-2); font-size: 13px; line-height: 1.5; }
 .image-cropper-ratio {
     justify-self: stretch; padding: 10px 12px; color: var(--text-1);
-    background: var(--glass-fill); border: 1px solid var(--glass-border);
+    background: var(--surface-1); border: 1px solid var(--line-strong);
     border-radius: var(--r-md); font: inherit;
 }
 .image-cropper-frame {
     position: relative; flex: none; max-width: 100%; overflow: hidden;
-    background: #08080a; border: 1px solid var(--glass-border);
+    background: var(--bg); border: 1px solid var(--line-strong);
     border-radius: var(--r-md); touch-action: none; user-select: none;
 }
 .image-cropper-canvas { display: block; max-width: 100%; touch-action: none; }
@@ -32,7 +32,7 @@
 .image-cropper-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; width: 100%; }
 .image-cropper-actions button { min-height: 44px; }
 .image-cropper-original { margin-right: auto; }
-.image-cropper-error { min-height: 18px; color: #f87171; font-size: 13px; }
+.image-cropper-error { min-height: 18px; color: var(--danger); font-size: 13px; }
 
 @media (max-width: 600px) {
     .image-cropper-dialog {

@@ -1,0 +1,124 @@
+/* tokens.css — Backstage Cena
+   Única fonte de cores, tipografia, espaços, raios, sombras e movimento.
+   Nenhum outro arquivo define valor fixo de cor ou raio. */
+
+:root {
+    color-scheme: dark;
+
+    /* Superfícies: fundo + 2 níveis */
+    --bg: #0a0a0c;
+    --surface-1: #141418;
+    --surface-2: #1c1c22;
+    --surface-3: #26262d;          /* balão recebido, indicador do segmentado */
+    --line: rgba(255, 255, 255, .08);
+    --line-strong: rgba(255, 255, 255, .14);
+    --line-hover: rgba(255, 255, 255, .24);
+    --overlay-0: rgba(255, 255, 255, .06);
+    --overlay-1: rgba(255, 255, 255, .08);
+    --overlay-2: rgba(255, 255, 255, .12);
+    --overlay-3: rgba(255, 255, 255, .16);
+    --scrim: rgba(0, 0, 0, .6);
+    --scrim-strong: rgba(0, 0, 0, .94);
+
+    /* Texto (contraste medido sobre --surface-1) */
+    --text-1: #f5f5f7;             /* 17,0:1 */
+    --text-2: #a1a1a6;             /*  7,1:1 */
+    --text-3: #86868b;             /*  5,1:1 — não usar sobre --surface-3 */
+
+    /* Acento: o violeta atual (matiz ~258°), com contraste corrigido */
+    --accent: #8052f0;             /* fundo com texto branco: 4,8:1 */
+    --accent-hover: #7240e6;       /* 5,9:1 com texto branco */
+    --accent-press: #6532d6;
+    --accent-text: #a78bfa;        /* link/ícone sobre escuro: 6,8:1 */
+    --accent-soft: rgba(128, 82, 240, .18);
+    --accent-soft-hover: rgba(128, 82, 240, .28);
+    --accent-ring: rgba(128, 82, 240, .35);
+    --on-accent: #fff;
+    --on-accent-2: rgba(255, 255, 255, .85);  /* hora no balão enviado: 4,7:1 */
+    --bubble-sent: var(--accent-hover);
+
+    /* Semânticas (só sucesso e perigo) */
+    --success: #30d158;
+    --success-soft: rgba(48, 209, 88, .14);
+    --danger: #ff6961;
+    --danger-soft: rgba(255, 69, 58, .14);
+    --danger-soft-hover: rgba(255, 69, 58, .24);
+
+    /* Vidro — só navegação e controles flutuantes */
+    --glass-bg: rgba(28, 28, 34, .62);
+    --glass-blur: blur(20px) saturate(1.5) brightness(.8);
+    --glass-border: rgba(255, 255, 255, .14);
+    --glass-highlight: rgba(255, 255, 255, .18);
+    --glass-text-2: #d1d1d6;       /* texto secundário dentro do vidro */
+    --glass-shadow: 0 10px 40px rgba(0, 0, 0, .45);
+
+    /* Tipografia */
+    --font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    --fs-display: clamp(2.5rem, 1.9rem + 2.6vw, 3.5rem);     /* 40–56 */
+    --fs-title: clamp(1.75rem, 1.5rem + 1vw, 2.125rem);      /* 28–34 */
+    --fs-subtitle: clamp(1.25rem, 1.18rem + .3vw, 1.375rem); /* 20–22 */
+    --fs-body: clamp(1rem, .98rem + .1vw, 1.0625rem);        /* 16–17 */
+    --fs-secondary: .875rem;                                 /* 14 */
+    --fs-caption: .8125rem;                                  /* 13 */
+    --lh-display: 1.05;
+    --lh-title: 1.15;
+    --lh-subtitle: 1.25;
+    --lh-body: 1.5;
+    --lh-secondary: 1.45;
+    --lh-caption: 1.4;
+    --track-display: -.03em;
+    --track-title: -.02em;
+
+    /* Espaço (grade de 4/8) */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 24px;
+    --space-6: 32px;
+    --space-7: 48px;
+    --space-8: 64px;
+    --space-9: 96px;
+    --content-width: 980px;
+    --measure: 65ch;
+    --header-h: 52px;
+    --tabbar-h: 64px;
+    --tap: 44px;
+
+    /* Raios */
+    --r-sm: 8px;
+    --r-md: 12px;
+    --r-lg: 18px;
+    --r-xl: 28px;
+    --r-full: 999px;
+
+    /* Sombras (suaves) */
+    --shadow-1: 0 1px 2px rgba(0, 0, 0, .4);
+    --shadow-2: 0 8px 24px rgba(0, 0, 0, .35);
+    --shadow-art: drop-shadow(0 24px 32px rgba(0, 0, 0, .4));   /* ilustrações da home */
+
+    /* Movimento */
+    --ease: cubic-bezier(.2, .8, .2, 1);
+    --dur-1: 150ms;
+    --dur-2: 200ms;
+    --dur-3: 250ms;
+}
+
+/* Fallbacks do vidro: superfície opaca */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    :root { --glass-bg: #1c1c22; --glass-text-2: var(--text-2); }
+}
+@media (prefers-reduced-transparency: reduce) {
+    :root { --glass-bg: #1c1c22; --glass-blur: none; --glass-text-2: var(--text-2); }
+}
+@media (prefers-contrast: more) {
+    :root {
+        --glass-bg: #1c1c22; --glass-blur: none; --glass-text-2: var(--text-2);
+        --line: rgba(255, 255, 255, .32); --line-strong: rgba(255, 255, 255, .5); --line-hover: rgba(255, 255, 255, .7);
+        --glass-border: rgba(255, 255, 255, .5);
+        --text-2: #c7c7cc; --text-3: #aeaeb2;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    :root { --dur-1: 1ms; --dur-2: 1ms; --dur-3: 1ms; }
+}

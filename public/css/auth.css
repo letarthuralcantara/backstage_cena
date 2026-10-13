@@ -1,0 +1,113 @@
+/* auth.css — login, cadastro e esqueci-senha. Usa só tokens. */
+
+body.auth { display: grid; place-items: center; min-height: 100dvh; padding: var(--space-5) var(--space-4); }
+.container, .cadastro-container { width: 100%; max-width: 420px; }
+.cadastro-container { max-width: 640px; }
+
+.login-card, .cadastro-box {
+    padding: var(--space-6) var(--space-5); background: var(--surface-1);
+    border: 1px solid var(--line); border-radius: var(--r-xl); box-shadow: var(--shadow-2);
+    animation: auth-in var(--dur-3) var(--ease) both;
+}
+@keyframes auth-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@media (min-width: 480px) { .login-card, .cadastro-box { padding: var(--space-7) var(--space-6); } }
+
+.logo-container { margin-bottom: var(--space-6); }
+.login-card .logo-img, .cadastro-box .logo-img { width: 96px; height: auto; }
+
+.form-title, .cadastro-title { margin-bottom: var(--space-1); font-size: var(--fs-title); line-height: var(--lh-title); }
+.form-subtitle, .cadastro-subtitle { margin-bottom: var(--space-6); color: var(--text-2); font-size: var(--fs-secondary); line-height: var(--lh-secondary); }
+
+/* Campos */
+.form-group { display: grid; gap: var(--space-2); margin-bottom: var(--space-4); }
+.form-group label { color: var(--text-2); font-size: var(--fs-secondary); font-weight: 500; }
+.required { color: var(--accent-text); }
+.input-wrap, .input-wrapper, .bio-wrap { position: relative; }
+.login-card input:not([type="checkbox"]):not([type="radio"]), .cadastro-box input:not([type="checkbox"]):not([type="radio"]),
+.login-card select, .cadastro-box select, .cadastro-box textarea {
+    width: 100%; min-height: var(--tap); padding: var(--space-3) var(--space-4);
+    background: var(--surface-1); border: 1px solid var(--line-strong); border-radius: var(--r-md);
+    color: var(--text-1); font-size: var(--fs-body); line-height: 1.3;
+    transition: border-color var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);
+}
+.cadastro-box select option { background: var(--surface-2); color: var(--text-1); }
+.cadastro-box textarea { min-height: 112px; resize: vertical; }
+.login-card input::placeholder, .cadastro-box input::placeholder, .cadastro-box textarea::placeholder { color: var(--text-3); }
+.login-card input:focus-visible, .cadastro-box input:focus-visible, .cadastro-box select:focus-visible, .cadastro-box textarea:focus-visible {
+    outline: none; border-color: var(--accent-text); box-shadow: 0 0 0 3px var(--accent-ring);
+}
+.cadastro-box .input-wrap input.erro { border-color: var(--danger); }
+.cadastro-box .input-wrap input.ok { border-color: var(--success); }
+.input-wrap .toggle-senha { position: absolute; top: 50%; right: var(--space-4); transform: translateY(-50%); color: var(--text-2); cursor: pointer; }
+.input-wrap .toggle-senha:hover { color: var(--text-1); }
+.input-wrap:has(.toggle-senha) input { padding-right: var(--space-7); }
+input#codigo { text-align: center; letter-spacing: .4em; font-size: var(--fs-subtitle); font-variant-numeric: tabular-nums; }
+.campo-erro { display: none; color: var(--danger); font-size: var(--fs-caption); }
+.campo-erro.show { display: block; }
+
+.senha-forca { margin-top: var(--space-1); }
+.forca-barra { display: flex; gap: var(--space-1); }
+.forca-seg { flex: 1; height: 4px; border-radius: var(--r-full); background: var(--surface-3); }
+.forca-seg.fraca { background: var(--danger); }
+.forca-seg.media { background: var(--accent-text); }
+.forca-seg.forte { background: var(--success); }
+.forca-texto { margin-top: var(--space-1); font-size: var(--fs-caption); color: var(--text-2); }
+.forca-texto.fraca { color: var(--danger); }
+.forca-texto.media { color: var(--accent-text); }
+.forca-texto.forte { color: var(--success); }
+.senha-match { display: none; font-size: var(--fs-caption); }
+.senha-match.show { display: block; }
+.senha-match.ok { color: var(--success); }
+.senha-match.erro { color: var(--danger); }
+
+
+.checkbox-group { display: flex; align-items: center; gap: var(--space-3); min-height: var(--tap); margin-bottom: var(--space-4); }
+.checkbox-group input { width: 20px; height: 20px; accent-color: var(--accent); cursor: pointer; }
+.checkbox-group label { color: var(--text-2); font-size: var(--fs-secondary); cursor: pointer; }
+
+/* Botões das páginas de acesso */
+.login-card .btn-primary[type="submit"], .login-card .btn-login, .login-card .btn-secundario { width: 100%; }
+.btn-secundario { margin-top: var(--space-3); }
+.btn-login { display: flex; }
+.btn-primary:disabled, .btn-avancar:disabled { opacity: .4; cursor: not-allowed; }
+.btn-row { display: flex; gap: var(--space-3); margin-top: var(--space-4); }
+.btn-row > * { flex: 1; }
+
+/* Links */
+.esqueci-link, .signup-link, .login-link, .back-home, .btn-pular-link { margin-top: var(--space-4); text-align: center; font-size: var(--fs-secondary); color: var(--text-2); }
+.esqueci-link a, .signup-link a, .login-link a { color: var(--accent-text); text-decoration: none; }
+.esqueci-link a:hover, .signup-link a:hover, .login-link a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.back-home a, .btn-pular-link a { color: var(--text-3); text-decoration: none; cursor: pointer; }
+.back-home a:hover, .btn-pular-link a:hover { color: var(--text-2); }
+.divider { position: relative; margin: var(--space-5) 0; text-align: center; }
+.divider::before { content: ""; position: absolute; left: 0; top: 50%; width: 100%; height: 1px; background: var(--line); }
+.divider span { position: relative; padding: 0 var(--space-3); background: var(--surface-1); color: var(--text-3); font-size: var(--fs-caption); }
+
+/* Esqueci a senha: etapas */
+.etapa { display: none; }
+.etapa.active { display: block; }
+
+/* Cadastro: passos */
+.stepper { display: flex; align-items: center; justify-content: center; margin-bottom: var(--space-7); }
+.step { display: flex; flex-direction: column; align-items: center; gap: var(--space-2); }
+.step-circle { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--surface-3); color: var(--text-2); font-size: var(--fs-caption); font-weight: 600; transition: background var(--dur-2) var(--ease), color var(--dur-2) var(--ease); }
+.step.active .step-circle { background: var(--accent); color: var(--on-accent); }
+.step.done .step-circle { background: var(--accent-soft); color: var(--accent-text); }
+.step-label { font-size: var(--fs-caption); color: var(--text-3); }
+.step.active .step-label, .step.done .step-label { color: var(--text-1); }
+.step-line { flex: 0 1 64px; height: 1px; margin: 0 var(--space-3) calc(var(--space-5) + var(--space-1)); background: var(--line-strong); }
+.step-line.done { background: var(--accent-text); }
+.etapa-badge { display: inline-block; margin-bottom: var(--space-3); padding: 2px var(--space-3); border-radius: var(--r-full); background: var(--accent-soft); color: var(--accent-text); font-size: var(--fs-caption); font-weight: 600; }
+.form-section { margin-bottom: var(--space-6); }
+.section-title { margin-bottom: var(--space-4); font-size: var(--fs-subtitle); line-height: var(--lh-subtitle); font-weight: 600; letter-spacing: -.01em; }
+
+/* Aviso do cadastro (criado pelo script) */
+body.auth > .toast {
+    position: fixed; left: 50%; bottom: calc(var(--space-5) + env(safe-area-inset-bottom)); z-index: 300;
+    transform: translate(-50%, 12px); opacity: 0; pointer-events: none;
+    transition: opacity var(--dur-2) var(--ease), transform var(--dur-2) var(--ease);
+}
+body.auth > .toast.show { opacity: 1; transform: translate(-50%, 0); }
+body.auth > .toast.erro { color: var(--danger); }
+
+@media (prefers-reduced-motion: reduce) { .login-card, .cadastro-box { animation: none; } }

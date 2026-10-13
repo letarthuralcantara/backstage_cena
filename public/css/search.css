@@ -1,0 +1,53 @@
+/* search.css — pesquisar_usuarios.html. Usa só tokens. */
+
+.btn-filtrar { position: relative; }
+.btn-filtrar.active { background: var(--accent-soft); color: var(--accent-text); }
+.filtrar-count {
+    position: absolute; top: 4px; right: 4px; display: none; place-items: center; min-width: 16px; height: 16px; padding: 0 4px;
+    border-radius: var(--r-full); background: var(--accent); color: var(--on-accent); font-size: .6875rem; font-weight: 700; font-variant-numeric: tabular-nums;
+}
+.filtrar-count.show { display: grid; }
+
+.filters-panel { max-height: 0; overflow: hidden; padding: 0 var(--space-4); background: var(--surface-1); border-bottom: 1px solid transparent; transition: max-height var(--dur-3) var(--ease), padding var(--dur-3) var(--ease), border-color var(--dur-3) var(--ease); }
+.filters-panel.open { max-height: 720px; padding: var(--space-5) var(--space-4); border-bottom-color: var(--line); }
+.filters-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-4); max-width: var(--content-width); margin: 0 auto; }
+@media (min-width: 700px) { .filters-grid { grid-template-columns: repeat(3, 1fr); } .filters-panel.open { max-height: 260px; } }
+.filter-group { display: grid; gap: var(--space-2); }
+.filter-group label { color: var(--text-2); font-size: var(--fs-secondary); font-weight: 500; }
+.filter-group select {
+    min-height: var(--tap); padding: var(--space-3) var(--space-4); color: var(--text-1); font: inherit;
+    background: var(--surface-2); border: 1px solid var(--line-strong); border-radius: var(--r-md);
+}
+.filter-group select option { background: var(--surface-2); color: var(--text-1); }
+.filter-group select:focus-visible { outline: none; border-color: var(--accent-text); box-shadow: 0 0 0 3px var(--accent-ring); }
+
+.container.is-wide { margin-top: var(--space-6); }
+.hero { margin-bottom: var(--space-6); }
+.total-count { display: block; margin-top: var(--space-3); color: var(--text-2); font-size: var(--fs-secondary); font-variant-numeric: tabular-nums; }
+
+.musicians-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
+@media (min-width: 640px) { .musicians-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 960px) { .musicians-grid { grid-template-columns: repeat(3, 1fr); } }
+.musician-card {
+    display: grid; align-content: start; gap: var(--space-3); padding: var(--space-5);
+    background: var(--surface-1); border: 1px solid var(--line); border-radius: var(--r-lg); cursor: pointer;
+    transition: transform var(--dur-2) var(--ease), border-color var(--dur-2) var(--ease);
+    animation: fade-in-up var(--dur-3) var(--ease) both;
+}
+.musician-card:hover { transform: translateY(-2px); border-color: var(--line-strong); }
+.musician-header { display: flex; align-items: center; gap: var(--space-3); }
+.musician-photo { position: relative; display: grid; place-items: center; flex-shrink: 0; width: 48px; height: 48px; overflow: hidden; border-radius: 50%; background: var(--accent-soft); color: var(--accent-text); font-size: var(--fs-secondary); font-weight: 600; }
+.musician-photo img { width: 100%; height: 100%; object-fit: cover; }
+.musician-avatar { position: relative; flex-shrink: 0; }
+.musician-status { position: absolute; right: -2px; bottom: -2px; width: 14px; height: 14px; border: 2px solid var(--surface-1); }
+.musician-info { min-width: 0; }
+.musician-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--fs-body); font-weight: 600; }
+.musician-location { color: var(--text-2); font-size: var(--fs-caption); }
+.musician-area { display: inline-block; margin-top: var(--space-1); padding: 1px var(--space-3); border-radius: var(--r-full); background: var(--accent-soft); color: var(--accent-text); font-size: var(--fs-caption); font-weight: 600; }
+.musician-bio { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; color: var(--text-2); font-size: var(--fs-secondary); line-height: var(--lh-secondary); }
+.musician-tags { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.musician-tags .tag { font-size: var(--fs-caption); }
+.view-profile-btn { min-height: var(--tap); padding: 0 var(--space-4); border: 0; border-radius: var(--r-full); background: var(--accent-soft); color: var(--accent-text); font: inherit; font-weight: 600; cursor: pointer; }
+.empty-state { display: none; padding: var(--space-9) var(--space-5); text-align: center; color: var(--text-2); }
+.empty-state h3 { margin-bottom: var(--space-2); color: var(--text-1); font-size: var(--fs-subtitle); }
+@media (prefers-reduced-motion: reduce) { .musician-card { animation: none; } .musician-card:hover { transform: none; } }

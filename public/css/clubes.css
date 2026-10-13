@@ -1,97 +1,87 @@
-/* Clubes — usado por clubes.html, clube.html, feed.html e perfil.html.
-   Só o que é específico de clubes; o resto vem do global.css. */
-.clubes-grid { display: grid; gap: 12px; grid-template-columns: 1fr; }
+/* clubes.css — clubes.html, clube.html, feed.html e perfil.html. Usa só tokens.
+   O chat (.chat, .msg, .chat-form) vem do components.css. */
+
+.clubes-grid { display: grid; gap: var(--space-3); grid-template-columns: 1fr; }
 @media (min-width: 640px) { .clubes-grid { grid-template-columns: 1fr 1fr; } }
 
 .clube-card {
-  position: relative; display: flex; align-items: center; gap: 14px;
-  background: var(--glass-fill); border: 1px solid var(--glass-border);
-  border-radius: var(--r-lg); padding: 14px 16px;
-  -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
-  box-shadow: inset 0 1px 0 var(--glass-highlight);
-  transition: border-color .25s, transform .25s var(--ease);
+    position: relative; display: flex; align-items: center; gap: var(--space-4); padding: var(--space-4);
+    background: var(--surface-1); border: 1px solid var(--line); border-radius: var(--r-lg);
+    transition: transform var(--dur-2) var(--ease), border-color var(--dur-2) var(--ease);
 }
-.clube-card:hover { border-color: rgba(139, 92, 246, .45); transform: translateY(-2px); }
-.clube-card-link { position: absolute; inset: 0; border-radius: inherit; z-index: 1; }
+.clube-card:hover { transform: translateY(-2px); border-color: var(--line-strong); }
+.clube-card-link { position: absolute; inset: 0; z-index: 1; border-radius: inherit; }
 .clube-acao { position: relative; z-index: 2; flex-shrink: 0; }
-.clube-icone {
-  width: 46px; height: 46px; border-radius: 14px; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  background: var(--accent-soft); color: var(--accent); font-size: 18px;
-}
-.clube-icone img { width: 100%; height: 100%; object-fit: contain; border-radius: inherit; padding: 4px; background: #fff; }
-.clube-info { min-width: 0; flex: 1; }
-.clube-nome { font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.clube-meta { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-2); margin-top: 3px; flex-wrap: wrap; }
-.clube-tag { background: var(--accent-soft); color: var(--secondary); padding: 2px 9px; border-radius: var(--r-full); font-weight: 600; }
-.clube-motivo { font-size: 12px; color: var(--secondary); margin-top: 5px; }
-.clube-desc { font-size: 13px; color: var(--text-2); margin-top: 6px; line-height: 1.4; }
-.clube-btn { padding: 8px 16px; font-size: 13px; min-height: 36px; }
-.clube-participa { font-size: 12px; font-weight: 600; color: #34d399; white-space: nowrap; }
-.clube-card.compacto { padding: 12px 14px; }
+.clube-icone { display: grid; place-items: center; flex-shrink: 0; width: 48px; height: 48px; overflow: hidden; border-radius: var(--r-md); background: var(--accent-soft); color: var(--accent-text); font-size: 1.125rem; }
+.clube-icone img { width: 100%; height: 100%; object-fit: contain; padding: var(--space-1); background: var(--text-1); }
+.clube-info { flex: 1; min-width: 0; }
+.clube-nome { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--fs-body); font-weight: 600; }
+.clube-meta { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-2); margin-top: 2px; color: var(--text-2); font-size: var(--fs-caption); }
+.clube-tag { padding: 1px var(--space-3); border-radius: var(--r-full); background: var(--accent-soft); color: var(--accent-text); font-weight: 600; }
+.clube-motivo { margin-top: var(--space-1); color: var(--accent-text); font-size: var(--fs-caption); }
+.clube-desc { margin-top: var(--space-1); color: var(--text-2); font-size: var(--fs-secondary); line-height: var(--lh-secondary); }
+.clube-btn { min-height: var(--tap); padding: 0 var(--space-4); }
+.clube-participa { color: var(--success); font-size: var(--fs-caption); font-weight: 600; white-space: nowrap; }
+.clube-card.compacto { padding: var(--space-3) var(--space-4); }
 
-.clubes-vazio, .clubes-loading { color: var(--text-2); font-size: 14px; padding: 8px 2px; }
-.clubes-toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
-.clubes-toolbar input, .clubes-toolbar select, .form-clube input, .form-clube select, .form-clube textarea {
-  background: var(--glass-fill); border: 1px solid var(--glass-border); color: var(--text-1);
-  border-radius: var(--r-md); padding: 10px 14px; font: inherit; font-size: 14px; min-width: 0;
+.clubes-vazio, .clubes-loading { padding: var(--space-2); color: var(--text-2); font-size: var(--fs-secondary); }
+.chat-mensagens > .clubes-vazio { margin: auto; text-align: center; }
+.membros-faixa .avatar-stack > .avatar { text-decoration: none; transition: transform var(--dur-1) var(--ease); }
+.membros-faixa .avatar-stack > .avatar:hover { transform: translateY(-2px); z-index: 1; }
+
+.clubes-toolbar { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-bottom: var(--space-4); }
+.clubes-toolbar input, .clubes-toolbar select, .form-clube input:not([type="file"]), .form-clube select, .form-clube textarea {
+    min-width: 0; min-height: var(--tap); padding: var(--space-3) var(--space-4);
+    background: var(--surface-1); border: 1px solid var(--line-strong); border-radius: var(--r-md);
+    color: var(--text-1); font: inherit; font-size: var(--fs-body);
+    transition: border-color var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);
 }
 .clubes-toolbar input { flex: 1; min-width: 160px; }
-.clubes-toolbar option, .form-clube option { color: #111; }
-.section-link { margin-left: auto; font-size: 12px; font-weight: 600; color: var(--primary); text-decoration: none; }
+.clubes-toolbar input:focus-visible, .clubes-toolbar select:focus-visible, .form-clube input:focus-visible, .form-clube select:focus-visible, .form-clube textarea:focus-visible {
+    outline: none; border-color: var(--accent-text); box-shadow: 0 0 0 3px var(--accent-ring);
+}
+.clubes-toolbar option, .form-clube option { background: var(--surface-2); color: var(--text-1); }
 
 /* Chips de clube (perfil) */
-.clube-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.clube-chips { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 .clube-chip {
-  display: inline-flex; align-items: center; gap: 7px; text-decoration: none;
-  background: var(--accent-soft); color: var(--text-1); border: 1px solid var(--glass-border);
-  padding: 7px 14px; border-radius: var(--r-full); font-size: 13px; font-weight: 600;
-  transition: border-color .2s, background .2s;
+    display: inline-flex; align-items: center; gap: var(--space-2); min-height: 36px; padding: 0 var(--space-4);
+    background: var(--accent-soft); color: var(--text-1); border-radius: var(--r-full);
+    font-size: var(--fs-secondary); font-weight: 500; text-decoration: none; transition: background var(--dur-1) var(--ease);
 }
-.clube-chip i { color: var(--accent); font-size: 12px; }
-.clube-chip-imagem { width: 22px; height: 22px; border-radius: 50%; object-fit: contain; background: #fff; padding: 2px; }
-.clube-chip:hover { border-color: rgba(139, 92, 246, .55); background: rgba(139, 92, 246, .24); }
+.clube-chip i { color: var(--accent-text); font-size: var(--fs-caption); }
+.clube-chip:hover { background: var(--accent-soft-hover); }
+.clube-chip-imagem { width: 22px; height: 22px; padding: 2px; border-radius: 50%; object-fit: contain; background: var(--text-1); }
 
-/* Diálogo de criação */
-dialog.dialog-clube {
-  background: #14141a; color: var(--text-1); border: 1px solid var(--glass-border);
-  border-radius: var(--r-xl); padding: 24px; width: min(440px, 92vw);
+/* Criar clube (sheet) */
+dialog.dialog-clube { width: min(440px, calc(100vw - var(--space-5))); }
+.form-clube { display: grid; gap: var(--space-4); }
+.form-clube label { display: grid; gap: var(--space-2); color: var(--text-2); font-size: var(--fs-secondary); font-weight: 500; }
+.form-clube textarea { min-height: 88px; resize: vertical; }
+.form-clube input[type="file"] { width: 100%; color: var(--text-2); font-size: var(--fs-secondary); }
+.clube-foto-preview { width: 88px; height: 88px; padding: var(--space-1); border-radius: var(--r-md); object-fit: contain; background: var(--text-1); }
+.form-clube .linha-botoes { display: flex; justify-content: flex-end; gap: var(--space-3); margin-top: var(--space-2); }
+.form-erro { min-height: 18px; color: var(--danger); font-size: var(--fs-secondary); }
+
+/* Página do clube */
+.clube-topo { display: flex; align-items: center; gap: var(--space-4); flex-wrap: wrap; margin-bottom: var(--space-5); }
+.clube-topo .clube-icone { width: 64px; height: 64px; border-radius: var(--r-lg); font-size: 1.5rem; }
+.clube-topo-info { flex: 1 1 200px; min-width: 0; }
+.clube-topo h1 { font-size: var(--fs-title); line-height: var(--lh-title); letter-spacing: var(--track-title); }
+.clube-topo-acoes { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+.membros-faixa { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-6); }
+.membro-pill { display: inline-flex; align-items: center; gap: var(--space-2); min-height: 36px; padding: 0 var(--space-3) 0 var(--space-1); background: var(--surface-1); border: 1px solid var(--line); border-radius: var(--r-full); color: var(--text-1); font-size: var(--fs-caption); text-decoration: none; transition: border-color var(--dur-1) var(--ease); }
+.membro-pill:hover { border-color: var(--line-strong); }
+
+/* Layout do chat: preenche a altura da tela entre o header e a tab bar */
+.clube-page { display: flex; flex-direction: column; margin-top: var(--space-4); margin-bottom: 0; height: calc(100dvh - var(--header-h) - env(safe-area-inset-top) - var(--tabbar-h) - var(--space-6) - env(safe-area-inset-bottom)); min-height: 420px; }
+.clube-page > * { flex-shrink: 0; }
+.clube-page #chatArea { display: flex; flex: 1; flex-direction: column; min-height: 0; }
+.clube-page .chat { flex: 1; height: auto; min-height: 0; }
+.clube-page .clube-desc { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.clube-page .section-heading { margin-bottom: var(--space-3); font-size: var(--fs-body); }
+.clube-page .membros-faixa { margin-bottom: var(--space-4); }
+.clube-page .clube-topo { margin-bottom: var(--space-3); }
+@media (min-width: 768px) {
+    .clube-page { height: calc(100dvh - var(--header-h) - var(--space-7)); }
 }
-dialog.dialog-clube::backdrop { background: rgba(0, 0, 0, .6); }
-.form-clube { display: grid; gap: 12px; }
-.form-clube label { font-size: 12px; font-weight: 600; color: var(--text-2); display: grid; gap: 6px; }
-.form-clube textarea { resize: vertical; min-height: 70px; }
-.form-clube input[type="file"] { width: 100%; }
-.clube-foto-preview { width: 88px; height: 88px; object-fit: contain; border-radius: var(--r-md); background: #fff; padding: 5px; }
-.form-clube .linha-botoes { display: flex; gap: 10px; justify-content: flex-end; margin-top: 4px; }
-.form-erro { color: #f87171; font-size: 13px; min-height: 18px; }
-
-/* Página do clube + chat */
-.clube-topo { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
-.clube-topo .clube-icone { width: 58px; height: 58px; font-size: 24px; border-radius: 18px; }
-.clube-topo-info { flex: 1; min-width: 200px; }
-.clube-topo h1 { font-size: clamp(22px, 5vw, 30px); line-height: 1.15; }
-.clube-topo-acoes { display: flex; gap: 10px; flex-wrap: wrap; }
-.membros-faixa { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
-.membro-pill { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; text-decoration: none; color: var(--text-1); background: var(--glass-fill); border: 1px solid var(--glass-border); padding: 4px 12px 4px 4px; border-radius: var(--r-full); }
-.avatar-mini { width: 26px; height: 26px; border-radius: 50%; background: var(--accent-soft); color: var(--secondary); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; overflow: hidden; flex-shrink: 0; }
-.avatar-mini img { width: 100%; height: 100%; object-fit: cover; }
-
-.chat {
-  display: flex; flex-direction: column; height: min(62vh, 560px);
-  background: var(--glass-fill); border: 1px solid var(--glass-border);
-  border-radius: var(--r-lg); overflow: hidden;
-}
-.chat-mensagens { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
-.msg { display: flex; gap: 10px; max-width: 85%; }
-.msg.minha { align-self: flex-end; flex-direction: row-reverse; }
-.msg-corpo { background: var(--glass-fill-strong); border-radius: 14px; padding: 8px 12px; min-width: 0; }
-.msg.minha .msg-corpo { background: rgba(139, 92, 246, .28); }
-.msg-autor { font-size: 11px; font-weight: 700; color: var(--secondary); margin-bottom: 2px; }
-.msg-texto { font-size: 14px; line-height: 1.4; white-space: pre-wrap; overflow-wrap: anywhere; }
-.msg-hora { font-size: 10px; color: var(--text-3); margin-top: 3px; text-align: right; }
-.chat-form { display: flex; gap: 10px; padding: 12px; border-top: 1px solid var(--glass-border); }
-.chat-form input { flex: 1; min-width: 0; background: var(--glass-fill); border: 1px solid var(--glass-border); color: var(--text-1); border-radius: var(--r-full); padding: 10px 16px; font: inherit; font-size: 14px; }
-.chat-bloqueado { text-align: center; padding: 36px 20px; color: var(--text-2); }
-.chat-bloqueado i { font-size: 28px; color: var(--accent); margin-bottom: 10px; display: block; }
-.chat-aviso { font-size: 12px; color: #f87171; padding: 0 16px 8px; min-height: 0; }

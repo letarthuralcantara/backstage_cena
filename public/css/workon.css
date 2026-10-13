@@ -1,0 +1,90 @@
+/* workon.css — workons.html e workon.html. Usa só tokens.
+   Os nomes de classe .workon-* também são gerados por js/workon.js. */
+
+.page { width: min(var(--content-width), calc(100% - var(--space-5))); margin: var(--space-5) auto var(--space-7); }
+.page-heading { margin-bottom: var(--space-6); }
+.page-heading h1 { font-size: var(--fs-title); line-height: var(--lh-title); letter-spacing: var(--track-title); }
+.page-heading p, .workon-empty { margin-top: var(--space-2); color: var(--text-2); }
+.workon-tabs { --seg-min: 132px; max-width: 480px; margin-bottom: var(--space-5); }
+.workon-tabs > * { padding: 0 var(--space-3); line-height: 1.15; text-align: center; white-space: normal; }
+.toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-4); margin-bottom: var(--space-4); color: var(--text-2); font-size: var(--fs-secondary); }
+.workon-views { max-width: 300px; margin-left: auto; }
+.workon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: var(--space-4); }
+.workon-grid.is-list { grid-template-columns: 1fr; }
+.workon-card {
+    display: flex; flex-direction: column; overflow: hidden; min-height: 200px; color: inherit; text-decoration: none;
+    background: var(--surface-1); border: 1px solid var(--line); border-radius: var(--r-lg);
+    transition: transform var(--dur-2) var(--ease), border-color var(--dur-2) var(--ease);
+}
+.workon-card:hover { transform: translateY(-2px); border-color: var(--line-strong); }
+.workon-card img, .workon-card-placeholder { display: grid; place-items: center; width: 100%; height: 130px; object-fit: cover; background: var(--surface-2); color: var(--text-3); font-size: 1.75rem; }
+.workon-card-info { display: grid; gap: var(--space-1); padding: var(--space-4); }
+.workon-card-info strong { font-size: var(--fs-body); font-weight: 600; }
+.workon-card-info span { color: var(--text-2); font-size: var(--fs-caption); }
+.workon-grid.is-list .workon-card { display: grid; grid-template-columns: 130px 1fr; align-items: center; min-height: 0; }
+.workon-grid.is-list .workon-card img, .workon-grid.is-list .workon-card-placeholder { height: 100%; min-height: 110px; }
+.workon-board { display: grid; grid-auto-columns: minmax(240px, 1fr); grid-auto-flow: column; gap: var(--space-3); overflow-x: auto; padding-bottom: var(--space-3); }
+.workon-board-column { min-width: 240px; padding: var(--space-3); background: var(--surface-1); border: 1px solid var(--line); border-radius: var(--r-lg); }
+.workon-board-column h3 { margin-bottom: var(--space-3); font-size: var(--fs-secondary); font-weight: 600; }
+.workon-board-column h3 span { margin-left: var(--space-2); color: var(--text-2); font-weight: 500; font-variant-numeric: tabular-nums; }
+.workon-board-column .workon-card { min-height: 0; margin-bottom: var(--space-3); background: var(--surface-2); }
+.workon-board-column .workon-card img, .workon-board-column .workon-card-placeholder { height: 88px; }
+
+.workon-create { margin-top: var(--space-7); padding: var(--space-5); background: var(--surface-1); border: 1px solid var(--line); border-radius: var(--r-lg); }
+.workon-create h2 { margin-bottom: var(--space-4); font-size: var(--fs-subtitle); line-height: var(--lh-subtitle); font-weight: 600; letter-spacing: -.01em; }
+.workon-create form { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--space-3); }
+#workonErro { min-height: 22px; color: var(--danger); font-size: var(--fs-secondary); }
+
+/* Campos e botões das duas páginas */
+.workon-create label, .workon-upload label, .inline-form label { display: grid; gap: var(--space-2); color: var(--text-2); font-size: var(--fs-secondary); }
+.workon-create input, .workon-create select, .project input:not([type="checkbox"]):not([type="file"]), .project textarea {
+    min-height: var(--tap); padding: var(--space-3) var(--space-4); color: var(--text-1); font: inherit;
+    background: var(--surface-1); border: 1px solid var(--line-strong); border-radius: var(--r-md);
+    transition: border-color var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);
+}
+.workon-create input:focus-visible, .workon-create select:focus-visible, .project input:focus-visible, .project textarea:focus-visible { outline: none; border-color: var(--accent-text); box-shadow: 0 0 0 3px var(--accent-ring); }
+.workon-create select option { background: var(--surface-2); }
+.workon-create button, .project button {
+    min-height: var(--tap); padding: 0 var(--space-5); border: 0; border-radius: var(--r-full);
+    background: var(--accent-soft); color: var(--accent-text); font: inherit; font-size: var(--fs-secondary); font-weight: 600; cursor: pointer;
+    transition: background var(--dur-1) var(--ease), transform var(--dur-1) var(--ease);
+}
+.workon-create button:hover, .project button:hover { background: var(--accent-soft-hover); }
+.workon-create button:active, .project button:active { transform: scale(.97); }
+.workon-create button[type="submit"] { background: var(--accent); color: var(--on-accent); }
+.workon-create button[type="submit"]:hover { background: var(--accent-hover); }
+
+/* Página do projeto */
+.project { width: min(var(--content-width), calc(100% - var(--space-5))); margin: var(--space-5) auto var(--space-7); }
+.project > a { display: inline-block; margin-bottom: var(--space-4); color: var(--accent-text); font-size: var(--fs-secondary); text-decoration: none; }
+.project > a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.project-cover { position: relative; display: flex; align-items: flex-end; min-height: 240px; padding: var(--space-6); overflow: hidden; background: var(--surface-2) center / cover; border: 1px solid var(--line); border-radius: var(--r-xl); }
+.project-cover h1 { font-size: var(--fs-display); line-height: var(--lh-display); letter-spacing: var(--track-display); }
+.project-cover p { max-width: 60ch; margin-top: var(--space-2); color: var(--text-1); }
+.project-cover-content { position: relative; z-index: 1; }
+.project-cover-tools { position: absolute; top: var(--space-4); right: var(--space-4); }
+.project-grid { display: grid; grid-template-columns: minmax(0, 1fr) 300px; align-items: start; gap: var(--space-4); margin-top: var(--space-4); }
+.project-main, .project-side { display: grid; gap: var(--space-4); }
+.panel { padding: var(--space-5); background: var(--surface-1); border: 1px solid var(--line); border-radius: var(--r-lg); }
+.panel h2 { margin-bottom: var(--space-4); font-size: var(--fs-subtitle); line-height: var(--lh-subtitle); font-weight: 600; letter-spacing: -.01em; }
+.property-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); }
+.property { display: grid; gap: 2px; color: var(--text-2); font-size: var(--fs-caption); }
+.property strong { color: var(--text-1); font-size: var(--fs-secondary); font-weight: 500; }
+.workon-track, .workon-task, .workon-member, .workon-version { background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--r-md); }
+.workon-track { margin-bottom: var(--space-3); padding: var(--space-4); }
+.workon-versions h4 { margin-bottom: var(--space-2); font-size: var(--fs-secondary); }
+.workon-versions small { color: var(--text-2); font-size: var(--fs-caption); }
+.workon-version { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin: var(--space-2) 0; padding: var(--space-2) var(--space-3); }
+.workon-version audio { width: min(420px, 65%); height: 36px; }
+.workon-upload, .inline-form { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--space-3); margin-top: var(--space-3); }
+.project textarea { width: 100%; min-height: 170px; resize: vertical; }
+.workon-task { display: flex; align-items: center; gap: var(--space-3); margin: var(--space-2) 0; padding: var(--space-3); }
+.workon-task input { accent-color: var(--accent); }
+.workon-members { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.workon-member { padding: var(--space-2) var(--space-3); font-size: var(--fs-caption); }
+.workon-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(135px, 1fr)); gap: var(--space-3); }
+.workon-gallery figure { overflow: hidden; background: var(--surface-2); border-radius: var(--r-md); }
+.workon-gallery img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+.workon-gallery figcaption { padding: var(--space-2); color: var(--text-2); font-size: var(--fs-caption); }
+@media (max-width: 760px) { .project-grid { grid-template-columns: 1fr; } .project-cover { min-height: 200px; padding: var(--space-5); } .workon-views { margin-left: 0; max-width: 100%; } }
+@media (prefers-reduced-motion: reduce) { .workon-card:hover { transform: none; } }

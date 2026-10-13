@@ -1,0 +1,73 @@
+/* publish.css — publicar.html. Usa só tokens. */
+
+.container { width: min(640px, calc(100% - var(--space-5))); margin: var(--space-5) auto var(--space-7); }
+.page-title { margin-bottom: var(--space-2); font-size: var(--fs-title); line-height: var(--lh-title); letter-spacing: var(--track-title); }
+.page-subtitle { margin-bottom: var(--space-5); color: var(--text-2); }
+.tabs { margin-bottom: var(--space-5); max-width: 360px; }
+.publish-card { padding: var(--space-5); background: var(--surface-1); border: 1px solid var(--line); border-radius: var(--r-lg); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; animation: fade-in-up var(--dur-3) var(--ease) both; }
+
+.form-group { display: grid; gap: var(--space-2); margin-bottom: var(--space-5); }
+.form-group > label { color: var(--text-2); font-size: var(--fs-secondary); font-weight: 500; }
+.form-control, .tweet-textarea, .trimmer-row select {
+    width: 100%; min-height: var(--tap); padding: var(--space-3) var(--space-4); background: var(--surface-2); border: 1px solid var(--line-strong); border-radius: var(--r-md);
+    color: var(--text-1); font: inherit; transition: border-color var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);
+}
+.tweet-textarea { min-height: 140px; resize: vertical; line-height: var(--lh-body); }
+.form-control::placeholder, .tweet-textarea::placeholder { color: var(--text-3); }
+.form-control:focus-visible, .tweet-textarea:focus-visible, .trimmer-row select:focus-visible { outline: none; border-color: var(--accent-text); box-shadow: 0 0 0 3px var(--accent-ring); }
+.trimmer-row select { width: auto; min-width: 96px; }
+
+.file-input-wrapper { position: relative; display: grid; place-items: center; gap: var(--space-1); min-height: 112px; padding: var(--space-5); background: var(--surface-2); border: 1px dashed var(--line-strong); border-radius: var(--r-lg); text-align: center; transition: border-color var(--dur-2) var(--ease), background var(--dur-2) var(--ease); }
+.file-input-wrapper:hover { border-color: var(--accent-text); background: var(--accent-soft); }
+.file-input-wrapper span { color: var(--text-2); font-size: var(--fs-secondary); overflow-wrap: anywhere; }
+.file-input-wrapper input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+
+/* Seletor de trecho */
+.trimmer { padding: var(--space-4); background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--r-lg); }
+.trimmer-hint { color: var(--text-2); font-size: var(--fs-secondary); }
+.trimmer audio { width: 100%; margin-bottom: var(--space-4); }
+.trimmer-row { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-3); }
+.trimmer-row label { flex-shrink: 0; min-width: 64px; color: var(--text-2); font-size: var(--fs-secondary); }
+.trimmer-tempo { margin-bottom: var(--space-3); color: var(--accent-text); font-size: var(--fs-secondary); font-weight: 600; font-variant-numeric: tabular-nums; }
+.trimmer-timeline { position: relative; height: 56px; margin-bottom: var(--space-3); overflow: hidden; border-radius: var(--r-md); background: repeating-linear-gradient(90deg, var(--line) 0 2px, transparent 2px 8px); touch-action: none; user-select: none; }
+.trimmer-playhead { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--text-1); pointer-events: none; opacity: 0; transition: opacity var(--dur-1) var(--ease); }
+.trimmer-playhead.show { opacity: 1; }
+.trimmer-window { position: absolute; top: 0; bottom: 0; background: var(--accent-soft); border-block: 2px solid var(--accent); cursor: grab; }
+.trimmer-window:active { cursor: grabbing; }
+.trimmer-handle { position: absolute; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; width: 24px; background: var(--accent); cursor: ew-resize; touch-action: none; }
+.trimmer-handle::before { content: ""; width: 3px; height: 20px; border-radius: var(--r-sm); background: var(--on-accent-2); }
+.trimmer-handle-esq { left: 0; border-radius: var(--r-md) 0 0 var(--r-md); }
+.trimmer-handle-dir { right: 0; border-radius: 0 var(--r-md) var(--r-md) 0; }
+.trimmer-fora { position: absolute; top: 0; bottom: 0; background: var(--scrim); pointer-events: none; }
+.btn-ouvir-trecho { display: inline-flex; align-items: center; min-height: var(--tap); padding: 0 var(--space-5); background: var(--accent-soft); border: 0; border-radius: var(--r-full); color: var(--accent-text); font: inherit; font-size: var(--fs-secondary); font-weight: 600; cursor: pointer; transition: background var(--dur-1) var(--ease); }
+.btn-ouvir-trecho:hover { background: var(--accent-soft-hover); }
+
+/* Tweet */
+.tweet-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3); margin: var(--space-4) 0 var(--space-5); }
+.tweet-expira-toggle { display: flex; align-items: center; gap: var(--space-3); min-height: var(--tap); color: var(--text-2); font-size: var(--fs-secondary); cursor: pointer; }
+.tweet-expira-toggle input { width: 20px; height: 20px; accent-color: var(--accent); cursor: pointer; }
+.tweet-contador { color: var(--text-2); font-size: var(--fs-secondary); font-variant-numeric: tabular-nums; }
+.tweet-contador.no-limite { color: var(--danger); }
+.tweet-imagem-acoes { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+.tweet-imagem-btn, .tweet-imagem-editar, .tweet-imagem-remover { min-height: var(--tap); padding: 0 var(--space-4); background: var(--accent-soft); border: 0; border-radius: var(--r-full); color: var(--accent-text); font: inherit; font-size: var(--fs-secondary); font-weight: 600; cursor: pointer; transition: background var(--dur-1) var(--ease); }
+.tweet-imagem-btn:hover, .tweet-imagem-editar:hover { background: var(--accent-soft-hover); }
+.tweet-imagem-remover { background: var(--danger-soft); color: var(--danger); }
+.tweet-imagem-remover:hover { background: var(--danger-soft-hover); }
+.tweet-imagem-preview { display: block; max-width: 100%; max-height: 280px; margin-top: var(--space-3); object-fit: contain; border-radius: var(--r-md); }
+.tweet-imagem-erro { margin-top: var(--space-2); color: var(--danger); font-size: var(--fs-secondary); }
+
+.btn-publish { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 48px; border: 0; border-radius: var(--r-full); background: var(--accent); color: var(--on-accent); font: inherit; font-weight: 600; cursor: pointer; transition: background var(--dur-1) var(--ease), transform var(--dur-1) var(--ease); }
+.btn-publish:hover { background: var(--accent-hover); }
+.btn-publish:active { transform: scale(.98); }
+.btn-publish:disabled { opacity: .4; cursor: not-allowed; }
+.msg-feedback { margin-top: var(--space-4); padding: var(--space-3) var(--space-4); border-radius: var(--r-md); font-size: var(--fs-secondary); }
+.msg-feedback.sucesso { background: var(--success-soft); color: var(--success); }
+.msg-feedback.erro { background: var(--danger-soft); color: var(--danger); }
+
+.api-toast { position: fixed; z-index: 1000; left: 50%; bottom: calc(var(--tabbar-h) + var(--space-5) + env(safe-area-inset-bottom)); max-width: min(420px, calc(100vw - var(--space-5))); padding: var(--space-3) var(--space-5); background: var(--surface-3); border: 1px solid var(--line-strong); border-radius: var(--r-full); box-shadow: var(--shadow-2); font-size: var(--fs-secondary); opacity: 0; transform: translate(-50%, 10px); pointer-events: none; transition: opacity var(--dur-2) var(--ease), transform var(--dur-2) var(--ease); }
+.api-toast.show { opacity: 1; transform: translate(-50%, 0); }
+.api-toast.erro { color: var(--danger); }
+@media (min-width: 768px) { .api-toast { bottom: var(--space-5); } }
+@media (prefers-reduced-motion: reduce) { .tab-panel.active { animation: none; } }

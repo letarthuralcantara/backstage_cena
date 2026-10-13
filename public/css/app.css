@@ -1,0 +1,52 @@
+/* app.css — peças comuns das páginas internas (feed, clubes, perfil, etc.). Usa só tokens. */
+
+.container { width: min(720px, calc(100% - var(--space-5))); margin: var(--space-5) auto var(--space-7); }
+.container.is-wide { width: min(var(--content-width), calc(100% - var(--space-5))); }
+.page-header { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; margin-bottom: var(--space-6); }
+.hero-title { font-size: var(--fs-title); line-height: var(--lh-title); letter-spacing: var(--track-title); text-align: left; }
+.hero-title span { color: inherit; }
+.hero-subtitle { margin-top: var(--space-2); color: var(--text-2); font-size: var(--fs-body); }
+
+.section-block { margin-bottom: var(--space-7); }
+.section-heading { display: flex; align-items: baseline; gap: var(--space-3); margin-bottom: var(--space-4); font-size: var(--fs-subtitle); line-height: var(--lh-subtitle); font-weight: 600; letter-spacing: -.01em; }
+.section-heading .count-badge { margin-left: auto; color: var(--text-2); font-size: var(--fs-caption); font-weight: 500; }
+.section-link { margin-left: auto; color: var(--accent-text); font-size: var(--fs-secondary); font-weight: 500; text-decoration: none; }
+.section-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.voltar-link { display: inline-block; margin-bottom: var(--space-4); color: var(--accent-text); font-size: var(--fs-secondary); text-decoration: none; }
+.voltar-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* Filtros do feed: controle segmentado fixo */
+.feed-filters { margin: var(--space-4) 0 var(--space-6); max-width: 320px; }
+
+/* Cards de tweet */
+.feed-timeline { display: flex; flex-direction: column; gap: var(--space-3); }
+.feed-item {
+    padding: var(--space-5); background: var(--surface-1); border: 1px solid var(--line); border-radius: var(--r-lg);
+    transition: border-color var(--dur-2) var(--ease);
+    animation: fade-in-up var(--dur-3) var(--ease) both;
+}
+.feed-item:hover { border-color: var(--line-strong); }
+.item-header { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-3); }
+.author-avatar {
+    display: grid; place-items: center; flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%;
+    background: var(--accent-soft); color: var(--accent-text); font-size: var(--fs-caption); font-weight: 600;
+}
+.author-info { flex: 1; min-width: 0; }
+.author-name { font-size: var(--fs-secondary); font-weight: 600; }
+.post-meta { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; color: var(--text-2); font-size: var(--fs-caption); }
+.post-expira { color: var(--danger); }
+.tweet-body { font-size: var(--fs-body); line-height: var(--lh-body); white-space: pre-wrap; overflow-wrap: anywhere; }
+@keyframes fade-in-up { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* Work Ons no feed */
+.workon-feed-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-3); }
+.workon-feed-card { display: block; overflow: hidden; background: var(--surface-1); border: 1px solid var(--line); border-radius: var(--r-lg); color: inherit; text-decoration: none; transition: transform var(--dur-2) var(--ease), border-color var(--dur-2) var(--ease); }
+.workon-feed-card:hover { transform: translateY(-2px); border-color: var(--line-strong); }
+.workon-feed-card img, .workon-feed-placeholder { display: grid; place-items: center; width: 100%; height: 120px; object-fit: cover; background: var(--surface-2); color: var(--text-3); }
+.workon-feed-card div { display: grid; gap: var(--space-1); padding: var(--space-4); }
+.workon-feed-card small { color: var(--text-2); font-size: var(--fs-caption); }
+
+@media (prefers-reduced-motion: reduce) {
+    .feed-item { animation: none; }
+    .workon-feed-card:hover { transform: none; }
+}

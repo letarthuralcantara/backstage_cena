@@ -1,0 +1,47 @@
+/* forms.css — grades de escolha, contador de biografia e campos em linha.
+   Usado por cadastro.html e editar.html. Usa só tokens. */
+
+.bio-wrap { position: relative; }
+.bio-counter { margin-top: var(--space-1); text-align: right; font-size: var(--fs-caption); color: var(--text-3); font-variant-numeric: tabular-nums; }
+.bio-counter.warning { color: var(--accent-text); }
+.bio-counter.limit { color: var(--danger); }
+.form-row { display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
+@media (min-width: 480px) { .form-row { grid-template-columns: 1fr 1fr; } }
+
+/* Cadastro: escolhas */
+.escolha-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-3); }
+@media (min-width: 480px) { .escolha-grid { grid-template-columns: 1fr 1fr; } }
+.escolha-card { display: grid; gap: var(--space-1); padding: var(--space-5); background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--r-lg); cursor: pointer; transition: border-color var(--dur-2) var(--ease), transform var(--dur-2) var(--ease); }
+.escolha-card:hover { border-color: var(--accent-text); transform: translateY(-2px); }
+.escolha-icon { color: var(--accent-text); font-size: 1.25rem; }
+.escolha-icon.muted { color: var(--text-2); }
+.escolha-titulo { font-weight: 600; }
+.escolha-desc { color: var(--text-2); font-size: var(--fs-secondary); }
+#etapa3-form { display: none; }
+
+.areas-grid, .checkbox-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-2); }
+@media (min-width: 480px) { .areas-grid, .checkbox-grid { grid-template-columns: repeat(3, 1fr); } }
+.generos-grid { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.status-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-2); }
+@media (min-width: 480px) { .status-grid { grid-template-columns: repeat(2, 1fr); } }
+.area-card, .checkbox-item { position: relative; }
+.area-card input, .checkbox-item input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.area-label, .checkbox-label {
+    display: flex; align-items: center; gap: var(--space-2); min-height: var(--tap); padding: var(--space-2) var(--space-3);
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--r-md);
+    color: var(--text-2); font-size: var(--fs-secondary); font-weight: 500; line-height: 1.3;
+    transition: background var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease), color var(--dur-1) var(--ease);
+}
+.area-label { flex-direction: column; justify-content: center; text-align: center; padding: var(--space-3); }
+.area-icon { color: var(--text-3); font-size: 1.125rem; }
+.area-label:hover, .checkbox-label:hover { border-color: var(--line-hover); }
+.area-card input:checked + .area-label, .checkbox-item input:checked + .checkbox-label { background: var(--accent-soft); border-color: var(--accent-text); color: var(--text-1); }
+.area-card input:checked + .area-label .area-icon { color: var(--accent-text); }
+.area-card input:focus-visible + .area-label, .checkbox-item input:focus-visible + .checkbox-label { outline: 2px solid var(--accent-text); outline-offset: 2px; }
+.checkbox-icon { display: grid; place-items: center; flex-shrink: 0; width: 18px; height: 18px; border: 1px solid var(--line-strong); border-radius: var(--r-sm); color: transparent; font-size: .625rem; }
+.checkbox-item input:checked + .checkbox-label .checkbox-icon { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.generos-grid .checkbox-label { padding: var(--space-2) var(--space-4); border-radius: var(--r-full); }
+
+/* Listas vazias geradas pelo script */
+.grid-vazio { grid-column: 1 / -1; text-align: center; color: var(--text-2); font-size: var(--fs-secondary); }
+
