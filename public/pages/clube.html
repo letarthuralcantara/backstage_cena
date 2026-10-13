@@ -6,20 +6,13 @@
     <title>Backstage | Clube</title>
     <meta name="robots" content="noindex, nofollow">
     <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/tokens.css">
+    <link rel="stylesheet" href="../css/components.css">
     <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/app.css">
     <link rel="stylesheet" href="../css/clubes.css">
-    <style>
-        .container { max-width: 820px; margin: 24px auto; padding: 0 16px; position: relative; z-index: 1; }
-        .page-header { margin-bottom: 26px; display: flex; align-items: flex-end; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
-        .hero-title { font-size: clamp(28px, 6vw, 40px); line-height: 1.1; text-align: left; }
-        .hero-title span { color: var(--accent); }
-        .hero-subtitle { color: var(--text-2); margin-top: 8px; font-size: 15px; }
-        .section-block { margin-bottom: 32px; }
-        .section-heading { font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
-        .section-heading i { color: var(--primary); font-size: 13px; }
-    </style>
 </head>
 <body>
     <header class="header">
@@ -32,13 +25,13 @@
         </div>
     </header>
 
-    <div class="container">
-        <a href="clubes.html" class="section-link" style="margin:0 0 14px; display:inline-block;"><i class="fas fa-arrow-left"></i> Todos os clubes</a>
+    <div class="container clube-page">
+        <a href="clubes.html" class="voltar-link">Todos os clubes</a>
 
         <div class="clube-topo" id="clubeTopo"><p class="clubes-loading">Carregando...</p></div>
         <div class="membros-faixa" id="membrosFaixa"></div>
 
-        <h2 class="section-heading"><i class="fas fa-comments"></i> Chat do clube</h2>
+        <h2 class="section-heading">Chat do clube</h2>
         <div id="chatArea"></div>
     </div>
 
@@ -65,8 +58,8 @@
 
         function avatarHtml(nome, foto) {
             return foto
-                ? `<span class="avatar-mini"><img src="${escaparHtml(foto)}" alt=""></span>`
-                : `<span class="avatar-mini">${escaparHtml(iniciais(nome))}</span>`;
+                ? `<span class="avatar avatar-sm"><img src="${escaparHtml(foto)}" alt=""></span>`
+                : `<span class="avatar avatar-sm">${escaparHtml(iniciais(nome))}</span>`;
         }
 
         function renderTopo() {
@@ -112,13 +105,18 @@
             }
 
             faixa.innerHTML = '';
+            const pilha = document.createElement('div');
+            pilha.className = 'avatar-stack';
             clube.membros.forEach((m) => {
                 const a = document.createElement('a');
-                a.className = 'membro-pill';
+                a.className = 'avatar avatar-sm';
                 a.href = `perfil.html?id=${m.id_usuario}`;
-                a.innerHTML = `${avatarHtml(m.nome, m.foto)}<span>${escaparHtml(m.nome)}${m.papel === 'dono' ? ' · dono' : ''}</span>`;
-                faixa.appendChild(a);
+                a.title = `${m.nome}${m.papel === 'dono' ? ' · dono' : ''}`;
+                a.setAttribute('aria-label', a.title);
+                a.innerHTML = m.foto ? `<img src="${escaparHtml(m.foto)}" alt="">` : escaparHtml(iniciais(m.nome));
+                pilha.appendChild(a);
             });
+            faixa.appendChild(pilha);
         }
 
         function hora(iso) {
@@ -133,6 +131,9 @@
                 const el = document.createElement('div');
                 el.className = `msg${m.minha ? ' minha' : ''}`;
                 el.dataset.mensagemId = m.id_mensagem;
+                const autorChave = m.minha ? 'eu' : String(m.autor.nome);
+                el.dataset.autor = autorChave;
+                if (area.lastElementChild?.dataset?.autor === autorChave) el.classList.add('seq');
                 el.innerHTML = `
                     ${avatarHtml(m.autor.nome, m.autor.foto)}
                     <div class="msg-corpo">
@@ -152,7 +153,7 @@
                     <div class="chat-aviso" id="chatAviso" role="alert"></div>
                     <form class="chat-form" id="chatForm" autocomplete="off">
                         <input type="text" id="chatTexto" maxlength="500" placeholder="Escreva uma mensagem..." aria-label="Mensagem">
-                        <button type="submit" class="btn-primary clube-btn"><i class="fas fa-paper-plane"></i></button>
+                        <button type="submit" class="btn-icon" aria-label="Enviar mensagem"><i class="fas fa-arrow-up" aria-hidden="true"></i></button>
                     </form>
                 </div>`;
             const area = document.getElementById('chatMensagens');
@@ -200,7 +201,7 @@
             if (clube.participa) montarChat();
             else {
                 clearInterval(timerChat);
-                chatArea.innerHTML = `<div class="chat"><div class="chat-bloqueado"><i class="fas fa-lock"></i>Entre no clube para ler e participar do chat.</div></div>`;
+                chatArea.innerHTML = `<div class="chat"><div class="chat-bloqueado chat-estado"><strong>Entre no clube para participar</strong>Só membros leem e escrevem no chat.</div></div>`;
             }
         }
 

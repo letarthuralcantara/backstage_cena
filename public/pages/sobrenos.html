@@ -7,79 +7,14 @@
     <meta name="description" content="Conheça a equipe por trás do Backstage Cena e a missão de conectar músicos independentes.">
     <meta name="robots" content="index, follow">
     <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/tokens.css">
+    <link rel="stylesheet" href="../css/components.css">
     <link rel="stylesheet" href="../css/global.css">
-    <style>
-        * { scroll-behavior: smooth; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
-        .btn-cta {
-            display: inline-block;
-            background: var(--accent);
-            color: white; padding: 14px 30px; border-radius: var(--r-full);
-            font-weight: 600; text-decoration: none; font-size: 14px;
-            transition: background .18s; cursor: pointer;
-        }
-        .btn-cta:hover { background: var(--accent-ink); }
-        .btn-cta:active { transform: scale(.96); }
-        .hero { height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; position:relative; }
-        .hero-title { font-size: clamp(40px, 9vw, 84px); line-height: .95; margin-bottom: 20px; }
-        .hero-title span { display: block; color: var(--accent); }
-        .hero-subtitle { font-size: 17px; color: var(--text-2); max-width: 480px; margin-bottom: 40px; }
-        .scroll-indicator { position:absolute; bottom:40px; width:30px; height:50px; border:2px solid #555; border-radius:20px; }
-        .scroll-indicator::after { content:''; position:absolute; top:10px; left:50%; width:6px; height:6px; background:var(--primary); border-radius:50%; transform:translateX(-50%); animation:scrollDown 2s infinite; }
-        @keyframes scrollDown { 0%{top:10px;opacity:1} 100%{top:30px;opacity:0} }
-        .section { padding:150px 0; position:relative; }
-        .reveal { opacity:0; transform:translateY(40px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
-        /* Maior especificidade que qualquer transição própria de cartão (ex.: .mvv-item,
-           .glass-card): assim que revelado, o hover volta a usar a duração rápida
-           do próprio cartão em vez de herdar 1s inteiro da revelação. */
-        .reveal.active { opacity:1; transform:translateY(0); transition: opacity .7s var(--ease), transform .25s var(--ease); }
-        .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:100px; align-items:center; }
-        .section-label { color: var(--primary); font-weight: 700; letter-spacing: 1px; font-size: 12px; text-transform: uppercase; margin-bottom: 14px; display: block; }
-        .section-title { font-size: clamp(28px, 5vw, 40px); margin-bottom: 20px; line-height: 1.15; text-align: left; }
-        .content-p { font-size: 16px; color: var(--text-2); line-height: 1.8; margin-bottom: 20px; }
-        .glass-card {
-            background: var(--glass-fill); -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
-            border: 1px solid var(--glass-border); border-radius: var(--r-xl); padding: 44px;
-            box-shadow: inset 0 1px 0 var(--glass-highlight); transition: border-color .25s;
-        }
-        .glass-card:hover { border-color: rgba(139,92,246,.4); }
-        .icon-circle {
-            width: 64px; height: 64px;
-            background: var(--glass-fill-strong); border: 1px solid var(--glass-border);
-            border-radius: var(--r-md); display: flex; align-items: center; justify-content: center;
-            font-size: 22px; color: var(--text-2); margin-bottom: 20px;
-        }
-        .mvv-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
-        @media (min-width: 700px) { .mvv-grid { grid-template-columns: repeat(3, 1fr); gap: 20px; } }
-        .mvv-item {
-            padding: 30px;
-            text-align: center;
-            border-radius: var(--r-lg);
-            background: var(--glass-fill);
-            border: 1px solid var(--glass-border);
-            transition: border-color .25s, transform .25s var(--ease);
-        }
-        .mvv-item:hover { border-color: var(--primary); transform: translateY(-4px); }
-        .mvv-item i { font-size: 28px; color: var(--primary); margin-bottom: 16px; }
-        .creators-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-top: 40px; }
-        .creator-card { position: relative; height: 380px; border-radius: var(--r-xl); overflow: hidden; background: #111; cursor: pointer; }
-        .creator-img-box { width:100%; height:100%; background:linear-gradient(to bottom,transparent,#000); position:absolute; z-index:1; }
-        .creator-photo { width:100%; height:100%; object-fit:cover; filter:grayscale(100%) contrast(1.2); transition:all 0.6s; }
-        .creator-card:hover .creator-photo { filter:grayscale(0%); transform:scale(1.1); }
-        .creator-info { position:absolute; bottom:40px; left:40px; right:40px; z-index:2; transform:translateY(20px); opacity:0.8; transition:all 0.4s; }
-        .creator-card:hover .creator-info { transform:translateY(0); opacity:1; }
-        .creator-name { font-family:'Poppins',sans-serif; font-size:32px; font-weight:800; }
-        .creator-role { color:var(--primary); font-weight:700; text-transform:uppercase; font-size:14px; }
-        /* Mobile-first: base já é a versão pequena (1 coluna); o desktop
-           acrescenta as 2 colunas lado a lado. */
-        .grid-2 { grid-template-columns: 1fr; gap: 40px; }
-        @media (min-width: 900px) { .grid-2 { grid-template-columns: 1fr 1fr; gap: 60px; } }
-    </style>
+    <link rel="stylesheet" href="../css/content.css">
 </head>
 <body>
-    <canvas id="bg-canvas"></canvas>
 
     <header class="header">
         <div class="header-left">
@@ -99,7 +34,7 @@
 
     <main>
         <section class="hero">
-            <h1 class="hero-title reveal">O FUTURO DA <br><span>MÚSICA</span></h1>
+            <h1 class="hero-title reveal">O futuro da <span>música</span></h1>
             <p class="hero-subtitle reveal">Conectando talentos, criando história.</p>
             <div class="scroll-indicator"></div>
         </section>
@@ -108,15 +43,14 @@
             <div class="container">
                 <div class="grid-2">
                     <div class="reveal">
-                        <span class="section-label">A Origem</span>
-                        <h2 class="section-title">Nascidos na <br><span style="color:var(--primary)">Batida</span> do Coração</h2>
+                        <span class="section-label">A origem</span>
+                        <h2 class="section-title">Nascidos na <span>batida</span> do coração</h2>
                         <p class="content-p">Encontrar parceiros de banda, produtores ou instrumentistas costuma ser uma tarefa caótica espalhada por múltiplos canais. O Backstage Cena foi desenvolvido para solucionar essa barreira técnica e social.</p>
                         <p class="content-p">Acreditamos que a próxima revolução musical não virá de uma gravadora, mas de uma conexão inesperada entre dois artistas independentes.</p>
                     </div>
                     <div class="glass-card reveal">
-                        <div class="icon-circle"><i class="fa-solid fa-bolt-lightning"></i></div>
-                        <h3>Poder da Conexão</h3>
-                        <p style="color:#aaa;margin-top:20px;">Eliminamos o ruído. Aqui, você encontra o talento exato para a sua frequência sonora.</p>
+                        <h3>Poder da conexão</h3>
+                        <p>Eliminamos o ruído. Aqui, você encontra o talento exato para a sua frequência sonora.</p>
                     </div>
                 </div>
             </div>
@@ -125,18 +59,15 @@
         <section class="section">
             <div class="container">
                 <div class="mvv-grid">
-                    <div class="mvv-item reveal" style="transition-delay:0.1s">
-                        <i class="fa-solid fa-microchip"></i>
+                    <div class="mvv-item reveal">
                         <h3>Inovação</h3>
                         <p>Tecnologia a serviço da arte.</p>
                     </div>
-                    <div class="mvv-item reveal" style="transition-delay:0.2s">
-                        <i class="fa-solid fa-earth-americas"></i>
+                    <div class="mvv-item reveal">
                         <h3>União</h3>
                         <p>Uma rede sem fronteiras.</p>
                     </div>
-                    <div class="mvv-item reveal" style="transition-delay:0.3s">
-                        <i class="fa-solid fa-fire-flame-curved"></i>
+                    <div class="mvv-item reveal">
                         <h3>Paixão</h3>
                         <p>Música correndo nas veias.</p>
                     </div>
@@ -146,9 +77,9 @@
 
         <section class="section">
             <div class="container">
-                <div style="text-align:center;margin-bottom:80px;">
-                    <span class="section-label">Mentes Criativas</span>
-                    <h2 class="section-title">Quem deu vida ao <span style="color:var(--primary)">Projeto</span></h2>
+                <div class="section-head">
+                    <span class="section-label">Equipe</span>
+                    <h2 class="section-title">Quem deu vida ao <span>projeto</span></h2>
                 </div>
                 <div class="creators-grid">
                     <div class="creator-card reveal">
@@ -159,7 +90,7 @@
                             <h3 class="creator-name">Arthur Alcântara</h3>
                         </div>
                     </div>
-                    <div class="creator-card reveal" style="transition-delay:0.2s">
+                    <div class="creator-card reveal">
                         <div class="creator-img-box"></div>
                         <img src="https://avatars.githubusercontent.com/u/266741615?v=4" alt="Foto de perfil de Ronaldo Duarte, diretor de banco de dados e gerente do Backstage Cena" class="creator-photo">
                         <div class="creator-info">
@@ -173,10 +104,10 @@
 
         
 
-        <section class="section" style="text-align:center;">
+        <section class="section section-cta">
             <div class="container reveal">
-                <h2 class="section-title" style="font-size:clamp(40px,8vw,80px);">VOCÊ ESTÁ <br><span style="color:var(--primary)">PRONTO?</span></h2>
-                <a href="cadastro.html" class="btn-cta" style="padding:25px 60px;font-size:20px;">Começar minha jornada</a>
+                <h2 class="section-title">Pronto para <span>começar?</span></h2>
+                <a href="cadastro.html" class="btn-primary">Criar minha conta</a>
             </div>
         </section>
     </main>
@@ -185,8 +116,8 @@
         <div class="container">
             <div class="footer-content">
                 <img src="../images/logo.png" alt="Backstage Logo" class="footer-logo-img">
-                <p style="color:rgba(255,255,255,0.4);font-size:13px;">A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
-                <a href="privacidade.html" style="color:rgba(255,255,255,0.4);font-size:13px;">Política de Privacidade</a>
+                <p class="footer-note">A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
+                <a href="privacidade.html" class="footer-note">Política de Privacidade</a>
             </div>
         </div>
     </footer>
@@ -212,7 +143,7 @@
                         <a href="publicar.html" class="dropdown-item"><i class="fas fa-plus-circle"></i> Nova Postagem</a>
                         <a href="config.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações</a>
                         <div class="dropdown-divider"></div>
-                        <div class="dropdown-item" id="btnSair"><i class="fas fa-sign-out-alt"></i> Sair</div>
+                        <div class="dropdown-item logout" id="btnSair"><i class="fas fa-sign-out-alt"></i> Sair</div>
                     </div>
                 </div>`;
             aplicarAvatarNaNavbar(document.getElementById('profileTrigger'), usuario);
@@ -246,22 +177,6 @@
             reveal();
         }
 
-        // ── PARTÍCULAS ──
-        const canvas = document.getElementById('bg-canvas');
-        if (canvas && !reduzMovimento) {
-            const ctx = canvas.getContext('2d');
-            let particles = [];
-            function initCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-            class Particle {
-                constructor() { this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.size=Math.random()*2; this.speedX=Math.random()*0.5-0.25; this.speedY=Math.random()*0.5-0.25; }
-                update() { this.x+=this.speedX; this.y+=this.speedY; if(this.x>canvas.width)this.x=0; if(this.x<0)this.x=canvas.width; if(this.y>canvas.height)this.y=0; if(this.y<0)this.y=canvas.height; }
-                draw() { ctx.fillStyle='rgba(139,92,246,0.5)'; ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill(); }
-            }
-            function createParticles() { for (let i=0;i<100;i++) particles.push(new Particle()); }
-            function animate() { ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{p.update();p.draw()}); requestAnimationFrame(animate); }
-            window.addEventListener('resize', initCanvas);
-            initCanvas(); createParticles(); animate();
-        }
     </script>
 </body>
 </html>

@@ -7,279 +7,14 @@
     <meta name="description" content="Compartilhe uma nova faixa, vídeo ou novidade com a comunidade Backstage Cena.">
     <meta name="robots" content="noindex, nofollow">
     <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/tokens.css">
+    <link rel="stylesheet" href="../css/components.css">
     <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/app.css">
+    <link rel="stylesheet" href="../css/publish.css">
     <link rel="stylesheet" href="../css/cropper.css">
-    <style>
-        :root {
-            --primary: #8b5cf6;
-            --primary-glow: rgba(139, 92, 246, 0.4);
-            --secondary: #d946ef;
-            --accent-cyan: #06b6d4;
-            --bg-dark: #050505;
-            --bg-card: rgba(15, 15, 15, 0.85);
-            --glass: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.12);
-            --text-muted: #bbb;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-dark);
-            color: #fff;
-            min-height: 100vh;
-            background-image:
-                radial-gradient(circle at 10% 10%, rgba(139, 92, 246, 0.1), transparent 50%),
-                radial-gradient(circle at 90% 90%, rgba(217, 70, 239, 0.08), transparent 50%);
-            background-attachment: fixed;
-        }
-
-        /* Container com margem superior adequada para desgrudar da navbar */
-        .container { 
-            max-width: 720px; 
-            margin: 40px auto; 
-            padding: 0 24px 80px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .page-title { font-family:'Poppins',sans-serif; font-size: 26px; font-weight: 800; margin-bottom: 6px; color: #fff; }
-        .page-subtitle { color: var(--text-muted); font-size: 14px; margin-bottom: 28px; }
-
-        .glass-card {
-            background: var(--bg-card);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            backdrop-filter: blur(20px);
-            padding: 24px;
-            position: relative;
-            z-index: 2;
-        }
-
-        /* ── ABAS ── */
-        .tabs { 
-            display: flex; 
-            gap: 8px; 
-            margin-bottom: 20px; 
-            position: relative;
-            z-index: 10;
-        }
-        .tab-btn {
-            flex: 1;
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            color: var(--text-muted);
-            border-radius: 14px;
-            padding: 14px;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 700;
-            font-size: 13px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: all .25s;
-            outline: none;
-        }
-        .tab-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
-        }
-        .tab-btn.active {
-            color: white;
-            border-color: var(--primary);
-            background: rgba(139,92,246,.16);
-        }
-        .tab-panel { display: none; }
-        .tab-panel.active { display: block; animation: fadeIn 0.3s ease; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* ── FORM ── */
-        .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
-        .form-group label { font-size: 11px; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; }
-        .form-control {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            padding: 12px 16px;
-            color: white;
-            font-family: 'Inter', sans-serif;
-            font-size: 14px;
-            outline: none;
-            transition: all 0.3s;
-        }
-        .form-control:focus { border-color: var(--primary); background: rgba(139, 92, 246, 0.1); }
-
-        .file-input-wrapper {
-            position: relative;
-            min-height: 100px;
-            border: 2px dashed var(--glass-border);
-            border-radius: 16px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .file-input-wrapper:hover { border-color: var(--primary); background: rgba(139, 92, 246, 0.05); }
-        .file-input-wrapper i { font-size: 24px; color: var(--text-muted); }
-        .file-input-wrapper span { font-size: 12px; color: var(--text-muted); }
-        .file-input-wrapper input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
-
-        /* ── TRIMMER: aparece depois que um arquivo de áudio é escolhido ── */
-        .trimmer {
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            padding: 16px;
-        }
-        .trimmer-hint { font-size: 13px; color: var(--text-muted); }
-        .trimmer audio { width: 100%; margin-bottom: 14px; }
-        .trimmer-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
-        .trimmer-row label { font-size: 12px; color: var(--text-muted); min-width: 64px; flex-shrink: 0; }
-        .trimmer-row select {
-            background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border);
-            border-radius: 8px; color: #fff; padding: 6px 10px; font-size: 13px; cursor: pointer;
-        }
-        .trimmer-tempo { font-size: 12px; color: var(--primary); font-weight: 700; margin-bottom: 12px; }
-
-        /* Linha do tempo estilo Instagram/Reels: barra inteira representa o
-           áudio, a janela clara é o trecho de 15/30/45/60s escolhido, e as
-           duas alças nas pontas se arrastam pra mover o começo/fim. */
-        .trimmer-timeline {
-            position: relative;
-            height: 56px;
-            border-radius: 10px;
-            background: repeating-linear-gradient(90deg, rgba(255,255,255,0.05) 0 2px, transparent 2px 6px);
-            margin-bottom: 10px;
-            overflow: hidden;
-            touch-action: none;
-            user-select: none;
-        }
-        .trimmer-playhead {
-            position: absolute; top: 0; bottom: 0; width: 2px;
-            background: #fff; box-shadow: 0 0 6px rgba(255,255,255,.7);
-            pointer-events: none; opacity: 0; transition: opacity .15s;
-        }
-        .trimmer-playhead.show { opacity: 1; }
-        .trimmer-window {
-            position: absolute; top: 0; bottom: 0;
-            background: rgba(139, 92, 246, 0.22);
-            border-top: 2px solid var(--primary);
-            border-bottom: 2px solid var(--primary);
-            cursor: grab;
-        }
-        .trimmer-window:active { cursor: grabbing; }
-        .trimmer-handle {
-            position: absolute; top: 0; bottom: 0; width: 22px;
-            display: flex; align-items: center; justify-content: center;
-            background: var(--primary); cursor: ew-resize; touch-action: none;
-        }
-        .trimmer-handle::before {
-            content: ''; width: 3px; height: 20px; border-radius: 2px;
-            background: rgba(255,255,255,.85);
-        }
-        .trimmer-handle-esq { left: 0; border-radius: 10px 0 0 10px; }
-        .trimmer-handle-dir { right: 0; border-radius: 0 10px 10px 0; }
-        .trimmer-fora { position: absolute; top: 0; bottom: 0; background: rgba(0,0,0,.55); pointer-events: none; }
-        .btn-ouvir-trecho {
-            display: inline-flex; align-items: center; gap: 8px;
-            background: none; border: 1px solid var(--glass-border); border-radius: 30px;
-            color: #fff; padding: 8px 16px; font-size: 13px; cursor: pointer; transition: border-color .2s;
-        }
-        .btn-ouvir-trecho:hover { border-color: var(--primary); }
-
-        /* ── TWEET ── */
-        .tweet-textarea {
-            width: 100%;
-            min-height: 120px;
-            resize: vertical;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            padding: 16px;
-            color: white;
-            font-family: 'Inter', sans-serif;
-            font-size: 15px;
-            outline: none;
-            transition: all 0.3s;
-        }
-        .tweet-textarea:focus { border-color: var(--primary); background: rgba(139, 92, 246, 0.1); }
-        .tweet-footer { display: flex; align-items: center; justify-content: space-between; margin: 14px 0 20px; flex-wrap: wrap; gap: 12px; }
-        .tweet-expira-toggle { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #eee; cursor: pointer; }
-        .tweet-expira-toggle input { accent-color: var(--primary); width: 16px; height: 16px; cursor: pointer; }
-        .tweet-contador { font-size: 12px; color: var(--text-muted); }
-        .tweet-contador.no-limite { color: #ef4444; }
-        .tweet-imagem-acoes { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-        .tweet-imagem-btn, .tweet-imagem-remover {
-            border: 1px solid var(--glass-border); border-radius: 10px;
-            background: var(--glass); color: #fff; padding: 9px 12px;
-            font: inherit; font-size: 13px; cursor: pointer;
-        }
-        .tweet-imagem-btn:hover, .tweet-imagem-remover:hover { border-color: var(--primary); }
-        .tweet-imagem-editar {
-            border: 1px solid var(--glass-border); border-radius: 10px;
-            background: var(--glass); color: #fff; padding: 9px 12px;
-            font: inherit; font-size: 13px; cursor: pointer;
-        }
-        .tweet-imagem-editar:hover { border-color: var(--primary); }
-        .tweet-imagem-preview { display: block; max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 12px; margin-top: 12px; }
-        .tweet-imagem-erro { color: #f87171; font-size: 13px; margin-top: 8px; }
-
-        .btn-publish {
-            width: 100%;
-            background: var(--primary);
-            border: none;
-            border-radius: 12px;
-            padding: 14px;
-            color: white;
-            font-weight: 600;
-            font-family: 'Poppins', sans-serif;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: background .18s;
-        }
-        .btn-publish:hover { background: #6d28d9; }
-        .btn-publish:disabled { opacity: .6; cursor: not-allowed; }
-
-        .msg-feedback {
-            margin-top: 16px;
-            font-size: 13px;
-            text-align: center;
-            padding: 12px;
-            border-radius: 12px;
-        }
-        .msg-feedback.sucesso { color: #22c55e; background: rgba(34,197,94,.1); border: 1px solid rgba(34,197,94,.3); }
-        .msg-feedback.erro { color: #ef4444; background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.3); }
-
-        .hidden { display: none !important; }
-        .api-toast {
-            position: fixed; right: 20px; bottom: 20px; z-index: 1000;
-            max-width: min(360px, calc(100vw - 40px)); padding: 14px 18px;
-            border: 1px solid rgba(255,255,255,.18); border-radius: 8px;
-            background: #171717; color: #fff; box-shadow: 0 8px 28px rgba(0,0,0,.4);
-            opacity: 0; transform: translateY(10px); pointer-events: none;
-            transition: opacity .2s ease, transform .2s ease;
-        }
-        .api-toast.show { opacity: 1; transform: translateY(0); }
-        .api-toast.erro { border-color: rgba(239,68,68,.6); color: #fecaca; }
-
-        @media (max-width: 560px) {
-            .tabs { flex-direction: column; }
-            .container { margin-top: 20px; }
-        }
-    </style>
 </head>
 <body>
     <header class="header">
@@ -299,27 +34,26 @@
     </header>
 
     <div class="container">
-        <h1 class="page-title">Nova Postagem</h1>
+        <h1 class="page-title">Nova postagem</h1>
         <p class="page-subtitle">Compartilhe uma prévia da sua música ou solte um tweet pra cena.</p>
 
-        <div class="tabs">
-            <button type="button" class="tab-btn active" data-tab="previa"><i class="fas fa-music"></i> Prévia de áudio</button>
-            <button type="button" class="tab-btn" data-tab="tweet"><i class="fas fa-comment"></i> Tweet</button>
+        <div class="tabs segmented" role="group" aria-label="Tipo de postagem">
+            <button type="button" class="tab-btn active" data-tab="previa">Prévia de áudio</button>
+            <button type="button" class="tab-btn" data-tab="tweet">Tweet</button>
         </div>
 
-        <div class="glass-card">
+        <div class="publish-card">
             <!-- ABA: PRÉVIA -->
             <div class="tab-panel active" id="painelPrevia">
                 <form id="formNovaPrevia">
                     <div class="form-group">
-                        <label>Título da Prévia</label>
+                        <label for="previaNome">Título da prévia</label>
                         <input type="text" id="previaNome" class="form-control" placeholder="Ex: Solo de Guitarra - Track 04" maxlength="60">
                     </div>
 
                     <div class="form-group">
-                        <label>Arquivo de Áudio</label>
+                        <label for="previaArquivo">Arquivo de áudio</label>
                         <div class="file-input-wrapper" id="fileWrapper">
-                            <i class="fas fa-cloud-arrow-up"></i>
                             <span id="fileNameDisplay">Clique ou arraste o áudio</span>
                             <input type="file" id="previaArquivo" accept="audio/*" required>
                         </div>
@@ -335,7 +69,7 @@
                     </div>
 
                     <button type="submit" class="btn-publish" id="btnPublicarPrevia">
-                        <i class="fas fa-upload"></i> PUBLICAR NA CENA
+                        Publicar prévia
                     </button>
                 </form>
                 <p id="previaMsg" class="msg-feedback hidden"></p>
@@ -352,7 +86,7 @@
                     <div class="form-group">
                         <div class="tweet-imagem-acoes">
                             <button type="button" class="tweet-imagem-btn" id="tweetImagemEscolher">
-                                <i class="fas fa-image"></i> Adicionar imagem
+                                Adicionar imagem
                             </button>
                             <input type="file" id="tweetImagem" accept="image/jpeg,image/png,image/gif" hidden>
                             <button type="button" class="tweet-imagem-editar hidden" id="tweetImagemEditar">Editar recorte</button>
@@ -371,7 +105,7 @@
                     </div>
 
                     <button type="submit" class="btn-publish" id="btnPublicarTweet">
-                        <i class="fas fa-paper-plane"></i> PUBLICAR TWEET
+                        Publicar tweet
                     </button>
                 </form>
                 <p id="tweetMsg" class="msg-feedback hidden"></p>
@@ -383,8 +117,8 @@
         <div class="container">
             <div class="footer-content">
                 <img src="../images/logo.png" alt="Backstage Logo" class="footer-logo-img">
-                <p style="color:rgba(255,255,255,0.4);font-size:13px;">A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
-                <a href="privacidade.html" style="color:rgba(255,255,255,0.4);font-size:13px;">Política de Privacidade</a>
+                <p class="footer-note">A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
+                <a href="privacidade.html" class="footer-note">Política de Privacidade</a>
             </div>
         </div>
     </footer>
@@ -549,7 +283,7 @@
                 }
                 
                 btn.disabled = true;
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> PUBLICANDO...';
+                btn.textContent = 'Publicando...';
                 msgEl.className = 'msg-feedback hidden';
 
                 try {
@@ -566,7 +300,7 @@
                     mostrarToastApi(err.message || 'Erro ao publicar tweet.', true);
                 } finally {
                     btn.disabled = false;
-                    btn.innerHTML = '<i class="fas fa-paper-plane"></i> PUBLICAR TWEET';
+                    btn.innerHTML = 'Publicar tweet';
                 }
             });
 
@@ -608,7 +342,7 @@
                     </div>
                     <p class="trimmer-tempo" id="trimmerTempo">Carregando duração...</p>
                     <button type="button" class="btn-ouvir-trecho" id="btnOuvirTrecho">
-                        <i class="fas fa-play"></i> Ouvir trecho selecionado
+                        Ouvir trecho selecionado
                     </button>
                 `;
 
@@ -767,7 +501,7 @@
                 if (!arquivo) return;
                 
                 btn.disabled = true;
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> PUBLICANDO...';
+                btn.textContent = 'Publicando...';
                 msgEl.className = 'msg-feedback hidden';
 
                 try {
@@ -789,7 +523,7 @@
                     mostrarToastApi(err.message || 'Erro ao publicar prévia.', true);
                 } finally {
                     btn.disabled = false;
-                    btn.innerHTML = '<i class="fas fa-upload"></i> PUBLICAR NA CENA';
+                    btn.innerHTML = 'Publicar prévia';
                 }
             });
 

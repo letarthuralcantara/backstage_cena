@@ -9,115 +9,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/tokens.css">
+    <link rel="stylesheet" href="../css/components.css">
     <link rel="stylesheet" href="../css/global.css">
-    <style>
-        body { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; }
-
-        .container { position: relative; z-index: 1; width: 100%; max-width: 440px; }
-
-        .login-card {
-            padding: 44px 32px;
-            animation: cardIn .6s var(--ease) both;
-        }
-        @media (min-width: 480px) { .login-card { padding: 56px 48px; } }
-
-        @keyframes cardIn {
-            from { opacity: 0; transform: translateY(40px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        .logo-container { margin-bottom: 32px; display: flex; justify-content: center; }
-        .login-card .logo-img { width: 120px; height: auto; }
-
-        .form-title { font-size: 26px; margin-bottom: 6px; text-align: left; }
-        .form-subtitle { color: var(--text-2); font-size: 15px; margin-bottom: 30px; text-align: left; }
-
-        .form-group { margin-bottom: 20px; position: relative; }
-        .form-group label { display: block; color: var(--text-2); font-size: 13px; font-weight: 600; margin-bottom: 8px; }
-        .input-wrapper { position: relative; }
-        input[type="email"], input[type="password"], input[type="text"] {
-            width: 100%;
-            padding: 15px 18px;
-            background: var(--glass-fill);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--r-md);
-            color: var(--text-1);
-            font-size: 15px;
-            font-family: 'Inter', sans-serif;
-            transition: background .25s, border-color .25s, box-shadow .25s;
-            outline: none;
-        }
-        input[type="email"]:focus, input[type="password"]:focus, input[type="text"]:focus {
-            background: rgba(139, 92, 246, .08);
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(139, 92, 246, .15);
-        }
-        input#codigo { letter-spacing: 6px; font-weight: 700; text-align: center; }
-
-        .btn-login {
-            font-family: 'Inter', sans-serif;
-            width: 100%;
-            padding: 15px;
-            background: var(--accent);
-            border: none;
-            border-radius: var(--r-md);
-            color: white;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background .18s;
-        }
-        .btn-login:hover { background: var(--accent-ink); }
-        .btn-login:active { transform: scale(.97); }
-        .btn-login:disabled { opacity: .6; cursor: not-allowed; transform: none; box-shadow: none; }
-
-        .btn-secundario {
-            width: 100%;
-            margin-top: 12px;
-            padding: 13px;
-            background: none;
-            border: 1px solid var(--glass-border);
-            border-radius: var(--r-md);
-            color: var(--text-2);
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: border-color .2s, color .2s;
-        }
-        .btn-secundario:hover { border-color: var(--primary); color: #fff; }
-        .btn-secundario:active { transform: scale(.97); }
-
-        .erro-msg, .sucesso-msg {
-            padding: 14px 18px;
-            border-radius: 15px;
-            font-size: 14px;
-            margin-bottom: 24px;
-            display: none;
-        }
-        .erro-msg {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            color: #f87171;
-        }
-        .sucesso-msg {
-            background: rgba(34, 197, 94, 0.1);
-            border: 1px solid rgba(34, 197, 94, 0.3);
-            color: #4ade80;
-        }
-
-        .back-home { text-align: center; margin-top: 20px; }
-        .back-home a { color: var(--text-3); text-decoration: none; font-size: 13px; }
-        .back-home a:hover { color: var(--primary); }
-
-        .etapa { display: none; }
-        .etapa.active { display: block; animation: cardIn 0.4s ease both; }
-
-    </style>
+    <link rel="stylesheet" href="../css/auth.css">
 </head>
-<body>
-    <canvas id="bg-canvas"></canvas>
+<body class="auth">
 
     <div class="container">
         <div class="login-card">
@@ -140,7 +39,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn-login" id="btnEnviarCodigo">Enviar código</button>
+                    <button type="submit" class="btn-login btn-primary" id="btnEnviarCodigo">Enviar código</button>
                 </form>
             </div>
 
@@ -173,9 +72,9 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn-login">Redefinir senha</button>
+                    <button type="submit" class="btn-login btn-primary">Redefinir senha</button>
                 </form>
-                <button type="button" class="btn-secundario" id="btnReenviar">Reenviar código</button>
+                <button type="button" class="btn-secundario btn-secondary" id="btnReenviar">Reenviar código</button>
             </div>
 
             <!-- Etapa 3: sucesso -->
@@ -185,7 +84,7 @@
                 <div class="sucesso-msg" style="display:flex;">
                     Tudo certo por aqui.
                 </div>
-                <a href="login.html" class="btn-login" style="display:block; text-align:center; text-decoration:none;">Ir para o login</a>
+                <a href="login.html" class="btn-login btn-primary">Ir para o login</a>
             </div>
 
             <div class="back-home">
@@ -281,37 +180,6 @@
         hideLoading();
     </script>
 
-    <script>
-        const canvas = document.getElementById('bg-canvas');
-        if (canvas && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-            const ctx = canvas.getContext('2d');
-            let particles = [];
-            function initCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-            class Particle {
-                constructor() {
-                    this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height;
-                    this.size = Math.random() * 2; this.speedX = Math.random() * 0.5 - 0.25;
-                    this.speedY = Math.random() * 0.5 - 0.25; this.opacity = Math.random() * 0.5 + 0.1;
-                }
-                update() {
-                    this.x += this.speedX; this.y += this.speedY;
-                    if (this.x > canvas.width) this.x = 0; if (this.x < 0) this.x = canvas.width;
-                    if (this.y > canvas.height) this.y = 0; if (this.y < 0) this.y = canvas.height;
-                }
-                draw() {
-                    ctx.fillStyle = `rgba(139, 92, 246, ${this.opacity})`;
-                    ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
-                }
-            }
-            function createParticles() { for (let i = 0; i < 100; i++) particles.push(new Particle()); }
-            function animate() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                particles.forEach(p => { p.update(); p.draw(); });
-                requestAnimationFrame(animate);
-            }
-            window.addEventListener('resize', initCanvas);
-            initCanvas(); createParticles(); animate();
-        }
-    </script>
+    
 </body>
 </html>

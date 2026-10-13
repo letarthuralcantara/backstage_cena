@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="color-scheme" content="dark">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Backstage | Guia de estilo</title>
+    <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/tokens.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <style>
+        /* Só o que é da própria página de guia */
+        .sg { max-width: var(--content-width); margin: 0 auto; padding: var(--space-8) var(--space-4) var(--space-9); }
+        .sg-intro { display: grid; gap: var(--space-3); margin-bottom: var(--space-8); }
+        .sg-section { display: grid; gap: var(--space-5); padding-top: var(--space-8); border-top: 1px solid var(--line); margin-top: var(--space-8); }
+        .sg-section:first-of-type { border-top: 0; margin-top: 0; padding-top: 0; }
+        .sg-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+        .sg-cols { display: grid; gap: var(--space-5); grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); align-items: start; }
+        .sg-swatches { display: grid; gap: var(--space-3); grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+        .sg-swatch { display: grid; gap: var(--space-2); font-size: var(--fs-caption); color: var(--text-2); }
+        .sg-chip { height: 56px; border-radius: var(--r-md); border: 1px solid var(--line-strong); }
+        .sg-swatch code { color: var(--text-1); font-size: var(--fs-caption); }
+        .sg-type { display: grid; gap: var(--space-4); }
+        .sg-type > div { display: grid; gap: var(--space-1); }
+        .sg-scale { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--space-4); }
+        .sg-box { background: var(--accent-soft); border: 1px solid var(--accent-ring); }
+        .sg-shadow { width: 120px; height: 72px; display: grid; place-items: center; background: var(--surface-2); border-radius: var(--r-lg); font-size: var(--fs-caption); color: var(--text-2); }
+        .sg-stage { position: relative; display: grid; align-content: start; gap: var(--space-4); padding: 0 0 var(--space-6); border: 1px solid var(--line); border-radius: var(--r-xl); overflow: hidden; isolation: isolate; min-height: 480px; }
+        .sg-stage-dark { background: var(--bg) url("../images/cena-criacao.png") center / cover; }
+        .sg-stage-light { background: #fff; color: #111; }
+        .sg-stage .header, .sg-stage .tab-bar { position: relative; top: auto; left: auto; right: auto; bottom: auto; }
+        .sg-stage .tab-bar { margin: auto var(--space-4) 0; }
+        .sg-stage .dropdown-menu { position: absolute; top: calc(var(--header-h) + var(--space-2)); right: var(--space-4); }
+        .sg-stage-body { display: grid; gap: var(--space-3); padding: var(--space-4); }
+        .sg-stage-light .sg-stage-body p { color: #111; }
+        .sg-chat { height: 560px; }
+        .sg-phone { display: grid; gap: var(--space-4); }
+        .sg-note { max-width: var(--measure); }
+    </style>
+</head>
+<body>
+    <main class="sg">
+        <header class="sg-intro">
+            <p class="t-caption">Guia de estilo, etapa 1</p>
+            <h1 class="t-display">Backstage, sistema visual</h1>
+            <p class="t-subtitle t-secondary sg-note">Tokens e componentes que as páginas vão reutilizar. Escuro primeiro, violeta como único acento, Inter em tudo e vidro só na navegação.</p>
+        </header>
+
+        <section class="sg-section" aria-labelledby="sg-cores">
+            <h2 class="t-title" id="sg-cores">Cores</h2>
+            <p class="t-secondary sg-note">Superfícies em dois níveis sobre o fundo, bordas de 1 px, texto em três tons. O terciário ficou em #86868b porque #6e6e73 dá 3,6:1 sobre a superfície 1 e não cumpre os 4,5:1.</p>
+            <div class="sg-swatches">
+                <div class="sg-swatch"><div class="sg-chip" style="background:var(--bg)"></div><code>--bg</code>#0a0a0c</div>
+                <div class="sg-swatch"><div class="sg-chip" style="background:var(--surface-1)"></div><code>--surface-1</code>#141418</div>
+                <div class="sg-swatch"><div class="sg-chip" style="background:var(--surface-2)"></div><code>--surface-2</code>#1c1c22</div>
+                <div class="sg-swatch"><div class="sg-chip" style="background:var(--surface-3)"></div><code>--surface-3</code>#26262d, balão recebido</div>
+                <div class="sg-swatch"><div class="sg-chip" style="background:var(--text-1)"></div><code>--text-1</code>#f5f5f7, 17,0:1</div>
+                <div class="sg-swatch"><div class="sg-chip" style="background:var(--text-2)"></div><code>--text-2</code>#a1a1a6, 7,1:1</div>
+                <div class="sg-swatch"><div class="sg-chip" style="background:var(--text-3)"></div><code>--text-3</code>#86868b, 5,1:1</div>
+                <div class="sg-swatch"><div class="sg-chip" style="background:var(--accent)"></div><code>--accent</code>#8052f0, texto branco 4,8:1</div>
+                <div class="sg-swatch"><div class="sg-chip" style="background:var(--accent-hover)"></div><code>--accent-hover</code>#7240e6, 5,9:1</div>
+                <div class="sg-swatch"><div class="sg-chip" style="background:var(--accent-soft)"></div><code>--accent-soft</code>chip e seleção</div>
+                <div class="sg-swatch"><div class="sg-chip" style="background:var(--accent-text)"></div><code>--accent-text</code>#a78bfa, link, 6,8:1</div>
+                <div class="sg-swatch"><div class="sg-chip" style="background:var(--success)"></div><code>--success</code>só sucesso</div>
+                <div class="sg-swatch"><div class="sg-chip" style="background:var(--danger)"></div><code>--danger</code>só perigo</div>
+            </div>
+        </section>
+
+        <section class="sg-section" aria-labelledby="sg-tipo">
+            <h2 class="t-title" id="sg-tipo">Tipografia</h2>
+            <div class="sg-type">
+                <div><span class="t-caption">Display, 40 a 56 px</span><p class="t-display">Sua cena, no palco certo</p></div>
+                <div><span class="t-caption">Título, 28 a 34 px</span><p class="t-title">Clubes para você</p></div>
+                <div><span class="t-caption">Subtítulo, 20 a 22 px</span><p class="t-subtitle">Prévias de quem você segue</p></div>
+                <div><span class="t-caption">Corpo, 16 a 17 px</span><p class="t-body">Encontre quem toca o que você precisa, entre num clube do seu gênero e acompanhe os projetos em andamento sem sair do Backstage.</p></div>
+                <div><span class="t-caption">Secundário, 14 px</span><p class="t-secondary">Atualizado há 3 minutos, visível para membros do clube.</p></div>
+                <div><span class="t-caption">Legenda, 13 px · números tabulares</span><p class="t-caption num">0:42 · 128 membros · 3 prévias</p></div>
+            </div>
+        </section>
+
+        <section class="sg-section" aria-labelledby="sg-forma">
+            <h2 class="t-title" id="sg-forma">Espaço, raios e sombras</h2>
+            <div class="sg-scale" aria-label="Escala de espaço">
+                <div class="sg-row" style="align-items:flex-end">
+                    <div style="display:grid;gap:var(--space-1);justify-items:center"><div class="sg-box" style="width:var(--space-1);height:var(--space-1)"></div><span class="t-caption">4</span></div>
+                    <div style="display:grid;gap:var(--space-1);justify-items:center"><div class="sg-box" style="width:var(--space-2);height:var(--space-2)"></div><span class="t-caption">8</span></div>
+                    <div style="display:grid;gap:var(--space-1);justify-items:center"><div class="sg-box" style="width:var(--space-3);height:var(--space-3)"></div><span class="t-caption">12</span></div>
+                    <div style="display:grid;gap:var(--space-1);justify-items:center"><div class="sg-box" style="width:var(--space-4);height:var(--space-4)"></div><span class="t-caption">16</span></div>
+                    <div style="display:grid;gap:var(--space-1);justify-items:center"><div class="sg-box" style="width:var(--space-5);height:var(--space-5)"></div><span class="t-caption">24</span></div>
+                    <div style="display:grid;gap:var(--space-1);justify-items:center"><div class="sg-box" style="width:var(--space-6);height:var(--space-6)"></div><span class="t-caption">32</span></div>
+                    <div style="display:grid;gap:var(--space-1);justify-items:center"><div class="sg-box" style="width:var(--space-7);height:var(--space-7)"></div><span class="t-caption">48</span></div>
+                    <div style="display:grid;gap:var(--space-1);justify-items:center"><div class="sg-box" style="width:var(--space-8);height:var(--space-8)"></div><span class="t-caption">64</span></div>
+                </div>
+            </div>
+            <div class="sg-row" aria-label="Raios">
+                <div class="sg-shadow" style="border-radius:var(--r-sm)">8</div>
+                <div class="sg-shadow" style="border-radius:var(--r-md)">12</div>
+                <div class="sg-shadow" style="border-radius:var(--r-lg)">18</div>
+                <div class="sg-shadow" style="border-radius:var(--r-xl)">28</div>
+                <div class="sg-shadow" style="border-radius:var(--r-full)">pílula</div>
+            </div>
+            <div class="sg-row" aria-label="Sombras">
+                <div class="sg-shadow" style="box-shadow:var(--shadow-1)">sombra 1</div>
+                <div class="sg-shadow" style="box-shadow:var(--shadow-2)">sombra 2</div>
+            </div>
+        </section>
+
+        <section class="sg-section" aria-labelledby="sg-botoes">
+            <h2 class="t-title" id="sg-botoes">Botões</h2>
+            <p class="t-secondary sg-note">Uma ação principal por tela usa o acento cheio. Altura mínima de 44 px, escala 0,97 ao pressionar, anel de foco visível.</p>
+            <div class="sg-row">
+                <button class="btn-primary" type="button">Entrar no clube</button>
+                <button class="btn-secondary" type="button">Salvar rascunho</button>
+                <button class="btn-tertiary" type="button">Ver todos</button>
+                <button class="btn-danger" type="button">Excluir clube</button>
+            </div>
+            <div class="sg-row">
+                <button class="btn-primary" type="button" disabled>Desativado</button>
+                <button class="btn-secondary" type="button" disabled>Desativado</button>
+                <button class="btn-icon" type="button" aria-label="Enviar mensagem"><i class="fas fa-arrow-up" aria-hidden="true"></i></button>
+                <button class="btn-icon is-quiet" type="button" aria-label="Fechar"><i class="fas fa-xmark" aria-hidden="true"></i></button>
+            </div>
+        </section>
+
+        <section class="sg-section" aria-labelledby="sg-campos">
+            <h2 class="t-title" id="sg-campos">Campos</h2>
+            <div class="sg-cols">
+                <div class="field"><label for="sg-nome">Nome do clube</label><input id="sg-nome" type="text" placeholder="Ex.: Produtores de boom bap"></div>
+                <div class="field has-error"><label for="sg-email">E-mail</label><input id="sg-email" type="email" value="ana@exemplo" aria-invalid="true" aria-describedby="sg-email-erro"><span class="field-error" id="sg-email-erro">Informe um e-mail completo.</span></div>
+                <div class="field"><label for="sg-tipo-clube">Tipo</label><select id="sg-tipo-clube"><option>Gênero</option><option>DAW</option><option>Instrumento</option></select></div>
+                <div class="field"><label for="sg-desc">Descrição</label><textarea id="sg-desc" placeholder="Em uma ou duas frases"></textarea><span class="field-hint">Até 200 caracteres.</span></div>
+            </div>
+        </section>
+
+        <section class="sg-section" aria-labelledby="sg-seg">
+            <h2 class="t-title" id="sg-seg">Controle segmentado</h2>
+            <p class="t-secondary sg-note">Indicador deslizante só com CSS, lendo a classe ativa que as páginas já usam. Com muitos itens, rola na horizontal.</p>
+            <div class="segmented" role="group" aria-label="Filtrar feed" data-demo>
+                <button type="button" class="active" aria-pressed="true">Tudo</button>
+                <button type="button" aria-pressed="false">Tweets</button>
+                <button type="button" aria-pressed="false">Posts</button>
+                <button type="button" aria-pressed="false">Prévias</button>
+                <button type="button" aria-pressed="false">Work Ons</button>
+                <button type="button" aria-pressed="false">Clubes</button>
+            </div>
+            <div class="segmented" role="group" aria-label="Tipo de clube" data-demo style="max-width:360px">
+                <button type="button" class="active" aria-pressed="true">Todos</button>
+                <button type="button" aria-pressed="false">Gênero</button>
+                <button type="button" aria-pressed="false">DAW</button>
+            </div>
+        </section>
+
+        <section class="sg-section" aria-labelledby="sg-cards">
+            <h2 class="t-title" id="sg-cards">Cards</h2>
+            <p class="t-secondary sg-note">Superfície opaca, borda de 1 px, raio 18. Título, meta e ação, nessa ordem. Só o card clicável sobe 2 px.</p>
+            <div class="card-grid">
+                <a class="card" href="#sg-cards">
+                    <div class="club-head">
+                        <span class="club-icon"><i class="fas fa-sliders" aria-hidden="true"></i></span>
+                        <div class="club-head-info">
+                            <span class="card-title">FL Studio</span>
+                            <span class="card-meta"><span class="chip">DAW</span><span class="num">12 membros</span></span>
+                        </div>
+                    </div>
+                    <p class="t-secondary">Troca de projetos, plugins e dúvidas de mixagem.</p>
+                </a>
+                <div class="card">
+                    <span class="card-title">Prévia: faixa 2, versão 3</span>
+                    <div class="card-meta"><span>Ana</span><span class="num">0:42</span><span class="badge is-success">Nova</span></div>
+                    <div class="card-actions"><button class="btn-primary btn-sm" type="button">Ouvir</button><button class="btn-tertiary" type="button">Detalhes</button></div>
+                </div>
+            </div>
+            <div class="card-strip" aria-label="Clubes recomendados">
+                <a class="card" href="#sg-cards"><span class="card-title">Rock</span><span class="card-meta"><span class="chip">Gênero</span></span></a>
+                <a class="card" href="#sg-cards"><span class="card-title">Bateria</span><span class="card-meta"><span class="chip">Instrumento</span></span></a>
+                <a class="card" href="#sg-cards"><span class="card-title">Ableton</span><span class="card-meta"><span class="chip">DAW</span></span></a>
+            </div>
+        </section>
+
+        <section class="sg-section" aria-labelledby="sg-listas">
+            <h2 class="t-title" id="sg-listas">Lista agrupada e switches</h2>
+            <div class="sg-cols">
+                <div>
+                    <p class="list-title">Privacidade</p>
+                    <div class="list-group">
+                        <div class="list-row">
+                            <div class="list-row-main"><span class="list-row-label" id="sg-l1">Aparecer nas buscas</span><span class="list-row-desc">Outras pessoas encontram seu perfil pela pesquisa.</span></div>
+                            <div class="list-row-control"><label class="switch"><input type="checkbox" checked aria-labelledby="sg-l1"><span class="switch-track"></span></label></div>
+                        </div>
+                        <div class="list-row">
+                            <div class="list-row-main"><span class="list-row-label" id="sg-l2">Mostrar e-mail</span><span class="list-row-desc">Visível no seu perfil público.</span></div>
+                            <div class="list-row-control"><label class="switch"><input type="checkbox" aria-labelledby="sg-l2"><span class="switch-track"></span></label></div>
+                        </div>
+                        <div class="list-row">
+                            <div class="list-row-main"><span class="list-row-label">Visibilidade da música</span></div>
+                            <div class="list-row-control">Só eu</div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <p class="list-title">Conta</p>
+                    <div class="list-group">
+                        <a class="list-row" href="#sg-listas"><div class="list-row-main"><span class="list-row-label">Editar perfil</span></div></a>
+                        <a class="list-row" href="#sg-listas"><div class="list-row-main"><span class="list-row-label">Alterar senha</span></div></a>
+                        <a class="list-row is-danger" href="#sg-listas"><div class="list-row-main"><span class="list-row-label">Excluir conta</span></div></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="sg-section" aria-labelledby="sg-nav">
+            <h2 class="t-title" id="sg-nav">Navegação em vidro</h2>
+            <p class="t-secondary sg-note">Header de 52 px, menu do avatar e tab bar em cápsula. Teste sobre fundo escuro com imagem e sobre fundo branco: o vidro escurece o que passa por trás para manter o contraste.</p>
+            <div class="sg-cols">
+                <div class="sg-phone">
+                    <div class="sg-stage sg-stage-dark">
+                        <header class="header">
+                            <div class="header-left"><img src="../images/logo.png" alt="Backstage" class="logo-img"></div>
+                            <div class="header-actions"><div class="profile-dropdown"><button type="button" class="profile-trigger" aria-label="Abrir menu do perfil">AN</button></div></div>
+                        </header>
+                        <div class="dropdown-menu is-open" role="menu">
+                            <a class="dropdown-item" href="#sg-nav" role="menuitem"><i class="fas fa-user" aria-hidden="true"></i> Meu Perfil</a>
+                            <a class="dropdown-item" href="#sg-nav" role="menuitem"><i class="fas fa-people-group" aria-hidden="true"></i> Clubes</a>
+                            <a class="dropdown-item" href="#sg-nav" role="menuitem"><i class="fas fa-cog" aria-hidden="true"></i> Configurações</a>
+                            <div class="dropdown-divider"></div>
+                            <button type="button" class="dropdown-item logout"><i class="fas fa-sign-out-alt" aria-hidden="true"></i> Sair</button>
+                        </div>
+                        <div class="sg-stage-body"><div class="card"><span class="card-title">Conteúdo passando por baixo</span><p class="t-secondary">Cards e listas ficam opacos.</p></div></div>
+                        <nav class="tab-bar" aria-label="Navegação principal">
+                            <a class="tab-bar-item active" href="#sg-nav" aria-current="page"><i class="fas fa-stream" aria-hidden="true"></i>Feed</a>
+                            <button type="button" class="tab-bar-item"><i class="fas fa-search" aria-hidden="true"></i>Buscar</button>
+                            <a class="tab-bar-item" href="#sg-nav"><i class="fas fa-people-group" aria-hidden="true"></i>Clubes</a>
+                            <a class="tab-bar-item tab-bar-cta" href="#sg-nav"><i class="fas fa-plus" aria-hidden="true"></i>Postar</a>
+                            <a class="tab-bar-item" href="#sg-nav"><i class="fas fa-user" aria-hidden="true"></i>Perfil</a>
+                        </nav>
+                    </div>
+                    <p class="t-caption">Fundo escuro com imagem</p>
+                </div>
+                <div class="sg-phone">
+                    <div class="sg-stage sg-stage-light">
+                        <header class="header">
+                            <div class="header-left"><img src="../images/logo.png" alt="Backstage" class="logo-img"></div>
+                            <div class="header-actions"><div class="profile-dropdown"><button type="button" class="profile-trigger" aria-label="Abrir menu do perfil">AN</button></div></div>
+                        </header>
+                        <div class="sg-stage-body"><p>Fundo branco atrás do vidro, o pior caso para legibilidade.</p></div>
+                        <nav class="tab-bar" aria-label="Navegação de exemplo sobre fundo claro">
+                            <a class="tab-bar-item" href="#sg-nav"><i class="fas fa-stream" aria-hidden="true"></i>Feed</a>
+                            <button type="button" class="tab-bar-item"><i class="fas fa-search" aria-hidden="true"></i>Buscar</button>
+                            <a class="tab-bar-item active" href="#sg-nav" aria-current="page"><i class="fas fa-people-group" aria-hidden="true"></i>Clubes</a>
+                            <a class="tab-bar-item tab-bar-cta" href="#sg-nav"><i class="fas fa-plus" aria-hidden="true"></i>Postar</a>
+                            <a class="tab-bar-item" href="#sg-nav"><i class="fas fa-user" aria-hidden="true"></i>Perfil</a>
+                        </nav>
+                    </div>
+                    <p class="t-caption">Fundo branco</p>
+                </div>
+            </div>
+            <div class="sg-stage sg-stage-dark" style="min-height:0">
+                <header class="header">
+                    <div class="header-left"><img src="../images/logo.png" alt="Backstage" class="logo-img"></div>
+                    <div class="header-center"><div class="header-search"><i class="fas fa-search header-search-icon" aria-hidden="true"></i><input class="header-search-input" type="text" placeholder="Buscar músicos..." readonly aria-label="Buscar músicos"><button type="button" class="header-search-btn">Buscar</button></div></div>
+                    <div class="header-actions"><div class="profile-dropdown"><button type="button" class="profile-trigger" aria-label="Abrir menu do perfil">AN</button></div></div>
+                </header>
+                <div class="sg-stage-body"><div class="filterbar"><div class="segmented" role="group" aria-label="Filtrar feed" data-demo><button type="button" class="active" aria-pressed="true">Tudo</button><button type="button" aria-pressed="false">Prévias</button><button type="button" aria-pressed="false">Work Ons</button><button type="button" aria-pressed="false">Clubes</button></div></div></div>
+            </div>
+            <p class="t-caption">Header com busca (desktop) e barra de filtros fixa em vidro</p>
+        </section>
+
+        <section class="sg-section" aria-labelledby="sg-dialog">
+            <h2 class="t-title" id="sg-dialog">Dialog, toasts, avatares e estados</h2>
+            <div class="sg-row">
+                <button class="btn-primary" type="button" id="sgAbrirDialog">Criar clube</button>
+                <span class="toast is-success" role="status">Clube criado</span>
+                <span class="toast is-danger" role="alert">Não foi possível salvar</span>
+            </div>
+            <div class="sg-row">
+                <span class="avatar">AN</span>
+                <span class="avatar avatar-sm">LU</span>
+                <span class="avatar avatar-lg">MA</span>
+                <span class="avatar-stack" aria-label="Membros"><span class="avatar avatar-sm">AN</span><span class="avatar avatar-sm">LU</span><span class="avatar avatar-sm">MA</span><span class="avatar avatar-sm">+9</span></span>
+                <span class="badge">Dono</span><span class="badge is-success">Conectado</span><span class="badge is-danger">Não autorizado</span>
+            </div>
+            <div class="sg-cols">
+                <div class="card"><div class="empty"><strong>Nenhum clube por aqui</strong>Crie o primeiro ou ajuste a busca.</div></div>
+                <div class="card" aria-busy="true" aria-label="Carregando">
+                    <div class="club-head"><span class="skeleton is-circle" style="width:48px;height:48px"></span><div class="club-head-info"><span class="skeleton" style="height:16px;width:60%"></span><span class="skeleton" style="height:12px;width:40%"></span></div></div>
+                    <span class="skeleton" style="height:12px"></span>
+                </div>
+            </div>
+            <dialog class="sheet" id="sgDialog" aria-labelledby="sgDialogTitulo">
+                <form method="dialog" class="sheet-body">
+                    <div class="sheet-head"><h3 class="t-subtitle" id="sgDialogTitulo">Novo clube</h3><button class="btn-icon is-quiet" value="cancel" aria-label="Fechar"><i class="fas fa-xmark" aria-hidden="true"></i></button></div>
+                    <div class="field"><label for="sg-d-nome">Nome</label><input id="sg-d-nome" type="text" placeholder="Ex.: Beatmakers de João Pessoa"></div>
+                    <div class="field"><label for="sg-d-tipo">Tipo</label><select id="sg-d-tipo"><option>Gênero</option><option>DAW</option><option>Instrumento</option></select></div>
+                    <div class="sheet-foot"><button class="btn-secondary" value="cancel">Cancelar</button><button class="btn-primary" value="ok">Criar clube</button></div>
+                </form>
+            </dialog>
+        </section>
+
+        <section class="sg-section" aria-labelledby="sg-chat">
+            <h2 class="t-title" id="sg-chat">Chat dos clubes</h2>
+            <p class="t-secondary sg-note">Área de mensagens opaca, balões recebidos em cinza elevado, enviados em violeta. Mensagens seguidas do mesmo autor ficam mais juntas com a classe <code>seq</code>. Composer em cápsula com botão circular.</p>
+            <div class="club-head">
+                <span class="club-icon"><i class="fas fa-sliders" aria-hidden="true"></i></span>
+                <div class="club-head-info">
+                    <h3 class="t-subtitle">FL Studio</h3>
+                    <div class="club-head-meta"><span class="chip">DAW</span><span class="avatar-stack"><span class="avatar avatar-sm">AN</span><span class="avatar avatar-sm">LU</span><span class="avatar avatar-sm">MA</span></span><span class="num">12 membros</span></div>
+                </div>
+            </div>
+            <div class="sg-cols">
+                <div class="chat sg-chat">
+                    <div class="chat-mensagens" aria-live="polite">
+                        <div class="msg"><span class="avatar avatar-sm">LU</span><div class="msg-corpo"><div class="msg-autor">Lucas</div><div class="msg-texto">Alguém topa fechar a mix da faixa 2 hoje?</div><div class="msg-hora">19:02</div></div></div>
+                        <div class="msg seq"><span class="avatar avatar-sm">LU</span><div class="msg-corpo"><div class="msg-autor">Lucas</div><div class="msg-texto">Já mandei a prévia no meu perfil.</div><div class="msg-hora">19:02</div></div></div>
+                        <div class="msg minha"><span class="avatar avatar-sm">AN</span><div class="msg-corpo"><div class="msg-texto">Topo. Ouço no intervalo e te falo.</div><div class="msg-hora">19:05</div></div></div>
+                        <div class="msg minha seq"><span class="avatar avatar-sm">AN</span><div class="msg-corpo"><div class="msg-texto">O kick está um pouco alto perto do baixo.</div><div class="msg-hora">19:05</div></div></div>
+                        <div class="msg"><span class="avatar avatar-sm">MA</span><div class="msg-corpo"><div class="msg-autor">Marina</div><div class="msg-texto">Concordo com a Ana. Corta uns 2 dB e testa de novo.</div><div class="msg-hora">19:11</div></div></div>
+                    </div>
+                    <div class="chat-aviso" role="alert">Sem conexão com o chat. Tentando de novo...</div>
+                    <form class="chat-form" autocomplete="off">
+                        <input type="text" maxlength="500" placeholder="Escreva uma mensagem" aria-label="Mensagem">
+                        <button type="submit" class="btn-icon" aria-label="Enviar"><i class="fas fa-arrow-up" aria-hidden="true"></i></button>
+                    </form>
+                </div>
+                <div class="sg-phone">
+                    <div class="chat" style="height:150px"><div class="chat-estado"><strong>Nenhuma mensagem ainda</strong>Puxe o assunto.</div></div>
+                    <div class="chat" style="height:150px"><div class="chat-estado"><strong>Entre no clube para participar</strong>Só membros leem e escrevem no chat.</div></div>
+                    <div class="chat" style="height:170px" aria-busy="true" aria-label="Carregando mensagens"><div class="chat-mensagens"><div class="skeleton" style="height:36px;width:60%;border-radius:var(--r-lg)"></div><div class="skeleton" style="height:36px;width:45%;align-self:flex-end;border-radius:var(--r-lg)"></div><div class="skeleton" style="height:36px;width:55%;border-radius:var(--r-lg)"></div></div></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Só para demonstrar o indicador do segmentado neste guia.
+        document.querySelectorAll('[data-demo]').forEach((grupo) => {
+            grupo.addEventListener('click', (e) => {
+                const alvo = e.target.closest('button');
+                if (!alvo) return;
+                grupo.querySelectorAll('button').forEach((b) => {
+                    const ativo = b === alvo;
+                    b.classList.toggle('active', ativo);
+                    b.setAttribute('aria-pressed', String(ativo));
+                });
+            });
+        });
+        const dlg = document.getElementById('sgDialog');
+        document.getElementById('sgAbrirDialog').addEventListener('click', () => dlg.showModal());
+    </script>
+</body>
+</html>

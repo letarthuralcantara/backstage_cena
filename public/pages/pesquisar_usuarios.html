@@ -7,175 +7,15 @@
     <meta name="description" content="Explore o Backstage Cena e encontre músicos, produtores e bandas por instrumento, gênero musical e localização.">
     <meta name="robots" content="index, follow">
     <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/tokens.css">
+    <link rel="stylesheet" href="../css/components.css">
     <link rel="stylesheet" href="../css/global.css">
-    <style>
-        * { scroll-behavior: smooth; }
-
-        /* Aqui a busca não é um atalho decorativo, é a função central da
-           página — então, diferente do resto do site, ela não pode sumir no
-           mobile. Em telas pequenas ela desce pra uma segunda linha, com
-           largura total, embaixo do logo/perfil. */
-        .header { flex-wrap: wrap; row-gap: 10px; }
-        .header-center { display: flex; justify-content: center; order: 3; flex-basis: 100%; }
-        .header-search { max-width: 580px; width: 100%; }
-        @media (min-width: 768px) {
-            .header-center { order: 0; flex-basis: auto; }
-        }
-
-        .btn-filtrar {
-            display: flex; align-items: center; justify-content: center; gap: 6px;
-            padding: 0 14px; align-self: stretch;
-            background: none;
-            border: none; border-left: 1px solid var(--glass-border);
-            color: #c4b5fd; cursor: pointer; flex-shrink: 0; font-size: 14px;
-        }
-        .btn-filtrar:hover { background: var(--glass-fill-strong); }
-        .btn-filtrar.active { background: rgba(139,92,246,.25); color: white; }
-
-        .filtrar-count {
-            display: none; align-items: center; justify-content: center;
-            background: var(--primary); color: white; font-size: 10px; font-weight: 700;
-            width: 16px; height: 16px; border-radius: 50%;
-        }
-        .filtrar-count.show { display: flex; }
-
-        /* ── FILTROS: painel de vidro que desliza abaixo do header ── */
-        .filters-panel {
-            position: relative; z-index: 50;
-            background: var(--glass-fill-strong);
-            -webkit-backdrop-filter: var(--glass-blur-strong);
-            backdrop-filter: var(--glass-blur-strong);
-            border-bottom: 1px solid var(--glass-border);
-            box-shadow: inset 0 1px 0 var(--glass-highlight);
-            overflow: hidden;
-            max-height: 0;
-            transition: max-height .4s var(--ease), padding .4s var(--ease);
-            padding: 0 24px;
-        }
-        .filters-panel.open { max-height: 300px; padding: 20px 24px; }
-        .filters-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; }
-        .filter-group label { display: block; color: var(--text-2); font-size: 12px; font-weight: 600; margin-bottom: 7px; }
-        .filter-group select {
-            width: 100%; padding: 11px 14px;
-            background: var(--glass-fill);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--r-md); color: var(--text-1);
-            font-size: 13px; font-family: 'Inter', sans-serif;
-            cursor: pointer; transition: border-color .2s, box-shadow .2s; outline: none;
-        }
-        .filter-group select option { background: #1a1a1a; }
-        .filter-group select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(139,92,246,.18); }
-
-        /* ── CONTAINER ── */
-        .container {
-            position: relative; z-index: 1;
-            width: 100%; max-width: 1280px;
-            margin: 0 auto;
-            padding: 40px 24px 60px;
-        }
-
-        /* ── HERO ── */
-        .hero { margin-bottom: 36px; }
-        .hero-title { font-size: clamp(28px, 6vw, 44px); margin-bottom: 8px; text-align: left; }
-        .hero-title span { color: var(--accent); }
-        .hero-subtitle { font-size: 15px; color: var(--text-2); margin-bottom: 14px; }
-        .total-count {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 7px 16px;
-            background: var(--glass-fill);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--r-full); color: var(--text-2);
-            font-size: 13px; font-weight: 600;
-        }
-
-        /* ── GRID CARDS ── */
-        .musicians-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; align-items: stretch; }
-
-        .musician-card {
-            background: var(--glass-fill);
-            -webkit-backdrop-filter: var(--glass-blur);
-            backdrop-filter: var(--glass-blur);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--r-lg); padding: 22px;
-            display: flex; flex-direction: column; gap: 12px;
-            box-shadow: inset 0 1px 0 var(--glass-highlight);
-            transition: border-color .25s, transform .25s var(--ease);
-            animation: cardFadeIn .4s var(--ease) both;
-            cursor: pointer; height: 100%; position: relative;
-        }
-        @keyframes cardFadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-        .musician-card:hover { border-color: rgba(139,92,246,.4); transform: translateY(-3px); }
-
-        .musician-header { display: flex; align-items: flex-start; gap: 14px; }
-        .musician-photo {
-            width: 54px; height: 54px; flex-shrink: 0;
-            border-radius: var(--r-md);
-            background: var(--glass-fill-strong); border: 1px solid var(--glass-border);
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 600; font-size: .95rem; color: var(--text-1);
-        }
-        .musician-photo img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; display: block; }
-        .musician-info { flex: 1; min-width: 0; }
-        .musician-name {
-            font-family: 'Poppins', sans-serif;
-            font-size: 15px; font-weight: 700; margin-bottom: 4px;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        }
-        .musician-location {
-            color: var(--text-2); font-size: 12px; margin-bottom: 6px;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        }
-        .musician-area {
-            display: inline-block; padding: 3px 10px;
-            background: var(--glass-fill-strong);
-            border-radius: var(--r-sm); font-size: 11px; color: #c4b5fd; font-weight: 600;
-        }
-        .musician-bio {
-            color: var(--text-2); font-size: 13px; line-height: 1.6;
-            display: -webkit-box; -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical; overflow: hidden;
-            flex: 1; word-break: break-word; overflow-wrap: break-word;
-        }
-        .musician-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-        .tag {
-            padding: 3px 10px;
-            background: var(--glass-fill-strong);
-            border-radius: var(--r-sm); font-size: 11px; color: #c4b5fd;
-        }
-        .card-spacer { flex: 1; }
-
-        .empty-state { display: none; text-align: center; padding: 80px 20px; color: var(--text-2); }
-        .empty-state h3 { font-size: 20px; margin-bottom: 8px; font-family: 'Poppins', sans-serif; color: var(--text-1); }
-        .empty-state p { font-size: 14px; }
-
-        /* ── RESPONSIVO ── */
-        /* Mobile-first: a base acima já é a versão pequena (1 coluna); os
-           breakpoints abaixo só acrescentam colunas conforme a tela cresce. */
-        .musicians-grid { grid-template-columns: 1fr; }
-        .filters-grid { grid-template-columns: repeat(2, 1fr); }
-
-        @media (min-width: 480px) {
-            .musicians-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-        @media (min-width: 700px) {
-            .filters-grid { grid-template-columns: repeat(3, 1fr); }
-            .filters-panel.open { max-height: 420px; }
-        }
-        @media (min-width: 900px) {
-            .musicians-grid { grid-template-columns: repeat(3, 1fr); }
-            .filters-grid { grid-template-columns: repeat(6, 1fr); }
-            .filters-panel.open { max-height: 220px; }
-        }
-        @media (min-width: 1200px) {
-            .musicians-grid { grid-template-columns: repeat(4, 1fr); }
-            .container { padding: 48px 40px 80px; }
-        }
-    </style>
+    <link rel="stylesheet" href="../css/app.css">
+    <link rel="stylesheet" href="../css/search.css">
 </head>
 <body>
-    <canvas id="bg-canvas"></canvas>
 
     <header class="header">
         <div class="header-left">
@@ -219,9 +59,9 @@
                 <label>Status</label>
                 <select id="filtroStatus">
                     <option value="">Qualquer</option>
-                    <option value="disponivel">🟢 Disponível</option>
-                    <option value="ocupado">🟡 Ocupado</option>
-                    <option value="nao_perturbe">🔴 Não perturbe</option>
+                    <option value="disponivel">Disponível</option>
+                    <option value="ocupado">Ocupado</option>
+                    <option value="nao_perturbe">Não perturbe</option>
                 </select>
             </div>
             <div class="filter-group">
@@ -235,9 +75,9 @@
         </div>
     </div>
 
-    <div class="container">
+    <div class="container is-wide">
         <div class="hero">
-            <h1 class="hero-title">Explorar <span>Músicos</span></h1>
+            <h1 class="hero-title">Explorar músicos</h1>
             <p class="hero-subtitle">Encontre parceiros para criar e colaborar</p>
             <span class="total-count" id="totalCount">Carregando...</span>
         </div>
@@ -253,8 +93,8 @@
         <div class="container">
             <div class="footer-content">
                 <img src="../images/logo.png" alt="Backstage Logo" class="footer-logo-img">
-                <p style="color:rgba(255,255,255,0.4);font-size:13px;">A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
-                <a href="privacidade.html" style="color:rgba(255,255,255,0.4);font-size:13px;">Política de Privacidade</a>
+                <p class="footer-note">A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
+                <a href="privacidade.html" class="footer-note">Política de Privacidade</a>
             </div>
         </div>
     </footer>
@@ -342,12 +182,6 @@
             }
         }
 
-        const STATUS_CORES = {
-            disponivel:   '#22c55e',
-            ocupado:      '#eab308',
-            nao_perturbe: '#ef4444',
-            invisivel:    '#6b7280',
-        };
         const STATUS_LABELS = {
             disponivel:   'Disponível',
             ocupado:      'Ocupado',
@@ -419,21 +253,14 @@
                 const areaLabel = areas.length > 0 ? areas[0] : '';
                 // Status
                 const status = m.status || 'disponivel';
-                const statusCor = STATUS_CORES[status] || '#22c55e';
                 const statusLabel = STATUS_LABELS[status] || 'Disponível';
 
                 return `
                 <div class="musician-card" data-user-id="${m.id_usuario}" style="animation-delay:${idx * 0.05}s">
                     <div class="musician-header">
-                        <div style="position:relative; flex-shrink:0;">
+                        <div class="musician-avatar">
                             <div class="musician-photo">${iniciais}</div>
-                            <span title="${statusLabel}" style="
-                                position:absolute; bottom:-2px; right:-2px;
-                                width:14px; height:14px; border-radius:50%;
-                                background:${statusCor};
-                                border:2px solid #0f0f0f;
-                                display:block;
-                            "></span>
+                            <span class="status-dot musician-status ${status}" title="${statusLabel}"></span>
                         </div>
                         <div class="musician-info">
                             <div class="musician-name">${nome}</div>
@@ -520,56 +347,6 @@
 
     <script>
         /* ── CANVAS PARTÍCULAS ── */
-        const canvas = document.getElementById('bg-canvas');
-        if (canvas && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-            const ctx = canvas.getContext('2d');
-            let particles = [];
-
-            function initCanvas() {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-            }
-
-            class Particle {
-                constructor() {
-                    this.x = Math.random() * canvas.width;
-                    this.y = Math.random() * canvas.height;
-                    this.size = Math.random() * 2;
-                    this.speedX = Math.random() * 0.5 - 0.25;
-                    this.speedY = Math.random() * 0.5 - 0.25;
-                    this.opacity = Math.random() * 0.5 + 0.1;
-                }
-                update() {
-                    this.x += this.speedX;
-                    this.y += this.speedY;
-                    if (this.x > canvas.width) this.x = 0;
-                    if (this.x < 0) this.x = canvas.width;
-                    if (this.y > canvas.height) this.y = 0;
-                    if (this.y < 0) this.y = canvas.height;
-                }
-                draw() {
-                    ctx.fillStyle = `rgba(139, 92, 246, ${this.opacity})`;
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-            }
-
-            function createParticles() {
-                for (let i = 0; i < 100; i++) particles.push(new Particle());
-            }
-
-            function animate() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                particles.forEach(p => { p.update(); p.draw(); });
-                requestAnimationFrame(animate);
-            }
-
-            window.addEventListener('resize', initCanvas);
-            initCanvas();
-            createParticles();
-            animate();
-        }
     </script>
     <div class="tab-bar-spacer"></div>
     <nav class="tab-bar" aria-label="Navegação principal"></nav>

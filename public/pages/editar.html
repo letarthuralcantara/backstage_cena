@@ -7,120 +7,15 @@
     <meta name="description" content="Edite suas informações, instrumentos e disponibilidade no Backstage Cena.">
     <meta name="robots" content="noindex, nofollow">
     <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/tokens.css">
+    <link rel="stylesheet" href="../css/components.css">
     <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/app.css">
+    <link rel="stylesheet" href="../css/settings.css">
+    <link rel="stylesheet" href="../css/forms.css">
     <link rel="stylesheet" href="../css/cropper.css">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        .app-layout { position:relative; z-index:1; display:flex; min-height:100vh; padding-top:56px; }
-
-        /* SIDEBAR */
-        .edit-sidebar {
-            width:264px; flex-shrink:0;
-            position:fixed; top:56px; left:0; bottom:0;
-            background:rgba(6,6,8,.85); -webkit-backdrop-filter:var(--glass-blur-strong); backdrop-filter:var(--glass-blur-strong);
-            border-right:1px solid var(--glass-border);
-            overflow-y:auto; display:flex; flex-direction:column;
-        }
-        .sidebar-user { padding:28px 20px 20px; border-bottom:1px solid var(--glass-border); display:flex; flex-direction:column; align-items:center; gap:10px; }
-        .sidebar-avatar { width:68px; height:68px; border-radius:50%; background:var(--glass-fill-strong); border:1px solid var(--glass-border); display:flex; align-items:center; justify-content:center; font-size:1.4rem; font-weight:700; overflow:hidden; }
-        .sidebar-name { font-family:'Poppins',sans-serif; font-size:15px; font-weight:600; text-align:center; color:var(--text-1); }
-        .sidebar-nav { padding:14px 10px; flex:1; }
-        .nav-section-title { font-size:11px; color:var(--text-3); padding:12px 12px 6px; font-weight:600; }
-        .nav-item { display:flex; align-items:center; gap:11px; padding:10px 14px; border-radius:var(--r-md); color:var(--text-2); font-size:13px; cursor:pointer; transition:background .18s, color .18s; border:none; background:transparent; width:100%; text-align:left; font-family:'Inter',sans-serif; font-weight:500; }
-        .nav-item:hover { background:var(--glass-fill); color:var(--text-1); }
-        .nav-item.active { background:var(--glass-fill-strong); color:white; font-weight:600; }
-        .nav-item i { width:16px; text-align:center; color:var(--text-3); font-size:13px; flex-shrink:0; }
-        .nav-divider { height:1px; background:var(--glass-border); margin:8px 10px; }
-        .nav-dot { width:7px; height:7px; border-radius:50%; background:#f59e0b; margin-left:auto; flex-shrink:0; }
-
-        /* MAIN */
-        .edit-main { flex:1; margin-left:264px; max-width:680px; padding:44px 48px 80px; }
-        .sucesso-msg { background:rgba(16,185,129,.08); border:1px solid rgba(16,185,129,.25); color:#6ee7b7; padding:15px 18px; border-radius:var(--r-lg); font-size:14px; margin-bottom:26px; display:none; align-items:center; gap:12px; }
-        .erro-msg { background:rgba(239,68,68,.08); border:1px solid rgba(239,68,68,.25); color:#f87171; padding:15px 18px; border-radius:var(--r-lg); font-size:14px; margin-bottom:26px; display:none; }
-        .edit-panel { display:none; animation:panelIn .35s var(--ease); }
-        .edit-panel.active { display:block; }
-        @keyframes panelIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
-        .panel-header { margin-bottom:32px; padding-bottom:20px; border-bottom:1px solid var(--glass-border); }
-        .panel-title { font-family:'Poppins',sans-serif; font-size:24px; font-weight:700; margin-bottom:6px; color:var(--text-1); }
-        .panel-subtitle { color:var(--text-2); font-size:14px; }
-
-        /* Foto */
-        .foto-section { display:flex; align-items:center; gap:20px; padding:24px; background:var(--glass-fill); border:1px solid var(--glass-border); border-radius:var(--r-lg); -webkit-backdrop-filter:var(--glass-blur); backdrop-filter:var(--glass-blur); }
-        .foto-avatar-big { width:80px; height:80px; border-radius:50%; background:var(--glass-fill-strong); border:1px solid var(--glass-border); display:flex; align-items:center; justify-content:center; font-size:1.8rem; color:var(--text-1); font-weight:700; flex-shrink:0; overflow:hidden; }
-        .foto-info p { color:var(--text-1); font-size:15px; margin-bottom:6px; font-weight:600; }
-        .foto-info small { color:var(--text-3); font-size:13px; line-height:1.6; display:block; }
-        .em-breve { display:inline-block; background:var(--glass-fill-strong); color:var(--text-2); font-size:10px; padding:3px 10px; border-radius:var(--r-sm); margin-left:8px; font-weight:600; }
-        .btn-upload { display:inline-flex; align-items:center; gap:8px; padding:9px 16px; background:var(--glass-fill); border:1px solid var(--glass-border); border-radius:var(--r-full); color:var(--text-3); font-size:13px; cursor:pointer; margin-top:10px; }
-        .btn-upload:hover:not(:disabled) { color:var(--text-1); }
-        .btn-upload:disabled { cursor:not-allowed; opacity:0.6; }
-        .foto-avatar-big img, .sidebar-avatar img, .profile-trigger img { width:100%; height:100%; object-fit:cover; border-radius:inherit; display:block; }
-        .sidebar-avatar, .profile-trigger { overflow:hidden; }
-        #fotoMsg { margin-top:8px; }
-        #fotoMsg.erro { color:#f87171; }
-
-        /* Forms */
-        .form-section { margin-bottom:26px; }
-        .form-section-title { font-size:12px; font-weight:600; color:var(--text-3); margin-bottom:12px; }
-        .form-group { margin-bottom:16px; }
-        .form-row { display:grid; grid-template-columns:1fr; gap:14px; }
-        @media (min-width:480px) { .form-row { grid-template-columns:1fr 1fr; } }
-        label { display:block; color:var(--text-2); font-weight:500; margin-bottom:7px; font-size:13px; }
-        input, select, textarea { width:100%; padding:12px 15px; background:var(--glass-fill); border:1px solid var(--glass-border); border-radius:var(--r-md); font-size:14px; font-family:'Inter',sans-serif; color:var(--text-1); transition:border-color .18s; }
-        textarea { min-height:100px; resize:vertical; }
-        select option { background:#1a1a1a; }
-        input::placeholder, textarea::placeholder { color:var(--text-3); }
-        .bio-wrap { position:relative; }
-        .bio-counter { position:absolute; bottom:10px; right:14px; font-size:11px; color:var(--text-3); pointer-events:none; }
-        .bio-counter.warning { color:#f59e0b; }
-        .bio-counter.limit { color:#ef4444; }
-        input:focus, select:focus, textarea:focus { outline:none; border-color:var(--text-1); }
-
-        /* Checkboxes */
-        .checkbox-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:9px; }
-        @media (min-width:480px) { .checkbox-grid { grid-template-columns:repeat(3,1fr); } }
-        .checkbox-item input[type="checkbox"] { display:none; }
-        .checkbox-label { display:flex; align-items:center; gap:8px; padding:10px 13px; border:1px solid var(--glass-border); border-radius:var(--r-md); cursor:pointer; font-size:13px; color:var(--text-2); transition:background .18s, border-color .18s, color .18s; background:var(--glass-fill); }
-        .checkbox-label:hover { border-color:rgba(255,255,255,.25); color:var(--text-1); }
-        .checkbox-item input:checked + .checkbox-label { border-color:var(--accent); background:var(--accent-soft); color:white; }
-        .checkbox-icon { width:16px; height:16px; background:none; border-radius:4px; display:none; align-items:center; justify-content:center; font-size:9px; flex-shrink:0; color:white; }
-        .checkbox-item input:checked + .checkbox-label .checkbox-icon { display:flex; background:var(--accent); }
-        .generos-grid { display:flex; flex-wrap:wrap; gap:9px; }
-        .generos-grid .checkbox-label { border-radius:var(--r-full); font-size:13px; padding:8px 15px; }
-
-        /* Areas */
-        .areas-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
-        @media (min-width:480px) { .areas-grid { grid-template-columns:repeat(3,1fr); } }
-        .area-card input { display:none; }
-        .area-label { display:flex; flex-direction:column; align-items:center; gap:9px; padding:18px 12px; border:1px solid var(--glass-border); border-radius:var(--r-lg); cursor:pointer; transition:background .18s, border-color .18s; background:var(--glass-fill); }
-        .area-label:hover { border-color:rgba(255,255,255,.25); background:var(--glass-fill-strong); }
-        .area-card input:checked + .area-label { border-color:var(--accent); background:var(--accent-soft); }
-        .area-icon { font-size:22px; color:var(--text-2); }
-        .area-name { font-size:12px; font-weight:600; color:var(--text-1); text-align:center; }
-
-        /* Redes sociais */
-        .social-card { background:var(--glass-fill); border:1px solid var(--glass-border); border-radius:var(--r-lg); overflow:hidden; -webkit-backdrop-filter:var(--glass-blur); backdrop-filter:var(--glass-blur); }
-        .social-row { display:flex; align-items:center; gap:13px; padding:15px 18px; border-bottom:1px solid var(--glass-border); }
-        .social-row:last-child { border-bottom:none; }
-        .social-icon-wrap { width:36px; height:36px; border-radius:var(--r-sm); background:var(--glass-fill-strong); display:flex; align-items:center; justify-content:center; font-size:15px; color:var(--text-2); flex-shrink:0; }
-        .social-name { width:88px; font-size:13px; color:var(--text-3); flex-shrink:0; font-weight:500; }
-        .social-row input { flex:1; margin:0; padding:10px 13px; background:var(--glass-fill); border:1px solid var(--glass-border); border-radius:var(--r-sm); font-size:13px; }
-
-        /* Action bar */
-        .action-bar { display:flex; gap:12px; margin-top:30px; padding-top:22px; border-top:1px solid var(--glass-border); }
-        .btn-salvar { flex:1; padding:14px; background:var(--accent); border:none; border-radius:var(--r-md); color:white; font-size:14px; font-weight:600; cursor:pointer; transition:background .18s; font-family:'Inter',sans-serif; display:flex; align-items:center; justify-content:center; gap:8px; }
-        .btn-salvar:hover { background:var(--accent-ink); }
-        .btn-salvar:disabled { opacity:0.6; cursor:not-allowed; }
-        .btn-cancelar { padding:14px 26px; background:none; border:1px solid var(--glass-border); border-radius:var(--r-md); color:var(--text-2); font-size:14px; font-weight:600; cursor:pointer; transition:background .18s, color .18s; font-family:'Inter',sans-serif; text-decoration:none; display:flex; align-items:center; }
-        .btn-cancelar:hover { background:var(--glass-fill); color:var(--text-1); }
-
-        @media (max-width:768px) {
-            .edit-sidebar { position:static; width:100%; border-right:none; border-bottom:1px solid var(--glass-border); }
-            .app-layout { flex-direction:column; }
-            .edit-main { margin-left:0; padding:28px 20px 60px; max-width:100%; }
-        }
-    </style>
 </head>
 <body>
     <header class="header">
@@ -131,7 +26,6 @@
             <div class="header-search" id="searchBar">
                 <i class="fas fa-search header-search-icon"></i>
                 <input type="text" class="header-search-input" placeholder="Buscar músicos..." readonly>
-                <button class="btn-filtrar" style="pointer-events:none;opacity:0.5;"><i class="fas fa-sliders"></i></button>
                 <button class="header-search-btn">Buscar</button>
             </div>
         </div>
@@ -141,63 +35,63 @@
     </header>
 
     <div class="app-layout">
-        <aside class="edit-sidebar">
-            <div class="sidebar-user">
+        <aside class="edit-sidebar settings-sidebar">
+            <div class="sidebar-user sidebar-profile">
                 <div class="sidebar-avatar" id="sidebarAvatar"></div>
                 <div class="sidebar-name" id="sidebarNome"></div>
             </div>
             <nav class="sidebar-nav">
-                <div class="nav-section-title">Editar Perfil</div>
-                <button class="nav-item active" data-panel="foto"><i class="fas fa-camera"></i> Foto de Perfil</button>
-                <button class="nav-item" data-panel="dados" id="nav-dados"><i class="fas fa-user"></i> Dados Pessoais</button>
+                <div class="nav-section-title">Editar perfil</div>
+                <button class="nav-item active" data-panel="foto">Foto de perfil</button>
+                <button class="nav-item" data-panel="dados" id="nav-dados">Dados pessoais</button>
                 <div class="nav-divider"></div>
-                <button class="nav-item" data-panel="localizacao" id="nav-localizacao"><i class="fas fa-map-marker-alt"></i> Localização</button>
+                <button class="nav-item" data-panel="localizacao" id="nav-localizacao">Localização</button>
                 <div class="nav-divider"></div>
-                <button class="nav-item" data-panel="musical" id="nav-musical"><i class="fas fa-guitar"></i> Área e Habilidades</button>
+                <button class="nav-item" data-panel="musical" id="nav-musical">Área e habilidades</button>
                 <div class="nav-divider"></div>
-                <button class="nav-item" data-panel="redes" id="nav-redes"><i class="fas fa-share-alt"></i> Redes Sociais</button>
+                <button class="nav-item" data-panel="redes" id="nav-redes">Redes sociais</button>
             </nav>
         </aside>
 
-        <main class="edit-main">
-            <div class="sucesso-msg" id="sucessoMsg"><i class="fas fa-check-circle"></i> Perfil atualizado com sucesso!</div>
+        <main class="edit-main settings-main">
+            <div class="sucesso-msg" id="sucessoMsg">Perfil atualizado com sucesso.</div>
             <div class="erro-msg" id="erroMsg"></div>
 
             <!-- FOTO -->
-            <div class="edit-panel active" id="panel-foto">
+            <div class="edit-panel settings-panel active" id="panel-foto">
                 <div class="panel-header">
-                    <h1 class="panel-title">Foto de Perfil</h1>
+                    <h1 class="panel-title">Foto de perfil</h1>
                     <p class="panel-subtitle">Sua imagem de identificação na plataforma</p>
                 </div>
                 <div class="foto-section">
                     <div class="foto-avatar-big" id="fotoAvatarBig"></div>
                     <div class="foto-info">
-                        <p>Foto de Perfil</p>
+                        <p>Foto de perfil</p>
                         <small>Envie uma imagem JPEG, PNG ou GIF de até 15 MB; o recorte final deve caber em 2 MB.<br>Sem foto, suas iniciais são exibidas no perfil.</small>
                         <input type="file" id="fotoInput" name="image" accept="image/jpeg,image/png,image/gif" hidden>
-                        <button type="button" class="btn-upload" id="btnAlterarFoto"><i class="fas fa-upload"></i> Alterar foto</button>
+                        <button type="button" class="btn-upload" id="btnAlterarFoto">Alterar foto</button>
                         <small id="fotoMsg" role="status" aria-live="polite"></small>
                     </div>
                 </div>
             </div>
 
             <!-- DADOS PESSOAIS -->
-            <div class="edit-panel" id="panel-dados">
+            <div class="edit-panel settings-panel" id="panel-dados">
                 <div class="panel-header">
-                    <h1 class="panel-title">Dados Pessoais</h1>
+                    <h1 class="panel-title">Dados pessoais</h1>
                     <p class="panel-subtitle">Seu nome, contato e descrição</p>
                 </div>
-                <div class="form-row" style="margin-bottom:18px;">
+                <div class="form-row">
                     <div class="form-group">
-                        <label for="nome_completo">Nome Completo</label>
+                        <label for="nome_completo">Nome completo</label>
                         <input type="text" id="nome_completo" placeholder="Seu nome completo">
                     </div>
                     <div class="form-group">
-                        <label for="nome_artistico">Nome Artístico</label>
+                        <label for="nome_artistico">Nome artístico</label>
                         <input type="text" id="nome_artistico" placeholder="Como é conhecido">
                     </div>
                 </div>
-                <div class="form-row" style="margin-bottom:18px;">
+                <div class="form-row">
                     <div class="form-group">
                         <label for="email">E-mail</label>
                         <input type="email" id="email" placeholder="seu@email.com">
@@ -216,17 +110,17 @@
                 </div>
                 <div class="action-bar">
                     <a href="perfil.html" class="btn-cancelar">Cancelar</a>
-                    <button type="button" class="btn-salvar"><i class="fas fa-check"></i> Salvar alterações</button>
+                    <button type="button" class="btn-salvar">Salvar alterações</button>
                 </div>
             </div>
 
             <!-- LOCALIZAÇÃO -->
-            <div class="edit-panel" id="panel-localizacao">
+            <div class="edit-panel settings-panel" id="panel-localizacao">
                 <div class="panel-header">
                     <h1 class="panel-title">Localização</h1>
                     <p class="panel-subtitle">Onde você está</p>
                 </div>
-                <div class="form-row" style="margin-bottom:20px;">
+                <div class="form-row">
                     <div class="form-group">
                         <label for="cidade">Cidade</label>
                         <input type="text" id="cidade" placeholder="Sua cidade">
@@ -247,18 +141,18 @@
                 </div>
                 <div class="action-bar">
                     <a href="perfil.html" class="btn-cancelar">Cancelar</a>
-                    <button type="button" class="btn-salvar"><i class="fas fa-check"></i> Salvar alterações</button>
+                    <button type="button" class="btn-salvar">Salvar alterações</button>
                 </div>
             </div>
 
             <!-- MUSICAL -->
-            <div class="edit-panel" id="panel-musical">
+            <div class="edit-panel settings-panel" id="panel-musical">
                 <div class="panel-header">
-                    <h1 class="panel-title">Área e Habilidades</h1>
+                    <h1 class="panel-title">Área e habilidades</h1>
                     <p class="panel-subtitle">Área de atuação, instrumentos, gêneros e DAWs</p>
                 </div>
                 <div class="form-section">
-                    <div class="form-section-title">Área de Atuação</div>
+                    <div class="form-section-title">Área de atuação</div>
                     <div class="areas-grid" id="areasGrid"></div>
                 </div>
                 <div class="form-section">
@@ -266,7 +160,7 @@
                     <div class="checkbox-grid" id="instrumentosGrid"></div>
                 </div>
                 <div class="form-section">
-                    <div class="form-section-title">Gêneros Musicais</div>
+                    <div class="form-section-title">Gêneros musicais</div>
                     <div class="generos-grid" id="generosGrid"></div>
                 </div>
                 <div class="form-section">
@@ -275,14 +169,14 @@
                 </div>
                 <div class="action-bar">
                     <a href="perfil.html" class="btn-cancelar">Cancelar</a>
-                    <button type="button" class="btn-salvar"><i class="fas fa-check"></i> Salvar alterações</button>
+                    <button type="button" class="btn-salvar">Salvar alterações</button>
                 </div>
             </div>
 
             <!-- REDES SOCIAIS -->
-            <div class="edit-panel" id="panel-redes">
+            <div class="edit-panel settings-panel" id="panel-redes">
                 <div class="panel-header">
-                    <h1 class="panel-title">Redes Sociais</h1>
+                    <h1 class="panel-title">Redes sociais</h1>
                     <p class="panel-subtitle">Seus links aparecerão no seu perfil público</p>
                 </div>
                 <div class="social-card">
@@ -298,7 +192,7 @@
                 </div>
                 <div class="action-bar">
                     <a href="perfil.html" class="btn-cancelar">Cancelar</a>
-                    <button type="button" class="btn-salvar"><i class="fas fa-check"></i> Salvar alterações</button>
+                    <button type="button" class="btn-salvar">Salvar alterações</button>
                 </div>
             </div>
         </main>
@@ -308,8 +202,8 @@
         <div class="container">
             <div class="footer-content">
                 <img src="../images/logo.png" alt="Backstage Logo" class="footer-logo-img">
-                <p style="color:rgba(255,255,255,0.4);font-size:13px;">A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
-                <a href="privacidade.html" style="color:rgba(255,255,255,0.4);font-size:13px;">Política de Privacidade</a>
+                <p class="footer-note">A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
+                <a href="privacidade.html" class="footer-note">Política de Privacidade</a>
             </div>
         </div>
     </footer>
@@ -525,7 +419,7 @@
             const sucessoMsg = document.getElementById('sucessoMsg');
             erroMsg.style.display = 'none';
             sucessoMsg.style.display = 'none';
-            btns.forEach(b => { b.disabled=true; b.innerHTML='<i class="fas fa-spinner fa-spin"></i> Salvando...'; });
+            btns.forEach(b => { b.disabled=true; b.textContent='Salvando...'; });
 
             function coletarCheckboxes(name) {
                 return [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(el => el.value);
@@ -576,7 +470,7 @@
                 erroMsg.style.display = 'block';
                 window.scrollTo(0,0);
             } finally {
-                btns.forEach(b => { b.disabled=false; b.innerHTML='<i class="fas fa-check"></i> Salvar alterações'; });
+                btns.forEach(b => { b.disabled=false; b.textContent='Salvar alterações'; });
             }
         };
 

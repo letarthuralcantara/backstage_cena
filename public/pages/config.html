@@ -7,107 +7,13 @@
     <meta name="description" content="Gerencie suas configurações de conta e privacidade no Backstage Cena.">
     <meta name="robots" content="noindex, nofollow">
     <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/tokens.css">
+    <link rel="stylesheet" href="../css/components.css">
     <link rel="stylesheet" href="../css/global.css">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        .app-layout { position:relative; z-index:1; display:flex; min-height:100vh; padding-top:56px; }
-
-        .settings-sidebar { width:264px; flex-shrink:0; position:fixed; top:56px; left:0; bottom:0; background:rgba(6,6,8,.85); -webkit-backdrop-filter:var(--glass-blur-strong); backdrop-filter:var(--glass-blur-strong); border-right:1px solid var(--glass-border); overflow-y:auto; display:flex; flex-direction:column; }
-        .sidebar-profile { padding:28px 20px 20px; border-bottom:1px solid var(--glass-border); display:flex; flex-direction:column; align-items:center; gap:10px; }
-        .sidebar-avatar { width:68px; height:68px; border-radius:50%; background:var(--glass-fill-strong); border:1px solid var(--glass-border); display:flex; align-items:center; justify-content:center; font-size:1.4rem; font-weight:700; overflow:hidden; }
-        .sidebar-name { font-family:'Poppins',sans-serif; font-size:15px; font-weight:600; text-align:center; color:var(--text-1); }
-        .sidebar-email { font-size:11px; color:var(--text-3); text-align:center; word-break:break-all; }
-        .sidebar-nav { padding:14px 10px; flex:1; }
-        .nav-section-title { font-size:11px; color:var(--text-3); padding:12px 12px 6px; font-weight:600; }
-        .nav-item { display:flex; align-items:center; gap:11px; padding:10px 14px; border-radius:var(--r-md); color:var(--text-2); font-size:13px; cursor:pointer; transition:background .18s, color .18s; text-decoration:none; border:none; background:transparent; width:100%; text-align:left; font-family:'Inter',sans-serif; font-weight:500; }
-        .nav-item:hover { background:var(--glass-fill); color:var(--text-1); }
-        .nav-item.active { background:var(--glass-fill-strong); color:white; font-weight:600; }
-        .nav-item i { width:16px; text-align:center; color:var(--text-3); font-size:13px; flex-shrink:0; }
-        .nav-badge { margin-left:auto; background:#f59e0b; color:#1a1000; font-size:10px; font-weight:700; padding:2px 7px; border-radius:10px; display:none; }
-        .nav-badge.show { display:block; }
-        .nav-divider { height:1px; background:var(--glass-border); margin:8px 10px; }
-
-        .settings-main { flex:1; margin-left:264px; max-width:680px; padding:44px 48px 80px; }
-        .settings-panel { display:none; animation:panelIn .35s var(--ease); }
-        .settings-panel.active { display:block; }
-        @keyframes panelIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
-        .panel-header { margin-bottom:32px; padding-bottom:20px; border-bottom:1px solid var(--glass-border); }
-        .panel-title { font-family:'Poppins',sans-serif; font-size:24px; font-weight:700; margin-bottom:6px; color:var(--text-1); }
-        .panel-subtitle { color:var(--text-2); font-size:14px; }
-
-        .settings-section { margin-bottom:32px; }
-        .section-label { font-size:12px; font-weight:600; color:var(--text-3); margin-bottom:10px; padding:0 2px; display:block; }
-        .settings-card { background:var(--glass-fill); border:1px solid var(--glass-border); border-radius:var(--r-lg); overflow:hidden; -webkit-backdrop-filter:var(--glass-blur); backdrop-filter:var(--glass-blur); }
-        .settings-row { display:flex; justify-content:space-between; align-items:center; padding:18px 22px; border-bottom:1px solid var(--glass-border); }
-        .settings-row:last-child { border-bottom:none; }
-        .row-left { display:flex; flex-direction:column; gap:4px; }
-        .row-label { font-size:14px; color:var(--text-1); font-weight:500; }
-        .row-desc { font-size:12px; color:var(--text-3); line-height:1.5; }
-
-        /* Toggle */
-        .toggle-switch { position:relative; width:44px; height:25px; background:var(--glass-fill-strong); border-radius:13px; cursor:pointer; transition:background .18s; border:1px solid var(--glass-border); flex-shrink:0; }
-        .toggle-switch.active { background:var(--accent); border-color:transparent; }
-        .toggle-switch.saving { opacity:0.6; pointer-events:none; }
-        .toggle-circle { position:absolute; top:2px; left:2px; width:19px; height:19px; background:white; border-radius:50%; transition:left .18s; }
-        .toggle-switch.active .toggle-circle { left:21px; }
-
-        .salvo-toast { position:fixed; bottom:24px; right:24px; background:rgba(16,185,129,.12); border:1px solid rgba(16,185,129,.28); color:#6ee7b7; padding:12px 18px; border-radius:var(--r-md); font-size:13px; font-weight:600; display:none; align-items:center; gap:8px; z-index:300; -webkit-backdrop-filter:var(--glass-blur); backdrop-filter:var(--glass-blur); }
-        .salvo-toast.show { display:flex; }
-
-        .btn-link { display:inline-flex; align-items:center; gap:7px; padding:8px 16px; background:var(--glass-fill); border:1px solid var(--glass-border); border-radius:var(--r-full); color:var(--text-1); text-decoration:none; font-size:13px; font-weight:600; transition:background .18s; white-space:nowrap; }
-        .btn-link:hover { background:var(--glass-fill-strong); }
-
-        .pending-banner { display:flex; align-items:flex-start; gap:12px; background:rgba(245,158,11,.06); border:1px solid rgba(245,158,11,.2); border-radius:var(--r-lg); padding:16px 18px; font-size:13px; color:#fcd34d; margin-bottom:22px; }
-        .pending-banner i { color:#f59e0b; flex-shrink:0; margin-top:2px; }
-
-        /* Senha */
-        .form-group { margin-bottom:16px; }
-        .form-group label { display:block; color:var(--text-2); font-size:13px; font-weight:500; margin-bottom:7px; }
-        .form-group input { width:100%; padding:12px 15px; background:var(--glass-fill); border:1px solid var(--glass-border); border-radius:var(--r-md); font-size:14px; font-family:'Inter',sans-serif; color:var(--text-1); transition:border-color .18s; outline:none; }
-        .form-group input:focus { border-color:var(--text-1); }
-        .form-group input::placeholder { color:var(--text-3); }
-        .btn-salvar-senha { width:100%; padding:13px; background:var(--accent); border:none; border-radius:var(--r-md); color:white; font-size:14px; font-weight:600; cursor:pointer; transition:background .18s; font-family:'Inter',sans-serif; margin-top:6px; display:flex; align-items:center; justify-content:center; gap:8px; }
-        .btn-salvar-senha:hover { background:var(--accent-ink); }
-        .btn-salvar-senha:disabled { opacity:0.6; cursor:not-allowed; }
-        .senha-msg { padding:11px 15px; border-radius:var(--r-sm); font-size:13px; margin-top:12px; display:none; }
-        .senha-msg.erro { background:rgba(239,68,68,.08); border:1px solid rgba(239,68,68,.25); color:#f87171; }
-        .senha-msg.sucesso { background:rgba(16,185,129,.08); border:1px solid rgba(16,185,129,.25); color:#6ee7b7; }
-
-        /* Danger */
-        .danger-card { background:rgba(239,68,68,0.04); border:1px solid rgba(239,68,68,0.15); border-radius:24px; padding:28px; transition:border-color 0.3s; }
-        .danger-card:hover { border-color:rgba(239,68,68,0.3); }
-        .danger-header { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
-        .danger-header-title { font-family:'Poppins',sans-serif; font-size:16px; font-weight:700; color:#f87171; }
-        .danger-desc { font-size:14px; color:#666; margin-bottom:20px; line-height:1.7; }
-        .btn-danger { display:inline-flex; align-items:center; gap:8px; padding:12px 24px; background:transparent; border:1px solid rgba(239,68,68,0.35); border-radius:20px; color:#f87171; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.3s; font-family:'Inter',sans-serif; }
-        .btn-danger:hover { background:rgba(239,68,68,0.1); border-color:#ef4444; box-shadow:0 0 20px rgba(239,68,68,0.2); }
-
-        /* Modal */
-        .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); backdrop-filter:blur(8px); z-index:500; align-items:center; justify-content:center; }
-        .modal.show { display:flex; }
-        .modal-content { background:rgba(14,14,16,.96); border:1px solid var(--glass-border); border-radius:var(--r-xl); padding:36px; max-width:420px; width:90%; -webkit-backdrop-filter:var(--glass-blur-strong); backdrop-filter:var(--glass-blur-strong); animation:modalIn .3s var(--ease); }
-        @keyframes modalIn { from{opacity:0;transform:scale(0.85) translateY(20px)} to{opacity:1;transform:scale(1) translateY(0)} }
-        .modal-icon { font-size:32px; color:#ef4444; margin-bottom:14px; }
-        .modal-title { font-family:'Poppins',sans-serif; font-size:20px; font-weight:800; margin-bottom:10px; }
-        .modal-desc { font-size:14px; color:#888; margin-bottom:18px; line-height:1.7; }
-        .modal-warn { background:rgba(239,68,68,0.06); border:1px solid rgba(239,68,68,0.2); border-radius:14px; padding:14px 16px; font-size:13px; color:#fca5a5; margin-bottom:24px; line-height:1.6; }
-        .modal-actions { display:flex; gap:12px; }
-        .modal-btn { flex:1; padding:13px; border:none; border-radius:20px; font-size:14px; font-weight:700; cursor:pointer; transition:all 0.3s; font-family:'Inter',sans-serif; }
-        .modal-btn-cancel { background:var(--glass-fill); color:var(--text-2); border:1px solid var(--glass-border); }
-        .modal-btn-cancel:hover { background:var(--glass-fill-strong); color:var(--text-1); }
-        .modal-btn-danger { background:rgba(239,68,68,0.1); color:#f87171; border:1px solid rgba(239,68,68,0.3); }
-        .modal-btn-danger:hover { background:rgba(239,68,68,0.2); }
-        .modal-btn-danger:disabled { opacity:0.5; cursor:not-allowed; }
-        .erro-modal { background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.2); color:#f87171; padding:12px 16px; border-radius:12px; font-size:13px; margin-bottom:16px; display:none; }
-
-        @media (max-width:768px) {
-            .settings-sidebar { position:static; width:100%; border-right:none; border-bottom:1px solid var(--glass-border); }
-            .app-layout { flex-direction:column; }
-            .settings-main { margin-left:0; padding:28px 20px 60px; max-width:100%; }
-        }
-    </style>
+    <link rel="stylesheet" href="../css/app.css">
+    <link rel="stylesheet" href="../css/settings.css">
 </head>
 <body>
     <header class="header">
@@ -135,16 +41,16 @@
             </div>
             <nav class="sidebar-nav">
                 <div class="nav-section-title">Perfil</div>
-                <button class="nav-item active" data-panel="perfil"><i class="fas fa-user-edit"></i> Editar Perfil</button>
-                <button class="nav-item" data-panel="cadastro" id="navCadastro"><i class="fas fa-clipboard-check"></i> Completar Cadastro<span class="nav-badge" id="cadastroBadge">!</span></button>
+                <button class="nav-item active" data-panel="perfil">Editar perfil</button>
+                <button class="nav-item" data-panel="cadastro" id="navCadastro">Completar cadastro<span class="nav-badge" id="cadastroBadge">!</span></button>
                 <div class="nav-divider"></div>
                 <div class="nav-section-title">Privacidade</div>
-                <button class="nav-item" data-panel="privacidade"><i class="fas fa-lock"></i> Privacidade</button>
-                <button class="nav-item" data-panel="musica"><i class="fas fa-music"></i> Música</button>
+                <button class="nav-item" data-panel="privacidade">Privacidade</button>
+                <button class="nav-item" data-panel="musica">Música</button>
                 <div class="nav-divider"></div>
                 <div class="nav-section-title">Conta</div>
-                <button class="nav-item" data-panel="senha"><i class="fas fa-key"></i> Alterar Senha</button>
-                <button class="nav-item" data-panel="perigo" style="color:#f87171;"><i class="fas fa-exclamation-triangle" style="color:#ef4444;"></i> Excluir Conta</button>
+                <button class="nav-item" data-panel="senha">Alterar senha</button>
+                <button class="nav-item is-danger" data-panel="perigo">Excluir conta</button>
             </nav>
         </aside>
 
@@ -153,7 +59,7 @@
             <!-- EDITAR PERFIL -->
             <div class="settings-panel active" id="panel-perfil">
                 <div class="panel-header">
-                    <h1 class="panel-title">Editar Perfil</h1>
+                    <h1 class="panel-title">Editar perfil</h1>
                     <p class="panel-subtitle">Atualize suas informações pessoais</p>
                 </div>
                 <div class="settings-section">
@@ -163,14 +69,14 @@
                                 <span class="row-label">Editar Perfil</span>
                                 <span class="row-desc">Atualize nome, instrumentos, gêneros e redes sociais</span>
                             </div>
-                            <a href="editar.html" class="btn-link"><i class="fas fa-arrow-right"></i> Ir</a>
+                            <a href="editar.html" class="btn-link">Ir</a>
                         </div>
                         <div class="settings-row">
                             <div class="row-left">
                                 <span class="row-label">Ver Perfil Público</span>
                                 <span class="row-desc">Veja como outros usuários te enxergam</span>
                             </div>
-                            <a href="perfil.html" class="btn-link"><i class="fas fa-eye"></i> Ver</a>
+                            <a href="perfil.html" class="btn-link">Ver</a>
                         </div>
                     </div>
                 </div>
@@ -179,11 +85,10 @@
             <!-- COMPLETAR CADASTRO -->
             <div class="settings-panel" id="panel-cadastro">
                 <div class="panel-header">
-                    <h1 class="panel-title">Completar Cadastro</h1>
+                    <h1 class="panel-title">Completar cadastro</h1>
                     <p class="panel-subtitle">Finalize seu perfil para aparecer nas buscas</p>
                 </div>
                 <div class="pending-banner" id="pendingBanner" style="display:none;">
-                    <i class="fas fa-exclamation-triangle"></i>
                     <span>Seu cadastro ainda não foi concluído. Complete seu perfil para aparecer nas buscas da plataforma.</span>
                 </div>
                 <div class="settings-section">
@@ -193,7 +98,7 @@
                                 <span class="row-label">Completar informações</span>
                                 <span class="row-desc">Preencha área de atuação, instrumentos e localização</span>
                             </div>
-                            <a href="editar.html" class="btn-link"><i class="fas fa-arrow-right"></i> Ir</a>
+                            <a href="editar.html" class="btn-link">Ir</a>
                         </div>
                     </div>
                 </div>
@@ -253,29 +158,28 @@
                     <p class="panel-subtitle">Compartilhe o que está ouvindo e seus artistas mais escutados.</p>
                 </div>
                 <div class="pending-banner">
-                    <i class="fas fa-circle-info"></i>
                     <span>Last.fm é recomendado: mostra apenas músicas scrobbladas e exige que sua atividade esteja pública. O Spotify está limitado aos testadores autorizados do app.</span>
                 </div>
                 <div class="settings-section">
-                    <span class="section-label">CONTA CONECTADA</span>
-                    <div class="settings-card" style="padding:22px;">
+                    <span class="section-label">Conta conectada</span>
+                    <div class="settings-card is-padded">
                         <p id="musicaConnectionInfo" class="row-desc" aria-live="polite">Carregando conexão...</p>
-                        <div class="form-group" style="margin-top:18px;">
+                        <div class="form-group">
                             <label for="lastFmUsername">Nome de usuário do Last.fm</label>
                             <input id="lastFmUsername" type="text" autocomplete="off" maxlength="80" placeholder="seu_usuario">
                         </div>
-                        <div style="display:flex; flex-wrap:wrap; gap:10px;">
+                        <div class="botoes-linha">
                             <button class="btn-link" type="button" id="btnConectarLastFm"><i class="fa-brands fa-lastfm"></i> Conectar Last.fm</button>
                             <button class="btn-link" type="button" id="btnConectarSpotify"><i class="fa-brands fa-spotify"></i> Conectar Spotify (testadores)</button>
-                            <button class="btn-link" type="button" id="btnDesconectarMusica" hidden><i class="fas fa-link-slash"></i> Desconectar</button>
+                            <button class="btn-link" type="button" id="btnDesconectarMusica" hidden>Desconectar</button>
                         </div>
                     </div>
                 </div>
                 <div class="settings-section">
-                    <span class="section-label">VISIBILIDADE</span>
-                    <div class="settings-card" style="padding:18px 22px;">
+                    <span class="section-label">Visibilidade</span>
+                    <div class="settings-card is-padded">
                         <label for="musicaVisibilidade" class="row-label">Quem pode ver sua atividade musical?</label>
-                        <select id="musicaVisibilidade" style="display:block; width:100%; max-width:360px; margin-top:12px; padding:11px 13px; border-radius:var(--r-md); border:1px solid var(--glass-border); background:#111; color:var(--text-1);">
+                        <select id="musicaVisibilidade" class="campo-select">
                             <option value="publico">Todos</option>
                             <option value="clubes">Pessoas dos meus clubes</option>
                             <option value="oculto">Somente eu</option>
@@ -288,11 +192,11 @@
             <!-- ALTERAR SENHA -->
             <div class="settings-panel" id="panel-senha">
                 <div class="panel-header">
-                    <h1 class="panel-title">Alterar Senha</h1>
+                    <h1 class="panel-title">Alterar senha</h1>
                     <p class="panel-subtitle">Mantenha sua conta segura</p>
                 </div>
                 <div class="settings-section">
-                    <div class="settings-card" style="padding:28px;">
+                    <div class="settings-card is-padded">
                         <div class="form-group">
                             <label>Senha atual</label>
                             <input type="password" id="senhaAtual" placeholder="Sua senha atual" required maxlength="128">
@@ -305,11 +209,9 @@
                             <label>Confirmar nova senha</label>
                             <input type="password" id="confirmarSenha" placeholder="Repita a nova senha" required minlength="6" maxlength="128">
                         </div>
-                        <button class="btn-salvar-senha" id="btnSalvarSenha">
-                            <i class="fas fa-key"></i> Salvar nova senha
-                        </button>
+                        <button class="btn-salvar-senha" id="btnSalvarSenha">Salvar nova senha</button>
                         <div class="senha-msg" id="senhaMsgErro"></div>
-                        <div class="senha-msg sucesso" id="senhaMsgSucesso"><i class="fas fa-check-circle"></i> Senha alterada com sucesso!</div>
+                        <div class="senha-msg sucesso" id="senhaMsgSucesso">Senha alterada com sucesso.</div>
                     </div>
                 </div>
             </div>
@@ -317,16 +219,13 @@
             <!-- ZONA DE PERIGO -->
             <div class="settings-panel" id="panel-perigo">
                 <div class="panel-header">
-                    <h1 class="panel-title">Excluir Conta</h1>
+                    <h1 class="panel-title">Excluir conta</h1>
                     <p class="panel-subtitle">Ações irreversíveis para sua conta</p>
                 </div>
                 <div class="danger-card">
-                    <div class="danger-header">
-                        <i class="fas fa-trash-alt" style="color:#ef4444;font-size:16px;"></i>
-                        <span class="danger-header-title">Excluir Conta</span>
-                    </div>
+                    <div class="danger-header"><span class="danger-header-title">Excluir conta</span></div>
                     <p class="danger-desc">Ao excluir sua conta, todos os seus dados — perfil, instrumentos, gêneros e redes sociais — serão permanentemente removidos. Esta ação não pode ser desfeita.</p>
-                    <button class="btn-danger" id="btnAbrirModalExclusao"><i class="fas fa-trash-alt"></i> Excluir minha conta</button>
+                    <button class="btn-danger" id="btnAbrirModalExclusao">Excluir minha conta</button>
                 </div>
             </div>
 
@@ -337,26 +236,25 @@
         <div class="container">
             <div class="footer-content">
                 <img src="../images/logo.png" alt="Backstage Logo" class="footer-logo-img">
-                <p style="color:rgba(255,255,255,0.4);font-size:13px;">A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
-                <a href="privacidade.html" style="color:rgba(255,255,255,0.4);font-size:13px;">Política de Privacidade</a>
+                <p class="footer-note">A cena musical independente começa aqui. &copy; 2025 Backstage Cena</p>
+                <a href="privacidade.html" class="footer-note">Política de Privacidade</a>
             </div>
         </div>
     </footer>
 
     <!-- Toast -->
-    <div class="salvo-toast" id="salvoToast"><i class="fas fa-check-circle"></i> Configuração salva</div>
+    <div class="salvo-toast" id="salvoToast" role="status">Configuração salva</div>
 
     <!-- Modal exclusão -->
-    <div class="modal" id="modalExclusao">
+    <div class="modal" id="modalExclusao" role="dialog" aria-modal="true" aria-labelledby="modalTitulo">
         <div class="modal-content">
-            <div class="modal-icon"><i class="fas fa-trash-alt"></i></div>
-            <div class="modal-title">Excluir conta?</div>
+                        <div class="modal-title" id="modalTitulo">Excluir conta?</div>
             <p class="modal-desc">Esta ação é permanente e não pode ser desfeita.</p>
-            <div class="modal-warn"><i class="fas fa-exclamation-triangle"></i> Isso excluirá permanentemente sua conta e todos os seus dados.</div>
+            <div class="modal-warn">Isso excluirá permanentemente sua conta e todos os seus dados.</div>
             <div class="erro-modal" id="erroModalMsg"></div>
             <div class="modal-actions">
                 <button class="modal-btn modal-btn-cancel" id="btnFecharModalExclusao">Cancelar</button>
-                <button class="modal-btn modal-btn-danger" id="btnConfirmarExclusao"><i class="fas fa-trash-alt"></i> Confirmar exclusão</button>
+                <button class="modal-btn modal-btn-danger" id="btnConfirmarExclusao">Confirmar exclusão</button>
             </div>
         </div>
     </div>
@@ -469,7 +367,7 @@
             }
 
             btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+            btn.textContent = 'Salvando...';
             try {
                 const r = await fetch(`/api/usuarios/${usuario.id_usuario}/senha`, {
                     method: 'PUT',
@@ -494,7 +392,7 @@
                 erroEl.style.display = 'block';
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-key"></i> Salvar nova senha';
+                btn.textContent = 'Salvar nova senha';
             }
         };
 
@@ -514,7 +412,7 @@
             const erroMsg = document.getElementById('erroModalMsg');
             erroMsg.style.display = 'none';
             btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Excluindo...';
+            btn.textContent = 'Excluindo...';
             try {
                 const r = await fetch(`/api/usuarios/${usuario.id_usuario}`, {
                     method: 'DELETE',
@@ -528,7 +426,7 @@
                 erroMsg.textContent = erro.message;
                 erroMsg.style.display = 'block';
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-trash-alt"></i> Confirmar exclusão';
+                btn.textContent = 'Confirmar exclusão';
             }
         };
 
