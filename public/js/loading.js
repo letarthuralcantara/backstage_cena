@@ -12,86 +12,51 @@ function injectLoader() {
       position: fixed;
       inset: 0;
       z-index: 9999;
-      background: rgba(0, 0, 0, 0.82);
-      backdrop-filter: blur(8px);
+      background: var(--bg, #0a0a0c);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 20px;
-      transition: opacity 0.35s ease;
+      gap: 24px;
+      transition: opacity 0.25s ease;
     }
+    /* display:flex !important mantém o fade de saída apesar do .hidden global */
     #loading-overlay.hidden {
+      display: flex !important;
       opacity: 0;
       pointer-events: none;
     }
-
-    /* Logo */
     .loader-logo {
-      width: 130px;
-      opacity: 0.85;
-      margin-bottom: 4px;
+      width: 110px;
+      opacity: 0.9;
     }
-
-    /* Anel + notas wrapper */
     .loader-scene {
-      position: relative;
-      width: 90px;
-      height: 90px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
-
-    /* Anel girando */
     .loader-ring {
-      width: 62px;
-      height: 62px;
-      border: 4px solid rgba(139, 92, 246, 0.18);
-      border-top-color: #8b5cf6;
-      border-right-color: #a78bfa;
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--line-strong, rgba(255, 255, 255, .14));
+      border-top-color: var(--accent-text, #a78bfa);
       border-radius: 50%;
       animation: loader-spin 0.9s linear infinite;
-      box-shadow: 0 0 18px rgba(139,92,246,0.3);
     }
     @keyframes loader-spin {
       to { transform: rotate(360deg); }
     }
-
-    /* Notas musicais */
     .loader-note {
-      position: absolute;
-      font-size: 16px;
-      animation: note-float 2.4s ease-in-out infinite;
-      opacity: 0;
-      user-select: none;
+      display: none;
     }
-    .loader-note:nth-child(1) { top: 0;    left: 50%; transform: translateX(-50%); animation-delay: 0s;    font-size: 15px; }
-    .loader-note:nth-child(2) { top: 20%;  right: 0;  animation-delay: 0.4s;  font-size: 13px; }
-    .loader-note:nth-child(3) { bottom: 0; left: 50%; transform: translateX(-50%); animation-delay: 0.8s;  font-size: 17px; }
-    .loader-note:nth-child(4) { top: 20%;  left: 0;   animation-delay: 1.2s;  font-size: 12px; }
-    .loader-note:nth-child(5) { bottom: 20%; right: 0; animation-delay: 1.6s; font-size: 14px; }
-    .loader-note:nth-child(6) { bottom: 20%; left: 0;  animation-delay: 2.0s; font-size: 13px; }
-
-    @keyframes note-float {
-      0%   { opacity: 0;   transform: translateY(4px)  scale(0.7); }
-      30%  { opacity: 1;   transform: translateY(-6px) scale(1.1); }
-      70%  { opacity: 0.7; transform: translateY(-12px) scale(1); }
-      100% { opacity: 0;   transform: translateY(-20px) scale(0.8); }
-    }
-
-    /* Texto */
     .loader-text {
-      font-family: 'Inter', sans-serif;
+      font-family: var(--font, 'Inter', sans-serif);
       font-size: 14px;
       font-weight: 500;
-      color: #a78bfa;
-      letter-spacing: 0.5px;
-      animation: loader-pulse 1.5s ease-in-out infinite;
+      color: var(--text-2, #a1a1a6);
     }
-    @keyframes loader-pulse {
-      0%, 100% { opacity: 0.6; }
-      50%       { opacity: 1;   }
+    @media (prefers-reduced-motion: reduce) {
+      .loader-ring { animation-duration: 3s; }
     }
   `;
   document.head.appendChild(style);
@@ -103,7 +68,7 @@ function injectLoader() {
   overlay.innerHTML = `
     <img src="../images/logo.png" alt="Backstage" class="loader-logo" onerror="this.style.display='none'">
     <div class="loader-scene">
-      ${notes.map((n) => `<span class="loader-note" style="color:#a78bfa">${n}</span>`).join("")}
+      ${notes.map((n) => `<span class="loader-note">${n}</span>`).join("")}
       <div class="loader-ring"></div>
     </div>
     <span class="loader-text" id="loader-msg">Carregando...</span>
