@@ -28,3 +28,4 @@ src/generated/
 # Outros temporários
 .DS_Store
 *.tsbuildinfo
+zap-out/

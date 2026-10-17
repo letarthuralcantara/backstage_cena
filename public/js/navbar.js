@@ -142,7 +142,7 @@ export async function initNavbar({
   if (trigger) trigger.textContent = nome.trim().slice(0, 2).toUpperCase();
 
   let usuarioDoServidor =
-    usuarioServidor?.id_usuario === usuarioLogado.id_usuario
+    String(usuarioServidor?.id_usuario) === String(usuarioLogado.id_usuario)
       ? usuarioServidor
       : undefined;
   if (!usuarioDoServidor) {
@@ -154,8 +154,9 @@ export async function initNavbar({
     }
   }
 
-  if (usuarioDoServidor?.imagem?.caminho)
-    aplicarFotoNoElemento(trigger, usuarioDoServidor.imagem.caminho, nome);
+  const caminhoFoto =
+    usuarioDoServidor?.imagem?.caminho || usuarioLogado.imagem?.caminho;
+  if (caminhoFoto) aplicarFotoNoElemento(trigger, caminhoFoto, nome);
   const badge = document.getElementById("profileIncompleteBadge");
   if (badge) {
     badge.classList.toggle(

@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { HttpError } from "../errors/HttpError.js";
-import { criarSpotifyAuthorization, finalizarSpotifyAuthorization, SpotifyApiError } from "../services/musica/spotifyOAuth.js";
+import { criarSpotifyAuthorization, finalizarSpotifyAuthorization } from "../services/musica/spotifyOAuth.js";
+import { SpotifyApiError } from "../services/musica/SpotifyApiError.js";
 import {
   atualizarVisibilidade,
   desconectarMusica,

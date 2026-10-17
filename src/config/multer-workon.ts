@@ -13,7 +13,10 @@ export const CAMINHO_PUBLICO_CAPAS_WORKON = "/uploads/workon/capas";
 export const CAMINHO_PUBLICO_FOTOS_WORKON = "/uploads/workon/fotos";
 
 const WORKON_AUDIO_MAX_MB = Number(process.env.WORKON_AUDIO_MAX_MB ?? 50);
-const WORKON_AUDIO_MAX_BYTES = Math.max(1, Number.isFinite(WORKON_AUDIO_MAX_MB) ? WORKON_AUDIO_MAX_MB * 1024 * 1024 : 50 * 1024 * 1024);
+const WORKON_AUDIO_MAX_BYTES = Math.max(
+  1,
+  Math.floor(Number.isFinite(WORKON_AUDIO_MAX_MB) ? WORKON_AUDIO_MAX_MB * 1024 * 1024 : 50 * 1024 * 1024),
+);
 
 fs.mkdirSync(PASTA_AUDIO_WORKON, { recursive: true });
 fs.mkdirSync(PASTA_CAPAS_WORKON, { recursive: true });

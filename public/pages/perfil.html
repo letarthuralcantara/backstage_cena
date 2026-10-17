@@ -8,7 +8,7 @@
     <meta name="robots" content="noindex, nofollow">
     <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <link rel="stylesheet" href="../css/tokens.css">
     <link rel="stylesheet" href="../css/components.css">
     <link rel="stylesheet" href="../css/global.css">
@@ -299,7 +299,7 @@
             const container = document.getElementById('musicaTop');
             container.textContent = 'Carregando mais ouvidos...';
             try {
-                const query = new URLSearchParams({ tipo, periodo, limite: '10' });
+                const query = new URLSearchParams({ tipo, periodo, limite: '3' });
                 const response = await fetch(`/api/musica/usuario/${idUsuario}/top?${query}`, { headers: authHeaders() });
                 const dados = await response.json();
                 if (!response.ok) {
@@ -423,7 +423,7 @@
             // Previews
             if (ehProprio) document.getElementById('addPreviaPanel').classList.remove('hidden');
             renderizarPostagensDoUsuario(usuarioVisto.id_usuario, document.getElementById('previasLista'));
-            renderizarWorkOnsDoUsuario(usuarioVisto.id_usuario, document.getElementById('workOnsPerfil'));
+            renderizarWorkOnsDoUsuario(usuarioVisto.id_usuario, document.getElementById('workOnsPerfil'), ehProprio);
 
             hideLoading();
         }
@@ -438,21 +438,21 @@
                     tab.classList.toggle('active', active);
                     tab.setAttribute('aria-selected', String(active));
                 });
-
-                document.querySelectorAll('[data-music-type]').forEach((button) => {
-                    button.addEventListener('click', () => {
-                        document.querySelectorAll('[data-music-type]').forEach((tab) => {
-                            const active = tab === button;
-                            tab.classList.toggle('active', active);
-                            tab.setAttribute('aria-selected', String(active));
-                        });
-                        if (idUsuarioAtual) carregarMaisOuvidos(idUsuarioAtual);
-                    });
-                });
-                document.getElementById('periodoMusica').addEventListener('change', () => {
-                    if (idUsuarioAtual) carregarMaisOuvidos(idUsuarioAtual);
-                });
             });
+        });
+
+        document.querySelectorAll('[data-music-type]').forEach((button) => {
+            button.addEventListener('click', () => {
+                document.querySelectorAll('[data-music-type]').forEach((tab) => {
+                    const active = tab === button;
+                    tab.classList.toggle('active', active);
+                    tab.setAttribute('aria-selected', String(active));
+                });
+                if (idUsuarioAtual) carregarMaisOuvidos(idUsuarioAtual);
+            });
+        });
+        document.getElementById('periodoMusica').addEventListener('change', () => {
+            if (idUsuarioAtual) carregarMaisOuvidos(idUsuarioAtual);
         });
 
         // ── Seletor de status ──────────────────────────────────────────────────

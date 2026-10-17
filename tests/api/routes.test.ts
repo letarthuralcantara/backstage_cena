@@ -31,6 +31,12 @@ afterAll(async () => {
 });
 
 describe("rotas da API sem abrir porta", () => {
+  it("ativa a Content Security Policy em modo de bloqueio", async () => {
+    const response = await request(app).get("/");
+    expect(response.headers["content-security-policy"]).toContain("default-src 'self'");
+    expect(response.headers["content-security-policy-report-only"]).toBeUndefined();
+  });
+
   it("responde o health check", async () => {
     const response = await request(app).get("/");
     expect(response.status).toBe(200);

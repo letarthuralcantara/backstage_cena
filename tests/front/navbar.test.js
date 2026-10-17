@@ -85,4 +85,16 @@ describe("navbar interna", () => {
     document.body.click();
     expect(wrapper.classList.contains("active")).toBe(false);
   });
+
+  it("mantém a foto da sessão se o perfil do servidor vier sem imagem", async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+
+    await initNavbar({ usuarioServidor: { id_usuario: "7" } });
+
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(
+      document.querySelector("#profileTrigger img").getAttribute("src"),
+    ).toBe(usuario.imagem.caminho);
+  });
 });

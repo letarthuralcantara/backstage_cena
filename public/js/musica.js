@@ -151,13 +151,11 @@ export function renderizarTopMusica(container, payload) {
   const lista = criarElemento("div", "music-top-list");
   payload.itens.forEach((item, index) => {
     const linha = criarElemento("div", "music-top-item");
-    const imagem = criarElemento("div", "music-top-image");
-    if (!definirImagem(imagem, item.imagem, "")) imagem.append(criarElemento("span", "", "♪"));
     const texto = criarElemento("div", "music-top-text");
     texto.append(criarElemento("strong", "", item.nome));
     if (item.artistas?.length) texto.append(criarElemento("span", "", item.artistas.join(", ")));
     const ordem = criarElemento("span", "music-top-rank", String(index + 1));
-    linha.append(ordem, imagem, texto);
+    linha.append(ordem, texto);
     if (item.url) {
       try {
         const url = new URL(item.url);

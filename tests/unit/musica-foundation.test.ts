@@ -75,4 +75,38 @@ describe("fundação de Música", () => {
     });
     expect(faixaLastFm.ouvindo_agora).toBe(true);
   });
+
+  it("usa tamanhos alternativos de imagem do Last.fm quando extralarge não existe", () => {
+    const artista = normalizarArtistaLastFm({
+      name: "Artista",
+      image: [
+        { size: "small", "#text": "https://img.example/artist-small.jpg" },
+        { size: "large", "#text": "https://img.example/artist-large.jpg" },
+      ],
+    });
+    const faixa = normalizarFaixaLastFm({
+      name: "Faixa",
+      image: [{ size: "medium", "#text": "https://img.example/album-medium.jpg" }],
+    });
+
+    expect(artista.imagem).toBe("https://img.example/artist-large.jpg");
+    expect(faixa.imagem).toBe("https://img.example/album-medium.jpg");
+  });
+
+  it("ignora o placeholder de imagem do Last.fm e tenta um tamanho menor", () => {
+    const artista = normalizarArtistaLastFm({
+      name: "Artista",
+      image: [
+        { size: "extralarge", "#text": "https://lastfm-img.freetls.fastly.net/i/u/300x300/2a96cbd8b46e442fc41c2b86b821562f.png" },
+        { size: "large", "#text": "https://img.example/artist.jpg" },
+      ],
+    });
+    const faixa = normalizarFaixaLastFm({
+      name: "Faixa",
+      image: [{ size: "extralarge", "#text": "https://lastfm-img.freetls.fastly.net/i/u/300x300/2a96cbd8b46e442fc41c2b86b821562f.png" }],
+    });
+
+    expect(artista.imagem).toBe("https://img.example/artist.jpg");
+    expect(faixa.imagem).toBeNull();
+  });
 });
