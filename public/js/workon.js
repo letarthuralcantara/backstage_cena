@@ -55,7 +55,23 @@ function cardWorkOn(projeto) {
   return card;
 }
 
-export async function renderizarWorkOnsDoUsuario(idUsuario, container) {
+function adicionarAtalhoCriarWorkOn(container, podeCriar) {
+  if (!podeCriar) return;
+  const atalho = document.createElement("a");
+  atalho.className = "profile-workon-create";
+  atalho.href = "workons.html#criarWorkOn";
+  atalho.setAttribute("aria-label", "Criar um Work On");
+  const mais = document.createElement("span");
+  mais.className = "profile-workon-create-icon";
+  mais.setAttribute("aria-hidden", "true");
+  mais.textContent = "+";
+  const texto = document.createElement("span");
+  texto.textContent = "Criar Work On";
+  atalho.append(mais, texto);
+  container.appendChild(atalho);
+}
+
+export async function renderizarWorkOnsDoUsuario(idUsuario, container, podeCriar = false) {
   if (!container) return [];
   container.innerHTML = '<p class="workon-empty">Carregando Work Ons...</p>';
   try {
@@ -63,12 +79,15 @@ export async function renderizarWorkOnsDoUsuario(idUsuario, container) {
     container.replaceChildren();
     if (!projetos.length) {
       container.innerHTML = '<p class="workon-empty">Nenhum Work On público por aqui ainda.</p>';
+      adicionarAtalhoCriarWorkOn(container, podeCriar);
       return [];
     }
     projetos.forEach((projeto) => container.appendChild(cardWorkOn(projeto)));
+    adicionarAtalhoCriarWorkOn(container, podeCriar);
     return projetos;
   } catch (erro) {
     container.innerHTML = `<p class="workon-empty">${escaparHtml(erro.message)}</p>`;
+    adicionarAtalhoCriarWorkOn(container, podeCriar);
     return [];
   }
 }

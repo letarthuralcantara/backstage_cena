@@ -65,16 +65,27 @@ describe("interface Work On", () => {
     });
   });
 
-  it("mostra Work Ons públicos na aba do perfil com links para o projeto", async () => {
+  it("mostra Work Ons públicos e atalho de criação no perfil do próprio usuário", async () => {
     const container = document.createElement("div");
     const fetchMock = vi.fn().mockResolvedValue(json([projetos[0]]));
     vi.stubGlobal("fetch", fetchMock);
 
-    const resultado = await renderizarWorkOnsDoUsuario(17, container);
+    const resultado = await renderizarWorkOnsDoUsuario(17, container, true);
 
     expect(fetchMock).toHaveBeenCalledWith("/api/workons/usuario/17", expect.any(Object));
     expect(resultado).toHaveLength(1);
     expect(container.querySelector(".workon-card").getAttribute("href")).toBe("workon.html?id=4");
+    expect(container.querySelector(".profile-workon-create").getAttribute("href")).toBe("workons.html#criarWorkOn");
+    expect(container.querySelector(".profile-workon-create").textContent).toContain("+");
     expect(container.textContent).toContain("Meu álbum");
+  });
+
+  it("não mostra o atalho de criação no perfil de outra pessoa", async () => {
+    const container = document.createElement("div");
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(json([])));
+
+    await renderizarWorkOnsDoUsuario(17, container);
+
+    expect(container.querySelector(".profile-workon-create")).toBeNull();
   });
 });

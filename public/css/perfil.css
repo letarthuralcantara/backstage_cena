@@ -9,11 +9,11 @@
 .section-title { font-size: var(--fs-subtitle); line-height: var(--lh-subtitle); font-weight: 600; letter-spacing: -.01em; }
 
 /* Cabeçalho do perfil */
-.profile-header-card { display: grid; justify-items: center; gap: var(--space-4); text-align: center; }
+.profile-header-card { display: grid; justify-items: center; gap: var(--space-4); padding-top: 40px; text-align: center; }
 .avatar-wrapper { position: relative; }
-.avatar-main { display: grid; place-items: center; width: 112px; height: 112px; overflow: hidden; border-radius: 50%; background: var(--accent-soft); color: var(--accent-text); font-size: 2.25rem; font-weight: 600; }
+.avatar-main { display: grid; place-items: center; width: 140px; height: 140px; overflow: hidden; border: 2px solid var(--line-strong); border-radius: 32px; background: var(--surface-2); color: var(--text-1); font-size: 3rem; font-weight: 800; box-shadow: var(--shadow-2); }
 .avatar-main img { width: 100%; height: 100%; object-fit: cover; }
-.status-indicator { position: absolute; right: 4px; bottom: 4px; width: 22px; height: 22px; border: 3px solid var(--surface-1); border-radius: 50%; background: var(--success); }
+.status-indicator { position: absolute; right: -5px; bottom: -5px; z-index: 2; width: 24px; height: 24px; border: 4px solid var(--surface-1); border-radius: 50%; background: var(--success); }
 .status-indicator.ocupado { background: var(--accent-text); }
 .status-indicator.nao_perturbe { background: var(--danger); }
 .status-indicator.invisivel { background: var(--text-3); }
@@ -59,6 +59,10 @@ a.skill-tag:hover { border-color: var(--line-hover); }
 .profile-workons .workon-card img, .profile-workons .workon-card-placeholder { display: grid; place-items: center; width: 100%; height: 96px; object-fit: cover; background: var(--surface-3); color: var(--text-3); }
 .profile-workons .workon-card-info { display: grid; gap: 2px; padding: var(--space-3); }
 .profile-workons .workon-card-info span { color: var(--text-2); font-size: var(--fs-caption); }
+.profile-workon-create { display: grid; align-content: center; justify-items: center; gap: var(--space-2); min-height: 170px; padding: var(--space-4); border: 1px dashed var(--line-strong); border-radius: var(--r-lg); color: var(--text-2); font-size: var(--fs-secondary); text-align: center; text-decoration: none; transition: border-color var(--dur-2) var(--ease), color var(--dur-2) var(--ease), background var(--dur-2) var(--ease); }
+.profile-workon-create:hover { border-color: var(--accent-text); background: var(--surface-2); color: var(--accent-text); }
+.profile-workon-create-icon { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid currentColor; border-radius: 50%; font-size: 1.75rem; line-height: 1; }
+.profile-workon-create:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 3px; }
 
 .perfil-post { padding: var(--space-4); background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--r-lg); }
 .perfil-post-cabecalho { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-3); }

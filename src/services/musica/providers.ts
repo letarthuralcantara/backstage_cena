@@ -10,7 +10,9 @@ import {
   normalizarFaixaLastFm,
   normalizarFaixaSpotify,
 } from "./types.js";
-import { getSpotifyAccessToken, SpotifyApiError } from "./spotifyOAuth.js";
+import { getSpotifyAccessToken } from "./spotifyOAuth.js";
+import { SpotifyApiError } from "./SpotifyApiError.js";
+import { SpotifyArtistImageProvider } from "./spotifyArtistImage.js";
 
 const SPOTIFY_API = "https://api.spotify.com/v1";
 const LASTFM_API = "https://ws.audioscrobbler.com/2.0/";
@@ -107,11 +109,14 @@ function lastFmPeriod(periodo: MusicaTop["periodo"]): string {
 
 export class LastFmProvider implements ProvedorMusica {
   readonly id = "lastfm" as const;
+  private readonly spotifyImages: SpotifyArtistImageProvider;
 
   constructor(
     private readonly apiKey = process.env.LASTFM_API_KEY,
     private readonly fetchImpl?: typeof fetch,
-  ) {}
+  ) {
+    this.spotifyImages = new SpotifyArtistImageProvider(fetchImpl);
+  }
 
   async validarUsuario(username: string): Promise<{ id: string; nome: string }> {
     const body = await this.api({ method: "user.getInfo", user: username });
@@ -182,14 +187,36 @@ export class LastFmProvider implements ProvedorMusica {
       limit: String(limite),
     });
     const itens = body[key]?.[tipo === "artista" ? "artist" : "track"];
+    const artistas = Array.isArray(itens)
+      ? itens.map((item: Record<string, any>) => normalizarArtistaLastFm(item))
+      : [];
+    if (tipo === "artista") {
+      for (let index = 0; index < artistas.length; index += 5) {
+        const lote = artistas.slice(index, index + 5);
+        const resultados = await Promise.allSettled(
+          lote.map((artista) => this.spotifyImages.imagem(artista.nome)),
+        );
+        const falhas = resultados.filter((resultado) => resultado.status === "rejected");
+        if (falhas.length > 0) {
+          console.warn(
+            "Não foi possível carregar algumas imagens de artistas do Spotify; os resultados do Last.fm serão mantidos.",
+            falhas.map((falha) => falha.reason instanceof Error ? falha.reason.message : String(falha.reason)),
+          );
+        }
+        lote.forEach((artista, loteIndex) => {
+          const resultado = resultados[loteIndex];
+          artista.imagem = resultado.status === "fulfilled" ? resultado.value : null;
+        });
+      }
+    }
     return {
       tipo,
       periodo,
-      itens: Array.isArray(itens)
-        ? itens.map((item: Record<string, any>) =>
-            tipo === "artista" ? normalizarArtistaLastFm(item) : normalizarFaixaLastFm(item),
-          )
-        : [],
+      itens: tipo === "artista"
+        ? artistas
+        : Array.isArray(itens)
+          ? itens.map((item: Record<string, any>) => normalizarFaixaLastFm(item))
+          : [],
       consultado_em: new Date().toISOString(),
     };
   }

@@ -76,10 +76,12 @@ describe("componentes de Música", () => {
     renderizarTopMusica(container, {
       conectado: true,
       provedor: "lastfm",
+      tipo: "faixa",
       itens: [{ nome: "Faixa Top", artistas: ["Artista"], imagem: null, url: "https://last.fm/track/1" }],
     });
     expect(container.textContent).toContain("Faixa Top");
     expect(container.textContent).toContain("scrobblados");
+    expect(container.querySelector(".music-top-image")).toBeNull();
     expect(container.querySelector('a[href="https://last.fm/track/1"]').textContent).toBe("Abrir no Last.fm");
 
     renderizarAgoraMusica(container, {
@@ -91,5 +93,25 @@ describe("componentes de Música", () => {
     });
     atualizarBarraProgressoMusica(container, 30_000);
     expect(container.querySelector(".music-progress-bar").style.width).toBe("50%");
+  });
+
+  it("mostra artistas do ranking apenas como nome, sem imagem", () => {
+    const container = document.createElement("div");
+
+    renderizarTopMusica(container, {
+      conectado: true,
+      provedor: "lastfm",
+      tipo: "artista",
+      itens: [{
+        nome: "Artista sem foto",
+        artistas: [],
+        imagem: "https://spotify.example/artist.jpg",
+        url: null,
+      }],
+    });
+
+    expect(container.textContent).toContain("Artista sem foto");
+    expect(container.querySelector(".music-top-image")).toBeNull();
+    expect(container.querySelector("img")).toBeNull();
   });
 });

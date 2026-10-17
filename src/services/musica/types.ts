@@ -81,6 +81,19 @@ export function normalizarFaixaSpotify(
   };
 }
 
+function imagemLastFm(imagens: any): string | null {
+  if (!Array.isArray(imagens)) return null;
+  for (const tamanho of ["extralarge", "mega", "large", "medium", "small"]) {
+    const url = imagens.find((imagem: any) => imagem?.size === tamanho)?.["#text"];
+    if (typeof url !== "string" || !url.trim()) continue;
+    const candidata = url.trim();
+    const caminho = new URL(candidata, "https://last.fm").pathname.toLowerCase();
+    if (caminho.endsWith("/2a96cbd8b46e442fc41c2b86b821562f.png")) continue;
+    return candidata;
+  }
+  return null;
+}
+
 export function normalizarArtistaLastFm(artista: any): ItemMusica {
   return {
     id: String(artista.mbid || artista.url || artista.name || ""),
@@ -88,7 +101,7 @@ export function normalizarArtistaLastFm(artista: any): ItemMusica {
     nome: String(artista.name ?? ""),
     artistas: [],
     album: null,
-    imagem: artista.image?.find((imagem: any) => imagem.size === "extralarge")?.["#text"] || null,
+    imagem: imagemLastFm(artista.image),
     url: artista.url ?? null,
     duracao_ms: null,
     progresso_ms: null,
@@ -103,7 +116,7 @@ export function normalizarFaixaLastFm(faixa: any, ouvindoAgora = false): ItemMus
     nome: String(faixa.name ?? ""),
     artistas: [String(faixa.artist?.["#text"] ?? "")].filter(Boolean),
     album: faixa.album?.["#text"] || null,
-    imagem: faixa.image?.find((imagem: any) => imagem.size === "extralarge")?.["#text"] || null,
+    imagem: imagemLastFm(faixa.image),
     url: faixa.url ?? null,
     duracao_ms: null,
     progresso_ms: null,

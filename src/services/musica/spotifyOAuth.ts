@@ -2,6 +2,9 @@ import crypto from "node:crypto";
 import prisma from "../../database/prisma.js";
 import { HttpError } from "../../errors/HttpError.js";
 import { cifrarToken, decifrarToken } from "./crypto.js";
+import { SpotifyApiError } from "./SpotifyApiError.js";
+
+export { SpotifyApiError } from "./SpotifyApiError.js";
 
 const AUTHORIZE_ENDPOINT = "https://accounts.spotify.com/authorize";
 const TOKEN_ENDPOINT = "https://accounts.spotify.com/api/token";
@@ -19,19 +22,6 @@ type AccessToken = {
   value: string;
   expiresAt: number;
 };
-
-export class SpotifyApiError extends Error {
-  status: number;
-  retryAfter?: string;
-  code?: string;
-
-  constructor(message: string, status: number, options: { retryAfter?: string; code?: string } = {}) {
-    super(message);
-    this.status = status;
-    this.retryAfter = options.retryAfter;
-    this.code = options.code;
-  }
-}
 
 const pendingAuthorizations = new Map<string, PendingAuthorization>();
 const accessTokens = new Map<number, AccessToken>();

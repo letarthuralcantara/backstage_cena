@@ -4,6 +4,8 @@ import { cifrarToken } from "../../src/services/musica/crypto.js";
 
 const fetchMock = vi.fn();
 vi.stubEnv("LASTFM_API_KEY", "lastfm-test-key");
+vi.stubEnv("SPOTIFY_CLIENT_ID", "spotify-test-client-id");
+vi.stubEnv("SPOTIFY_CLIENT_SECRET", "spotify-test-client-secret");
 vi.stubEnv("MUSICA_TOKEN_KEY", Buffer.alloc(32, 5).toString("base64"));
 vi.stubGlobal("fetch", fetchMock);
 
@@ -61,6 +63,7 @@ afterAll(async () => {
 beforeEach(() => {
   fetchMock.mockReset();
   limparCacheMusica();
+  vi.stubEnv("SPOTIFY_CLIENT_SECRET", "spotify-test-client-secret");
 });
 
 describe("API de leitura de Música", () => {
@@ -152,17 +155,39 @@ describe("API de leitura de Música", () => {
       data: { visibilidade: "publico" },
     });
     let completar!: (response: Response) => void;
-    fetchMock.mockImplementation(() => new Promise<Response>((resolve) => { completar = resolve; }));
+    let lastFmRequests = 0;
+    fetchMock.mockImplementation((input: string | URL) => {
+      if (String(input).includes("ws.audioscrobbler.com")) {
+        lastFmRequests += 1;
+        return new Promise<Response>((resolve) => { completar = resolve; });
+      }
+      if (String(input) === "https://accounts.spotify.com/api/token") {
+        return Promise.resolve(new Response(JSON.stringify({ access_token: "spotify-app-token", expires_in: 3600 })));
+      }
+      if (String(input).startsWith("https://api.spotify.com/v1/search?")) {
+        return Promise.resolve(new Response(JSON.stringify({
+          artists: {
+            items: [{ name: "Artista Top", images: [{ url: "https://spotify.example/artist-top.jpg" }] }],
+          },
+        })));
+      }
+      throw new Error(`URL não mockada: ${String(input)}`);
+    });
     const primeira = request(app)
       .get(`/api/musica/usuario/${dono.id}/top?tipo=artistas&periodo=curto&limite=5`)
       .then((response) => response);
     const segunda = request(app)
       .get(`/api/musica/usuario/${dono.id}/top?tipo=artistas&periodo=curto&limite=5`)
       .then((response) => response);
-    await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
+    await vi.waitFor(() => expect(lastFmRequests).toBe(1));
     completar(new Response(JSON.stringify({
       topartists: {
-        artist: [{ name: "Artista Top", mbid: "lastfm-id", url: "https://last.fm/artist/test", image: [] }],
+        artist: [{
+          name: "Artista Top",
+          mbid: "lastfm-id",
+          url: "https://last.fm/artist/test",
+          image: [{ size: "extralarge", "#text": "https://lastfm.example/artist-top.jpg" }],
+        }],
       },
     }), { status: 200 }));
     const [top1, top2] = await Promise.all([primeira, segunda]);
@@ -175,9 +200,51 @@ describe("API de leitura de Música", () => {
       .set(auth(intruso));
 
     expect(top1.body.itens[0]).toMatchObject({ tipo: "artista", nome: "Artista Top" });
+    expect(top1.body.itens[0].imagem).toBe("https://spotify.example/artist-top.jpg");
     expect(top2.body.itens).toEqual(top1.body.itens);
     expect(oculto.body).toMatchObject({ conectado: false, estado: "oculto" });
-    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(lastFmRequests).toBe(1);
+  });
+
+  it("mantém artistas do Last.fm quando a credencial de imagens Spotify está ausente", async () => {
+    await prisma.conexaoMusica.upsert({
+      where: { id_usuario: dono.id },
+      create: {
+        id_usuario: dono.id,
+        provedor: "lastfm",
+        id_externo: "usuario-sem-spotify-secret",
+        nome_exibicao: "Conta Last.fm",
+        visibilidade: "publico",
+      },
+      update: {
+        provedor: "lastfm",
+        id_externo: "usuario-sem-spotify-secret",
+        nome_exibicao: "Conta Last.fm",
+        visibilidade: "publico",
+      },
+    });
+    vi.stubEnv("SPOTIFY_CLIENT_SECRET", "");
+    fetchMock.mockImplementation(async (input: string | URL) => {
+      if (String(input).includes("ws.audioscrobbler.com")) {
+        return new Response(JSON.stringify({
+          topartists: {
+            artist: [{ name: "Artista Last.fm", image: [] }],
+          },
+        }));
+      }
+      throw new Error(`Não deveria consultar Spotify sem credencial: ${String(input)}`);
+    });
+    const aviso = vi.spyOn(console, "warn").mockImplementation(() => {});
+    try {
+      const response = await request(app)
+        .get(`/api/musica/usuario/${dono.id}/top?tipo=artistas&periodo=curto&limite=3`);
+
+      expect(response.status).toBe(200);
+      expect(response.body.itens).toMatchObject([{ nome: "Artista Last.fm", imagem: null }]);
+      expect(aviso).toHaveBeenCalled();
+    } finally {
+      aviso.mockRestore();
+    }
   });
 
   it("normaliza faixa atual e respeita períodos e limites de top do Last.fm", async () => {
