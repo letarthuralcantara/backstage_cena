@@ -29,3 +29,8 @@ src/generated/
 .DS_Store
 *.tsbuildinfo
 zap-out/
+
+# Uploads do Work On e dados privados (nunca versionar)
+/storage/*
+/public/uploads/workon/*
+/public/uploads/clubes/*

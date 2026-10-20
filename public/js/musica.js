@@ -49,6 +49,15 @@ function definirImagem(elemento, url, alt = "") {
     const imagem = criarElemento("img", "music-cover");
     imagem.src = segura.href;
     imagem.alt = alt;
+    imagem.loading = "lazy";
+    imagem.decoding = "async";
+    imagem.referrerPolicy = "no-referrer";
+    imagem.addEventListener("error", () => {
+      imagem.remove();
+      if (!elemento.querySelector(".music-cover-placeholder")) {
+        elemento.append(criarElemento("span", "music-cover-placeholder", "♪"));
+      }
+    }, { once: true });
     elemento.append(imagem);
     return true;
   } catch {
