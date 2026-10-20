@@ -21,8 +21,8 @@ describe("fundação de Música", () => {
     expect(cifrado).not.toContain("refresh-token-secreto");
     expect(cifrado.split(".")).toHaveLength(4);
     expect(decifrarToken(cifrado)).toBe("refresh-token-secreto");
-    expect(() => decifrarToken(`${cifrado.slice(0, -1)}x`)).toThrow();
-  });
+    const ultimo = cifrado.at(-1);
+    expect(() => decifrarToken(`${cifrado.slice(0, -1)}${ultimo === "A" ? "B" : "A"}`)).toThrow();  });
 
   it("recusa chave ausente ou com tamanho inválido", () => {
     vi.stubEnv("MUSICA_TOKEN_KEY", "");
