@@ -20,100 +20,63 @@
     <div class="header-actions"><div class="profile-dropdown" id="profileDropdown"></div></div>
   </header>
 
-  <main class="project">
+  <main class="project workon-project">
     <div class="project-topbar">
-      <a href="workons.html" class="project-back">Biblioteca Work On</a>
+      <a href="workons.html" class="project-back"><i class="fas fa-arrow-left" aria-hidden="true"></i> Projetos</a>
       <div class="project-actions" aria-label="Ações do projeto">
         <button type="button" class="project-icon-button" id="copiarLinkProjeto" title="Copiar link" aria-label="Copiar link"><i class="fas fa-link"></i></button>
-        <button type="button" class="project-icon-button" id="buscarNoProjeto" title="Buscar" aria-label="Buscar"><i class="fas fa-search"></i></button>
-        <button type="button" class="project-icon-button" id="abrirMenuProjeto" title="Mais opções" aria-label="Mais opções" aria-expanded="false"><i class="fas fa-ellipsis"></i></button>
-        <div class="project-menu" id="menuProjeto" hidden>
-          <button type="button" id="editarMetadados"><i class="fas fa-pen"></i> Editar informações</button>
-          <button type="button" id="duplicarProjeto"><i class="fas fa-copy"></i> Copiar link do projeto</button>
-        </div>
+        <button type="button" class="project-icon-button" id="abrirNotasProjeto" title="Notas do projeto" aria-label="Abrir notas do projeto"><i class="fas fa-note-sticky"></i></button>
+        <button type="button" class="project-icon-button project-edit-trigger" id="abrirMenuProjeto" title="Editar informações do projeto" aria-label="Editar informações do projeto"><i class="fas fa-ellipsis"></i></button>
       </div>
     </div>
     <p id="workonErro" role="status"></p>
 
-    <section class="project-workspace" aria-label="Projeto Work On">
-      <section class="project-cover" id="workonCapa" aria-label="Capa do projeto" tabindex="0" role="button" title="Clique para trocar a capa">
+    <section class="workon-hero" aria-label="Resumo do projeto">
+      <button class="project-cover" id="workonCapa" type="button" aria-label="Capa do projeto" title="Clique para trocar a capa">
         <img id="workonCapaImagem" class="project-cover-image" alt="Capa do projeto" hidden>
         <span class="project-cover-tools" data-editor-only hidden><input id="atualizarCapa" type="file" accept="image/jpeg,image/png,image/gif" aria-label="Alterar capa do projeto"></span>
         <span class="project-cover-placeholder"><i class="fas fa-compact-disc" aria-hidden="true"></i></span>
-      </section>
-
-      <section class="project-details">
-        <div class="project-heading-line"><span class="eyebrow">Backstage Work On</span><span id="workonTipoBadge" class="project-type-badge"></span></div>
+      </button>
+      <div class="project-details">
+        <div class="project-heading-line"><span class="eyebrow">Work On</span><span id="workonTipoBadge" class="project-type-badge"></span></div>
         <h1 id="workonTitulo">Carregando projeto...</h1>
-        <p id="workonDescricao" class="project-description"></p>
-        <div class="project-subline"><span id="workonDono"></span><span>·</span><span id="workonFaixasResumo">Carregando faixas...</span></div>
-        <button type="button" class="project-add-track" data-editor-only hidden><i class="fas fa-plus"></i> Adicionar faixa</button>
+        <p id="workonDescricao" class="project-description">Carregando descrição...</p>
+        <div class="project-subline"><span id="workonDono"></span><span aria-hidden="true">·</span><span id="workonFaixasResumo">Carregando faixas...</span></div>
+        <button type="button" class="project-add-track" data-editor-only hidden><i class="fas fa-plus" aria-hidden="true"></i> Adicionar faixa</button>
         <div class="project-properties-inline">
           <span><small>Status</small><strong id="workonStatus"></strong></span>
           <span><small>DAW</small><strong id="workonDaw"></strong></span>
           <span><small>Gênero</small><strong id="workonGenero"></strong></span>
         </div>
-      </section>
+      </div>
     </section>
 
-    <section id="workonSemDetalhes" class="panel" hidden>
-      <p class="workon-empty">Acesse por convite para ver faixas, tarefas, notas e colaboradores deste projeto.</p>
-    </section>
+    <section id="workonSemDetalhes" class="panel access-note" hidden><i class="fas fa-lock" aria-hidden="true"></i><p>Acesse por convite para ver faixas, tarefas, notas e colaboradores deste projeto.</p></section>
 
     <div class="project-grid">
       <div class="project-main">
         <section class="panel panel-tracks" id="workonFaixas" hidden>
-          <div class="panel-heading"><div><span class="eyebrow">Linha do tempo sonora</span><h2>Faixas</h2></div><span id="workonFaixasCount" class="panel-count"></span></div>
+          <div class="panel-heading"><div><span class="eyebrow">Playlist do projeto</span><h2>Faixas</h2></div><span id="workonFaixasCount" class="panel-count"></span></div>
           <div id="workonFaixasLista"></div>
-          <form id="criarFaixa" class="inline-form" data-editor-only hidden>
-            <label>Nova faixa<input name="titulo" required maxlength="80" placeholder="Nome da faixa"></label><button type="submit">Adicionar faixa</button>
-          </form>
         </section>
-        <section class="panel" id="workonChecklist" hidden>
-          <h2>Checklist</h2>
-          <div id="workonTarefas"></div>
-          <form id="criarTarefa" class="inline-form" data-editor-only hidden><label>Nova tarefa<input name="texto" required maxlength="200"></label><button type="submit">Adicionar tarefa</button></form>
-        </section>
-        <section class="panel" id="workonNotasPanel">
-          <h2>Notas do projeto</h2><textarea id="workonNotas" aria-label="Notas do projeto" readonly></textarea><button id="salvarNotas" data-editor-only hidden type="button">Salvar notas</button>
-        </section>
-        <section class="panel" id="workonGaleria" hidden>
-          <h2>Galeria de fotos</h2><div id="workonFotos" class="workon-gallery"></div>
-          <form id="adicionarFoto" class="inline-form" data-editor-only hidden><label>Adicionar foto<input name="image" type="file" accept="image/jpeg,image/png,image/gif" required></label><label>Legenda<input name="legenda" maxlength="220"></label><button type="submit">Enviar foto</button></form>
-        </section>
+        <section class="panel utility-panel" id="workonGaleria" hidden><div class="panel-heading"><div><span class="eyebrow">Referências visuais</span><h2>Galeria</h2></div></div><div id="workonFotos" class="workon-gallery"></div><form id="adicionarFoto" class="inline-form" data-editor-only hidden><label>Adicionar foto<input name="image" type="file" accept="image/jpeg,image/png,image/gif" required></label><label>Legenda<input name="legenda" maxlength="220" placeholder="Descrição opcional"></label><button type="submit">Enviar foto</button></form></section>
       </div>
       <aside class="project-side">
-        <section class="panel"><h2>Colaboradores</h2><div id="workonMembros" class="workon-members"></div></section>
+        <section class="panel side-panel"><div class="panel-heading"><h2>Colaboradores</h2><i class="fas fa-users" aria-hidden="true"></i></div><div id="workonMembros" class="workon-members"></div></section>
         <section class="panel project-deadline"><small>Prazo</small><strong id="workonPrazo"></strong></section>
       </aside>
     </div>
   </main>
 
-  <dialog id="dialogMetadados" class="workon-metadata-dialog">
-    <form method="dialog" id="formMetadados">
-      <div class="metadata-dialog-heading"><div><span class="eyebrow">Configurações do projeto</span><h2>Editar informações</h2></div><button type="submit" value="cancel" class="dialog-close" aria-label="Fechar"><i class="fas fa-xmark"></i></button></div>
-      <div class="metadata-fields">
-        <label class="metadata-field metadata-field-wide">Nome do projeto<input name="titulo" required maxlength="80"></label>
-        <label class="metadata-field metadata-field-wide">Descrição<textarea name="descricao" maxlength="500"></textarea></label>
-        <label class="metadata-field">Tipo<select name="tipo"><option value="single">Single</option><option value="ep">EP</option><option value="album">Álbum</option><option value="beat_tape">Beat tape</option><option value="outro">Outro</option></select></label>
-        <label class="metadata-field">Status<select name="status"><option value="ideia">Ideia</option><option value="producao">Produção</option><option value="mixagem">Mixagem</option><option value="finalizado">Finalizado</option><option value="lancado">Lançado</option></select></label>
-        <label class="metadata-field">DAW<input name="daw" maxlength="60" placeholder="Ableton, Logic, FL Studio..."></label>
-        <label class="metadata-field">Gênero<input name="genero" maxlength="60" placeholder="Indie, rap, pop..."></label>
-        <label class="metadata-field">Quem pode acessar<select name="visibilidade"><option value="link">Membros e quem tiver o link</option><option value="publico">Público</option></select></label>
-        <label class="metadata-field">Prazo<input name="prazo" type="date"></label>
-        <label class="metadata-field metadata-field-wide">Notas internas<textarea name="notas" maxlength="20000"></textarea></label>
-      </div>
-      <p id="erroMetadados" class="metadata-error" role="alert"></p>
-      <div class="metadata-dialog-actions"><button type="submit" value="cancel" class="button-ghost">Cancelar</button><button type="submit" value="save" class="button-primary">Salvar alterações</button></div>
-    </form>
-  </dialog>
+  <dialog id="dialogNovaFaixa" class="track-composer-dialog"><form id="formNovaFaixa" method="dialog" novalidate><div class="track-composer-heading"><div><span class="eyebrow">Nova faixa</span><h2>Adicione uma ideia ao projeto</h2><p>Escolha o arquivo e dê um nome. A faixa e a primeira versão serão criadas juntas.</p></div><button type="button" id="fecharNovaFaixa" class="dialog-close" aria-label="Fechar"><i class="fas fa-xmark"></i></button></div><label class="track-composer-drop" for="novaFaixaAudio"><i class="fas fa-cloud-arrow-up" aria-hidden="true"></i><strong>Solte o áudio aqui ou clique para escolher</strong><span id="novaFaixaArquivo">MP3, WAV, M4A ou outro formato de áudio</span><input id="novaFaixaAudio" name="audio" type="file" accept="audio/*" required></label><div class="track-composer-fields"><label>Nome da faixa<input id="novaFaixaTitulo" name="titulo" required maxlength="80" placeholder="Ex.: Intro, faixa 01..."></label><label>Nome da versão<input name="rotulo" maxlength="80" placeholder="Demo, mix 01..."></label><label class="track-composer-wide">Observação<textarea name="observacao" maxlength="500" placeholder="O que esta versão representa?"></textarea></label></div><p id="erroNovaFaixa" class="metadata-error" role="alert"></p><div class="metadata-dialog-actions"><button type="button" id="cancelarNovaFaixa" class="button-ghost">Cancelar</button><button type="submit" value="save" class="button-primary" id="salvarNovaFaixa"><i class="fas fa-plus" aria-hidden="true"></i> Criar faixa</button></div></form></dialog>
 
-  <div id="workonPlayer" class="workon-player" hidden>
-    <div class="player-art" id="playerArt"><i class="fas fa-compact-disc" aria-hidden="true"></i></div>
-    <div class="player-track-info"><strong id="playerTrackTitle">Nenhuma faixa selecionada</strong><span id="playerTrackProject"></span></div>
-    <audio id="workonGlobalAudio" controls preload="metadata"></audio>
-    <button type="button" id="fecharWorkonPlayer" class="player-close" aria-label="Fechar player"><i class="fas fa-xmark"></i></button>
-  </div>
+  <dialog id="dialogNotasProjeto" class="notes-dialog"><form method="dialog" id="formNotasProjeto"><div class="track-composer-heading"><div><span class="eyebrow">Bloco de notas</span><h2>Notas do projeto</h2><p>Registre referências, ideias e próximos passos sem tirar o foco da playlist.</p></div><button type="submit" value="cancel" class="dialog-close" aria-label="Fechar"><i class="fas fa-xmark"></i></button></div><textarea id="workonNotas" name="notas" aria-label="Notas do projeto" placeholder="Escreva aqui..."></textarea><p id="erroNotasProjeto" class="metadata-error" role="alert"></p><div class="metadata-dialog-actions"><button type="submit" value="cancel" class="button-ghost">Fechar</button><button type="submit" value="save" class="button-primary" id="salvarNotas"><i class="fas fa-check"></i> Salvar notas</button></div></form></dialog>
+
+  <dialog id="dialogDetalhesFaixa" class="track-details-dialog"><div class="track-details-preview"><button type="button" class="dialog-close" id="fecharDetalhesFaixa" aria-label="Fechar"><i class="fas fa-xmark"></i></button><div class="track-details-art" id="trackDetailsArt"><i class="fas fa-waveform-lines"></i></div><h2 id="trackDetailsTitle">Faixa</h2><p id="trackDetailsMeta"></p><small id="trackDetailsFile"></small></div><div class="track-details-menu"><div class="track-details-menu-heading"><span class="eyebrow">Detalhes</span><h2>Opções da faixa</h2></div><button type="button" data-detail-action="notes"><i class="fas fa-note-sticky"></i><span><strong>Notas</strong><small>Anotações desta faixa</small></span><i class="fas fa-chevron-right"></i></button><button type="button" data-detail-action="replace"><i class="fas fa-waveform-lines"></i><span><strong>Substituir áudio</strong><small>Enviar uma nova versão</small></span><i class="fas fa-chevron-right"></i></button><button type="button" data-detail-action="queue"><i class="fas fa-list-ol"></i><span><strong>Adicionar à fila</strong><small>Continuar ouvindo depois</small></span><i class="fas fa-chevron-right"></i></button><button type="button" data-detail-action="rename"><i class="fas fa-pen"></i><span><strong>Renomear faixa</strong><small>Alterar o nome da música</small></span><i class="fas fa-chevron-right"></i></button><button type="button" data-detail-action="delete" class="danger"><i class="fas fa-trash"></i><span><strong>Excluir faixa</strong><small>Remove a faixa e suas versões</small></span><i class="fas fa-chevron-right"></i></button></div></dialog>
+
+  <dialog id="dialogMetadados" class="workon-metadata-dialog"><form id="formMetadados" method="dialog" novalidate><div class="metadata-dialog-heading"><div><span class="eyebrow"><i class="fas fa-sliders"></i> Editor do projeto</span><h2>Informações do projeto</h2><p>Organize a identidade e o contexto desta sessão.</p></div><button type="button" id="fecharMetadados" class="dialog-close" aria-label="Fechar"><i class="fas fa-xmark"></i></button></div><div class="metadata-fields"><label class="metadata-field metadata-field-wide"><span><i class="fas fa-heading"></i> Nome do projeto</span><input name="titulo" required maxlength="80" placeholder="Ex.: O mundo é seu"></label><label class="metadata-field metadata-field-wide"><span><i class="fas fa-align-left"></i> Descrição</span><textarea name="descricao" maxlength="500" placeholder="Conte o que está sendo criado neste projeto..."></textarea></label><label class="metadata-field"><span><i class="fas fa-layer-group"></i> Tipo</span><select name="tipo"><option value="single">Single</option><option value="ep">EP</option><option value="album">Álbum</option><option value="beat_tape">Beat tape</option><option value="outro">Outro</option></select></label><label class="metadata-field"><span><i class="fas fa-signal"></i> Status</span><select name="status"><option value="ideia">Ideia</option><option value="producao">Produção</option><option value="mixagem">Mixagem</option><option value="finalizado">Finalizado</option><option value="lancado">Lançado</option></select></label><label class="metadata-field"><span><i class="fas fa-desktop"></i> DAW</span><input name="daw" maxlength="60" placeholder="Ableton, Logic, FL Studio..."></label><label class="metadata-field"><span><i class="fas fa-music"></i> Gênero</span><input name="genero" maxlength="60" placeholder="Indie, rap, pop..."></label><label class="metadata-field"><span><i class="fas fa-users"></i> Quem pode acessar</span><select name="visibilidade"><option value="link">Membros e quem tiver o link</option><option value="publico">Público</option></select></label><label class="metadata-field"><span><i class="fas fa-calendar"></i> Prazo</span><input name="prazo" type="date"></label><label class="metadata-field metadata-field-wide"><span><i class="fas fa-note-sticky"></i> Notas internas</span><textarea name="notas" maxlength="20000" placeholder="Referências, decisões e próximos passos..."></textarea></label></div><p id="erroMetadados" class="metadata-error" role="alert"></p><div class="metadata-dialog-actions"><button type="button" id="cancelarMetadados" class="button-ghost">Cancelar</button><button type="submit" value="save" class="button-primary"><i class="fas fa-check"></i> Salvar alterações</button></div></form></dialog>
+
+  <div id="workonPlayer" class="workon-player" hidden><div class="player-art" id="playerArt"><i class="fas fa-compact-disc" aria-hidden="true"></i></div><div class="player-track-info"><strong id="playerTrackTitle">Nenhuma faixa selecionada</strong><span id="playerTrackProject"></span></div><div class="player-controls"><button type="button" id="playerPrev" aria-label="Faixa anterior"><i class="fas fa-backward-step"></i></button><audio id="workonGlobalAudio" controls preload="metadata"></audio><button type="button" id="playerNext" aria-label="Próxima faixa"><i class="fas fa-forward-step"></i></button></div><button type="button" id="fecharWorkonPlayer" class="player-close" aria-label="Fechar player"><i class="fas fa-xmark"></i></button></div>
 
   <div class="tab-bar-spacer"></div><nav class="tab-bar" aria-label="Navegação principal"></nav>
   <script type="module">

@@ -107,6 +107,30 @@
 
             <!-- MAIN CONTENT -->
             <main class="main-content">
+                
+                <!-- ADD PREVIEW (OWNER ONLY) -->
+                <a href="publicar.html" class="btn-primary hidden" id="addPreviaPanel">Nova postagem</a>
+
+                <div class="profile-section-tabs segmented" role="tablist" aria-label="Conteúdo do perfil">
+                    <button type="button" class="active" role="tab" aria-selected="true" data-profile-tab="postagens">Postagens</button>
+                    <button type="button" role="tab" aria-selected="false" data-profile-tab="workons">Work Ons</button>
+                </div>
+
+                <!-- PREVIEWS LIST -->
+                <div class="panel-card" id="painelPostagens">
+                    <div class="section-header">
+                        <h2 class="section-title">Postagens</h2>
+                    </div>
+                    <div id="previasLista" class="previews-grid">
+                        <!-- Stories aqui -->
+                    </div>
+                </div>
+                <div class="panel-card" id="painelWorkOns" hidden>
+                    <div class="section-header">
+                        <h2 class="section-title">Work Ons</h2>
+                    </div>
+                    <div id="workOnsPerfil" class="profile-workons" aria-live="polite"></div>
+                </div>
                 <section class="panel-card music-profile-card" aria-label="Música">
                     <div class="music-profile-section">
                         <div class="music-profile-heading">
@@ -131,29 +155,6 @@
                     </div>
                 </section>
 
-                <!-- ADD PREVIEW (OWNER ONLY) -->
-                <a href="publicar.html" class="btn-primary hidden" id="addPreviaPanel">Nova postagem</a>
-
-                <div class="profile-section-tabs segmented" role="tablist" aria-label="Conteúdo do perfil">
-                    <button type="button" class="active" role="tab" aria-selected="true" data-profile-tab="postagens">Postagens</button>
-                    <button type="button" role="tab" aria-selected="false" data-profile-tab="workons">Work Ons</button>
-                </div>
-
-                <!-- PREVIEWS LIST -->
-                <div class="panel-card" id="painelPostagens">
-                    <div class="section-header">
-                        <h2 class="section-title">Postagens</h2>
-                    </div>
-                    <div id="previasLista" class="previews-grid">
-                        <!-- Stories aqui -->
-                    </div>
-                </div>
-                <div class="panel-card" id="painelWorkOns" hidden>
-                    <div class="section-header">
-                        <h2 class="section-title">Work Ons</h2>
-                    </div>
-                    <div id="workOnsPerfil" class="profile-workons" aria-live="polite"></div>
-                </div>
 
             </main>
         </div>

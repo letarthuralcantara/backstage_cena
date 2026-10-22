@@ -100,29 +100,14 @@ function preencherMetadados(formulario, projeto) {
 function configurarEdicaoMetadados(projeto, erro) {
   const dialog = document.getElementById("dialogMetadados");
   const formulario = document.getElementById("formMetadados");
-  const menu = document.getElementById("menuProjeto");
   const abrirMenu = document.getElementById("abrirMenuProjeto");
-  if (!dialog || !formulario || !menu || !abrirMenu) return;
-  abrirMenu.addEventListener("click", (event) => {
-    event.stopPropagation();
-    menu.hidden = !menu.hidden;
-    abrirMenu.setAttribute("aria-expanded", String(!menu.hidden));
-  });
-  document.addEventListener("click", (event) => {
-    if (!menu.contains(event.target) && event.target !== abrirMenu) {
-      menu.hidden = true;
-      abrirMenu.setAttribute("aria-expanded", "false");
-    }
-  });
-  document.getElementById("editarMetadados")?.addEventListener("click", () => {
+  if (!dialog || !formulario || !abrirMenu) return;
+  document.getElementById("fecharMetadados")?.addEventListener("click", () => dialog.close("cancel"));
+  document.getElementById("cancelarMetadados")?.addEventListener("click", () => dialog.close("cancel"));
+  abrirMenu.addEventListener("click", () => {
     if (!projeto.pode_editar) return mostrarErro(erro, new Error("Você não pode editar este projeto."));
     preencherMetadados(formulario, projeto);
-    menu.hidden = true;
     dialog.showModal();
-  });
-  document.getElementById("duplicarProjeto")?.addEventListener("click", async () => {
-    try { await navigator.clipboard.writeText(window.location.href); erro.textContent = "Link do projeto copiado."; menu.hidden = true; }
-    catch { mostrarErro(erro, new Error("Não foi possível copiar o link.")); }
   });
   formulario.addEventListener("submit", async (event) => {
     if (event.submitter?.value !== "save") return;
@@ -146,7 +131,8 @@ function configurarEdicaoMetadados(projeto, erro) {
 function atualizarCabecalhoWorkOn(projeto) {
   document.getElementById("workonTitulo").textContent = projeto.titulo;
   document.getElementById("workonDescricao").textContent = projeto.descricao || "Sem descrição.";
-  document.getElementById("workonTipoBadge").textContent = projeto.tipo || "Projeto";
+  const tipoElemento = document.getElementById("workonTipoBadge") || document.getElementById("workonTipo");
+  if (tipoElemento) tipoElemento.textContent = projeto.tipo || "Projeto";
   document.getElementById("workonStatus").textContent = STATUS_LABEL[projeto.status] || projeto.status;
   document.getElementById("workonDaw").textContent = projeto.daw || "Não definida";
   document.getElementById("workonGenero").textContent = projeto.genero || "Não definido";
@@ -244,7 +230,8 @@ export async function iniciarBibliotecaWorkOn() {
   busca?.addEventListener("input", renderizar);
   ordenar?.addEventListener("change", renderizar);
 
-  document.getElementById("formCriarWorkOn")?.addEventListener("submit", async (event) => {
+  const formularioCriar = document.getElementById("formCriarWorkOn") || document.querySelector("#criarWorkOn form") || (document.getElementById("criarWorkOn")?.tagName === "FORM" ? document.getElementById("criarWorkOn") : null);
+  formularioCriar?.addEventListener("submit", async (event) => {
     event.preventDefault();
     const form = event.currentTarget;
     const dados = Object.fromEntries(new FormData(form));
@@ -289,129 +276,167 @@ function criarTarefa(tarefa, podeEditar, idWorkOn) {
 function configurarPlayerGlobal(projeto, erro) {
   const player = document.getElementById("workonPlayer");
   const audio = document.getElementById("workonGlobalAudio");
-  const fechar = document.getElementById("fecharWorkonPlayer");
   if (!player || !audio) return null;
   const titulo = document.getElementById("playerTrackTitle");
   const projetoNome = document.getElementById("playerTrackProject");
   const arte = document.getElementById("playerArt");
-  const state = { player, audio, titulo, projetoNome, arte, activeButton: null };
-  if (projeto.capa) arte.style.backgroundImage = `url("${encodeURI(projeto.capa)}")`;
-  fechar?.addEventListener("click", () => {
-    audio.pause();
-    audio.removeAttribute("src");
-    audio.load();
-    player.hidden = true;
-  });
-  audio.addEventListener("play", () => { player.hidden = false; });
-  audio.addEventListener("pause", () => {
-    state.activeButton?.classList.remove("is-playing");
-    if (state.activeButton) {
-      state.activeButton.querySelector("i").className = "fas fa-play";
-      state.activeButton.querySelector("span").textContent = "Ouvir";
-    }
-  });
-  audio.addEventListener("error", () => mostrarErro(erro, new Error("Não foi possível reproduzir este arquivo de áudio.")));
-  return state;
-}
-
-function criarPlayerVersao(projeto, versao, erro, playerState) {
-  const bloco = document.createElement("div");
-  bloco.className = "workon-version";
-  const info = document.createElement("div");
-  info.className = "workon-version-info";
-  info.innerHTML = `<span>${escaparHtml(versao.rotulo || `Versão ${versao.numero}`)}</span><small>${escaparHtml(versao.observacao || "Arquivo de áudio")}</small>`;
-  const acoes = document.createElement("div");
-  acoes.className = "workon-version-actions";
-  const tocar = document.createElement("button");
-  tocar.type = "button";
-  tocar.className = "workon-play";
-  tocar.innerHTML = '<i class="fas fa-play" aria-hidden="true"></i><span>Ouvir</span>';
-  tocar.setAttribute("aria-label", `Ouvir ${versao.rotulo || `versão ${versao.numero}`}`);
-  let carregando = false;
-  let carregado = false;
-
-  async function carregarEReproduzir() {
-    if (carregando) return;
-    try {
-      if (!carregado) {
-        carregando = true;
-        tocar.classList.add("is-loading");
-        tocar.querySelector("span").textContent = "Carregando";
-        const resposta = await chamar(`/api/workons/${projeto.id_workon}/versoes/${versao.id_versao}/url`);
-        playerState.audio.src = resposta.url;
-        playerState.audio.load();
-        carregado = true;
-      }
-      playerState.titulo.textContent = versao.rotulo || `Versão ${versao.numero}`;
-      playerState.projetoNome.textContent = projeto.titulo;
-      playerState.player.hidden = false;
-      document.querySelectorAll(".workon-play").forEach((botao) => {
-        botao.classList.remove("is-playing");
-        botao.querySelector("i").className = "fas fa-play";
-        botao.querySelector("span").textContent = "Ouvir";
-      });
-      playerState.activeButton = tocar;
-      await playerState.audio.play();
-      tocar.classList.add("is-playing");
-      tocar.querySelector("i").className = "fas fa-pause";
-      tocar.querySelector("span").textContent = "Tocando";
-    } catch (error) {
-      mostrarErro(erro, error);
-    } finally {
-      carregando = false;
-      tocar.classList.remove("is-loading");
-      if (playerState.audio.paused) tocar.querySelector("span").textContent = "Ouvir";
-    }
+  const state = { player, audio, titulo, projetoNome, arte, queue: [], index: -1, loading: false };
+  if (projeto.capa) {
+    arte.style.backgroundImage = `url("${encodeURI(projeto.capa)}")`;
+    arte.classList.add("has-art");
+    arte.querySelector("i")?.remove();
   }
-
-  tocar.addEventListener("click", carregarEReproduzir);
-  acoes.append(tocar);
-  bloco.append(info, acoes);
-  return bloco;
+  const atualizarFaixaAtiva = () => {
+    document.querySelectorAll(".workon-track").forEach((linha) => linha.classList.remove("is-playing"));
+    const atual = state.queue[state.index];
+    if (atual) document.querySelector(`[data-track-id="${atual.faixa.id_faixa}"]`)?.classList.add("is-playing");
+  };
+  const tocarItem = async (index, autoplay = true) => {
+    const item = state.queue[index];
+    if (!item || state.loading) return;
+    state.loading = true;
+    state.index = index;
+    try {
+      const resposta = await chamar(`/api/workons/${projeto.id_workon}/versoes/${item.versao.id_versao}/url`);
+      audio.src = resposta.url;
+      audio.load();
+      titulo.textContent = item.faixa.titulo;
+      projetoNome.textContent = `${projeto.titulo} · ${item.versao.rotulo || `Versão ${item.versao.numero}`}`;
+      player.hidden = false;
+      atualizarFaixaAtiva();
+      if (autoplay) await audio.play();
+      localStorage.setItem("backstage:workon-player", JSON.stringify({ idProjeto: projeto.id_workon, idVersao: item.versao.id_versao, url: resposta.url, titulo: item.faixa.titulo, projeto: projeto.titulo, capa: projeto.capa || "", tempo: 0, index, playing: autoplay, queue: state.queue.map((entry) => ({ idVersao: entry.versao.id_versao, titulo: entry.faixa.titulo })) }));
+    } catch (error) { mostrarErro(erro, error); } finally { state.loading = false; }
+  };
+  state.tocarItem = tocarItem;
+  audio.addEventListener("play", () => { player.hidden = false; atualizarFaixaAtiva(); const salvo = localStorage.getItem("backstage:workon-player"); if (salvo) { try { localStorage.setItem("backstage:workon-player", JSON.stringify({ ...JSON.parse(salvo), playing: true })); } catch {} } });
+  audio.addEventListener("pause", () => { const salvo = localStorage.getItem("backstage:workon-player"); if (salvo) { try { localStorage.setItem("backstage:workon-player", JSON.stringify({ ...JSON.parse(salvo), playing: false, tempo: audio.currentTime })); } catch {} } });
+  audio.addEventListener("timeupdate", () => { const salvo = localStorage.getItem("backstage:workon-player"); if (salvo) { try { localStorage.setItem("backstage:workon-player", JSON.stringify({ ...JSON.parse(salvo), tempo: audio.currentTime, index: state.index })); } catch {} } });
+  audio.addEventListener("ended", () => { if (state.index + 1 < state.queue.length) tocarItem(state.index + 1); });
+  document.getElementById("playerPrev")?.addEventListener("click", () => { if (state.index > 0) tocarItem(state.index - 1); });
+  document.getElementById("playerNext")?.addEventListener("click", () => { if (state.index + 1 < state.queue.length) tocarItem(state.index + 1); });
+  audio.addEventListener("error", () => mostrarErro(erro, new Error("Não foi possível reproduzir este arquivo de áudio.")));
+  document.getElementById("fecharWorkonPlayer")?.addEventListener("click", () => { audio.pause(); audio.removeAttribute("src"); audio.load(); player.hidden = true; localStorage.removeItem("backstage:workon-player"); });
+  return state;
 }
 
 function renderizarFaixas(projeto, container, erro, playerState) {
   container.replaceChildren();
-  if (!projeto.faixas?.length) {
-    container.innerHTML = '<p class="workon-empty">Adicione a primeira faixa para organizar as versões.</p>';
-    return;
+  const detalhes = document.getElementById("dialogDetalhesFaixa");
+  if (detalhes && !detalhes.dataset.bound) {
+    detalhes.dataset.bound = "true";
+    detalhes.addEventListener("click", async (event) => {
+      const action = event.target.closest("[data-detail-action]")?.dataset.detailAction;
+      const contexto = detalhes._trackContext;
+      if (!action || !contexto) return;
+      if (action === "rename") {
+        const titulo = window.prompt("Nome da faixa", contexto.faixa.titulo);
+        if (titulo?.trim()) { await chamar(`/api/workons/${projeto.id_workon}/faixas/${contexto.faixa.id_faixa}`, { method: "PATCH", body: { titulo: titulo.trim() } }); window.location.reload(); }
+      }
+      if (action === "delete" && window.confirm(`Excluir “${contexto.faixa.titulo}”?`)) { await chamar(`/api/workons/${projeto.id_workon}/faixas/${contexto.faixa.id_faixa}`, { method: "DELETE" }); detalhes.close(); window.location.reload(); }
+      if (action === "replace") contexto.uploadForm.elements.audio.click();
+      if (action === "queue") { if (contexto.item >= 0) playerState.queue.push(playerState.queue[contexto.item]); detalhes.close(); }
+      if (action === "notes") { detalhes.close(); document.getElementById("abrirNotasProjeto")?.click(); }
+    });
   }
-  projeto.faixas.forEach((faixa) => {
-    const card = document.createElement("article");
-    card.className = "workon-track";
-    const cabecalho = document.createElement("div");
-    cabecalho.className = "workon-track-heading";
-    cabecalho.innerHTML = `<div><h3>${escaparHtml(faixa.titulo)}</h3><span>${faixa.versoes?.length || 0} versão(ões)${faixa.bpm ? ` · ${faixa.bpm} BPM` : ""}</span></div><i class="fas fa-waveform-lines" aria-hidden="true"></i>`;
-    const versoes = document.createElement("div");
-    versoes.className = "workon-versions";
-    (faixa.versoes || []).forEach((versao) => versoes.appendChild(criarPlayerVersao(projeto, versao, erro, playerState)));
-    if (!faixa.versoes?.length) versoes.innerHTML = '<p class="workon-empty">Nenhuma versão enviada ainda.</p>';
+  if (!projeto.faixas?.length) { container.innerHTML = '<p class="workon-empty">Adicione a primeira faixa para organizar as versões.</p>'; return; }
+  playerState.queue = projeto.faixas.flatMap((faixa) => { const versao = faixa.versoes?.[faixa.versoes.length - 1]; return versao ? [{ faixa, versao }] : []; });
+  try {
+    const salvo = JSON.parse(localStorage.getItem("backstage:workon-player") || "null");
+    const indexSalvo = salvo?.idProjeto === projeto.id_workon ? playerState.queue.findIndex((entry) => entry.versao.id_versao === salvo.idVersao) : -1;
+    if (indexSalvo >= 0 && salvo.playing) setTimeout(() => playerState.tocarItem(indexSalvo, true), 80);
+  } catch {}
+  projeto.faixas.forEach((faixa, index) => {
+    const linha = document.createElement("article");
+    linha.className = "workon-track";
+    linha.dataset.trackId = faixa.id_faixa;
+    const item = playerState.queue.findIndex((entry) => entry.faixa.id_faixa === faixa.id_faixa);
+    const versao = faixa.versoes?.[faixa.versoes.length - 1];
+    linha.innerHTML = `<button type="button" class="workon-track-main" aria-label="Tocar ${escaparHtml(faixa.titulo)}"><span class="workon-track-number">${String(index + 1).padStart(2, "0")}</span><span class="workon-track-play"><i class="fas fa-play"></i></span><span class="workon-track-copy"><strong>${escaparHtml(faixa.titulo)}</strong><small>${escaparHtml(versao?.rotulo || "Sem versão enviada")}</small></span><span class="workon-track-duration">${versao ? "Áudio" : "Sem áudio"}</span></button>`;
+    linha.querySelector(".workon-track-main").addEventListener("click", () => { if (item >= 0) playerState.tocarItem(item); else mostrarErro(erro, new Error("Essa faixa ainda não possui um áudio.")); });
     if (projeto.pode_editar) {
-      const form = document.createElement("form");
-      form.className = "workon-upload";
-      form.innerHTML = '<label>Arquivo de áudio <input type="file" name="audio" accept="audio/*" required></label><label class="upload-meta">Rótulo <input type="text" name="rotulo" maxlength="80" placeholder="Demo, mix 02..."></label><label class="upload-meta">Observação <input type="text" name="observacao" maxlength="500" placeholder="O que mudou nesta versão?"></label><button type="submit"><i class="fas fa-upload" aria-hidden="true"></i> Enviar versão</button>';
-      form.addEventListener("submit", async (event) => {
-        event.preventDefault();
-        const arquivo = form.elements.audio.files[0];
-        if (!arquivo) return;
-        const dados = new FormData();
-        dados.append("audio", arquivo);
-        if (form.elements.rotulo.value) dados.append("rotulo", form.elements.rotulo.value);
-        if (form.elements.observacao.value) dados.append("observacao", form.elements.observacao.value);
-        const botao = form.querySelector("button");
-        botao.disabled = true;
-        try {
-          await chamar(`/api/workons/${projeto.id_workon}/faixas/${faixa.id_faixa}/versoes`, { method: "POST", body: dados });
-          window.location.reload();
-        } catch (error) {
-          mostrarErro(erro, error);
-          botao.disabled = false;
-        }
-      });
-      versoes.appendChild(form);
+      const menuWrap = document.createElement("div"); menuWrap.className = "track-actions";
+      menuWrap.innerHTML = '<button type="button" class="track-menu-trigger" aria-label="Abrir detalhes da faixa"><i class="fas fa-ellipsis"></i></button>';
+      const trigger = menuWrap.querySelector(".track-menu-trigger");
+      const detalhes = document.getElementById("dialogDetalhesFaixa");
+      const tituloDetalhes = document.getElementById("trackDetailsTitle");
+      const metaDetalhes = document.getElementById("trackDetailsMeta");
+      const arquivoDetalhes = document.getElementById("trackDetailsFile");
+      const abrirDetalhes = () => {
+        if (!detalhes) return;
+        detalhes.dataset.faixaId = faixa.id_faixa;
+        tituloDetalhes.textContent = faixa.titulo;
+        metaDetalhes.textContent = `${versao?.rotulo || "Sem versão"}${faixa.bpm ? ` · ${faixa.bpm} BPM` : ""}${faixa.tom ? ` · ${faixa.tom}` : ""}`;
+        arquivoDetalhes.textContent = versao?.observacao || "Nenhuma observação adicionada";
+        detalhes._trackContext = { faixa, versao, item, uploadForm: null };
+        detalhes.showModal();
+      };
+      trigger.addEventListener("click", (event) => { event.stopPropagation(); abrirDetalhes(); });
+      const uploadForm = document.createElement("form"); uploadForm.className = "track-hidden-upload"; uploadForm.innerHTML = '<input type="file" name="audio" accept="audio/*">';
+      uploadForm.addEventListener("change", async () => { const file = uploadForm.elements.audio.files[0]; if (!file) return; const data = new FormData(); data.append("audio", file); await chamar(`/api/workons/${projeto.id_workon}/faixas/${faixa.id_faixa}/versoes`, { method: "POST", body: data }); window.location.reload(); });
+      if (detalhes?._trackContext) detalhes._trackContext.uploadForm = uploadForm;
+      linha.append(menuWrap, uploadForm);
     }
-    card.append(cabecalho, versoes);
-    container.appendChild(card);
+    container.appendChild(linha);
+  });
+  document.getElementById("fecharDetalhesFaixa")?.addEventListener("click", () => document.getElementById("dialogDetalhesFaixa")?.close());
+}
+
+function configurarComposerFaixa(projeto, erro) {
+  const dialog = document.getElementById("dialogNovaFaixa");
+  const formulario = document.getElementById("formNovaFaixa");
+  const abrir = document.querySelector(".project-add-track");
+  const arquivo = document.getElementById("novaFaixaAudio");
+  const nomeArquivo = document.getElementById("novaFaixaArquivo");
+  if (!dialog || !formulario || !abrir || !projeto.pode_editar) return;
+
+  abrir.addEventListener("click", () => {
+    formulario.reset();
+    if (nomeArquivo) nomeArquivo.textContent = "MP3, WAV, M4A ou outro formato de áudio";
+    document.getElementById("erroNovaFaixa").textContent = "";
+    dialog.showModal();
+    formulario.elements.titulo.focus();
+  });
+  document.getElementById("fecharNovaFaixa")?.addEventListener("click", () => dialog.close("cancel"));
+  document.getElementById("cancelarNovaFaixa")?.addEventListener("click", () => dialog.close("cancel"));
+
+  arquivo?.addEventListener("change", () => {
+    const escolhido = arquivo.files?.[0];
+    if (nomeArquivo && escolhido) nomeArquivo.textContent = `${escolhido.name} · ${(escolhido.size / 1024 / 1024).toFixed(1)} MB`;
+  });
+
+  formulario.addEventListener("submit", async (event) => {
+    if (event.submitter?.value !== "save") return;
+    event.preventDefault();
+    const botao = document.getElementById("salvarNovaFaixa");
+    const erroComposer = document.getElementById("erroNovaFaixa");
+    const dados = Object.fromEntries(new FormData(formulario));
+    const audio = arquivo?.files?.[0];
+    if (!audio) {
+      erroComposer.textContent = "Escolha um arquivo de áudio para continuar.";
+      return;
+    }
+    botao.disabled = true;
+    botao.innerHTML = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Enviando...';
+    erroComposer.textContent = "";
+    try {
+      const faixaCriada = await chamar(`/api/workons/${projeto.id_workon}/faixas`, { method: "POST", body: { titulo: dados.titulo } });
+      const idFaixa = faixaCriada?.id_faixa ?? faixaCriada?.faixa?.id_faixa;
+      if (!idFaixa) throw new Error("A faixa foi criada, mas o servidor não retornou o identificador dela.");
+      const upload = new FormData();
+      upload.append("audio", audio);
+      if (dados.rotulo) upload.append("rotulo", dados.rotulo);
+      if (dados.observacao) upload.append("observacao", dados.observacao);
+      await chamar(`/api/workons/${projeto.id_workon}/faixas/${idFaixa}/versoes`, { method: "POST", body: upload });
+      dialog.close();
+      window.location.reload();
+    } catch (error) {
+      erroComposer.textContent = error.message;
+      mostrarErro(erro, error);
+    } finally {
+      botao.disabled = false;
+      botao.innerHTML = '<i class="fas fa-plus" aria-hidden="true"></i> Criar faixa';
+    }
   });
 }
 
@@ -430,7 +455,8 @@ export async function iniciarPaginaWorkOn() {
     document.title = `Backstage | ${projeto.titulo}`;
     document.getElementById("workonTitulo").textContent = projeto.titulo;
     document.getElementById("workonDescricao").textContent = projeto.descricao || "Sem descrição.";
-    document.getElementById("workonTipoBadge").textContent = projeto.tipo || "Projeto";
+    const tipoElemento = document.getElementById("workonTipoBadge") || document.getElementById("workonTipo");
+    if (tipoElemento) tipoElemento.textContent = projeto.tipo || "Projeto";
     document.getElementById("workonStatus").textContent = STATUS_LABEL[projeto.status] || projeto.status;
     document.getElementById("workonDaw").textContent = projeto.daw || "Não definida";
     document.getElementById("workonGenero").textContent = projeto.genero || "Não definido";
@@ -445,13 +471,15 @@ export async function iniciarPaginaWorkOn() {
     if (projeto.capa && imagemCapa) {
       imagemCapa.src = projeto.capa;
       imagemCapa.hidden = false;
+      document.querySelector(".project-cover-placeholder")?.setAttribute("hidden", "");
+    } else if (projeto.capa) {
+      capa.style.backgroundImage = `url("${encodeURI(projeto.capa)}")`;
+      document.querySelector(".project-cover-placeholder")?.setAttribute("hidden", "");
     }
     document.getElementById("workonSemDetalhes").hidden = Boolean(projeto.faixas);
     [...document.querySelectorAll("[data-editor-only]")].forEach((elemento) => { elemento.hidden = !projeto.pode_editar; });
     if (!projeto.pode_editar) capa.removeAttribute("title");
-    document.getElementById("workonNotasPanel").hidden = !projeto.faixas;
     document.getElementById("workonFaixas").hidden = !projeto.faixas;
-    document.getElementById("workonChecklist").hidden = !projeto.tarefas;
     document.getElementById("workonGaleria").hidden = !projeto.fotos;
 
     const colaboradores = document.getElementById("workonMembros");
@@ -467,16 +495,19 @@ export async function iniciarPaginaWorkOn() {
     renderizarFaixas(projeto, document.getElementById("workonFaixasLista"), erro, playerState);
 
     document.getElementById("copiarLinkProjeto")?.addEventListener("click", async () => {
+      const botao = document.getElementById("copiarLinkProjeto");
       try {
         await navigator.clipboard.writeText(window.location.href);
-        erro.textContent = "Link copiado.";
+        botao.classList.add("is-copied");
+        botao.innerHTML = '<i class="fas fa-check"></i><span>Link copiado</span>';
+        erro.textContent = "";
+        window.setTimeout(() => { botao.classList.remove("is-copied"); botao.innerHTML = '<i class="fas fa-link"></i>'; }, 2200);
       } catch {
         erro.textContent = "Não foi possível copiar o link.";
       }
     });
-    document.getElementById("buscarNoProjeto")?.addEventListener("click", () => {
-      document.querySelector("#workonFaixas input[type=search]")?.focus();
-    });
+    const notasDialog = document.getElementById("dialogNotasProjeto");
+    document.getElementById("abrirNotasProjeto")?.addEventListener("click", () => { document.getElementById("workonNotas").value = projeto.notas || ""; notasDialog?.showModal(); });
     capa.addEventListener("click", () => {
       if (projeto.pode_editar) document.getElementById("atualizarCapa")?.click();
     });
@@ -486,23 +517,8 @@ export async function iniciarPaginaWorkOn() {
         document.getElementById("atualizarCapa")?.click();
       }
     });
-    document.querySelector(".project-add-track")?.addEventListener("click", () => {
-      document.querySelector("#criarFaixa input")?.focus();
-    });
+    configurarComposerFaixa(projeto, erro);
 
-    const tarefas = document.getElementById("workonTarefas");
-    if (projeto.tarefas) {
-      tarefas.replaceChildren();
-      projeto.tarefas.forEach((tarefa) => tarefas.appendChild(criarTarefa(tarefa, projeto.pode_editar, projeto.id_workon)));
-    }
-    document.getElementById("criarTarefa")?.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const input = event.currentTarget.elements.texto;
-      try {
-        await chamar(`/api/workons/${projeto.id_workon}/tarefas`, { method: "POST", body: { texto: input.value } });
-        window.location.reload();
-      } catch (error) { mostrarErro(erro, error); }
-    });
     document.getElementById("criarFaixa")?.addEventListener("submit", async (event) => {
       event.preventDefault();
       const input = event.currentTarget.elements.titulo;
@@ -511,9 +527,13 @@ export async function iniciarPaginaWorkOn() {
         window.location.reload();
       } catch (error) { mostrarErro(erro, error); }
     });
-    document.getElementById("salvarNotas")?.addEventListener("click", async () => {
+    document.getElementById("formNotasProjeto")?.addEventListener("submit", async (event) => {
+      if (event.submitter?.value !== "save") return;
+      event.preventDefault();
       try {
         await chamar(`/api/workons/${projeto.id_workon}`, { method: "PATCH", body: { notas: document.getElementById("workonNotas").value } });
+        projeto.notas = document.getElementById("workonNotas").value;
+        notasDialog?.close();
         erro.textContent = "Notas salvas.";
       } catch (error) { mostrarErro(erro, error); }
     });
