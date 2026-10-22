@@ -9,9 +9,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link rel="stylesheet" href="../css/tokens.css">
-    <link rel="stylesheet" href="../css/components.css">
-    <link rel="stylesheet" href="../css/global.css">
-    <link rel="stylesheet" href="../css/workon.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/workon.css">
 </head>
 <body class="workon-library-page">
   <header class="header">
@@ -19,41 +19,50 @@
     <div class="header-center"></div>
     <div class="header-actions"><div class="profile-dropdown" id="profileDropdown"></div></div>
   </header>
-  <main class="page">
-    <div class="page-heading workon-library-heading">
-      <div><span class="eyebrow">Seu espaço de criação</span><h1>Work On</h1><p>Uma biblioteca viva para organizar projetos, versões e colaborações.</p></div>
-      <div class="workon-heading-mark" aria-hidden="true"><i class="fas fa-compact-disc"></i><span></span><span></span><span></span></div>
-    </div>
-    <div class="workon-tabs segmented" role="tablist" aria-label="Biblioteca de Work Ons">
-      <button type="button" role="tab" aria-selected="true" class="active" data-workon-tab="meus">Meus</button>
-      <button type="button" role="tab" aria-selected="false" data-workon-tab="compartilhados">Compartilhados comigo</button>
+
+  <main class="page workon-library">
+    <section class="workon-library-hero">
+      <div>
+        <span class="eyebrow">Seu espaço de criação</span>
+        <h1>Projetos</h1>
+        <p>Organize músicas, versões e colaborações em um só lugar.</p>
+      </div>
+      <a class="workon-primary-cta" href="#criarWorkOn"><i class="fas fa-plus" aria-hidden="true"></i> Novo projeto</a>
+    </section>
+
+    <nav class="workon-tabs segmented" role="tablist" aria-label="Biblioteca de Work Ons">
+      <button type="button" role="tab" aria-selected="true" class="active" data-workon-tab="meus">Meus projetos</button>
+      <button type="button" role="tab" aria-selected="false" data-workon-tab="compartilhados">Compartilhados</button>
       <button type="button" role="tab" aria-selected="false" data-workon-tab="explorar">Explorar</button>
-    </div>
-    <div class="toolbar">
-      <span>Seus projetos e colaborações</span>
+    </nav>
+
+    <section class="workon-library-toolbar" aria-label="Filtros de projetos">
+      <div class="workon-library-count"><span>Biblioteca</span><strong id="workonLibraryLabel">Seus projetos e colaborações</strong></div>
       <div class="workon-tools">
         <label class="workon-search"><i class="fas fa-search" aria-hidden="true"></i><input id="workonBusca" type="search" placeholder="Buscar projetos" aria-label="Buscar projetos"></label>
         <select id="workonOrdenar" aria-label="Ordenar projetos"><option value="recentes">Mais recentes</option><option value="titulo">Por título</option><option value="status">Por status</option></select>
+        <div class="workon-views segmented" role="group" aria-label="Visualização">
+          <button type="button" class="active" data-workon-view="galeria" aria-pressed="true" aria-label="Visualização em grade"><i class="fas fa-grip" aria-hidden="true"></i></button>
+          <button type="button" data-workon-view="lista" aria-pressed="false" aria-label="Visualização em lista"><i class="fas fa-list" aria-hidden="true"></i></button>
+          <button type="button" data-workon-view="quadro" aria-pressed="false" aria-label="Visualização em quadro"><i class="fas fa-columns" aria-hidden="true"></i></button>
+        </div>
       </div>
-      <div class="workon-views segmented" role="group" aria-label="Visualização">
-        <button type="button" class="active" data-workon-view="galeria" aria-pressed="true">Galeria</button>
-        <button type="button" data-workon-view="lista" aria-pressed="false">Lista</button>
-        <button type="button" data-workon-view="quadro" aria-pressed="false">Quadro</button>
-      </div>
-    </div>
+    </section>
+
     <p id="workonErro" role="status"></p>
     <div id="workonGrid" class="workon-grid" aria-live="polite"></div>
+
     <section class="workon-create" id="criarWorkOn">
-      <h2>Criar Work On</h2>
-      <p>Comece um espaço para uma faixa, EP, álbum ou colaboração.</p>
+      <div class="workon-create-copy"><span class="eyebrow">Comece uma nova ideia</span><h2>Novo projeto</h2><p>Crie o espaço agora e adicione faixas, versões e colaboradores depois.</p></div>
       <form id="formCriarWorkOn">
-        <label>Título<input name="titulo" required minlength="3" maxlength="80"></label>
-        <label>Tipo<select name="tipo"><option value="album">Álbum</option><option value="ep">EP</option><option value="single">Single</option><option value="beat_tape">Beat tape</option><option value="outro">Outro</option></select></label>
-        <label>Visibilidade<select name="visibilidade"><option value="publico">Público</option><option value="link">Por link</option></select></label>
-        <button type="submit">Criar projeto</button>
+        <label>Título<input name="titulo" required minlength="3" maxlength="80" placeholder="Ex.: EP sem nome"></label>
+        <label>Formato<select name="tipo"><option value="album">Álbum</option><option value="ep">EP</option><option value="single">Single</option><option value="beat_tape">Beat tape</option><option value="outro">Outro</option></select></label>
+        <label>Acesso<select name="visibilidade"><option value="publico">Público</option><option value="link">Somente por link</option></select></label>
+        <button type="submit"><i class="fas fa-arrow-right" aria-hidden="true"></i> Criar projeto</button>
       </form>
     </section>
   </main>
+
   <div class="tab-bar-spacer"></div><nav class="tab-bar" aria-label="Navegação principal"></nav>
   <script type="module">
     import { initNavbar } from "../js/navbar.js";
