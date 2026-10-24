@@ -445,6 +445,7 @@
     const usuario = verificarAutenticacao(false);
     const headerActions = document.getElementById('headerActions');
 
+
     if (usuario) {
 
         const nome = usuario.nome_artistico || usuario.nome_completo;
@@ -1017,6 +1018,40 @@
     );
 
     readJourney();
+let ultima = window.scrollY;
+let acumulado = 0;
+let raf = false;
+
+const atualizar = () => {
+  const atual = window.scrollY;
+  const delta = atual - ultima;
+  ultima = atual;
+
+  if (atual < 220) {
+    acumulado = 0;
+    header?.classList.remove("nav-is-hidden");
+    raf = false;
+    return;
+  }
+
+  if (delta > 0) acumulado += delta;
+  else acumulado = 0;
+
+  if (acumulado > 220) header?.classList.add("nav-is-hidden");
+  else if (delta < -6) {
+    header?.classList.remove("nav-is-hidden");
+    acumulado = 0;
+  }
+
+  raf = false;
+};
+
+window.addEventListener("scroll", () => {
+  if (!raf) {
+    raf = true;
+    requestAnimationFrame(atualizar);
+  }
+}, { passive: true });
 
     </script>
 

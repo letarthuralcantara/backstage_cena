@@ -93,24 +93,46 @@ function configurarAutoHideNavegacao() {
   const header = document.querySelector(".header");
   const tabBar = document.querySelector(".tab-bar");
   if (!header && !tabBar) return;
-  let ultimaPosicao = window.scrollY;
+
+  let ultima = window.scrollY;
+  let acumulado = 0;
   let raf = false;
+
   const atualizar = () => {
     const atual = window.scrollY;
-    const descendo = atual > ultimaPosicao + 8;
-    const subindo = atual < ultimaPosicao - 8;
-    if (atual <= 12 || subindo) {
+    const delta = atual - ultima;
+    ultima = atual;
+
+    if (atual < 220) {
+      acumulado = 0;
       header?.classList.remove("nav-is-hidden");
       tabBar?.classList.remove("nav-is-hidden");
-    } else if (descendo && atual > 70) {
+      raf = false;
+      return;
+    }
+
+    if (delta > 0) acumulado += delta;
+    else acumulado = 0;
+
+    if (acumulado > 220) {
       header?.classList.add("nav-is-hidden");
       tabBar?.classList.add("nav-is-hidden");
       document.querySelector(".profile-dropdown.active")?.classList.remove("active");
+    } else if (delta < -6) {
+      header?.classList.remove("nav-is-hidden");
+      tabBar?.classList.remove("nav-is-hidden");
+      acumulado = 0;
     }
-    ultimaPosicao = atual;
+
     raf = false;
   };
-  window.addEventListener("scroll", () => { if (!raf) { raf = true; requestAnimationFrame(atualizar); } }, { passive: true });
+
+  window.addEventListener("scroll", () => {
+    if (!raf) {
+      raf = true;
+      requestAnimationFrame(atualizar);
+    }
+  }, { passive: true });
 }
 
 function montarBuscaSeNecessario(headerCenter, escopo, placeholder) {

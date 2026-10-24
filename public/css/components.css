@@ -448,3 +448,84 @@ button:not(:disabled):active, .tab-bar-item:active, .profile-trigger:active { tr
 .header, .tab-bar { transition:transform .58s cubic-bezier(.16,1,.3,1), opacity .42s ease, background var(--dur-3) var(--ease), border-color var(--dur-3) var(--ease), box-shadow var(--dur-3) var(--ease); }
 .header.nav-is-hidden { transform:translate3d(0, calc(-100% - 24px), 0); opacity:0; }
 .tab-bar.nav-is-hidden { transform:translate3d(0, calc(100% + 24px), 0); opacity:0; }
+:root {
+  --glass-bg: rgba(8, 8, 10, .78);
+  --glass-blur: blur(22px) saturate(1.25) brightness(.9);
+  --glass-border: rgba(255, 255, 255, .08);
+  --glass-highlight: rgba(255, 255, 255, .12);
+  --glass-shadow: 0 14px 36px rgba(0, 0, 0, .45);
+  --glass-sheen: linear-gradient(180deg, rgba(255, 255, 255, .06), transparent 42%);
+}
+
+body {
+  background:
+    radial-gradient(900px 420px at 10% -12%, rgba(128, 82, 240, .12), transparent 60%),
+    var(--bg);
+  background-attachment: fixed;
+}
+
+.glass,
+.header,
+.tab-bar,
+.dropdown-menu,
+dialog.sheet,
+.filterbar,
+.fab,
+.card,
+.panel,
+.workon-card,
+.workon-create,
+.workon-section-nav {
+  background: var(--glass-sheen), var(--glass-bg);
+  border-color: var(--glass-border);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+}
+
+.header,
+.tab-bar {
+  transition:
+    transform .9s cubic-bezier(.22, .8, .2, 1),
+    opacity .75s ease,
+    background .3s ease,
+    border-color .3s ease,
+    box-shadow .3s ease;
+}
+
+.header.nav-is-hidden {
+  transform: translate3d(0, calc(-100% - 28px), 0);
+  opacity: 0;
+}
+
+.tab-bar.nav-is-hidden {
+  transform: translate3d(0, calc(100% + 28px), 0);
+  opacity: 0;
+}
+
+.btn-primary,
+.workon-primary-cta,
+.workon-create button[type="submit"] {
+  background: linear-gradient(180deg, rgba(255, 255, 255, .14), transparent 40%), var(--accent);
+  border: 1px solid rgba(255, 255, 255, .12);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .22), 0 8px 20px rgba(0, 0, 0, .35);
+}
+.feed-filters.segmented,
+.segmented.filterbar,
+.workon-tabs.segmented,
+.workon-views.segmented {
+  background: rgba(255, 255, 255, .04);
+  border: 1px solid rgba(255, 255, 255, .1);
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.feed-filters.segmented::before,
+.segmented.filterbar::before,
+.workon-tabs.segmented::before,
+.workon-views.segmented::before {
+  background: rgba(255, 255, 255, .1);
+  border: 1px solid rgba(255, 255, 255, .14);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .18);
+}
