@@ -385,8 +385,52 @@
 .workon-track-copy strong { font-size:14px; font-weight:600; }
 .workon-track-copy small { color:var(--text-3); font-size:12px; }
 .workon-track-duration { color:var(--text-3); font-size:11px; text-align:right; }
-.track-actions { position:relative; flex:none; margin-right:7px; }
-.track-menu-trigger { display:grid; place-items:center; width:34px !important; height:34px !important; min-height:34px !important; padding:0 !important; color:var(--text-2) !important; background:transparent !important; border:0 !important; border-radius:50% !important; }
+/* Menu da faixa: o display:block acima tirava o diálogo da tela. */
+.track-actions {
+  position: relative;
+  z-index: 3;
+  flex: none;
+}
+
+.track-menu-trigger {
+  position: relative;
+  z-index: 4;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+dialog.track-details-dialog[open] {
+  display: grid !important;
+  grid-template-columns: minmax(220px, .8fr) minmax(260px, 1.2fr);
+  position: fixed;
+  inset: 0;
+  width: min(760px, calc(100% - 28px));
+  height: fit-content;
+  max-height: calc(100dvh - 32px);
+  margin: auto;
+  transform: none;
+  z-index: 300;
+}
+
+dialog.track-composer-dialog[open],
+dialog.notes-dialog[open],
+dialog.workon-metadata-dialog[open] {
+  display: block !important;
+  position: fixed;
+  inset: 0;
+  height: fit-content;
+  max-height: calc(100dvh - 32px);
+  margin: auto;
+  transform: none;
+  z-index: 300;
+}
+
+@media (max-width: 620px) {
+  dialog.track-details-dialog[open] {
+    grid-template-columns: 1fr;
+    overflow: auto;
+  }
+}
 .track-menu-trigger:hover { color:var(--text-1) !important; background:var(--surface-2) !important; }
 .track-hidden-upload { position:absolute; width:1px; height:1px; overflow:hidden; opacity:0; pointer-events:none; }
 .project-cover-image { z-index:1; }
