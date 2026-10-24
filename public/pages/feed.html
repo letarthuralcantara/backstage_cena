@@ -81,12 +81,11 @@
                 return nome.substring(0, 2).toUpperCase();
             }
 
-            function escaparHtml(texto) {
-                const div = document.createElement('div');
-                div.textContent = texto;
-                return div.innerHTML;
-            }
-
+           function escaparHtml(texto) {
+                return String(texto ?? "").replace(/[&<>"']/g, (c) => ({
+                    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+                }[c]));
+                }
             function criarCardTweet(t) {
                 const item = document.createElement('div');
                 item.className = 'feed-item';
