@@ -10,9 +10,9 @@ const STATUS_LABEL = {
 };
 
 function escaparHtml(valor) {
-  const elemento = document.createElement("span");
-  elemento.textContent = valor ?? "";
-  return elemento.innerHTML;
+  return String(valor ?? "").replace(/[&<>"']/g, (c) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+  }[c]));
 }
 
 async function chamar(url, { method = "GET", body } = {}) {

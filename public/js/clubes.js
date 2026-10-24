@@ -69,9 +69,7 @@ export const ClubesAPI = {
 
 // ── Utilitários de UI ─────────────────────────────────────────────────────────
 export function escaparHtml(texto) {
-  const div = document.createElement("div");
-  div.textContent = texto ?? "";
-  return div.innerHTML;
+  return String(texto ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[c]));
 }
 
 export function iniciais(nome = "") {
