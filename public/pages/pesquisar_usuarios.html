@@ -182,6 +182,10 @@
             }
         }
 
+        function escaparHtml(texto) {
+            return String(texto ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+        }
+
         const STATUS_LABELS = {
             disponivel:   'Disponível',
             ocupado:      'Ocupado',
@@ -247,7 +251,7 @@
                 const iniciais = nome.substring(0, 2).toUpperCase();
                 // A API retorna arrays diretamente
                 const instrumentos = Array.isArray(m.instrumentos) ? m.instrumentos : [];
-                const tags = instrumentos.slice(0, 3).map(i => `<span class="tag">${i}</span>`).join('');
+                const tags = instrumentos.slice(0, 3).map(i => `<span class="tag">${escaparHtml(i)}</span>`).join('');
                 const local = [m.cidade, m.estado].filter(Boolean).join(', ') || 'Localização não informada';
                 const areas = Array.isArray(m.area_atuacao) ? m.area_atuacao : (m.area_atuacao ? [m.area_atuacao] : []);
                 const areaLabel = areas.length > 0 ? areas[0] : '';
@@ -256,19 +260,19 @@
                 const statusLabel = STATUS_LABELS[status] || 'Disponível';
 
                 return `
-                <div class="musician-card" data-user-id="${m.id_usuario}" style="animation-delay:${idx * 0.05}s">
+                <div class="musician-card" data-user-id="${Number(m.id_usuario)}" style="animation-delay:${idx * 0.05}s">
                     <div class="musician-header">
                         <div class="musician-avatar">
-                            <div class="musician-photo">${iniciais}</div>
-                            <span class="status-dot musician-status ${status}" title="${statusLabel}"></span>
+                            <div class="musician-photo">${escaparHtml(iniciais)}</div>
+                            <span class="status-dot musician-status ${escaparHtml(status)}" title="${escaparHtml(statusLabel)}"></span>
                         </div>
                         <div class="musician-info">
-                            <div class="musician-name">${nome}</div>
-                            <div class="musician-location">${local}</div>
-                            ${areaLabel ? `<span class="musician-area">${areaLabel}</span>` : ''}
+                            <div class="musician-name">${escaparHtml(nome)}</div>
+                            <div class="musician-location">${escaparHtml(local)}</div>
+                            ${areaLabel ? `<span class="musician-area">${escaparHtml(areaLabel)}</span>` : ''}
                         </div>
                     </div>
-                    ${m.biografia ? `<p class="musician-bio">${m.biografia}</p>` : ''}
+                    ${m.biografia ? `<p class="musician-bio">${escaparHtml(m.biografia)}</p>` : ''}
                     ${tags ? `<div class="musician-tags">${tags}</div>` : ''}
                 </div>`;
             }).join('');
