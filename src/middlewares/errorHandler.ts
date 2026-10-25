@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { HttpError } from "../errors/HttpError.js";
 import multer from "multer";
+import { promises as fs } from "node:fs";
 
 /**
  * Middleware global de tratamento de erros.
@@ -8,7 +9,7 @@ import multer from "multer";
  */
 export function errorHandler(
   err: unknown,
-  _req: Request,
+  req: Request,
   res: Response,
   _next: NextFunction,
 ): void {
@@ -20,6 +21,7 @@ export function errorHandler(
     return;
   }
   if (err instanceof multer.MulterError) {
+    if (req.file?.path) void fs.unlink(req.file.path).catch(() => undefined);
     const message =
       err.code === "LIMIT_FILE_SIZE"
         ? "O arquivo excede o limite permitido."

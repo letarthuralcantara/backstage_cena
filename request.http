@@ -407,6 +407,40 @@ Content-Type: text/plain
 
 conteudo qualquer
 --boundary--
+### 11.4) AVATAR — acesso ao caminho devolvido pela API
+# Execute o POST 11.1 ou o PUT 11.2 e copie o campo `imagem.caminho` para a URL.
+GET http://localhost:3000/uploads/avatars/<nome-retornado-pela-api>.png
+
+### 11.5) AVATAR — acima do limite de 2 MiB (400 e nenhum arquivo gravado)
+# Fixture: ./tests/fixtures/avatar-too-large.png (2.097.153 bytes)
+POST http://localhost:3000/api/usuarios/imagem
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=avatar-large-boundary
+
+--avatar-large-boundary
+Content-Disposition: form-data; name="image"; filename="avatar-too-large.png"
+Content-Type: image/png
+
+< ./tests/fixtures/avatar-too-large.png
+--avatar-large-boundary--
+
+### Esperado: 400 Bad Request com issue em body.image e nenhum arquivo novo em
+### public/uploads/avatars.
+
+### 11.6) AVATAR — MIME de imagem com conteúdo inválido (400)
+POST http://localhost:3000/api/usuarios/imagem
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=avatar-forged-boundary
+
+--avatar-forged-boundary
+Content-Disposition: form-data; name="image"; filename="avatar-falso.png"
+Content-Type: image/png
+
+isto não é PNG
+--avatar-forged-boundary--
+
+### Esperado: 400 Bad Request e nenhum arquivo novo em public/uploads/avatars.
+
 
 
 ### 12) CLUBES — recomendados para o usuário logado (por gênero, instrumento e DAW do perfil)
