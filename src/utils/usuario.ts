@@ -32,3 +32,31 @@ export function sanitizeUsuario<
   const { senha, codigo_reset_senha, codigo_reset_expira_em, ...resto } = u;
   return resto;
 }
+
+type ComPrivacidade = {
+  id_usuario?: number;
+  email?: string | null;
+  telefone?: string | null;
+  configuracoes?: {
+    mostrar_email?: number | null;
+    mostrar_telefone?: number | null;
+  } | null;
+};
+
+/**
+ * Esconde e-mail e telefone de quem não é o dono do perfil, respeitando as
+ * opções "mostrar e-mail" (padrão: sim) e "mostrar telefone" (padrão: não).
+ * O próprio dono sempre vê os seus dados.
+ */
+export function aplicarPrivacidade<T extends ComPrivacidade>(
+  u: T,
+  visitanteId?: number,
+): T {
+  if (visitanteId !== undefined && visitanteId === u.id_usuario) return u;
+  const mostrarEmail = (u.configuracoes?.mostrar_email ?? 1) === 1;
+  const mostrarTelefone = (u.configuracoes?.mostrar_telefone ?? 0) === 1;
+  const copia: ComPrivacidade = { ...u };
+  if (!mostrarEmail) copia.email = null;
+  if (!mostrarTelefone) copia.telefone = null;
+  return copia as T;
+}

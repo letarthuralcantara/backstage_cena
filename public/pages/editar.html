@@ -233,7 +233,7 @@
         }
         document.getElementById('telefone')?.addEventListener('input', function(){ mascaraTelefone(this); });
 
-        const res = await fetch(`/api/usuarios/${usuario.id_usuario}`);
+        const res = await fetch(`/api/usuarios/${usuario.id_usuario}`, { headers: authHeaders({}, false) });
         const u = await res.json();
         await initNavbar({ usuarioServidor: u });
 

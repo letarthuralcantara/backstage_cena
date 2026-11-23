@@ -11,6 +11,7 @@
     "front:test": "vitest run tests/front --environment jsdom",
     "e2e": "playwright test",
     "coverage": "vitest run --coverage",
+    "auth:check": "node teste-autorizacao.mjs",
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
     "prisma:studio": "prisma studio",

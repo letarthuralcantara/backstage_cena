@@ -1,6 +1,10 @@
 import { Router } from "express";
 import UsuarioController from "../controllers/UsuarioController.js";
-import { isAuthenticated, isOwner } from "../middlewares/auth.js";
+import {
+  isAuthenticated,
+  isOwner,
+  optionalAuthentication,
+} from "../middlewares/auth.js";
 import { validate } from "../middlewares/validate.js";
 import { HttpError } from "../errors/HttpError.js";
 import { rateLimit } from "express-rate-limit";
@@ -116,8 +120,18 @@ router.put(
   UsuarioController.alterarSenha,
 );
 
-router.get("/", validate(listarSchema), UsuarioController.listar);
-router.get("/:id", validate(buscarSchema), UsuarioController.buscarPorId);
+router.get(
+  "/",
+  optionalAuthentication,
+  validate(listarSchema),
+  UsuarioController.listar,
+);
+router.get(
+  "/:id",
+  optionalAuthentication,
+  validate(buscarSchema),
+  UsuarioController.buscarPorId,
+);
 router.post("/", validate(cadastroSchema), UsuarioController.criar);
 router.put(
   "/:id",

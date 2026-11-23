@@ -67,7 +67,7 @@ export async function carregarUsuariosPerfil(idParam, redirecionar = false) {
     };
   }
 
-  const res = await fetch(`/api/usuarios/${idParam}`);
+  const res = await fetch(`/api/usuarios/${idParam}`, { headers: authHeaders({}, false) });
   if (!res.ok) throw new Error("Não foi possível carregar este perfil.");
   const usuarioVisto = await res.json();
   return {

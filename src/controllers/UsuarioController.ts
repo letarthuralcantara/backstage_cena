@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import usuarioService, { sanitizeUsuario } from "../models/UsuarioModel.js";
+import { aplicarPrivacidade } from "../utils/usuario.js";
 import { HttpError } from "../errors/HttpError.js";
 import { verify as argon2Verify } from "argon2";
 import jwt from "jsonwebtoken";
@@ -10,7 +11,9 @@ class UsuarioController {
     try {
       const { field, value } = req.query;
       const usuarios = await usuarioService.read(field as string, value);
-      res.json(usuarios.map(sanitizeUsuario));
+      res.json(
+        usuarios.map((u) => aplicarPrivacidade(sanitizeUsuario(u), req.userId)),
+      );
     } catch (error) {
       next(error);
     }
@@ -24,7 +27,7 @@ class UsuarioController {
     try {
       const id = Number(req.params.id);
       const usuario = await usuarioService.readById(id);
-      res.json(sanitizeUsuario(usuario));
+      res.json(aplicarPrivacidade(sanitizeUsuario(usuario), req.userId));
     } catch (error) {
       next(error);
     }

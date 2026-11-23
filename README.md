@@ -188,6 +188,7 @@ O `npm run seed` cria dez usuários, todos com a senha `123456`:
 | `npm run front:test` | Testes do front-end em JSDOM |
 | `npm run e2e` | Teste de ponta a ponta com Playwright (sobe o servidor na porta 4173) |
 | `npm run coverage` | Cobertura de testes |
+| `npm run auth:check` | Verificação manual de autorização e privacidade contra um servidor local |
 
 O que cada grupo cobre:
 

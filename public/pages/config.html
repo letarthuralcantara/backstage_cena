@@ -267,7 +267,7 @@
         if (!usuario) { window.location.href = 'login.html'; }
 
         // Carrega dados do usuário
-        const res = await fetch(`/api/usuarios/${usuario.id_usuario}`);
+        const res = await fetch(`/api/usuarios/${usuario.id_usuario}`, { headers: authHeaders({}, false) });
         const u = await res.json();
         await initNavbar({ usuarioServidor: u });
         const nome = u.nome_artistico || u.nome_completo;
