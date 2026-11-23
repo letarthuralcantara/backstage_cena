@@ -1,27 +1,31 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import { HttpError } from "../errors/HttpError.js";
 
 export function isAuthenticated(
   req: Request,
   res: Response,
   next: NextFunction,
 ): void {
+  const { authorization } = req.headers;
+  if (!authorization) {
+    res.status(401).json({ erro: "Token não informado." });
+    return;
+  }
+
+  const [scheme, token] = authorization.split(" ");
+  if (!/^Bearer$/i.test(scheme) || !token) {
+    res.status(401).json({ erro: "Formato de token inválido." });
+    return;
+  }
+
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    next(new HttpError(500, "JWT_SECRET não configurado."));
+    return;
+  }
+
   try {
-    const { authorization } = req.headers;
-    if (!authorization) {
-      res.status(401).json({ erro: "Token não informado." });
-      return;
-    }
-
-    const [scheme, token] = authorization.split(" ");
-    if (!/^Bearer$/i.test(scheme) || !token) {
-      res.status(401).json({ erro: "Formato de token inválido." });
-      return;
-    }
-
-    const secret = process.env.JWT_SECRET;
-    if (!secret) throw new Error("JWT_SECRET não configurado.");
-
     const payload = jwt.verify(token, secret) as { userId: number };
     req.userId = payload.userId;
     next();

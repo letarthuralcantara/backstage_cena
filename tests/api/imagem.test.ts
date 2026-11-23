@@ -123,6 +123,20 @@ describe("avatar do perfil (upload de imagem)", () => {
     expect(await readdir(pastaAvatares)).toEqual(antes);
   });
 
+  it("rejeita uma imagem truncada antes de gravar", async () => {
+    const antes = await readdir(pastaAvatares);
+    const pngTruncado = PNG.subarray(0, PNG.length - 8);
+    const res = await request(app)
+      .post("/api/usuarios/imagem")
+      .set("Authorization", `Bearer ${bToken}`)
+      .attach("image", pngTruncado, {
+        filename: "truncado.png",
+        contentType: "image/png",
+      });
+    expect(res.status).toBe(400);
+    expect(await readdir(pastaAvatares)).toEqual(antes);
+  });
+
   it("responde 400 quando nenhum arquivo é enviado", async () => {
     const res = await request(app)
       .post("/api/usuarios/imagem")

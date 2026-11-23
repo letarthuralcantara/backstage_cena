@@ -1,12 +1,10 @@
 import { Router, Request, Response, NextFunction } from "express";
-import { promises as fs } from "node:fs";
 import ImagemController from "../controllers/ImagemController.js";
 import { uploadImagem } from "../config/multer-imagem.js";
 import { isAuthenticated } from "../middlewares/auth.js";
 
 const router = Router();
 
-/** Executa o Multer e remove arquivo materializado antes de qualquer falha. */
 function uploadImagemComLimpeza(
   req: Request,
   res: Response,
@@ -17,14 +15,7 @@ function uploadImagemComLimpeza(
       next();
       return;
     }
-
-    const caminho = req.file?.path;
-    if (!caminho) {
-      next(error);
-      return;
-    }
-
-    void fs.unlink(caminho).catch(() => undefined).finally(() => next(error));
+    next(error);
   });
 }
 
